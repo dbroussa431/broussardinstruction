@@ -1,0 +1,74 @@
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+section {
+  padding: 2em;
+  max-width: 800px;
+  margin: auto;
+}
+
+h1, h2 {
+  color: #1a3d7c;
+  margin-bottom: 0.5em;
+}
+
+.info-header {
+  background-color: #1a3d7c;
+  color: white;
+  text-align: center;
+  padding: 3em 1em;
+}
+
+.contact-details a {
+  color: #1a3d7c;
+  text-decoration: none;
+}
+
+form {
+  background: white;
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+form label {
+  display: block;
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+form input, form textarea, form select {
+  width: 100%;
+  padding: 0.6em;
+  margin-top: 0.3em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  margin-top: 1.5em;
+  background-color: #1a3d7c;
+  color: white;
+  padding: 0.75em 2em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #152f5f;
+}
+
+.faq ul {
+  padding-left: 1.2em;
+}
+
+.faq li {
+  margin-bottom: 1em;
+}

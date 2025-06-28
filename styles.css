@@ -1,0 +1,255 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Header */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #222;
+  padding: 1rem 2rem;
+}
+
+.site-header .logo {
+  height: 60px;
+}
+
+.site-header nav a {
+  color: #fff;
+  margin-left: 1.5rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.site-header nav a:hover {
+  color: #f0c040;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 90vh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+}
+
+.background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 1rem;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.cta, .cta-secondary {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.cta {
+  background: #f0c040;
+  color: #000;
+}
+
+.cta:hover {
+  background: #d9a30f;
+}
+
+.cta-secondary {
+  background: transparent;
+  color: #0077cc;
+  border: 2px solid #0077cc;
+}
+
+.cta-secondary:hover {
+  background: #0077cc;
+  color: #fff;
+}
+
+.overlay-quote {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  font-style: italic;
+}
+
+/* Sections */
+section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+/* Welcome Section */
+.welcome {
+  background: #f9f9f9;
+}
+
+/* Why Choose Section */
+.why-choose ul {
+  list-style: none;
+  margin-top: 2rem;
+}
+
+.why-choose li {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Courses & Pricing Section */
+.courses-pricing {
+  background: #f9f9f9;
+}
+
+.pricing-table {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  border-collapse: collapse;
+}
+
+.pricing-table th, .pricing-table td {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  text-align: center;
+}
+
+.pricing-table th {
+  background: #222;
+  color: #fff;
+}
+
+.pricing-table tr:nth-child(even) td {
+  background: #f4f4f4;
+}
+
+/* How It Works Section */
+.how-it-works ol {
+  list-style-position: inside;
+  margin-top: 2rem;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.how-it-works li {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Instructor Section */
+.instructor-photo {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 1.5rem 0;
+}
+
+/* Live Fire Partner Section */
+.live-fire-partner {
+  background: #eef2f7;
+}
+
+.partner-logo {
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+/* Reviews Section */
+.reviews ul {
+  list-style: none;
+  margin-top: 2rem;
+}
+
+.reviews li {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* CTA Strip */
+.cta-strip {
+  background: #222;
+  color: #fff;
+  padding: 3rem 2rem;
+}
+
+.cta-strip .note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Footer */
+footer {
+  background: #333;
+  color: #aaa;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #aaa;
+  margin: 0 0.5rem;
+}
+
+footer a:hover {
+  color: #f0c040;
+  text-decoration: underline;
+}
+
+
+.instructor-video {
+  display: flex;
+  justify-content: center;
+  margin: 2rem auto;
+}
+
+.instructor-video video {
+  width: 60%;
+  max-width: 200px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
