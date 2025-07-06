@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact & Class Info | Broussard Shooting Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | Broussard Shooting Academy</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- Header with Navigation -->
+  <header class="site-header">
+    <img class="logo" src="../IMAGES/logo.png" alt="Broussard Shooting Academy Logo" />
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../courses/index.html">Courses</a>
+      <a href="../more-reviews/index.html">Reviews</a>
+    </nav>
+  </header>
+
   <section class="info-header">
     <h1>Get More Info</h1>
     <p>Have a question about a class or need help deciding? Reach out below.</p>
@@ -20,7 +31,7 @@
 
   <section class="info-form">
     <h2>Ask a Question</h2>
-    <form>
+    <form action="sendmail.php" method="POST">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" required />
 
@@ -51,5 +62,6 @@
       <li><strong>What if I’ve never shot before?</strong> — That’s perfectly okay! We train all levels.</li>
     </ul>
   </section>
+
 </body>
 </html>
