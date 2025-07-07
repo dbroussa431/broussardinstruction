@@ -265,7 +265,12 @@ form button:hover {
   .site-header {
     flex-direction: column;
     align-items: flex-start;
+    position: sticky;
+    top: 0;
+    /* background-color: #1a3d7c; */
+    z-index: 1000;
   }
+  
 
   .site-header nav {
     margin-top: 1em;
