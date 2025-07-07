@@ -189,4 +189,25 @@
     <strong>Broussard Shooting Academy</strong><br/>
     📍 New Orleans, LA<br/>
     📧 <a href="mailto:Broussardshootingacademy@protonmail.com">Broussardshootingacademy@protonmail.com</a><br/>
-    📞 <a href="te
+    📞 <a href="tel:+15044533937">504-453-3937</a>
+  </address>
+  <small style="color: #555;">© 2025 Broussard Shooting Academy. All rights reserved.</small>
+</footer>
+
+<!-- Navigation Script -->
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const mainNav = document.getElementById('mainNav');
+
+  navToggle?.addEventListener('click', () => {
+    mainNav?.classList.toggle('nav-open');
+  });
+
+  document.querySelectorAll('.header-nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      mainNav?.classList.remove('nav-open');
+    });
+  });
+</script>
+</body>
+</html>
