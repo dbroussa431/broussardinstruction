@@ -17,7 +17,18 @@ body {
 }
 
 /* Header */
+/* .site-header {
+  background-color: #1a3d7c;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+} */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   background-color: #1a3d7c;
   padding: 1em 2em;
   display: flex;
@@ -44,12 +55,17 @@ body {
 .site-header nav a:hover {
   text-decoration: underline;
 }
-
+/* 
 /* Hero Section */
-.hero {
+/* .hero {
   position: relative;
   height: 90vh;
   overflow: hidden;
+} */
+ /* .hero {
+  position: relative;
+  min-height: 90vh;
+  overflow: visible;
 }
 
 .background-video {
@@ -79,7 +95,56 @@ body {
 .hero-content p {
   font-size: 1.2rem;
   margin-bottom: 1.2em;
+}  */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 90vh;
+  overflow: hidden;
 }
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  padding: 1em;
+  color: white;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.2em;
+}
+
+.hero-overlay-box {
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 2em;
+  border-radius: 12px;
+  display: inline-block;
+  max-width: 90%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
 
 /* Buttons */
 .cta,
@@ -261,16 +326,6 @@ form button:hover {
   .hero-content h1 {
     font-size: 2.25rem;
   }
-
-  .site-header {
-    flex-direction: column;
-    align-items: flex-start;
-    position: sticky;
-    top: 0;
-    /* background-color: #1a3d7c; */
-    z-index: 1000;
-  }
-  
 
   .site-header nav {
     margin-top: 1em;
@@ -494,8 +549,4 @@ form button:hover {
     display: flex;
   }
 
-  .site-header {
-    position: relative;
-    align-items: center;
-  }
 }
