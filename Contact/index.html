@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact | Broussard Shooting Academy</title>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body>
+<!-- Header with Navigation -->
+<header class="site-header">
+<img alt="Broussard Shooting Academy Logo" class="logo" src="../IMAGES/logo.png"/>
+<nav>
+<a href="../index.html">Home</a>
+<a href="../courses/index.html">Courses</a>
+<a href="../more-reviews/index.html">Reviews</a>
+</nav>
+</header>
+<section class="info-header">
+<h1>Get More Info</h1>
+<p>Have a question about a class or need help deciding? Reach out below.</p>
+</section>
+<section class="contact-details">
+<h2>Contact Us</h2>
+<p>Email: <a href="mailto:broussardshootingacademy@protonmail.com">broussardshootingacademy@protonmail.com</a></p>
+<p>Phone: <a href="tel:5044533937">504-453-3937</a> (Text Preferred)</p>
+</section>
+<section class="info-form">
+<h2>Ask a Question</h2>
+<form action="sendmail.php" method="POST">
+<label for="name">Name:</label>
+<input id="name" name="name" required="" type="text"/>
+<label for="email">Email:</label>
+<input id="email" name="email" required="" type="email"/>
+<label for="class">Class You're Interested In:</label>
+<select id="class" name="class"><option value="concealed">Concealed Carry</option><option value="firstaid">Emergency First Aid</option><option value="constitutional">LA Constitutional Carry</option><option value="womens">Woman's Handgun</option><option value="massshooter">Countering: Mass Shooter Threat</option><option value="realestate">Real Estate Agent Safety</option><option value="childsafety">Children’s Firearms &amp; Safety Fundamentals</option><option value="pistol">General Pistol</option></select>
+<label for="message">Your Question:</label>
+<textarea id="message" name="message" required="" rows="5"></textarea>
+<button type="submit">Send Message</button>
+</form>
+</section>
+<section class="faq">
+<h2>Frequently Asked Questions</h2>
+<ul>
+<li><strong>Do I need to bring my own gun?</strong> — No, firearms can be provided for class use.</li>
+<li><strong>What if I’ve never shot before?</strong> — That’s perfectly okay! We train all levels.</li>
+</ul>
+</section>
+</body>
+</html>

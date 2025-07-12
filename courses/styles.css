@@ -1,0 +1,344 @@
+/* ========== Global Reset & Base ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  line-height: 1.6;
+  background-color: #ffffff;
+  color: #222;
+}
+
+/* ========== Header ========== */
+.site-header {
+  background-color: #0d2d57;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.site-header .logo {
+  max-height: 60px;
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1.25em;
+  align-items: center;
+}
+
+.site-header nav a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  text-decoration: underline;
+  color: #ffd700;
+}
+
+/* ========== Hero ========== */
+.hero {
+  position: relative;
+  height: 85vh;
+  overflow: hidden;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  padding: 2em;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  margin-bottom: 1.25em;
+}
+
+/* ========== CTA Buttons ========== */
+.cta,
+.cta-secondary {
+  padding: 0.75em 1.5em;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.cta {
+  background-color: #0d2d57;
+  color: white;
+}
+
+.cta:hover {
+  background-color: #081d38;
+}
+
+.cta-secondary {
+  background-color: transparent;
+  color: #0d2d57;
+  border: 2px solid #0d2d57;
+}
+
+.cta-secondary:hover {
+  background-color: #0d2d57;
+  color: white;
+}
+
+/* ========== Sections ========== */
+section {
+  padding: 2em 1em;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+section h2 {
+  font-size: 2rem;
+  color: #0d2d57;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+/* ========== Payment Page ========== */
+.info-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 2em auto 1em auto;
+  padding: 0 1em;
+}
+
+.info-header h1 {
+  font-size: 2.25rem;
+  color: #0d2d57;
+  margin-bottom: 0.5em;
+}
+
+.class-payments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2em 1em;
+}
+
+.class-item {
+  background-color: #f8f9fa;
+  border-left: 5px solid #0d2d57;
+  padding: 1.5em;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.class-item h2 {
+  margin-bottom: 0.5em;
+  font-size: 1.25rem;
+  color: #0d2d57;
+}
+
+.class-item p {
+  margin-bottom: 0.75em;
+  font-size: 1rem;
+}
+
+.paypal-button {
+  display: inline-block;
+  background-color: #0d2d57;
+  color: white;
+  padding: 0.6em 1.2em;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.paypal-button:hover {
+  background-color: #081d38;
+}
+
+/* ========== Form Styling ========== */
+form {
+  background-color: #f8f9fa;
+  padding: 2em;
+  border-radius: 8px;
+  max-width: 700px;
+  margin: 2em auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 0.75em;
+  margin-top: 0.25em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  margin-top: 1.5em;
+  background-color: #0d2d57;
+  color: white;
+  padding: 0.75em 2em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #081d38;
+}
+
+/* ========== Tables ========== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 1em;
+}
+
+th {
+  background-color: #0d2d57;
+  color: white;
+}
+
+/* ========== CTA Strip ========== */
+.cta-strip {
+  background-color: #0d2d57;
+  color: white;
+  text-align: center;
+  padding: 3em 1em;
+}
+
+.cta-strip .note {
+  color: #ffd700;
+  margin-top: 1em;
+}
+
+/* ========== Footer ========== */
+footer {
+  background-color: #0d2d57;
+  color: white;
+  text-align: center;
+  padding: 2em 1em;
+}
+
+footer address {
+  font-style: normal;
+  margin-bottom: 1em;
+}
+
+footer small {
+  display: block;
+  margin-top: 0.5em;
+  font-size: 0.85rem;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-header nav {
+    flex-direction: column;
+    gap: 0.5em;
+    margin-top: 1em;
+  }
+
+  .hero-content h1 {
+    font-size: 2.25rem;
+  }
+
+  .class-payments {
+    grid-template-columns: 1fr;
+  }
+
+  .info-header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Force white nav links globally */
+nav a {
+  color: white !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #ffd700 !important;
+}
+
+/* ===== Force visible nav links on header ===== */
+.site-header nav a {
+  color: white !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: #ffd700 !important;
+}
+
+/* ========== FORCE NAV COLOR ========== */
+.site-header nav a {
+  color: white !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: #ffd700 !important;
+  text-decoration: underline;
+}
+
