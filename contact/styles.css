@@ -367,3 +367,18 @@ nav a:hover {
     display: flex;
   }
 }
+
+a.button {
+  background-color: #0d2d57;
+  color: white;
+  padding: 0.75em 1.5em;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 1em;
+}
+
+a.button:hover {
+  background-color: #081d38;
+}
