@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You | Broussard Shooting Academy</title>
+  <link href="styles.css" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <img alt="Broussard Shooting Academy Logo" class="logo" src="IMAGES/logo.png" />
+    <button aria-label="Toggle navigation" class="nav-toggle" id="navToggle">☰</button>
+    <nav class="header-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="courses/index.html">Courses</a>
+      <a href="more-reviews/index.html">Reviews</a>
+      <a href="contact/index.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="info-header">
+    <h1>Thank You!</h1>
+    <p>Your message has been sent. We'll get back to you shortly.</p>
+    <a class="button" href="courses/index.html">View Our Courses</a>
+  </section>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+    navToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('nav-open');
+    });
+    document.querySelectorAll('.header-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('nav-open');
+      });
+    });
+  </script>
+</body>
+</html>
