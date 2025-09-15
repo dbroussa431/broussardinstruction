@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Reviews | Broussard Shooting Academy</title>
   <link href="../styles.css" rel="stylesheet"/>
-  
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
   <script>
@@ -14,6 +14,52 @@
     gtag('js', new Date());
     gtag('config', 'G-RZGNT5S4KS');
   </script>
+
+  <style>
+    /* Review card styling */
+    .review-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-left: 6px solid #0077cc;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .review-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+    }
+
+    .review-card strong {
+      display: block;
+      font-size: 1.15em;
+      margin-bottom: 5px;
+      color: #222;
+    }
+
+    .review-card .review-date {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .review-card p {
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+    }
+
+    /* Optional: different colors for each card */
+    .review-card:nth-child(odd) {
+      border-left-color: #0077cc;
+    }
+    .review-card:nth-child(even) {
+      border-left-color: #ff6600;
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -39,7 +85,7 @@
   <section class="reviews" id="reviews">
 
     <!-- New Reviews (Sep 13, 2025 class) -->
-    <div class="review">
+    <div class="review review-card">
       <strong>Jeff V.</strong>
       <span class="review-date">(Sep 14, 2025)</span>
       <p>
@@ -47,7 +93,7 @@
       </p>
     </div>
 
-    <div class="review">
+    <div class="review review-card">
       <strong>Gary H.</strong>
       <span class="review-date">(Sep 14, 2025)</span>
       <p>
@@ -55,13 +101,13 @@
       </p>
     </div>
 
-    <div class="review">
+    <div class="review review-card">
       <strong>Howard L.</strong>
       <span class="review-date">(Sep 14, 2025)</span>
       <p>Outstanding. I would highly recommend this instructor.</p>
     </div>
 
-    <div class="review">
+    <div class="review review-card">
       <strong>Angelina B.</strong>
       <span class="review-date">(Sep 13, 2025)</span>
       <p>
@@ -70,54 +116,54 @@
     </div>
 
     <!-- Existing Reviews -->
-    <div class="review">
+    <div class="review review-card">
       <strong>Felicia C.</strong>
       <span class="review-date">(Jan 6, 2024)</span>
       <p>
         David was very professional and thorough. I was sooo nervous at the range, but he put me at ease — very patient! I would definitely recommend him to anyone.
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Sierra B.</strong>
       <span class="review-date">(Sep 16, 2023)</span>
       <p>
         David was an amazing instructor and made the class interactive and fun! He broke down concepts where everyone understood. Highly recommend!
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Emily B.</strong>
       <span class="review-date">(Sep 16, 2023)</span>
       <p>
         Wonderful class experience! David answered every question and shared real-world experiences. Definitely recommend!
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Jesus R.</strong>
       <span class="review-date">(Aug 26, 2023)</span>
       <p>
         David Broussard was amazing — his passion, dedication, and knowledge made the class very enjoyable.
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Nikolaos P.</strong>
       <span class="review-date">(Aug 26, 2023)</span>
       <p>Excellent teacher. Very practical information I had never heard before.</p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>William S.</strong>
       <span class="review-date">(May 20, 2023)</span>
       <p>
         Professional, engaging, welcomed all questions, and showed respect for the subject matter.
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Mike L.</strong>
       <span class="review-date">(Mar 12, 2023)</span>
       <p>
         Excellent! Jam-packed with info. David went above and beyond what I thought the class would be. Highly recommended!
       </p>
     </div>
-    <div class="review">
+    <div class="review review-card">
       <strong>Robert G.</strong>
       <span class="review-date">(Dec 17, 2022)</span>
       <p>
