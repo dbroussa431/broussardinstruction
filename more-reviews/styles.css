@@ -1,315 +1,173 @@
-/* ========== Global Reset & Base ========== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Reviews | Broussard Shooting Academy</title>
+  <link href="../styles.css" rel="stylesheet"/>
 
-html {
-  scroll-behavior: smooth;
-}
+  <style>
+    /* Container for all reviews */
+    .reviews {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
 
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  line-height: 1.6;
-  background-color: #ffffff;
-  color: #222;
-}
+    /* Individual review cards */
+    .review {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-left: 6px solid #0077cc; /* main accent */
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-/* ========== Header ========== */
-.site-header {
-  background-color: #0d2d57;
-  padding: 1em 2em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
+    .review:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+    }
 
-.site-header .logo {
-  max-height: 60px;
-}
+    /* Unique accent for each review */
+    .review:nth-child(1) { border-left-color: #FF6F61; }
+    .review:nth-child(2) { border-left-color: #1E90FF; }
+    .review:nth-child(3) { border-left-color: #32CD32; }
+    .review:nth-child(4) { border-left-color: #FF69B4; }
+    .review:nth-child(5) { border-left-color: #FFA500; }
+    .review:nth-child(6) { border-left-color: #4682B4; }
+    .review:nth-child(7) { border-left-color: #228B22; }
+    .review:nth-child(8) { border-left-color: #C71585; }
 
-.site-header nav {
-  display: flex;
-  gap: 1.25em;
-}
+    .review strong {
+      display: block;
+      font-size: 1.15em;
+      margin-bottom: 5px;
+      color: #222;
+    }
 
-.site-header nav a {
-  color: white;
-  font-weight: 600;
-  text-decoration: none;
-}
+    .review-date {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 12px;
+      display: block;
+    }
 
-.site-header nav a:hover {
-  text-decoration: underline;
-}
+    .review p {
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+    }
 
-/* ========== Hero ========== */
-.hero {
-  position: relative;
-  height: 85vh;
-  overflow: hidden;
-}
+    /* Hero banner */
+    .reviews-hero-banner {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
 
-.background-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  min-height: 100%;
-  object-fit: cover;
-  z-index: -1;
-}
+    .reviews-title {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
 
-.hero-content {
-  position: relative;
-  text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  padding: 2em;
-}
+    .reviews-intro {
+      font-size: 1.1em;
+      color: #555;
+    }
 
-.hero-content h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5em;
-}
+    /* CTA */
+    .note {
+      text-align: center;
+      margin-top: 30px;
+    }
 
-.hero-content p {
-  font-size: 1.25rem;
-  margin-bottom: 1.25em;
-}
+    .cta-secondary {
+      background-color: #0077cc;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
 
-/* ========== CTA Buttons ========== */
-.cta,
-.cta-secondary {
-  padding: 0.75em 1.5em;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1rem;
-  text-decoration: none;
-  text-align: center;
-  display: inline-block;
-  transition: all 0.3s ease;
-}
+    .cta-secondary:hover {
+      background-color: #005fa3;
+    }
+  </style>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RZGNT5S4KS');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <img alt="Broussard Shooting Academy Logo" class="logo" src="../images/logo.png"/>
+    <button aria-label="Toggle navigation" class="nav-toggle" id="navToggle">☰</button>
+    <nav class="header-nav" id="mainNav">
+      <a href="../index.html">Home</a>
+      <a href="../courses/index.html">Courses</a>
+      <a href="index.html">Reviews</a>
+      <a href="../contact/index.html">Contact</a>
+    </nav>
+  </header>
 
-.cta {
-  background-color: #0d2d57;
-  color: white;
-}
+  <section class="reviews-hero-banner">
+    <h1 class="reviews-title">What Students Are Saying</h1>
+    <p class="reviews-intro">
+      Read feedback from real students who completed our hands-on training:
+    </p>
+  </section>
 
-.cta:hover {
-  background-color: #081d38;
-}
+  <section class="reviews" id="reviews">
+    <!-- Reviews go here (same as your HTML) -->
+    <div class="review">
+      <strong>Jeff V.</strong>
+      <span class="review-date">(Sep 14, 2025)</span>
+      <p>David was very thorough and made sure to stop to see if we had any questions. I left extremely surprised at how much I didn't know. So glad I took this class, especially from David.</p>
+    </div>
+    <div class="review">
+      <strong>Gary H.</strong>
+      <span class="review-date">(Sep 14, 2025)</span>
+      <p>David Broussard was an excellent instructor. He took his time explaining things and made the course enjoyable. Mr Broussard is also very knowledgeable and patient.</p>
+    </div>
+    <div class="review">
+      <strong>Howard L.</strong>
+      <span class="review-date">(Sep 14, 2025)</span>
+      <p>Outstanding. I would highly recommend this instructor.</p>
+    </div>
+    <div class="review">
+      <strong>Angelina B.</strong>
+      <span class="review-date">(Sep 13, 2025)</span>
+      <p>I recently completed concealed carry training with David, and I can’t recommend him highly enough. From start to finish, he created a safe, professional, and confidence-building environment...</p>
+    </div>
+    <!-- Add remaining reviews exactly as in your HTML -->
+    <p class="note">
+      Ready to join our list of satisfied students?
+      <a class="cta-secondary" href="../courses/index.html">Register for a Class</a>
+    </p>
+  </section>
 
-.cta-secondary {
-  background-color: transparent;
-  color: #0d2d57;
-  border: 2px solid #0d2d57;
-}
-
-.cta-secondary:hover {
-  background-color: #0d2d57;
-  color: white;
-}
-
-/* ========== Sections ========== */
-section {
-  padding: 2em 1em;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-section h2 {
-  font-size: 2rem;
-  color: #0d2d57;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-p {
-  margin-bottom: 1em;
-}
-
-/* ========== Form Styling ========== */
-form {
-  background-color: #f8f9fa;
-  padding: 2em;
-  border-radius: 8px;
-  max-width: 700px;
-  margin: 2em auto;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-}
-
-form label {
-  display: block;
-  font-weight: bold;
-  margin-top: 1em;
-}
-
-form input,
-form textarea,
-form select {
-  width: 100%;
-  padding: 0.75em;
-  margin-top: 0.25em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-form button {
-  margin-top: 1.5em;
-  background-color: #0d2d57;
-  color: white;
-  padding: 0.75em 2em;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #081d38;
-}
-
-/* ========== Tables ========== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1em;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 1em;
-}
-
-th {
-  background-color: #0d2d57;
-  color: white;
-}
-
-/* ========== CTA Strip ========== */
-.cta-strip {
-  background-color: #0d2d57;
-  color: white;
-  text-align: center;
-  padding: 3em 1em;
-}
-
-.cta-strip .note {
-  color: #ffd700;
-  margin-top: 1em;
-}
-
-/* ========== Footer ========== */
-footer {
-  background-color: #0d2d57;
-  color: white;
-  text-align: center;
-  padding: 2em 1em;
-}
-
-footer address {
-  font-style: normal;
-  margin-bottom: 1em;
-}
-
-footer small {
-  display: block;
-  margin-top: 0.5em;
-  font-size: 0.85rem;
-}
-
-/* ========== Responsive ========== */
-@media (max-width: 768px) {
-  .site-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .hero-content h1 {
-    font-size: 2.25rem;
-  }
-
-  .site-header nav {
-    flex-direction: column;
-    gap: 0.5em;
-    margin-top: 1em;
-  }
-}
-
-/* ========== Reviews Hero Banner ========== */
-.reviews-hero-banner {
-  background-color: #f5f8fc;
-  padding: 3em 1em;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.reviews-title {
-  font-size: 2.5rem;
-  color: #0d2d57;
-  margin-bottom: 0.5em;
-}
-
-.reviews-intro {
-  font-size: 1.1rem;
-  color: #333;
-}
-
-/* ========== Individual Reviews ========== */
-.reviews {
-  margin-top: 2em;
-}
-
-.review {
-  background-color: #f9f9f9;
-  padding: 1.5em;
-  margin-bottom: 1em;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.review strong {
-  font-size: 1.1rem;
-  color: #0d2d57;
-}
-
-.review-date {
-  color: #888;
-  font-size: 0.9rem;
-  margin-left: 0.5em;
-}
-
-.review p {
-  margin-top: 0.5em;
-  font-size: 1rem;
-  color: #333;
-}
-
-
-.nav-toggle {
-  display: none;
-  font-size: 2em;
-  background: none;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-@media (max-width: 900px) {
-  .nav-toggle {
-    display: block;
-  }
-  .header-nav {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 1em;
-  }
-  .header-nav.nav-open {
-    display: flex;
-  }
-}
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+    navToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('nav-open');
+    });
+    document.querySelectorAll('.header-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('nav-open');
+      });
+    });
+  </script>
+</body>
+</html>
