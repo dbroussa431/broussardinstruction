@@ -316,3 +316,58 @@ footer address {
     align-items: center;
   }
 }
+/* ====== Step 1 Enhancements (Accessibility + Readability + Mobile) ====== */
+
+/* Improve link focus (keyboard users) */
+a:focus {
+  outline: 2px solid #f0a500;
+  outline-offset: 2px;
+}
+
+/* Buttons: ensure better contrast + hover */
+.cta,
+.cta-secondary {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.cta:focus,
+.cta-secondary:focus {
+  outline: 2px solid #f0a500;
+  outline-offset: 2px;
+}
+
+/* Footer readability */
+footer {
+  background-color: #1a3d7c;
+  color: #fff;
+}
+footer a {
+  color: #ffd700;
+  text-decoration: none;
+}
+footer a:hover,
+footer a:focus {
+  text-decoration: underline;
+}
+
+/* Mobile menu smooth animation */
+@media (max-width: 900px) {
+  .header-nav {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+/* FAQ block (for later drop-in if used) */
+details {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.8em 1em;
+  background: #f9f9f9;
+  margin: 1em 0;
+}
+details > summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+details[open] {
+  background: #f1f7ff;
+}
