@@ -7,69 +7,49 @@
   <meta name="description" content="Contact Broussard Shooting Academy. Email or call to schedule firearm and safety training in New Orleans.">
   <link rel="stylesheet" href="/styles.css"/>
 
-  <!-- Page-specific styles (kept local to avoid touching styles.css) -->
   <style>
-    .contact-wrap {
-      max-width: 1000px;
-      padding: 24px 16px;
-      margin: 0 auto;
-    }
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-    @media (max-width: 800px) {
-      .contact-grid { grid-template-columns: 1fr; }
-    }
-    .contact-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .contact-card h2 {
-      margin-bottom: .5rem;
-      color: #1a3d7c;
-      text-align: left;
-    }
-    .contact-card p, .contact-card li { color: #333; }
-    .contact-list {
-      list-style: none; padding: 0; margin: .5rem 0 0 0;
-    }
-    .contact-list li { margin: .35rem 0; }
-    .contact-list a { font-weight: bold; text-decoration: none; }
-    .contact-list a:hover, .contact-list a:focus { text-decoration: underline; }
-
-    /* Simple form styling */
-    .contact-form label {
-      display: block; font-weight: bold; margin: 10px 0 6px;
-    }
-    .contact-form input[type="text"],
-    .contact-form input[type="email"],
-    .contact-form textarea,
-    .contact-form select {
-      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
-      font: inherit;
+    .contact-wrap { max-width: 1000px; padding: 24px 16px; margin: 0 auto; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    .contact-card h2 { margin-bottom:.5rem; color:#1a3d7c; text-align:left; }
+    .contact-card p, .contact-card li { color:#333; }
+    .contact-list { list-style:none; padding:0; margin:.5rem 0 0 0; }
+    .contact-list li { margin:.35rem 0; }
+    .contact-list a { font-weight:bold; text-decoration:none; }
+    .contact-list a:hover, .contact-list a:focus { text-decoration:underline; }
+    .contact-form label { display:block; font-weight:bold; margin:10px 0 6px; }
+    .contact-form input[type="text"], .contact-form input[type="email"], .contact-form textarea, .contact-form select {
+      width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font:inherit;
     }
     .contact-form textarea { min-height: 120px; }
-    .contact-actions { margin-top: 12px; display: flex; gap: 10px; align-items: center; }
-    .helper-note { font-size: .9rem; color: #555; }
+    .contact-actions { margin-top:12px; display:flex; gap:10px; align-items:center; }
+    .helper-note { font-size:.9rem; color:#555; }
   </style>
 </head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RZGNT5S4KS');
+</script>
+
 <body>
 
   <!-- Header -->
   <header class="site-header">
-    <a href="/index.html">
+    <a href="/index.html" data-ga="nav_home">
       <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
     <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-      <a href="/index.html">Home</a>
-      <a href="/courses/index.html">Courses</a>
-      <a href="/more-reviews/index.html">Reviews</a>
-      <a href="/contact/index.html" aria-current="page">Contact</a>
+      <a href="/index.html" data-ga="nav_home">Home</a>
+      <a href="/courses/index.html" data-ga="nav_courses">Courses</a>
+      <a href="/more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
+      <a href="/contact/index.html" aria-current="page" data-ga="nav_contact">Contact</a>
     </nav>
   </header>
 
@@ -81,14 +61,14 @@
         <h2>Get in Touch</h2>
         <p>We’re here to help you train safely and confidently. Reach out with questions or to request a class date.</p>
         <ul class="contact-list" aria-label="Contact methods">
-          <li>📧 Email: <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a></li>
-          <li>📞 Phone: <a href="tel:+15042896605">504-289-6605</a></li>
+          <li>📧 Email: <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a></li>
+          <li>📞 Phone: <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a></li>
           <li>📍 Location: New Orleans, LA <span class="helper-note">(by appointment)</span></li>
           <li>🕒 Schedule: Concealed Carry runs <strong>every Saturday</strong>; other courses are <strong>TBA</strong>.</li>
         </ul>
       </div>
 
-      <!-- Simple Email Form (opens user’s email app) -->
+      <!-- Simple Email Form (mailto) -->
       <div class="contact-card">
         <h2>Send a Quick Message</h2>
         <form class="contact-form" id="contactForm">
@@ -111,22 +91,22 @@
           <textarea id="cf_message" name="message" placeholder="How can we help?"></textarea>
 
           <div class="contact-actions">
-            <button class="cta" type="submit">Open Email to Send</button>
-            <span class="helper-note">This will open your email app with the details filled in.</span>
+            <button class="cta" type="submit" data-ga="contact_submit">Open Email to Send</button>
+            <span class="helper-note">This opens your email app with the details filled in.</span>
           </div>
         </form>
       </div>
     </section>
 
-    <!-- Optional: FAQ using <details> already styled in styles.css -->
+    <!-- FAQ -->
     <section style="margin-top:24px">
       <details>
         <summary>Where is live fire held?</summary>
-        <p>Live Fire is held at <strong>Neutral Ground Gun Company</strong>. Please complete the <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer">range waiver</a> before your session.</p>
+        <p>Live Fire is held at <strong>Neutral Ground Gun Company</strong>. Please complete the <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer" data-ga="waiver_link">range waiver</a> before your session.</p>
       </details>
       <details>
         <summary>What is your refund and cancellation policy?</summary>
-        <p>Please see our <a href="/policy/refund-cancellation.html">Refund &amp; Cancellation Policy</a>.</p>
+        <p>See our <a href="/policy/refund-cancellation.html" data-ga="faq_refund">Refund &amp; Cancellation Policy</a>.</p>
       </details>
       <details>
         <summary>Do you offer private or group training?</summary>
@@ -141,33 +121,29 @@
     <address id="contact">
       <strong>Broussard Shooting Academy</strong><br/>
       📍 New Orleans, LA (by appointment)<br/>
-      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
-      📞 <a href="tel:+15042896605">504-289-6605</a>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
     </address>
     <p>
-      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
-      <a href="/policy/privacy.html">Privacy Policy</a>
+      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
     </p>
     <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
   </footer>
 
   <!-- Scripts -->
   <script>
-    // Mobile nav toggle
+    // Mobile nav
     const navToggle = document.getElementById('navToggle');
     const mainNav = document.getElementById('mainNav');
     if (navToggle && mainNav) {
       navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
-      document.querySelectorAll('.header-nav a').forEach(link => {
-        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
-      });
+      document.querySelectorAll('.header-nav a').forEach(l => l.addEventListener('click', () => mainNav.classList.remove('nav-open')));
     }
+    // Year
+    const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
 
-    // Footer year
-    const yr = document.getElementById('yr');
-    if (yr) yr.textContent = new Date().getFullYear();
-
-    // Mailto form submit (opens user's email app)
+    // Mailto form submit + GA
     const form = document.getElementById('contactForm');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -186,7 +162,36 @@
         `${decodeURIComponent(message)}`
       ].join('%0D%0A');
 
+      if (typeof gtag === 'function') {
+        gtag('event', 'contact', { method: 'email', link_id: 'contact_submit_form' });
+      }
       window.location.href = `mailto:BroussardShootingAcademy@protonmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+    });
+
+    // GA4 generic click tracking
+    function trackClick(el, eventName, extra) {
+      if (typeof gtag !== 'function') return;
+      gtag('event', eventName || 'select_content', Object.assign({
+        link_id: el.getAttribute('data-ga') || 'unknown',
+        link_text: (el.textContent || '').trim(),
+        link_href: el.getAttribute('href') || ''
+      }, extra || {}));
+    }
+    document.querySelectorAll('[data-ga]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-ga') || '';
+        if (id.includes('register') || id.includes('courses')) {
+          trackClick(el, 'generate_lead', { content_type: 'registration' });
+        } else if (id.includes('email')) {
+          trackClick(el, 'contact', { method: 'email' });
+        } else if (id.includes('phone')) {
+          trackClick(el, 'contact', { method: 'phone' });
+        } else if (id.includes('waiver')) {
+          trackClick(el, 'click', { content_type: 'outbound' });
+        } else {
+          trackClick(el, 'select_content');
+        }
+      });
     });
   </script>
 </body>
