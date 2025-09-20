@@ -49,6 +49,20 @@
     </p>
 
     <a class="cta" href="/contact/index.html">Register for a Class</a>
+
+    <!-- Upcoming Schedule (auto-updating) -->
+    <section class="class-schedule" style="margin-top:2rem">
+      <h2>Upcoming Classes</h2>
+      <table class="pricing-table">
+        <thead>
+          <tr><th>Course</th><th>Date</th></tr>
+        </thead>
+        <tbody id="scheduleTable">
+          <!-- JS will fill rows -->
+        </tbody>
+      </table>
+      <p class="note">Most classes are listed as TBA—contact us to request a date. Concealed Carry runs every Saturday.</p>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -67,8 +81,9 @@
     <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
   </footer>
 
-  <!-- Navigation + Year Script -->
+  <!-- Scripts -->
   <script>
+    // Mobile nav toggle
     const navToggle = document.getElementById('navToggle');
     const mainNav = document.getElementById('mainNav');
     if (navToggle && mainNav) {
@@ -77,8 +92,53 @@
         link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
       });
     }
+
+    // Footer year
     const yr = document.getElementById('yr');
     if (yr) yr.textContent = new Date().getFullYear();
+
+    // ===== Auto-updating schedule =====
+    const schedule = [
+      { course: "Concealed Carry", recurring: "saturday" },
+      { course: "Permitless Carry", recurring: null },
+      { course: "First Aid", recurring: null },
+      { course: "Church Safety", recurring: null },
+      { course: "Shooter Threat", recurring: null },
+      { course: "Agent Safety", recurring: null },
+      { course: "Children’s Firearms Safety", recurring: null },
+      { course: "General Pistol", recurring: null }
+    ];
+
+    function getNextSaturday() {
+      const today = new Date();
+      const next = new Date(today);
+      // 6 = Saturday; add days until next Saturday (never today)
+      const daysToAdd = ((6 - today.getDay() + 7) % 7) || 7;
+      next.setDate(today.getDate() + daysToAdd);
+      return next;
+    }
+
+    const tbody = document.getElementById("scheduleTable");
+    const fmt = { weekday: "long", month: "short", day: "numeric", year: "numeric" };
+
+    schedule.forEach(item => {
+      const tr = document.createElement("tr");
+      const tdCourse = document.createElement("td");
+      const tdDate = document.createElement("td");
+
+      tdCourse.textContent = item.course;
+
+      if (item.recurring === "saturday") {
+        const date = getNextSaturday();
+        tdDate.textContent = date.toLocaleDateString("en-US", fmt);
+      } else {
+        tdDate.textContent = "TBA";
+      }
+
+      tr.appendChild(tdCourse);
+      tr.appendChild(tdDate);
+      tbody.appendChild(tr);
+    });
   </script>
 </body>
 </html>
