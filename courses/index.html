@@ -26,21 +26,53 @@
   <!-- Courses Section -->
   <main class="container" style="max-width:1000px;padding:24px 16px">
     <h1>Courses & Pricing</h1>
-    <p>Choose the course that best fits your needs. All classes are taught by USCCA-certified instructor David Broussard with a focus on practical skills, legal knowledge, and safe firearm handling.</p>
+    <p>All classes are taught by USCCA-certified instructor David Broussard with a focus on practical skills, legal knowledge, and safe firearm handling. Each course is designed to provide you with confidence, clarity, and lasting value.</p>
 
     <table class="pricing-table">
       <thead>
         <tr><th>Course</th><th>Description</th><th>Price</th></tr>
       </thead>
       <tbody>
-        <tr><td>Concealed Carry</td><td>Full certification and home defense training.</td><td>$125</td></tr>
-        <tr><td>Permitless Carry</td><td>Mini-course on Louisiana law and permitless carry.</td><td>$50</td></tr>
-        <tr><td>First Aid</td><td>Critical emergency response and trauma care.</td><td>$100</td></tr>
-        <tr><td>Church Safety</td><td>For staff & volunteers to protect congregations.</td><td>$100</td></tr>
-        <tr><td>Shooter Threat</td><td>Threat recognition and defensive tactics.</td><td>$100</td></tr>
-        <tr><td>Agent Safety</td><td>Real estate professional safety training.</td><td>$50</td></tr>
-        <tr><td>Children’s Firearms Safety</td><td>Family-focused firearm education and safety.</td><td>$75</td></tr>
-        <tr><td>General Pistol</td><td>Fundamentals of safe pistol handling and shooting.</td><td>$40</td></tr>
+        <tr>
+          <td>Concealed Carry</td>
+          <td>This comprehensive certification course covers firearm safety, Louisiana law, home defense, and live-fire training. Students will gain the knowledge to understand their rights, responsibilities, and the confidence to carry responsibly. Practical drills and real-world discussion prepare you for safe and lawful concealed carry. You will leave with a clear path toward certification and a stronger sense of security.</td>
+          <td>$125</td>
+        </tr>
+        <tr>
+          <td>Permitless Carry</td>
+          <td>A targeted mini-course that unpacks Louisiana’s permitless carry laws. Learn exactly where you can and cannot carry, what restrictions still apply, and how to avoid common legal mistakes. Even if you are not pursuing a permit, you will leave with critical safety practices and the confidence to act within the law. This is an essential foundation for anyone new to carrying without a permit.</td>
+          <td>$50</td>
+        </tr>
+        <tr>
+          <td>First Aid</td>
+          <td>This course equips students with critical emergency response skills, including bleeding control, airway management, and trauma care. Using hands-on demonstrations, you will practice responding quickly in stressful situations. The goal is to build the confidence to act when seconds matter most — whether at home, at work, or at the range. You’ll leave with life-saving skills that extend far beyond firearms training.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Church Safety</td>
+          <td>Tailored for staff and volunteers, this course helps churches establish a safety culture that respects both faith and legal obligations. Topics include emergency planning, threat recognition, and effective communication under stress. Students will learn how to create safe environments without disrupting worship. The course provides practical steps for protecting congregations with professionalism and care.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Shooter Threat</td>
+          <td>This course prepares students to recognize, avoid, and respond to violent threats. Through real-world scenarios, you will learn situational awareness, defensive strategies, and how to act decisively when danger arises. The training emphasizes responsibility and de-escalation first, but also equips you with the tactical knowledge to protect yourself and others. Students leave empowered and more confident in their ability to react under pressure.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Agent Safety</td>
+          <td>Designed for real estate professionals, this course focuses on situational awareness, meeting protocols, and personal defense strategies. Agents face unique risks in unfamiliar locations, often alone — this course gives you clear guidelines to stay safe. You’ll learn practical strategies that can be applied immediately in your day-to-day work. Protect yourself while maintaining professionalism and client trust.</td>
+          <td>$50</td>
+        </tr>
+        <tr>
+          <td>Children’s Firearms Safety</td>
+          <td>This family-centered course teaches parents and children together about firearm safety. You’ll learn safe storage practices, how to talk to children about firearms, and what to do if a child encounters one. Kids gain age-appropriate rules and awareness, while parents gain peace of mind. It’s an empowering course that builds trust, confidence, and responsibility within the family unit.</td>
+          <td>$75</td>
+        </tr>
+        <tr>
+          <td>General Pistol</td>
+          <td>An excellent entry point for beginners and those seeking a refresher. Students learn proper grip, stance, sight alignment, trigger control, and safe operation. Each skill is taught step-by-step to build comfort and accuracy. By the end, you’ll have a solid foundation to enjoy shooting safely and responsibly.</td>
+          <td>$40</td>
+        </tr>
       </tbody>
     </table>
 
@@ -50,7 +82,7 @@
 
     <a class="cta" href="/contact/index.html">Register for a Class</a>
 
-    <!-- Upcoming Schedule (auto-updating) -->
+    <!-- Upcoming Schedule -->
     <section class="class-schedule" style="margin-top:2rem">
       <h2>Upcoming Classes</h2>
       <table class="pricing-table">
@@ -58,7 +90,7 @@
           <tr><th>Course</th><th>Date</th></tr>
         </thead>
         <tbody id="scheduleTable">
-          <!-- JS will fill rows -->
+          <!-- Populated by JS -->
         </tbody>
       </table>
       <p class="note">Most classes are listed as TBA—contact us to request a date. Concealed Carry runs every Saturday.</p>
@@ -112,7 +144,6 @@
     function getNextSaturday() {
       const today = new Date();
       const next = new Date(today);
-      // 6 = Saturday; add days until next Saturday (never today)
       const daysToAdd = ((6 - today.getDay() + 7) % 7) || 7;
       next.setDate(today.getDate() + daysToAdd);
       return next;
