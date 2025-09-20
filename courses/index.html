@@ -16,10 +16,10 @@
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
     <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-      <a href="/index.html">Home</a>
-      <a href="/courses/index.html" aria-current="page">Courses</a>
-      <a href="/more-reviews/index.html">Reviews</a>
-      <a href="/contact/index.html">Contact</a>
+      <a href="/index.html" data-ga="nav_home">Home</a>
+      <a href="/courses/index.html" aria-current="page" data-ga="nav_courses">Courses</a>
+      <a href="/more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
+      <a href="/contact/index.html" data-ga="nav_contact">Contact</a>
     </nav>
   </header>
 
@@ -77,10 +77,10 @@
     </table>
 
     <p class="note">* Live Fire portions are held at <strong>Neutral Ground Gun Company</strong>.  
-      <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer">Sign Waiver</a>.
+      <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer" data-ga="waiver_link">Sign Waiver</a>.
     </p>
 
-    <a class="cta" href="/contact/index.html">Register for a Class</a>
+    <a class="cta" href="/contact/index.html" data-ga="cta_register_courses">Register for a Class</a>
 
     <!-- Upcoming Schedule -->
     <section class="class-schedule" style="margin-top:2rem">
@@ -101,28 +101,58 @@
       <h2>Helpful Links for Your Louisiana CCW</h2>
       <ul>
         <li>
-          <a href="https://chp.la.gov/" target="_blank" rel="noopener noreferrer">
+          <a href="https://chp.la.gov/" target="_blank" rel="noopener noreferrer" data-ga="lsp_chp_portal">
             Louisiana CHP Online Application Portal (LSP)
           </a>
         </li>
         <li>
-          <a href="https://lsp.org/services/concealed-handgun-information/" target="_blank" rel="noopener noreferrer">
+          <a href="https://lsp.org/services/concealed-handgun-information/" target="_blank" rel="noopener noreferrer" data-ga="lsp_info_faqs">
             LSP Concealed Handgun Permit Info & FAQs
           </a>
         </li>
         <li>
-          <a href="https://lsp.org/services/concealed-handgun-information/chp-application/" target="_blank" rel="noopener noreferrer">
+          <a href="https://lsp.org/services/concealed-handgun-information/chp-application/" target="_blank" rel="noopener noreferrer" data-ga="lsp_chp_instructions">
             CHP Application Instructions (Fingerprint guidance)
           </a>
         </li>
         <li>
-          <a href="https://www.identogo.com/locations/louisiana" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.identogo.com/locations/louisiana" target="_blank" rel="noopener noreferrer" data-ga="identogo_la">
             Schedule Digital Fingerprints (IdentoGO – Louisiana)
           </a>
           <span class="note"> — LSP notes LAPS/IdentoGO as the statewide digital fingerprint provider.</span>
         </li>
       </ul>
     </section>
+
+    <!-- Admin Metrics (appears only with ?admin=1) -->
+    <section id="adminMetrics" style="display:none; margin-top:2rem">
+      <h2>Admin: Class Metrics</h2>
+      <form id="metricsForm" style="display:grid; gap:8px; max-width:520px">
+        <label>Date <input type="date" id="mDate" required></label>
+        <label>Course
+          <select id="mCourse">
+            <option>Concealed Carry</option>
+            <option>Permitless Carry</option>
+            <option>First Aid</option>
+            <option>Church Safety</option>
+            <option>Shooter Threat</option>
+            <option>Agent Safety</option>
+            <option>Children’s Firearms Safety</option>
+            <option>General Pistol</option>
+          </select>
+        </label>
+        <label>Students Attended <input type="number" id="mStudents" min="0" value="0" required></label>
+        <label>Repeat Students <input type="number" id="mRepeat" min="0" value="0" required></label>
+        <label>Notes <input type="text" id="mNotes" placeholder="Saturday class, church group, etc."></label>
+        <div>
+          <button class="cta" type="submit">Add Entry</button>
+          <button class="cta-secondary" type="button" id="exportCsv">Export CSV</button>
+          <button class="cta-secondary" type="button" id="clearAll">Clear All</button>
+        </div>
+      </form>
+      <p class="note" id="mStatus"></p>
+    </section>
+
   </main>
 
   <!-- Footer -->
@@ -131,12 +161,12 @@
     <address id="contact">
       <strong>Broussard Shooting Academy</strong><br/>
       📍 New Orleans, LA (by appointment)<br/>
-      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
-      📞 <a href="tel:+15042896605">504-289-6605</a>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
     </address>
     <p>
-      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
-      <a href="/policy/privacy.html">Privacy Policy</a>
+      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
     </p>
     <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
   </footer>
@@ -172,31 +202,109 @@
     function getNextSaturday() {
       const today = new Date();
       const next = new Date(today);
-      const daysToAdd = ((6 - today.getDay() + 7) % 7) || 7;
+      const daysToAdd = ((6 - today.getDay() + 7) % 7) || 7; // always next, not today
       next.setDate(today.getDate() + daysToAdd);
       return next;
     }
 
     const tbody = document.getElementById("scheduleTable");
-    const fmt = { weekday: "long", month: "short", day: "numeric", year: "numeric" };
+    if (tbody) {
+      const fmt = { weekday: "long", month: "short", day: "numeric", year: "numeric" };
+      schedule.forEach(item => {
+        const tr = document.createElement("tr");
+        const tdCourse = document.createElement("td");
+        const tdDate = document.createElement("td");
+        tdCourse.textContent = item.course;
+        if (item.recurring === "saturday") {
+          const date = getNextSaturday();
+          tdDate.textContent = date.toLocaleDateString("en-US", fmt);
+        } else {
+          tdDate.textContent = "TBA";
+        }
+        tr.appendChild(tdCourse);
+        tr.appendChild(tdDate);
+        tbody.appendChild(tr);
+      });
+    }
 
-    schedule.forEach(item => {
-      const tr = document.createElement("tr");
-      const tdCourse = document.createElement("td");
-      const tdDate = document.createElement("td");
+    // -------- Admin Metrics (no server, appears with ?admin=1) --------
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const adminMode = params.get('admin') === '1';
+      const wrap = document.getElementById('adminMetrics');
+      if (!wrap) return;
+      if (adminMode) wrap.style.display = 'block';
 
-      tdCourse.textContent = item.course;
+      const KEY = 'bsa_metrics_v1';
+      const form = document.getElementById('metricsForm');
+      const status = document.getElementById('mStatus');
 
-      if (item.recurring === "saturday") {
-        const date = getNextSaturday();
-        tdDate.textContent = date.toLocaleDateString("en-US", fmt);
-      } else {
-        tdDate.textContent = "TBA";
+      function loadData(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+      function saveData(rows){ localStorage.setItem(KEY, JSON.stringify(rows)); }
+
+      if (form) {
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          const row = {
+            date: document.getElementById('mDate').value,
+            course: document.getElementById('mCourse').value,
+            students: Number(document.getElementById('mStudents').value||0),
+            repeat: Number(document.getElementById('mRepeat').value||0),
+            notes: (document.getElementById('mNotes').value||'').trim()
+          };
+          if (!row.date) { status.textContent = 'Please choose a date.'; return; }
+          const data = loadData(); data.push(row); saveData(data);
+          status.textContent = 'Saved.'; form.reset();
+        });
+
+        const exportBtn = document.getElementById('exportCsv');
+        if (exportBtn) exportBtn.addEventListener('click', () => {
+          const data = loadData();
+          const header = ['Date','Course','Students','Repeat','Notes'];
+          const lines = [header.join(',')].concat(
+            data.map(r => [r.date, r.course, r.students, r.repeat, `"${(r.notes||'').replace(/"/g,'""')}"`].join(','))
+          );
+          const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'student_metrics.csv'; a.click();
+          URL.revokeObjectURL(url);
+        });
+
+        const clearBtn = document.getElementById('clearAll');
+        if (clearBtn) clearBtn.addEventListener('click', () => {
+          if (confirm('Clear all saved metrics on this device?')) {
+            localStorage.removeItem(KEY);
+            status.textContent = 'All local metrics cleared.';
+          }
+        });
       }
+    })();
 
-      tr.appendChild(tdCourse);
-      tr.appendChild(tdDate);
-      tbody.appendChild(tr);
+    // -------- GA4 click tracking on this page --------
+    function trackClick(el, eventName, extra) {
+      if (typeof gtag !== 'function') return;
+      gtag('event', eventName || 'select_content', Object.assign({
+        link_id: el.getAttribute('data-ga') || 'unknown',
+        link_text: (el.textContent || '').trim(),
+        link_href: el.getAttribute('href') || ''
+      }, extra || {}));
+    }
+    document.querySelectorAll('[data-ga]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-ga') || '';
+        if (id.includes('register') || id.includes('courses')) {
+          trackClick(el, 'generate_lead', { content_type: 'registration' });
+        } else if (id.includes('email')) {
+          trackClick(el, 'contact', { method: 'email' });
+        } else if (id.includes('phone')) {
+          trackClick(el, 'contact', { method: 'phone' });
+        } else if (id.includes('waiver') || id.includes('partner') || id.includes('lsp') || id.includes('identogo')) {
+          trackClick(el, 'click', { content_type: 'outbound' });
+        } else {
+          trackClick(el, 'select_content');
+        }
+      });
     });
   </script>
 </body>
