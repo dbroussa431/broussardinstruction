@@ -2,112 +2,192 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Contact | Broussard Shooting Academy</title>
-  <link href="styles.css" rel="stylesheet"/>
-</head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <meta name="description" content="Contact Broussard Shooting Academy. Email or call to schedule firearm and safety training in New Orleans.">
+  <link rel="stylesheet" href="/styles.css"/>
 
-  gtag('config', 'G-RZGNT5S4KS');
-</script>
+  <!-- Page-specific styles (kept local to avoid touching styles.css) -->
+  <style>
+    .contact-wrap {
+      max-width: 1000px;
+      padding: 24px 16px;
+      margin: 0 auto;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    .contact-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .contact-card h2 {
+      margin-bottom: .5rem;
+      color: #1a3d7c;
+      text-align: left;
+    }
+    .contact-card p, .contact-card li { color: #333; }
+    .contact-list {
+      list-style: none; padding: 0; margin: .5rem 0 0 0;
+    }
+    .contact-list li { margin: .35rem 0; }
+    .contact-list a { font-weight: bold; text-decoration: none; }
+    .contact-list a:hover, .contact-list a:focus { text-decoration: underline; }
+
+    /* Simple form styling */
+    .contact-form label {
+      display: block; font-weight: bold; margin: 10px 0 6px;
+    }
+    .contact-form input[type="text"],
+    .contact-form input[type="email"],
+    .contact-form textarea,
+    .contact-form select {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+      font: inherit;
+    }
+    .contact-form textarea { min-height: 120px; }
+    .contact-actions { margin-top: 12px; display: flex; gap: 10px; align-items: center; }
+    .helper-note { font-size: .9rem; color: #555; }
+  </style>
+</head>
 <body>
+
+  <!-- Header -->
   <header class="site-header">
-    <img alt="Broussard Shooting Academy Logo" class="logo" src="../IMAGES/logo.png"/>
-    <button aria-label="Toggle navigation" class="nav-toggle" id="navToggle">☰</button>
-    <nav class="header-nav" id="mainNav">
-      <a href="../index.html">Home</a>
-      <a href="../courses/index.html">Courses</a>
-      <a href="../more-reviews/index.html">Reviews</a>
-      <a href="../contact/index.html">Contact</a>
+    <a href="/index.html">
+      <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
+      <a href="/index.html">Home</a>
+      <a href="/courses/index.html">Courses</a>
+      <a href="/more-reviews/index.html">Reviews</a>
+      <a href="/contact/index.html" aria-current="page">Contact</a>
     </nav>
   </header>
 
-  <!-- Header with Navigation -->
-  <section class="info-header">
-    <h1>Get More Info</h1>
-    <p>Have a question about a class or need help deciding? Reach out below.</p>
-  </section>
+  <!-- Contact Content -->
+  <main class="contact-wrap">
+    <section class="contact-grid">
+      <!-- Direct Contact -->
+      <div class="contact-card">
+        <h2>Get in Touch</h2>
+        <p>We’re here to help you train safely and confidently. Reach out with questions or to request a class date.</p>
+        <ul class="contact-list" aria-label="Contact methods">
+          <li>📧 Email: <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a></li>
+          <li>📞 Phone: <a href="tel:+15042896605">504-289-6605</a></li>
+          <li>📍 Location: New Orleans, LA <span class="helper-note">(by appointment)</span></li>
+          <li>🕒 Schedule: Concealed Carry runs <strong>every Saturday</strong>; other courses are <strong>TBA</strong>.</li>
+        </ul>
+      </div>
 
-  <section class="contact-details">
-    <h2>Contact Us</h2>
-    <p>Email: <a href="mailto:broussardshootingacademy@protonmail.com">broussardshootingacademy@protonmail.com</a></p>
-    <p>Phone: <a href="tel:5042896605">504-289-6605</a></p>
-  </section>
+      <!-- Simple Email Form (opens user’s email app) -->
+      <div class="contact-card">
+        <h2>Send a Quick Message</h2>
+        <form class="contact-form" id="contactForm">
+          <label for="cf_name">Your Name</label>
+          <input id="cf_name" name="name" type="text" placeholder="Jane Doe" required>
 
-  <section class="info-form">
-    <h2>Ask a Question</h2>
-    <form action="https://formsubmit.co/broussardshootingacademy@protonmail.com" method="POST">
-      <input type="hidden" name="_next" value="https://broussardshootingacademy.com/thank-you.html">
-      <input type="hidden" name="_captcha" value="false">
+          <label for="cf_email">Your Email</label>
+          <input id="cf_email" name="email" type="email" placeholder="you@example.com" required>
 
-      <label for="name">Name:</label>
-      <input id="name" name="name" required type="text"/>
+          <label for="cf_topic">Topic</label>
+          <select id="cf_topic" name="topic">
+            <option value="General question">General question</option>
+            <option value="Concealed Carry registration">Concealed Carry registration</option>
+            <option value="Schedule request">Schedule request</option>
+            <option value="Group/Church training">Group/Church training</option>
+            <option value="Other">Other</option>
+          </select>
 
-      <label for="email">Email:</label>
-      <input id="email" name="email" required type="email"/>
+          <label for="cf_message">Message</label>
+          <textarea id="cf_message" name="message" placeholder="How can we help?"></textarea>
 
-      <label for="class">Class You're Interested In:</label>
-      <select id="class" name="class">
-        <option value="concealed">Concealed Carry</option>
-        <option value="firstaid">Emergency First Aid</option>
-        <option value="constitutional">LA Constitutional Carry</option>
-        <option value="womens">Woman's Handgun</option>
-        <option value="massshooter">Countering: Mass Shooter Threat</option>
-        <option value="realestate">Real Estate Agent Safety</option>
-        <option value="childsafety">Children’s Firearms & Safety Fundamentals</option>
-        <option value="pistol">General Pistol</option>
-      </select>
+          <div class="contact-actions">
+            <button class="cta" type="submit">Open Email to Send</button>
+            <span class="helper-note">This will open your email app with the details filled in.</span>
+          </div>
+        </form>
+      </div>
+    </section>
 
-      <label for="message">Your Question:</label>
-      <textarea id="message" name="message" required rows="5"></textarea>
+    <!-- Optional: FAQ using <details> already styled in styles.css -->
+    <section style="margin-top:24px">
+      <details>
+        <summary>Where is live fire held?</summary>
+        <p>Live Fire is held at <strong>Neutral Ground Gun Company</strong>. Please complete the <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer">range waiver</a> before your session.</p>
+      </details>
+      <details>
+        <summary>What is your refund and cancellation policy?</summary>
+        <p>Please see our <a href="/policy/refund-cancellation.html">Refund &amp; Cancellation Policy</a>.</p>
+      </details>
+      <details>
+        <summary>Do you offer private or group training?</summary>
+        <p>Yes. We can arrange private sessions and group training (including church teams). Use the form above or call to discuss dates.</p>
+      </details>
+    </section>
+  </main>
 
-      <button type="submit">Send Message</button>
-    </form>
-  </section>
+  <!-- Footer -->
+  <footer>
+    <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+    <address id="contact">
+      <strong>Broussard Shooting Academy</strong><br/>
+      📍 New Orleans, LA (by appointment)<br/>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605">504-289-6605</a>
+    </address>
+    <p>
+      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html">Privacy Policy</a>
+    </p>
+    <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+  </footer>
 
-  <section class="faq">
-    <h2>Frequently Asked Questions</h2>
-    <ul>
-      <li><strong>Do I need to bring my own gun?</strong> — No, firearms can be provided for class use.</li>
-      <li><strong>What if I’ve never shot before?</strong> — That’s perfectly okay! We train all levels.</li>
-    </ul>
-  </section>
-
+  <!-- Scripts -->
   <script>
+    // Mobile nav toggle
     const navToggle = document.getElementById('navToggle');
     const mainNav = document.getElementById('mainNav');
-    navToggle.addEventListener('click', () => {
-      mainNav.classList.toggle('nav-open');
-    });
-    document.querySelectorAll('.header-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        mainNav.classList.remove('nav-open');
+    if (navToggle && mainNav) {
+      navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
+      document.querySelectorAll('.header-nav a').forEach(link => {
+        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
       });
+    }
+
+    // Footer year
+    const yr = document.getElementById('yr');
+    if (yr) yr.textContent = new Date().getFullYear();
+
+    // Mailto form submit (opens user's email app)
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = encodeURIComponent(document.getElementById('cf_name').value.trim());
+      const email = encodeURIComponent(document.getElementById('cf_email').value.trim());
+      const topic = encodeURIComponent(document.getElementById('cf_topic').value);
+      const message = encodeURIComponent(document.getElementById('cf_message').value.trim());
+
+      const subject = `Training Inquiry: ${decodeURIComponent(topic)} (from ${decodeURIComponent(name)})`;
+      const body = [
+        `Name: ${decodeURIComponent(name)}`,
+        `Email: ${decodeURIComponent(email)}`,
+        `Topic: ${decodeURIComponent(topic)}`,
+        ``,
+        `Message:`,
+        `${decodeURIComponent(message)}`
+      ].join('%0D%0A');
+
+      window.location.href = `mailto:BroussardShootingAcademy@protonmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
     });
-
-    <footer>
-  <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
-  <address id="contact">
-    <strong>Broussard Shooting Academy</strong><br/>
-    📍 New Orleans, LA (by appointment)<br/>
-    📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
-    📞 <a href="tel:+15042896605">504-289-6605</a>
-  </address>
-  <p>
-    <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
-    <a href="/policy/privacy.html">Privacy Policy</a>
-  </p>
-  <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
-</footer>
-<script>
-  const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
-</script>
-
   </script>
 </body>
 </html>
