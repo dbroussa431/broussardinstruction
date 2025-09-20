@@ -1,26 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<header class="site-header">
-  <a href="/index.html">
-    <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
-  </a>
-  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
-  <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-    <a href="/index.html">Home</a>
-    <a href="/courses/index.html">Courses</a>
-    <a href="/more-reviews/index.html">Reviews</a>
-    <a href="/contact/index.html">Contact</a>
-  </nav>
-</header>
-<script>
-  const navToggle = document.getElementById('navToggle');
-  const mainNav = document.getElementById('mainNav');
-  if (navToggle && mainNav) {
-    navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
-    document.querySelectorAll('.header-nav a').forEach(l => l.addEventListener('click', () => mainNav.classList.remove('nav-open')));
-  }
-</script>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Student Reviews | Broussard Shooting Academy</title>
+  <meta name="description" content="Read real feedback from students who completed hands-on firearm training with Broussard Shooting Academy.">
+  <link rel="stylesheet" href="/styles.css"/>
 
+  <!-- Page-specific styles (kept local so you don't have to edit styles.css) -->
   <style>
     /* Review card styling */
     .review-card {
@@ -32,79 +19,76 @@
       transition: transform 0.2s, box-shadow 0.2s;
       margin-bottom: 20px;
     }
-
     .review-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 15px rgba(0,0,0,0.15);
     }
-
     .review-card strong {
       display: block;
       font-size: 1.15em;
       margin-bottom: 5px;
       color: #222;
     }
-
     .review-card .review-date {
       font-size: 0.9em;
       color: #666;
       margin-bottom: 12px;
       display: block;
     }
-
     .review-card p {
       line-height: 1.6;
       color: #333;
       margin: 0;
     }
+    .review-card:nth-child(odd) { border-left-color: #0077cc; }
+    .review-card:nth-child(even) { border-left-color: #ff6600; }
 
-    /* Optional: different colors for each card */
-    .review-card:nth-child(odd) {
-      border-left-color: #0077cc;
+    /* Simple hero styling for this page */
+    .reviews-hero-banner {
+      text-align: center;
+      padding: 2em 1em;
+      max-width: 1000px;
+      margin: 0 auto;
     }
-    .review-card:nth-child(even) {
-      border-left-color: #ff6600;
-    }
+    .reviews-title { color: #1a3d7c; margin-bottom: .25rem; }
+    .reviews-intro { color: #333; }
   </style>
 </head>
 <body>
+
+  <!-- Header (consistent with the rest of site) -->
   <header class="site-header">
-    <img alt="Broussard Shooting Academy Logo" class="logo" src="../IMAGES/logo.png"/>
-    <button aria-label="Toggle navigation" class="nav-toggle" id="navToggle">☰</button>
-    <nav class="header-nav" id="mainNav">
-      <a href="../index.html">Home</a>
-      <a href="../courses/index.html">Courses</a>
-      <a href="index.html">Reviews</a>
-      <a href="../contact/index.html">Contact</a>
+    <a href="/index.html">
+      <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
+      <a href="/index.html">Home</a>
+      <a href="/courses/index.html">Courses</a>
+      <a href="/more-reviews/index.html" aria-current="page">Reviews</a>
+      <a href="/contact/index.html">Contact</a>
     </nav>
   </header>
 
   <!-- Hero Banner -->
   <section class="reviews-hero-banner">
     <h1 class="reviews-title">What Students Are Saying</h1>
-    <p class="reviews-intro">
-      Read feedback from real students who completed our hands-on training:
-    </p>
+    <p class="reviews-intro">Read feedback from real students who completed our hands-on training:</p>
   </section>
 
   <!-- Reviews -->
-  <section class="reviews" id="reviews">
-
-    <!-- New Reviews (Sep 13, 2025 class) -->
+  <main class="container" style="max-width:1000px;padding:24px 16px">
+    <!-- New Reviews (Sep 13–14, 2025 class) -->
     <div class="review review-card">
       <strong>Jeff V.</strong>
       <span class="review-date">(Sep 14, 2025)</span>
-      <p>
-        David was very thorough and made sure to stop to see if we had any questions. I left extremely surprised at how much I didn't know. So glad I took this class, especially from David.
-      </p>
+      <p>David was very thorough and made sure to stop to see if we had any questions. I left extremely surprised at how much I didn't know. So glad I took this class, especially from David.</p>
     </div>
 
     <div class="review review-card">
       <strong>Gary H.</strong>
       <span class="review-date">(Sep 14, 2025)</span>
-      <p>
-        David Broussard was an excellent instructor. He took his time explaining things and made the course enjoyable. Mr Broussard is also very knowledgeable and patient.
-      </p>
+      <p>David Broussard was an excellent instructor. He took his time explaining things and made the course enjoyable. Mr Broussard is also very knowledgeable and patient.</p>
     </div>
 
     <div class="review review-card">
@@ -116,102 +100,94 @@
     <div class="review review-card">
       <strong>Angelina B.</strong>
       <span class="review-date">(Sep 13, 2025)</span>
-      <p>
-        I recently completed concealed carry training with David, and I can’t recommend him highly enough. From start to finish, he created a safe, professional, and confidence-building environment. David has a gift for breaking down complex firearm safety principles into clear, practical steps that anyone can understand. His teaching style is patient, thorough, and hands-on. He doesn’t just run through the curriculum; he makes sure you fully grasp the “why” behind each skill, from situational awareness to safe handling, proper grip, stance, and decision-making under pressure. He emphasizes responsibility and safety above all, which gave me peace of mind throughout the training. David’s real-world experience shines through. He equips his students not just with the technical ability to carry, but also the wisdom to do so legally, safely, and confidently. His calm demeanor and approachable personality made the learning experience enjoyable and empowering. If you are looking for a concealed carry trainer who is knowledgeable, professional, and committed to preparing you for real-life situations, David is the one to go to. I walked away from his class feeling prepared, confident, and grateful for the experience.
-      </p>
+      <p>I recently completed concealed carry training with David, and I can’t recommend him highly enough. From start to finish, he created a safe, professional, and confidence-building environment. David has a gift for breaking down complex firearm safety principles into clear, practical steps that anyone can understand. His teaching style is patient, thorough, and hands-on. He doesn’t just run through the curriculum; he makes sure you fully grasp the “why” behind each skill, from situational awareness to safe handling, proper grip, stance, and decision-making under pressure. He emphasizes responsibility and safety above all, which gave me peace of mind throughout the training. David’s real-world experience shines through. He equips his students not just with the technical ability to carry, but also the wisdom to do so legally, safely, and confidently. His calm demeanor and approachable personality made the learning experience enjoyable and empowering. If you are looking for a concealed carry trainer who is knowledgeable, professional, and committed to preparing you for real-life situations, David is the one to go to. I walked away from his class feeling prepared, confident, and grateful for the experience.</p>
     </div>
 
     <!-- Existing Reviews -->
     <div class="review review-card">
       <strong>Felicia C.</strong>
       <span class="review-date">(Jan 6, 2024)</span>
-      <p>
-        David was very professional and thorough. I was sooo nervous at the range, but he put me at ease — very patient! I would definitely recommend him to anyone.
-      </p>
+      <p>David was very professional and thorough. I was sooo nervous at the range, but he put me at ease — very patient! I would definitely recommend him to anyone.</p>
     </div>
+
     <div class="review review-card">
       <strong>Sierra B.</strong>
       <span class="review-date">(Sep 16, 2023)</span>
-      <p>
-        David was an amazing instructor and made the class interactive and fun! He broke down concepts where everyone understood. Highly recommend!
-      </p>
+      <p>David was an amazing instructor and made the class interactive and fun! He broke down concepts where everyone understood. Highly recommend!</p>
     </div>
+
     <div class="review review-card">
       <strong>Emily B.</strong>
       <span class="review-date">(Sep 16, 2023)</span>
-      <p>
-        Wonderful class experience! David answered every question and shared real-world experiences. Definitely recommend!
-      </p>
+      <p>Wonderful class experience! David answered every question and shared real-world experiences. Definitely recommend!</p>
     </div>
+
     <div class="review review-card">
       <strong>Jesus R.</strong>
       <span class="review-date">(Aug 26, 2023)</span>
-      <p>
-        David Broussard was amazing — his passion, dedication, and knowledge made the class very enjoyable.
-      </p>
+      <p>David Broussard was amazing — his passion, dedication, and knowledge made the class very enjoyable.</p>
     </div>
+
     <div class="review review-card">
       <strong>Nikolaos P.</strong>
       <span class="review-date">(Aug 26, 2023)</span>
       <p>Excellent teacher. Very practical information I had never heard before.</p>
     </div>
+
     <div class="review review-card">
       <strong>William S.</strong>
       <span class="review-date">(May 20, 2023)</span>
-      <p>
-        Professional, engaging, welcomed all questions, and showed respect for the subject matter.
-      </p>
+      <p>Professional, engaging, welcomed all questions, and showed respect for the subject matter.</p>
     </div>
+
     <div class="review review-card">
       <strong>Mike L.</strong>
       <span class="review-date">(Mar 12, 2023)</span>
-      <p>
-        Excellent! Jam-packed with info. David went above and beyond what I thought the class would be. Highly recommended!
-      </p>
+      <p>Excellent! Jam-packed with info. David went above and beyond what I thought the class would be. Highly recommended!</p>
     </div>
+
     <div class="review review-card">
       <strong>Robert G.</strong>
       <span class="review-date">(Dec 17, 2022)</span>
-      <p>
-        The class moved at a great pace and was enjoyable. David was very personable. Great way to complete my training requirements!
-      </p>
+      <p>The class moved at a great pace and was enjoyable. David was very personable. Great way to complete my training requirements!</p>
     </div>
 
-    <p class="note">
+    <p class="note" style="text-align:center;margin-top:20px">
       Ready to join our list of satisfied students?
-      <a class="cta-secondary" href="../courses/index.html">Register for a Class</a>
+      <a class="cta-secondary" href="/courses/index.html">Register for a Class</a>
     </p>
-  </section>
+  </main>
 
+  <!-- Footer -->
+  <footer>
+    <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+    <address id="contact">
+      <strong>Broussard Shooting Academy</strong><br/>
+      📍 New Orleans, LA (by appointment)<br/>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605">504-289-6605</a>
+    </address>
+    <p>
+      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html">Privacy Policy</a>
+    </p>
+    <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+  </footer>
+
+  <!-- Scripts -->
   <script>
+    // Mobile nav toggle
     const navToggle = document.getElementById('navToggle');
     const mainNav = document.getElementById('mainNav');
-    navToggle.addEventListener('click', () => {
-      mainNav.classList.toggle('nav-open');
-    });
-    document.querySelectorAll('.header-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        mainNav.classList.remove('nav-open');
+    if (navToggle && mainNav) {
+      navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
+      document.querySelectorAll('.header-nav a').forEach(link => {
+        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
       });
-    });
-    <footer>
-  <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
-  <address id="contact">
-    <strong>Broussard Shooting Academy</strong><br/>
-    📍 New Orleans, LA (by appointment)<br/>
-    📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
-    📞 <a href="tel:+15042896605">504-289-6605</a>
-  </address>
-  <p>
-    <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
-    <a href="/policy/privacy.html">Privacy Policy</a>
-  </p>
-  <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
-</footer>
-<script>
-  const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
-</script>
-
+    }
+    // Footer year
+    const yr = document.getElementById('yr');
+    if (yr) yr.textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
