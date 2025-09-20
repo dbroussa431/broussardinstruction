@@ -188,6 +188,24 @@
         mainNav.classList.remove('nav-open');
       });
     });
+    <footer>
+  <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+  <address id="contact">
+    <strong>Broussard Shooting Academy</strong><br/>
+    📍 New Orleans, LA (by appointment)<br/>
+    📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
+    📞 <a href="tel:+15042896605">504-289-6605</a>
+  </address>
+  <p>
+    <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
+    <a href="/policy/privacy.html">Privacy Policy</a>
+  </p>
+  <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+</footer>
+<script>
+  const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
+</script>
+
   </script>
 </body>
 </html>
