@@ -7,102 +7,59 @@
   <meta name="description" content="Read real feedback from students who completed hands-on firearm training with Broussard Shooting Academy.">
   <link rel="stylesheet" href="/styles.css"/>
 
-  <!-- Page-specific styles (kept local so you don't have to edit styles.css) -->
   <style>
-    /* Page banner */
-    .reviews-hero-banner {
-      text-align: center;
-      padding: 2.25em 1em 1.25em;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+    .reviews-hero-banner { text-align: center; padding: 2.25em 1em 1.25em; max-width: 1000px; margin: 0 auto; }
     .reviews-title { color: #1a3d7c; margin-bottom: .35rem; }
     .reviews-intro { color: #333; max-width: 800px; margin: 0 auto; }
-
-    /* Toolbar */
-    .reviews-toolbar {
-      display: flex;
-      justify-content: flex-end;
-      gap: .5rem;
-      max-width: 1000px;
-      margin: .5rem auto 0;
-      padding: 0 1rem;
-    }
-    .reviews-toolbar select {
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      background: #fff;
-    }
-
-    /* Review cards */
-    .reviews-wrap {
-      max-width: 1000px;
-      padding: 24px 16px;
-      margin: 0 auto;
-    }
-    .review-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      border-left: 6px solid #0077cc;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-bottom: 20px;
-    }
-    .review-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px rgba(0,0,0,0.15);
-    }
-    .review-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: .5rem;
-      flex-wrap: wrap;
-    }
-    .reviewer { font-weight: bold; color: #222; font-size: 1.05rem; }
-    .review-date { font-size: .92rem; color: #666; }
-    .review-body { color: #333; line-height: 1.6; margin: 0; }
-    .review-card:nth-child(odd) { border-left-color: #0077cc; }
-    .review-card:nth-child(even) { border-left-color: #f0a500; }
-
-    /* CTA note */
-    .reviews-cta {
-      text-align: center;
-      margin: 22px auto 4px;
-    }
+    .reviews-toolbar { display: flex; justify-content: flex-end; gap: .5rem; max-width: 1000px; margin: .5rem auto 0; padding: 0 1rem; }
+    .reviews-toolbar select { padding: 8px 10px; border-radius: 8px; border: 1px solid #ccc; background: #fff; }
+    .reviews-wrap { max-width: 1000px; padding: 24px 16px; margin: 0 auto; }
+    .review-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-left: 6px solid #0077cc; transition: transform .2s, box-shadow .2s; margin-bottom: 20px; }
+    .review-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+    .review-head { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:.5rem; flex-wrap:wrap; }
+    .reviewer { font-weight: bold; color:#222; font-size:1.05rem; }
+    .review-date { font-size:.92rem; color:#666; }
+    .review-body { color:#333; line-height:1.6; margin:0; }
+    .review-card:nth-child(odd){ border-left-color:#0077cc; } .review-card:nth-child(even){ border-left-color:#f0a500; }
+    .reviews-cta { text-align:center; margin:22px auto 4px; }
   </style>
 </head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RZGNT5S4KS');
+</script>
+
 <body>
 
   <!-- Header -->
   <header class="site-header">
-    <a href="/index.html">
+    <a href="/index.html" data-ga="nav_home">
       <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
     <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-      <a href="/index.html">Home</a>
-      <a href="/courses/index.html">Courses</a>
-      <a href="/more-reviews/index.html" aria-current="page">Reviews</a>
-      <a href="/contact/index.html">Contact</a>
+      <a href="/index.html" data-ga="nav_home">Home</a>
+      <a href="/courses/index.html" data-ga="nav_courses">Courses</a>
+      <a href="/more-reviews/index.html" aria-current="page" data-ga="nav_reviews">Reviews</a>
+      <a href="/contact/index.html" data-ga="nav_contact">Contact</a>
     </nav>
   </header>
 
   <!-- Banner -->
   <section class="reviews-hero-banner">
     <h1 class="reviews-title">What Students Are Saying</h1>
-    <p class="reviews-intro">
-      Real feedback from students who completed our hands-on training. We focus on safety, clarity, and confidence—so you leave feeling it was time and money well spent.
-    </p>
+    <p class="reviews-intro">Real feedback from students who completed our hands-on training.</p>
   </section>
 
-  <!-- Toolbar (optional) -->
+  <!-- Toolbar -->
   <div class="reviews-toolbar" aria-label="Reviews toolbar">
     <label for="sortReviews" class="sr-only">Sort reviews</label>
-    <select id="sortReviews" aria-label="Sort reviews">
+    <select id="sortReviews" aria-label="Sort reviews" data-ga="reviews_sort">
       <option value="newest" selected>Sort: Newest first</option>
       <option value="oldest">Sort: Oldest first</option>
     </select>
@@ -110,129 +67,61 @@
 
   <!-- Reviews -->
   <main class="reviews-wrap" id="reviewsList">
-    <!-- New Reviews (Sep 13–14, 2025) -->
+    <!-- 2025 -->
     <article class="review-card" data-date="2025-09-14">
-      <div class="review-head">
-        <span class="reviewer">Jeff V.</span>
-        <time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time>
-      </div>
-      <p class="review-body">
-        David was very thorough and made sure to stop to see if we had any questions. I left extremely surprised at how much I didn't know. So glad I took this class, especially from David.
-      </p>
+      <div class="review-head"><span class="reviewer">Jeff V.</span><time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time></div>
+      <p class="review-body">David was very thorough and made sure to stop to see if we had any questions. I left extremely surprised at how much I didn't know. So glad I took this class, especially from David.</p>
     </article>
-
     <article class="review-card" data-date="2025-09-14">
-      <div class="review-head">
-        <span class="reviewer">Gary H.</span>
-        <time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time>
-      </div>
-      <p class="review-body">
-        David Broussard was an excellent instructor. He took his time explaining things and made the course enjoyable. Mr. Broussard is also very knowledgeable and patient.
-      </p>
+      <div class="review-head"><span class="reviewer">Gary H.</span><time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time></div>
+      <p class="review-body">David Broussard was an excellent instructor. He took his time explaining things and made the course enjoyable. Mr. Broussard is also very knowledgeable and patient.</p>
     </article>
-
     <article class="review-card" data-date="2025-09-14">
-      <div class="review-head">
-        <span class="reviewer">Howard L.</span>
-        <time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time>
-      </div>
+      <div class="review-head"><span class="reviewer">Howard L.</span><time class="review-date" datetime="2025-09-14">(Sep 14, 2025)</time></div>
       <p class="review-body">Outstanding. I would highly recommend this instructor.</p>
     </article>
-
     <article class="review-card" data-date="2025-09-13">
-      <div class="review-head">
-        <span class="reviewer">Angelina B.</span>
-        <time class="review-date" datetime="2025-09-13">(Sep 13, 2025)</time>
-      </div>
-      <p class="review-body">
-        I recently completed concealed carry training with David, and I can’t recommend him highly enough. He created a safe, professional, and confidence-building environment and explains the “why” behind each step—from safe handling to decision-making under pressure. He emphasizes responsibility and safety above all, which gave me peace of mind. I left prepared, confident, and grateful for the experience.
-      </p>
+      <div class="review-head"><span class="reviewer">Angelina B.</span><time class="review-date" datetime="2025-09-13">(Sep 13, 2025)</time></div>
+      <p class="review-body">I recently completed concealed carry training with David, and I can’t recommend him highly enough. He created a safe, professional, and confidence-building environment and explains the “why” behind each step. I left prepared, confident, and grateful for the experience.</p>
     </article>
 
-    <!-- Existing Reviews -->
+    <!-- 2024–2022 -->
     <article class="review-card" data-date="2024-01-06">
-      <div class="review-head">
-        <span class="reviewer">Felicia C.</span>
-        <time class="review-date" datetime="2024-01-06">(Jan 6, 2024)</time>
-      </div>
-      <p class="review-body">
-        David was very professional and thorough. I was nervous at the range, but he put me at ease — very patient! I would definitely recommend him to anyone.
-      </p>
+      <div class="review-head"><span class="reviewer">Felicia C.</span><time class="review-date" datetime="2024-01-06">(Jan 6, 2024)</time></div>
+      <p class="review-body">David was very professional and thorough. I was nervous at the range, but he put me at ease — very patient! I would definitely recommend him to anyone.</p>
     </article>
-
     <article class="review-card" data-date="2023-09-16">
-      <div class="review-head">
-        <span class="reviewer">Sierra B.</span>
-        <time class="review-date" datetime="2023-09-16">(Sep 16, 2023)</time>
-      </div>
-      <p class="review-body">
-        David was an amazing instructor and made the class interactive and fun! He broke down concepts so everyone understood. Highly recommend!
-      </p>
+      <div class="review-head"><span class="reviewer">Sierra B.</span><time class="review-date" datetime="2023-09-16">(Sep 16, 2023)</time></div>
+      <p class="review-body">David was an amazing instructor and made the class interactive and fun! He broke down concepts so everyone understood. Highly recommend!</p>
     </article>
-
     <article class="review-card" data-date="2023-09-16">
-      <div class="review-head">
-        <span class="reviewer">Emily B.</span>
-        <time class="review-date" datetime="2023-09-16">(Sep 16, 2023)</time>
-      </div>
-      <p class="review-body">
-        Wonderful class experience! David answered every question and shared real-world experiences. Definitely recommend!
-      </p>
+      <div class="review-head"><span class="reviewer">Emily B.</span><time class="review-date" datetime="2023-09-16">(Sep 16, 2023)</time></div>
+      <p class="review-body">Wonderful class experience! David answered every question and shared real-world experiences. Definitely recommend!</p>
     </article>
-
     <article class="review-card" data-date="2023-08-26">
-      <div class="review-head">
-        <span class="reviewer">Jesus R.</span>
-        <time class="review-date" datetime="2023-08-26">(Aug 26, 2023)</time>
-      </div>
-      <p class="review-body">
-        David Broussard was amazing — his passion, dedication, and knowledge made the class very enjoyable.
-      </p>
+      <div class="review-head"><span class="reviewer">Jesus R.</span><time class="review-date" datetime="2023-08-26">(Aug 26, 2023)</time></div>
+      <p class="review-body">David Broussard was amazing — his passion, dedication, and knowledge made the class very enjoyable.</p>
     </article>
-
     <article class="review-card" data-date="2023-08-26">
-      <div class="review-head">
-        <span class="reviewer">Nikolaos P.</span>
-        <time class="review-date" datetime="2023-08-26">(Aug 26, 2023)</time>
-      </div>
-      <p class="review-body">
-        Excellent teacher. Very practical information I had never heard before.
-      </p>
+      <div class="review-head"><span class="reviewer">Nikolaos P.</span><time class="review-date" datetime="2023-08-26">(Aug 26, 2023)</time></div>
+      <p class="review-body">Excellent teacher. Very practical information I had never heard before.</p>
     </article>
-
     <article class="review-card" data-date="2023-05-20">
-      <div class="review-head">
-        <span class="reviewer">William S.</span>
-        <time class="review-date" datetime="2023-05-20">(May 20, 2023)</time>
-      </div>
-      <p class="review-body">
-        Professional, engaging, welcomed all questions, and showed respect for the subject matter.
-      </p>
+      <div class="review-head"><span class="reviewer">William S.</span><time class="review-date" datetime="2023-05-20">(May 20, 2023)</time></div>
+      <p class="review-body">Professional, engaging, welcomed all questions, and showed respect for the subject matter.</p>
     </article>
-
     <article class="review-card" data-date="2023-03-12">
-      <div class="review-head">
-        <span class="reviewer">Mike L.</span>
-        <time class="review-date" datetime="2023-03-12">(Mar 12, 2023)</time>
-      </div>
-      <p class="review-body">
-        Excellent! Jam-packed with info. David went above and beyond what I thought the class would be. Highly recommended!
-      </p>
+      <div class="review-head"><span class="reviewer">Mike L.</span><time class="review-date" datetime="2023-03-12">(Mar 12, 2023)</time></div>
+      <p class="review-body">Excellent! Jam-packed with info. David went above and beyond what I thought the class would be. Highly recommended!</p>
     </article>
-
     <article class="review-card" data-date="2022-12-17">
-      <div class="review-head">
-        <span class="reviewer">Robert G.</span>
-        <time class="review-date" datetime="2022-12-17">(Dec 17, 2022)</time>
-      </div>
-      <p class="review-body">
-        The class moved at a great pace and was enjoyable. David was very personable. Great way to complete my training requirements!
-      </p>
+      <div class="review-head"><span class="reviewer">Robert G.</span><time class="review-date" datetime="2022-12-17">(Dec 17, 2022)</time></div>
+      <p class="review-body">The class moved at a great pace and was enjoyable. David was very personable. Great way to complete my training requirements!</p>
     </article>
 
     <p class="note reviews-cta">
       Ready to join our list of satisfied students?
-      <a class="cta" href="/courses/index.html">Register for a Class</a>
+      <a class="cta" href="/courses/index.html" data-ga="reviews_register_cta">Register for a Class</a>
     </p>
   </main>
 
@@ -242,47 +131,74 @@
     <address id="contact">
       <strong>Broussard Shooting Academy</strong><br/>
       📍 New Orleans, LA (by appointment)<br/>
-      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
-      📞 <a href="tel:+15042896605">504-289-6605</a>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
     </address>
     <p>
-      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
-      <a href="/policy/privacy.html">Privacy Policy</a>
+      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
     </p>
     <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
   </footer>
 
   <!-- Scripts -->
   <script>
-    // Mobile nav toggle
+    // Mobile nav
     const navToggle = document.getElementById('navToggle');
     const mainNav = document.getElementById('mainNav');
     if (navToggle && mainNav) {
       navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
-      document.querySelectorAll('.header-nav a').forEach(link => {
-        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
-      });
+      document.querySelectorAll('.header-nav a').forEach(l => l.addEventListener('click', () => mainNav.classList.remove('nav-open')));
     }
+    // Year
+    const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
 
-    // Footer year
-    const yr = document.getElementById('yr');
-    if (yr) yr.textContent = new Date().getFullYear();
-
-    // Sort toolbar: newest/oldest (optional, no break if unused)
+    // ---- Reviews sort (FIXED) ----
     const sortSelect = document.getElementById('sortReviews');
     const list = document.getElementById('reviewsList');
+    function sortReviews(dir) {
+      const cards = Array.from(list.querySelectorAll('.review-card'));
+      cards.sort((a, b) => {
+        const da = new Date(a.dataset.date);
+        const db = new Date(b.dataset.date);
+        return dir === 'oldest' ? da - db : db - da;
+      });
+      const frag = document.createDocumentFragment();
+      cards.forEach(card => frag.appendChild(card));
+      list.insertBefore(frag, list.querySelector('.reviews-cta'));
+    }
     if (sortSelect && list) {
       sortSelect.addEventListener('change', () => {
-        const cards = Array.from(list.querySelectorAll('.review-card'));
-        const dir = sortSelect.value;
-        cards.sort((a, b) => {
-          const da = new Date(a.dataset.date);
-          const db = new Date(b.dataset.date);
-          return dir === 'oldest' ? da - db : db - da;
-        });
-        cards.forEach(c => list.insertBefore(c, list.firstChild));
+        sortReviews(sortSelect.value);
+        // GA event
+        if (typeof gtag === 'function') gtag('event', 'select_content', { content_type: 'reviews_sort', sort: sortSelect.value });
       });
+      sortReviews('newest'); // initial
     }
+
+    // ---- GA4 click tracking ----
+    function trackClick(el, eventName, extra) {
+      if (typeof gtag !== 'function') return;
+      gtag('event', eventName || 'select_content', Object.assign({
+        link_id: el.getAttribute('data-ga') || 'unknown',
+        link_text: (el.textContent || '').trim(),
+        link_href: el.getAttribute('href') || ''
+      }, extra || {}));
+    }
+    document.querySelectorAll('[data-ga]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-ga') || '';
+        if (id.includes('register') || id.includes('courses')) {
+          trackClick(el, 'generate_lead', { content_type: 'registration' });
+        } else if (id.includes('email')) {
+          trackClick(el, 'contact', { method: 'email' });
+        } else if (id.includes('phone')) {
+          trackClick(el, 'contact', { method: 'phone' });
+        } else {
+          trackClick(el, 'select_content');
+        }
+      });
+    });
   </script>
 </body>
 </html>
