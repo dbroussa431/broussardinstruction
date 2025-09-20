@@ -76,7 +76,7 @@
   </ul>
 </section>
 
-<!-- Instructor Bio (RESTORED) -->
+<!-- Instructor Bio (restored) -->
 <section class="instructor-bio">
   <h2>About Your Instructor</h2>
   <p>
@@ -112,7 +112,7 @@
   </div>
 </section>
 
-<!-- Courses on Homepage -->
+<!-- Courses & Pricing -->
 <section class="courses-pricing">
   <h2>Courses & Pricing</h2>
   <p>Find the course that fits your skill level. All taught by certified instructor David Broussard.</p>
@@ -243,7 +243,6 @@
   const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
 
   // -------- Auto Analytics Events (GA4) --------
-  // Add data-ga="..." on links/buttons you want tracked (already added above).
   function trackClick(el, eventName, extra) {
     if (typeof gtag !== 'function') return;
     gtag('event', eventName || 'select_content', Object.assign({
@@ -254,15 +253,14 @@
   }
   document.querySelectorAll('[data-ga]').forEach(el => {
     el.addEventListener('click', () => {
-      const id = el.getAttribute('data-ga');
-      // Map common ids to GA4 event types helpful for grants
+      const id = el.getAttribute('data-ga') || '';
       if (id.includes('register') || id.includes('courses')) {
         trackClick(el, 'generate_lead', { content_type: 'registration' });
       } else if (id.includes('email')) {
         trackClick(el, 'contact', { method: 'email' });
       } else if (id.includes('phone')) {
         trackClick(el, 'contact', { method: 'phone' });
-      } else if (id.includes('waiver') || id.includes('partner') || id.includes('lsp') ) {
+      } else if (id.includes('waiver') || id.includes('partner') || id.includes('lsp')) {
         trackClick(el, 'click', { content_type: 'outbound' });
       } else {
         trackClick(el, 'select_content');
