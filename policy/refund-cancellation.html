@@ -8,10 +8,17 @@
   <link rel="stylesheet" href="/styles.css"/>
 </head>
 <body>
+
+  <!-- Header -->
   <header class="site-header">
-    <a href="/" class="brand">
-      <img src="/IMAGES/logo.png" alt="Broussard Shooting Academy Logo" class="logo" loading="lazy"/>
-    </a>
+    <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
+      <a href="/index.html">Home</a>
+      <a href="/courses/index.html">Courses</a>
+      <a href="/more-reviews/index.html">Reviews</a>
+      <a href="/contact/index.html">Contact</a>
+    </nav>
   </header>
 
   <main class="container" style="max-width:1000px;padding:24px 16px">
@@ -43,5 +50,34 @@
 
     <p class="note">We appreciate your trust. These policies help us maintain safe, high-quality firearm education while being fair to every student.</p>
   </main>
+
+  <!-- Footer -->
+  <footer>
+    <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+    <address id="contact">
+      <strong>Broussard Shooting Academy</strong><br/>
+      📍 New Orleans, LA<br/>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605">504-289-6605</a>
+    </address>
+    <p>
+      <a href="/policy/refund-cancellation.html">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html">Privacy Policy</a>
+    </p>
+    <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+  </footer>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+    if (navToggle && mainNav) {
+      navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
+      document.querySelectorAll('.header-nav a').forEach(link => {
+        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
+      });
+    }
+    const yr = document.getElementById('yr');
+    if (yr) yr.textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
