@@ -1,21 +1,24 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Broussard Shooting Academy",
+  "short_name": "BSA",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "favicon-192.png",
       "type": "image/png",
-      "purpose": "maskable"
+      "sizes": "192x192"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
-      "sizes": "512x512",
+      "src": "favicon-256.png",
       "type": "image/png",
-      "purpose": "maskable"
+      "sizes": "256x256"
+    },
+    {
+      "src": "favicon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#111111",
   "background_color": "#ffffff",
   "display": "standalone"
 }
