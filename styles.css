@@ -350,3 +350,27 @@ details > summary {
 details[open] {
   background: #f1f7ff;
 }
+/* ====== Partner Section (Fix logo visibility + layout) ====== */
+.live-fire-partner .partner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.live-fire-partner .partner-logo {
+  display: block;
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* Mobile: keep it clean */
+@media (max-width: 600px) {
+  .live-fire-partner .partner-content {
+    flex-direction: column;
+  }
+}
