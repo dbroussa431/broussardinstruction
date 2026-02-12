@@ -390,3 +390,19 @@ details[open] {
   height: auto;
   display: block;
 }
+/* ====== Partner Section (fixes logo not showing / layout issues) ====== */
+.live-fire-partner .partner-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.partner-logo {
+  max-width: 360px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
