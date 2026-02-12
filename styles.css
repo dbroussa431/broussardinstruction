@@ -374,3 +374,19 @@ details[open] {
     flex-direction: column;
   }
 }
+/* ===== Partner Logo Fix ===== */
+.partner-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.partner-logo {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
