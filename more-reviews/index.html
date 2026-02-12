@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  
-<link rel="icon" type="image/svg+xml" href="../IMAGES/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="../IMAGES/favicon-32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="../IMAGES/favicon-96.png">
-<link rel="icon" href="../IMAGES/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="../IMAGES/apple-touch-icon.png">
-<link rel="manifest" href="../IMAGES/site.webmanifest">
-
-
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
   <title>Student Reviews | Broussard Shooting Academy</title>
   <meta name="description" content="Read real feedback from students who completed hands-on firearm training with Broussard Shooting Academy.">
+
+  <!-- Favicons (MUST be inside <head>) -->
+  <link rel="icon" type="image/svg+xml" href="/IMAGES/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/IMAGES/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/IMAGES/favicon-96.png">
+  <link rel="icon" href="/IMAGES/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/IMAGES/apple-touch-icon.png">
+  <link rel="manifest" href="/IMAGES/site.webmanifest">
+
   <link rel="stylesheet" href="/styles.css"/>
 
   <style>
@@ -29,19 +30,26 @@
     .reviewer { font-weight: bold; color:#222; font-size:1.05rem; }
     .review-date { font-size:.92rem; color:#666; }
     .review-body { color:#333; line-height:1.6; margin:0; }
-    .review-card:nth-child(odd){ border-left-color:#0077cc; } .review-card:nth-child(even){ border-left-color:#f0a500; }
+    .review-card:nth-child(odd){ border-left-color:#0077cc; }
+    .review-card:nth-child(even){ border-left-color:#f0a500; }
     .reviews-cta { text-align:center; margin:22px auto 4px; }
-  </style>
-</head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-RZGNT5S4KS');
-</script>
+    /* screen-reader only label helper */
+    .sr-only {
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+      clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) (best practice: keep in <head>) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RZGNT5S4KS');
+  </script>
+</head>
 
 <body>
 
@@ -159,30 +167,38 @@
       navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
       document.querySelectorAll('.header-nav a').forEach(l => l.addEventListener('click', () => mainNav.classList.remove('nav-open')));
     }
-    // Year
-    const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
 
-    // ---- Reviews sort (FIXED) ----
+    // Year
+    const yr = document.getElementById('yr');
+    if (yr) yr.textContent = new Date().getFullYear();
+
+    // ---- Reviews sort ----
     const sortSelect = document.getElementById('sortReviews');
     const list = document.getElementById('reviewsList');
+
     function sortReviews(dir) {
       const cards = Array.from(list.querySelectorAll('.review-card'));
       cards.sort((a, b) => {
         const da = new Date(a.dataset.date);
         const db = new Date(b.dataset.date);
-        return dir === 'oldest' ? da - db : db - da;
+        return dir === 'oldest' ? (da - db) : (db - da);
       });
+
       const frag = document.createDocumentFragment();
       cards.forEach(card => frag.appendChild(card));
-      list.insertBefore(frag, list.querySelector('.reviews-cta'));
+
+      const cta = list.querySelector('.reviews-cta');
+      list.insertBefore(frag, cta);
     }
+
     if (sortSelect && list) {
       sortSelect.addEventListener('change', () => {
         sortReviews(sortSelect.value);
-        // GA event
-        if (typeof gtag === 'function') gtag('event', 'select_content', { content_type: 'reviews_sort', sort: sortSelect.value });
+        if (typeof gtag === 'function') {
+          gtag('event', 'select_content', { content_type: 'reviews_sort', sort: sortSelect.value });
+        }
       });
-      sortReviews('newest'); // initial
+      sortReviews('newest');
     }
 
     // ---- GA4 click tracking ----
@@ -194,6 +210,7 @@
         link_href: el.getAttribute('href') || ''
       }, extra || {}));
     }
+
     document.querySelectorAll('[data-ga]').forEach(el => {
       el.addEventListener('click', () => {
         const id = el.getAttribute('data-ga') || '';
