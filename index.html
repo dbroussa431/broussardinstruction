@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Broussard Shooting Academy</title>
-  <meta name="description" content="Professional firearm and self-defense training by David Broussard in New Orleans." />
-  <link href="styles.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Favicons (MUST be inside <head>) -->
+  <title>Broussard Shooting Academy</title>
+  <meta name="description" content="Professional firearm and self-defense training by David Broussard in New Orleans.">
+
+  <!-- Favicons (must be inside <head>) -->
   <link rel="icon" type="image/svg+xml" href="/IMAGES/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/IMAGES/favicon-32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/IMAGES/favicon-96.png">
   <link rel="icon" href="/IMAGES/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/IMAGES/apple-touch-icon.png">
   <link rel="manifest" href="/IMAGES/site.webmanifest">
+
+  <link href="/styles.css" rel="stylesheet" />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
@@ -27,31 +29,38 @@
 
 <body>
 
+  <!-- Skip link (accessibility / best practice) -->
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+     onfocus="this.style.left='12px';this.style.top='12px';this.style.width='auto';this.style.height='auto';this.style.padding='10px';this.style.background='#f0a500';this.style.color='#000';this.style.borderRadius='8px';this.style.zIndex='9999';"
+     onblur="this.style.left='-9999px';this.style.top='auto';this.style.width='1px';this.style.height='1px';this.style.overflow='hidden';">
+    Skip to main content
+  </a>
+
   <!-- Header -->
   <header class="site-header">
-    <a href="index.html">
-      <img alt="Broussard Shooting Academy Logo" class="logo" src="IMAGES/logo.png" />
+    <a href="/index.html">
+      <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png" loading="lazy" />
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
     <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-      <a href="index.html" aria-current="page">Home</a>
-      <a href="courses/index.html" data-ga="nav_courses">Courses</a>
-      <a href="more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
-      <a href="contact/index.html" data-ga="nav_contact">Contact</a>
+      <a href="/index.html" aria-current="page">Home</a>
+      <a href="/courses/index.html" data-ga="nav_courses">Courses</a>
+      <a href="/more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
+      <a href="/contact/index.html" data-ga="nav_contact">Contact</a>
     </nav>
   </header>
 
   <!-- Hero -->
   <section class="hero" id="main">
-    <video autoplay loop muted playsinline class="background-video" poster="IMAGES/hero-poster.jpg">
-      <source src="IMAGES/range-demo.mp4" type="video/mp4" />
+    <video autoplay loop muted playsinline class="background-video" poster="/IMAGES/hero-poster.jpg">
+      <source src="/IMAGES/range-demo.mp4" type="video/mp4"/>
     </video>
     <div class="hero-content">
       <div class="hero-overlay-box">
         <h1>Teach. Protect. Train.</h1>
         <p>Certified instructor David Broussard delivers 5-star hands-on firearm training.</p>
-        <a class="cta" href="courses/index.html" data-ga="cta_view_courses">View Courses</a>
-        <a class="cta-secondary" href="IMAGES/range-demo.mp4" target="_blank" rel="noopener noreferrer" data-ga="cta_watch_video">Watch Full Video</a>
+        <a class="cta" href="/courses/index.html" data-ga="cta_view_courses">View Courses</a>
+        <a class="cta-secondary" href="/IMAGES/range-demo.mp4" target="_blank" rel="noopener noreferrer" data-ga="cta_watch_video">Watch Full Video</a>
       </div>
     </div>
   </section>
@@ -99,10 +108,10 @@
 
   <!-- Student Videos -->
   <section class="instructor-video">
-    <video src="IMAGES/student.range.mp4#t=0,6" controls muted preload="metadata"></video>
-    <video src="IMAGES/student.range2.mp4#t=0,6" controls muted preload="metadata"></video>
-    <video src="IMAGES/student.range3.mp4#t=0,6" controls muted preload="metadata"></video>
-    <video src="IMAGES/student.range4.mp4#t=0,6" controls muted preload="metadata"></video>
+    <video src="/IMAGES/student.range.mp4#t=0,6" controls muted preload="metadata"></video>
+    <video src="/IMAGES/student.range2.mp4#t=0,6" controls muted preload="metadata"></video>
+    <video src="/IMAGES/student.range3.mp4#t=0,6" controls muted preload="metadata"></video>
+    <video src="/IMAGES/student.range4.mp4#t=0,6" controls muted preload="metadata"></video>
   </section>
 
   <!-- Certifications -->
@@ -112,11 +121,11 @@
       In 2017, I joined the USCCA to empower legally armed citizens. In 2021, I became a certified instructor to educate and protect my community.
     </p>
     <div class="certification-grid">
-      <div class="cert-card"><img src="IMAGES/uscca-instructor.png" alt="Concealed Carry & Home Defense" loading="lazy"><p>Concealed Carry</p></div>
-      <div class="cert-card"><img src="IMAGES/uscca-womens.png" alt="Women's Handgun" loading="lazy"><p>Women’s Handgun</p></div>
-      <div class="cert-card"><img src="IMAGES/uscca-shooter-threat.png" alt="Shooter Threat" loading="lazy"><p>Shooter Threat</p></div>
-      <div class="cert-card"><img src="IMAGES/uscca-first-aid.png" alt="First Aid" loading="lazy"><p>First Aid</p></div>
-      <div class="cert-card"><img src="IMAGES/uscca-kids-safety.png" alt="Kids Safety" loading="lazy"><p>Kids Safety</p></div>
+      <div class="cert-card"><img src="/IMAGES/uscca-instructor.png" alt="Concealed Carry & Home Defense" loading="lazy"><p>Concealed Carry</p></div>
+      <div class="cert-card"><img src="/IMAGES/uscca-womens.png" alt="Women's Handgun" loading="lazy"><p>Women’s Handgun</p></div>
+      <div class="cert-card"><img src="/IMAGES/uscca-shooter-threat.png" alt="Shooter Threat" loading="lazy"><p>Shooter Threat</p></div>
+      <div class="cert-card"><img src="/IMAGES/uscca-first-aid.png" alt="First Aid" loading="lazy"><p>First Aid</p></div>
+      <div class="cert-card"><img src="/IMAGES/uscca-kids-safety.png" alt="Kids Safety" loading="lazy"><p>Kids Safety</p></div>
     </div>
   </section>
 
@@ -130,14 +139,46 @@
         <tr><th>Course</th><th>Description</th><th>Price</th></tr>
       </thead>
       <tbody>
-        <tr><td>Concealed Carry</td><td>This full certification course covers firearm safety, Louisiana law, home defense, and live-fire training.</td><td>$125</td></tr>
-        <tr><td>Permitless Carry</td><td>A focused mini-course that explains Louisiana’s permitless carry law and responsibilities.</td><td>$50</td></tr>
-        <tr><td>First Aid</td><td>Critical trauma response and bleeding control.</td><td>$100</td></tr>
-        <tr><td>Church Safety</td><td>Team communication, threat recognition, and emergency planning for churches.</td><td>$100</td></tr>
-        <tr><td>Shooter Threat</td><td>Scenario-based training for active threat awareness and response.</td><td>$100</td></tr>
-        <tr><td>Agent Safety</td><td>Situational awareness and safety protocols for real estate professionals.</td><td>$50</td></tr>
-        <tr><td>Children’s Firearms Safety</td><td>Family-friendly safe storage and responsibility training.</td><td>$75</td></tr>
-        <tr><td>General Pistol</td><td>Fundamentals: grip, stance, sight alignment, and trigger control.</td><td>$40</td></tr>
+        <tr>
+          <td>Concealed Carry</td>
+          <td>This full certification course covers firearm safety, Louisiana law, home defense, and live-fire training. Students gain the confidence to carry responsibly and understand legal responsibilities.</td>
+          <td>$125</td>
+        </tr>
+        <tr>
+          <td>Permitless Carry</td>
+          <td>A focused mini-course on Louisiana permitless carry, where you can/can’t carry, and how to avoid legal pitfalls while carrying responsibly.</td>
+          <td>$50</td>
+        </tr>
+        <tr>
+          <td>First Aid</td>
+          <td>Critical trauma response and bleeding control with practical, confidence-building skills that apply at home, at the range, and in daily life.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Church Safety</td>
+          <td>Team communication, threat recognition, and emergency planning for churches — built to support a respectful, prepared safety culture.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Shooter Threat</td>
+          <td>Awareness, prevention, and response training built around realistic scenarios to help students make safe decisions when seconds matter.</td>
+          <td>$100</td>
+        </tr>
+        <tr>
+          <td>Agent Safety</td>
+          <td>Situational awareness and safety practices for real estate professionals during showings, meetings, and client interactions.</td>
+          <td>$50</td>
+        </tr>
+        <tr>
+          <td>Children’s Firearms Safety</td>
+          <td>Family-friendly education on safe storage, rules for firearm encounters, and responsibility — helping parents and kids build confidence safely.</td>
+          <td>$75</td>
+        </tr>
+        <tr>
+          <td>General Pistol</td>
+          <td>Fundamentals for new shooters or refreshers: grip, stance, sight alignment, and trigger control in a supportive environment.</td>
+          <td>$40</td>
+        </tr>
       </tbody>
     </table>
 
@@ -146,7 +187,7 @@
       <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer" data-ga="waiver_link">Sign Waiver</a>.
     </p>
 
-    <a class="cta" href="courses/index.html" data-ga="cta_register_from_home">Register for a Class</a>
+    <a class="cta" href="/courses/index.html" data-ga="cta_register_from_home">Register for a Class</a>
   </section>
 
   <!-- Partner -->
@@ -154,7 +195,7 @@
     <h2>Our Live Fire Partner</h2>
     <div class="partner-content">
       <a href="https://neutralgroundgunco.com/" target="_blank" rel="noopener noreferrer" data-ga="partner_link">
-        <img alt="Neutral Ground Gun Company" class="partner-logo" src="IMAGES/neutral-ground-gun-company.png" loading="lazy" />
+        <img alt="Neutral Ground Gun Company" class="partner-logo" src="/IMAGES/neutral-ground-gun-company.png" loading="lazy"/>
       </a>
       <p>We proudly partner with <strong>Neutral Ground Gun Company</strong> for live-fire training in a professional, safe setting.</p>
     </div>
@@ -181,23 +222,23 @@
       <li>"Real experience. Solid answers." – Emily B.</li>
       <li>"Safe, confident. Highly recommend!" – Meredith F.</li>
     </ul>
-    <a class="cta-secondary" href="more-reviews/index.html" data-ga="cta_more_reviews">More Student Feedback</a>
+    <a class="cta-secondary" href="/more-reviews/index.html" data-ga="cta_more_reviews">More Student Feedback</a>
   </section>
 
   <!-- CTA -->
   <section class="cta-strip">
     <h2>Train Smart. Train Safe.</h2>
     <p>Reserve your seat today with David Broussard.</p>
-    <a class="cta" href="courses/index.html" data-ga="cta_register_bottom">Register Now</a>
+    <a class="cta" href="/courses/index.html" data-ga="cta_register_bottom">Register Now</a>
     <p class="note">Discounts for Military, First Responders & Law Enforcement</p>
   </section>
 
   <!-- Footer -->
   <footer>
-    <img alt="Broussard Shooting Academy Logo" src="IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+    <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
     <address id="contact">
       <strong>Broussard Shooting Academy</strong><br/>
-      New Orleans, LA (by appointment)<br/>
+      📍 New Orleans, LA (by appointment)<br/>
       📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
       📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
     </address>
@@ -205,7 +246,7 @@
       <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
       <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
     </p>
-    <small style="color:#555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+    <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
   </footer>
 
   <!-- Scripts -->
@@ -219,11 +260,12 @@
         link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
       });
     }
+
     // Footer year
     const yr = document.getElementById('yr');
     if (yr) yr.textContent = new Date().getFullYear();
 
-    // GA4 click tracking (safe: does nothing if gtag missing)
+    // GA4 click tracking (only for elements with data-ga)
     function trackClick(el, eventName, extra) {
       if (typeof gtag !== 'function') return;
       gtag('event', eventName || 'select_content', Object.assign({
@@ -232,6 +274,7 @@
         link_href: el.getAttribute('href') || ''
       }, extra || {}));
     }
+
     document.querySelectorAll('[data-ga]').forEach(el => {
       el.addEventListener('click', () => {
         const id = el.getAttribute('data-ga') || '';
@@ -241,7 +284,7 @@
           trackClick(el, 'contact', { method: 'email' });
         } else if (id.includes('phone')) {
           trackClick(el, 'contact', { method: 'phone' });
-        } else if (id.includes('waiver') || id.includes('partner') || id.includes('lsp')) {
+        } else if (id.includes('waiver') || id.includes('partner')) {
           trackClick(el, 'click', { content_type: 'outbound' });
         } else {
           trackClick(el, 'select_content');
