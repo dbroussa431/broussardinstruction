@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Courses & Pricing | Broussard Shooting Academy</title>
   <meta name="description" content="Explore firearm training courses offered by Broussard Shooting Academy. Sign up today for professional, certified instruction.">
-  <link rel="stylesheet" href="/styles.css"/>
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="/IMAGES/favicon.svg">
@@ -15,6 +14,11 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/IMAGES/apple-touch-icon.png">
   <link rel="manifest" href="/IMAGES/site.webmanifest">
 
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+
+<body>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
   <script>
@@ -23,162 +27,176 @@
     gtag('js', new Date());
     gtag('config', 'G-RZGNT5S4KS');
   </script>
-</head>
 
-<body>
+  <header class="site-header">
+    <a href="/index.html" data-ga="nav_home">
+      <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png"/>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
+      <a href="/index.html" data-ga="nav_home">Home</a>
+      <a href="/courses/index.html" aria-current="page" data-ga="nav_courses">Courses</a>
+      <a href="/more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
+      <a href="/contact/index.html" data-ga="nav_contact">Contact</a>
+    </nav>
+  </header>
 
-<header class="site-header">
-  <a href="/index.html" data-ga="nav_home">
-    <img alt="Broussard Shooting Academy Logo" class="logo" src="/IMAGES/logo.png"/>
-  </a>
-  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
-  <nav class="header-nav" id="mainNav" aria-label="Primary navigation">
-    <a href="/index.html" data-ga="nav_home">Home</a>
-    <a href="/courses/index.html" aria-current="page" data-ga="nav_courses">Courses</a>
-    <a href="/more-reviews/index.html" data-ga="nav_reviews">Reviews</a>
-    <a href="/contact/index.html" data-ga="nav_contact">Contact</a>
-  </nav>
-</header>
+  <main>
+    <section class="courses-pricing">
+      <h1 style="text-align:center; color:#1a3d7c;">Courses & Pricing</h1>
+      <p style="text-align:center;">Choose from our professional training options. Reserve your spot securely via PayPal.</p>
 
-<main>
-  <section class="courses-pricing">
-    <h1>Courses & Pricing</h1>
-    <p>Choose from our professional training options. Reserve your spot securely via PayPal.</p>
+      <table class="pricing-table">
+        <thead>
+          <tr><th>Course</th><th>Description</th><th>Price</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Concealed Carry</td>
+            <td>Full certification covering firearm safety, Louisiana law, home defense, and live-fire training. Students leave confident and prepared for responsible carry.</td>
+            <td>$125</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/125" target="_blank" rel="noopener noreferrer" data-ga="pay_concealed">Pay Now</a></td>
+          </tr>
 
-    <table class="pricing-table">
-      <thead>
-        <tr><th>Course</th><th>Description</th><th>Price</th><th></th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Concealed Carry</td>
-          <td>Full certification covering firearm safety, Louisiana law, home defense, and live-fire training. Students leave confident and prepared for responsible carry.</td>
-          <td>$125</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/125" target="_blank" rel="noopener noreferrer" data-ga="pay_concealed">Pay Now</a></td>
-        </tr>
+          <!-- NEW -->
+          <tr>
+            <td>Concealed Carry Renewal</td>
+            <td>Renewal-focused course for returning students who need updated documentation and a professional refresher. Covers current legal updates, safety review, and readiness standards.</td>
+            <td>$100</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_renewal">Pay Now</a></td>
+          </tr>
 
-        <tr>
-          <td>Concealed Carry Renewal</td>
-          <td>Renewal support and refresher training (as applicable) to help students stay current, safe, and confident. Great for returning students who want updated guidance and a clean process.</td>
-          <td>$100</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_ccw_renewal">Pay Now</a></td>
-        </tr>
+          <tr>
+            <td>Permitless Carry</td>
+            <td>Mini-course explaining Louisiana’s permitless carry law, responsibilities, and safe practices. Perfect for those carrying without a permit who value safety and compliance.</td>
+            <td>$50</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/50" target="_blank" rel="noopener noreferrer" data-ga="pay_permitless">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>First Aid</td>
+            <td>Learn critical trauma response and bleeding control to save lives in emergencies. Gain confidence and practical skills for high-stress moments.</td>
+            <td>$100</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_firstaid">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>Church Safety</td>
+            <td>For staff and volunteers, this course covers team communication, threat recognition, and emergency planning in a church setting.</td>
+            <td>$100</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_church">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>Shooter Threat</td>
+            <td>Scenario-based training to recognize and respond to active threats responsibly. Practice awareness and decision-making when seconds matter.</td>
+            <td>$100</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_shooter">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>Agent Safety</td>
+            <td>Tailored for real estate agents, this course emphasizes situational awareness and safe practices during showings and client meetings.</td>
+            <td>$50</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/50" target="_blank" rel="noopener noreferrer" data-ga="pay_agent">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>Children’s Firearms Safety</td>
+            <td>Family-friendly program that teaches safe storage, rules for firearm encounters, and responsibility. Build family confidence together.</td>
+            <td>$75</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/75" target="_blank" rel="noopener noreferrer" data-ga="pay_children">Pay Now</a></td>
+          </tr>
+          <tr>
+            <td>General Pistol</td>
+            <td>Beginner-friendly fundamentals: grip, stance, sight alignment, and trigger control. Ideal for new shooters or anyone seeking a refresher.</td>
+            <td>$40</td>
+            <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/40" target="_blank" rel="noopener noreferrer" data-ga="pay_generalpistol">Pay Now</a></td>
+          </tr>
+        </tbody>
+      </table>
 
-        <tr>
-          <td>Permitless Carry</td>
-          <td>Mini-course explaining Louisiana’s permitless carry law, responsibilities, and safe practices. Perfect for those carrying without a permit who value safety and compliance.</td>
-          <td>$50</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/50" target="_blank" rel="noopener noreferrer" data-ga="pay_permitless">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>First Aid</td>
-          <td>Learn critical trauma response and bleeding control to save lives in emergencies. Gain confidence and practical skills for high-stress moments.</td>
-          <td>$100</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_firstaid">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>Church Safety</td>
-          <td>For staff and volunteers, this course covers team communication, threat recognition, and emergency planning in a church setting.</td>
-          <td>$100</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_church">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>Shooter Threat</td>
-          <td>Scenario-based training to recognize and respond to active threats responsibly. Practice awareness and decision-making when seconds matter.</td>
-          <td>$100</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/100" target="_blank" rel="noopener noreferrer" data-ga="pay_shooter">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>Agent Safety</td>
-          <td>Tailored for real estate agents, this course emphasizes situational awareness and safe practices during showings and client meetings.</td>
-          <td>$50</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/50" target="_blank" rel="noopener noreferrer" data-ga="pay_agent">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>Children’s Firearms Safety</td>
-          <td>Family-friendly program that teaches safe storage, rules for firearm encounters, and responsibility. Build family confidence together.</td>
-          <td>$75</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/75" target="_blank" rel="noopener noreferrer" data-ga="pay_children">Pay Now</a></td>
-        </tr>
-        <tr>
-          <td>General Pistol</td>
-          <td>Beginner-friendly fundamentals: grip, stance, sight alignment, and trigger control. Ideal for new shooters or anyone seeking a refresher.</td>
-          <td>$40</td>
-          <td><a class="cta" href="https://www.paypal.com/paypalme/dbroussa431/40" target="_blank" rel="noopener noreferrer" data-ga="pay_generalpistol">Pay Now</a></td>
-        </tr>
-      </tbody>
-    </table>
+      <p class="note">
+        * Live Fire held at <strong>Neutral Ground Gun Company</strong>.
+        <a href="https://waiver.smartwaiver.com/v/NGGCWaiver/" target="_blank" rel="noopener noreferrer" data-ga="waiver_link">Sign Waiver</a>.
+      </p>
+    </section>
 
     <!-- Helpful Links -->
     <section class="helpful-links" style="margin-top:2rem">
       <h2>Helpful Links for Your Louisiana CCW</h2>
       <ul>
-        <li><a href="https://chp.la.gov/" target="_blank" rel="noopener noreferrer">Louisiana CHP Online Application Portal (LSP)</a></li>
-        <li><a href="https://lsp.org/services/concealed-handgun-information/" target="_blank" rel="noopener noreferrer">LSP Concealed Handgun Permit Info & FAQs</a></li>
-        <li><a href="https://lsp.org/services/concealed-handgun-information/chp-application/" target="_blank" rel="noopener noreferrer">CHP Application Instructions (Fingerprint guidance)</a></li>
         <li>
-          <a href="https://www.identogo.com/locations/louisiana" target="_blank" rel="noopener noreferrer">Schedule Digital Fingerprints (IdentoGO – Louisiana)</a>
+          <a href="https://chp.la.gov/" target="_blank" rel="noopener noreferrer" data-ga="lsp_portal">
+            Louisiana CHP Online Application Portal (LSP)
+          </a>
+        </li>
+        <li>
+          <a href="https://lsp.org/services/concealed-handgun-information/" target="_blank" rel="noopener noreferrer" data-ga="lsp_info">
+            LSP Concealed Handgun Permit Info & FAQs
+          </a>
+        </li>
+        <li>
+          <a href="https://lsp.org/services/concealed-handgun-information/chp-application/" target="_blank" rel="noopener noreferrer" data-ga="lsp_instructions">
+            CHP Application Instructions (Fingerprint guidance)
+          </a>
+        </li>
+        <li>
+          <a href="https://www.identogo.com/locations/louisiana" target="_blank" rel="noopener noreferrer" data-ga="identogo">
+            Schedule Digital Fingerprints (IdentoGO – Louisiana)
+          </a>
         </li>
       </ul>
     </section>
+  </main>
 
-  </section>
-</main>
+  <footer>
+    <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
+    <address>
+      <strong>Broussard Shooting Academy</strong><br/>
+      📍 New Orleans, LA (by appointment)<br/>
+      📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
+      📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
+    </address>
+    <p>
+      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
+      <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
+    </p>
+    <small style="color:#fff;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
+  </footer>
 
-<footer>
-  <img alt="Broussard Shooting Academy Logo" src="/IMAGES/logo.png" style="max-width: 180px; margin-bottom: 1rem;" loading="lazy" />
-  <address>
-    <strong>Broussard Shooting Academy</strong><br/>
-    New Orleans, LA (by appointment)<br/>
-    📧 <a href="mailto:BroussardShootingAcademy@protonmail.com" data-ga="email_click">BroussardShootingAcademy@protonmail.com</a><br/>
-    📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
-  </address>
-  <p>
-    <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
-    <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
-  </p>
-  <small style="color:#555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
-</footer>
+  <script>
+    // Mobile nav
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+    if (navToggle && mainNav) {
+      navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
+      document.querySelectorAll('.header-nav a').forEach(link => {
+        link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
+      });
+    }
+    const yr = document.getElementById('yr'); if (yr) yr.textContent = new Date().getFullYear();
 
-<script>
-  // Mobile nav
-  const navToggle = document.getElementById('navToggle');
-  const mainNav = document.getElementById('mainNav');
-  if (navToggle && mainNav) {
-    navToggle.addEventListener('click', () => mainNav.classList.toggle('nav-open'));
-    document.querySelectorAll('.header-nav a').forEach(link => {
-      link.addEventListener('click', () => mainNav.classList.remove('nav-open'));
+    // GA4 click tracking
+    function trackClick(el, eventName, extra) {
+      if (typeof gtag !== 'function') return;
+      gtag('event', eventName || 'select_content', Object.assign({
+        link_id: el.getAttribute('data-ga') || 'unknown',
+        link_text: (el.textContent || '').trim(),
+        link_href: el.getAttribute('href') || ''
+      }, extra || {}));
+    }
+
+    document.querySelectorAll('[data-ga]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-ga') || '';
+        if (id.startsWith('pay_')) {
+          trackClick(el, 'purchase', { currency: 'USD' });
+        } else if (id.includes('email')) {
+          trackClick(el, 'contact', { method: 'email' });
+        } else if (id.includes('phone')) {
+          trackClick(el, 'contact', { method: 'phone' });
+        } else {
+          trackClick(el, 'select_content');
+        }
+      });
     });
-  }
-
-  // Footer year
-  const yr = document.getElementById('yr');
-  if (yr) yr.textContent = new Date().getFullYear();
-
-  // GA4 click tracking
-  function trackClick(el, eventName, extra) {
-    if (typeof gtag !== 'function') return;
-    gtag('event', eventName || 'select_content', Object.assign({
-      link_id: el.getAttribute('data-ga') || 'unknown',
-      link_text: (el.textContent || '').trim(),
-      link_href: el.getAttribute('href') || ''
-    }, extra || {}));
-  }
-  document.querySelectorAll('[data-ga]').forEach(el => {
-    el.addEventListener('click', () => {
-      const id = el.getAttribute('data-ga') || '';
-      if (id.startsWith('pay_')) {
-        trackClick(el, 'purchase', { currency: 'USD' });
-      } else if (id.includes('email')) {
-        trackClick(el, 'contact', { method: 'email' });
-      } else if (id.includes('phone')) {
-        trackClick(el, 'contact', { method: 'phone' });
-      } else {
-        trackClick(el, 'select_content');
-      }
-    });
-  });
-</script>
+  </script>
 
 </body>
 </html>
