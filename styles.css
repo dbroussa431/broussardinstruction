@@ -406,3 +406,20 @@ details[open] {
   height: auto;
   display: block;
 }
+/* ====== MailerLite Embed Section ====== */
+.weekly-tip-signup{
+  text-align:center;
+}
+
+.weekly-tip-signup .ml-embedded{
+  margin: 14px auto 0;
+  max-width: 520px;
+}
+
+/* Make embedded form fields breathe on mobile */
+.weekly-tip-signup input,
+.weekly-tip-signup select,
+.weekly-tip-signup textarea,
+.weekly-tip-signup button{
+  max-width: 100%;
+}
