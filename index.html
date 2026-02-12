@@ -7,7 +7,7 @@
   <title>Broussard Shooting Academy</title>
   <meta name="description" content="Professional firearm and self-defense training by David Broussard in New Orleans.">
 
-  <!-- Favicons (must be inside <head>) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="/IMAGES/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/IMAGES/favicon-32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/IMAGES/favicon-96.png">
@@ -16,6 +16,29 @@
   <link rel="manifest" href="/IMAGES/site.webmanifest">
 
   <link href="/styles.css" rel="stylesheet" />
+
+  <!-- Small safe CSS for Partner block (prevents "logo not popping up" due to missing layout styles) -->
+  <style>
+    .live-fire-partner .partner-content{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      text-align:center;
+      margin-top:12px;
+    }
+    .live-fire-partner .partner-logo{
+      max-width:260px;
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .live-fire-partner p{
+      max-width:650px;
+      margin:0 auto;
+    }
+  </style>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZGNT5S4KS"></script>
@@ -243,7 +266,7 @@
       📞 <a href="tel:+15042896605" data-ga="phone_click">504-289-6605</a>
     </address>
     <p>
-      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund & Cancellation Policy</a> |
+      <a href="/policy/refund-cancellation.html" data-ga="footer_refund">Refund &amp; Cancellation Policy</a> |
       <a href="/policy/privacy.html" data-ga="footer_privacy">Privacy Policy</a>
     </p>
     <small style="color: #555;">© <span id="yr"></span> Broussard Shooting Academy. All rights reserved.</small>
