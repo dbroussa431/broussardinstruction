@@ -1,0 +1,318 @@
+/* ====== Base Reset ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  color: #222;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* ====== Header ====== */
+.site-header {
+  background-color: #1a3d7c;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.logo {
+  max-height: 60px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 1.5em;
+}
+
+.header-nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.header-nav a:hover {
+  text-decoration: underline;
+}
+
+/* ====== Mobile Nav Toggle ====== */
+.nav-toggle {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  z-index: 1001;
+}
+
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .header-nav {
+    display: none;
+    flex-direction: column;
+    background-color: #1a3d7c;
+    width: 100%;
+    padding: 1.5em;
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    z-index: 1000;
+  }
+
+  .header-nav.nav-open {
+    display: flex;
+  }
+}
+
+/* ====== Hero Section ====== */
+.hero {
+  position: relative;
+  height: 90vh;
+  overflow: hidden;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  color: white;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 1em;
+}
+
+.hero-overlay-box {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2em;
+  border-radius: 12px;
+  display: inline-block;
+  max-width: 90%;
+  margin: 0 auto;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.2em;
+}
+
+/* ====== CTA Buttons ====== */
+.cta,
+.cta-secondary {
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin: 0.5em 0.3em;
+}
+
+.cta {
+  background-color: #f0a500;
+  color: white;
+  border: none;
+}
+
+.cta:hover {
+  background-color: #d18c00;
+}
+
+.cta-secondary {
+  border: 2px solid #1a3d7c;
+  background-color: transparent;
+  color: #1a3d7c;
+}
+
+.cta-secondary:hover {
+  background-color: #1a3d7c;
+  color: white;
+}
+
+/* ====== Section General ====== */
+section {
+  padding: 2em 1em;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+section h2 {
+  color: #1a3d7c;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* ====== Pricing Table ====== */
+.pricing-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+
+.pricing-table th,
+.pricing-table td {
+  padding: 1em;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.pricing-table th {
+  background-color: #1a3d7c;
+  color: white;
+}
+
+.pricing-table td {
+  background-color: #f9f9f9;
+}
+
+.note {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 1em;
+}
+
+/* ====== Reviews ====== */
+.reviews ul {
+  list-style: none;
+  padding-left: 0;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.reviews li {
+  font-style: italic;
+  margin-bottom: 0.5em;
+}
+
+/* ====== CTA Strip ====== */
+.cta-strip {
+  background-color: #1a3d7c;
+  color: white;
+  text-align: center;
+  padding: 3em 1em;
+}
+
+.cta-strip .note {
+  color: #ffd700;
+  font-size: 0.9rem;
+  margin-top: 0.5em;
+}
+
+/* ====== Footer ====== */
+footer {
+  background-color: #eee;
+  text-align: center;
+  padding: 2em 1em;
+  font-size: 0.9rem;
+}
+
+footer address {
+  font-style: normal;
+  margin-bottom: 1em;
+}
+
+/* ====== Instructor Videos ====== */
+.instructor-video {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+  margin-bottom: 2em;
+}
+
+.instructor-video video {
+  max-width: 280px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ====== Certifications Section ====== */
+.certifications p {
+  font-size: 1rem;
+  color: #444;
+  margin: 1em 0 2em;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.certification-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  justify-content: center;
+}
+
+.cert-card {
+  width: 160px;
+  text-align: center;
+}
+
+.cert-card img {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.5em;
+}
+
+.cert-card p {
+  font-weight: bold;
+  color: #1a3d7c;
+  font-size: 0.95rem;
+}
+
+/* ====== Responsive Breakpoints ====== */
+@media (max-width: 800px) {
+  .cert-card {
+    width: 45%;
+  }
+
+  .hero-content h1 {
+    font-size: 2.25rem;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .instructor-video {
+    flex-direction: column;
+    align-items: center;
+  }
+}
