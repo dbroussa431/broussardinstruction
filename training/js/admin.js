@@ -1,161 +1,139 @@
-const API_URL = "api/admin-api.php";
+import { auth, db } from "./firebase-config.js";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-async function apiRequest(action, payload = {}, method = "POST") {
-  let url = API_URL + `?action=${encodeURIComponent(action)}`;
-  const options = { method, headers: { "Content-Type": "application/json" } };
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  if (method === "GET") {
-    const params = new URLSearchParams(payload);
-    if ([...params.keys()].length) url += `&${params.toString()}`;
-  } else {
-    options.body = JSON.stringify(payload);
-  }
+const loginSection = document.getElementById("loginSection");
+const appSection = document.getElementById("appSection");
+const loginForm = document.getElementById("loginForm");
+const loginMsg = document.getElementById("loginMsg");
+const studentForm = document.getElementById("studentForm");
+const saveMsg = document.getElementById("saveMsg");
+const logoutBtn = document.getElementById("logoutBtn");
+const studentsTableBody = document.getElementById("studentsTableBody");
+const refreshBtn = document.getElementById("refreshBtn");
 
-  const response = await fetch(url, options);
-  const data = await response.json();
-  if (!response.ok || !data.ok) {
-    throw new Error(data.message || "Request failed.");
-  }
-  return data;
+function showMessage(el, msg, isError = false) {
+  el.textContent = msg;
+  el.style.color = isError ? "#b00020" : "#0a7a2f";
 }
 
-function showResult(el, message, isError = false) {
-  if (!el) return;
-  el.style.display = "block";
-  el.classList.toggle("result-error", isError);
-  el.textContent = message;
-}
-
-function studentRow(s) {
-  const completed = Array.isArray(s.completedLessons) ? s.completedLessons.length : 0;
-  return `
-    <tr>
-      <td>${s.name || ""}</td>
-      <td>${s.email || ""}</td>
-      <td><strong>${s.code || ""}</strong></td>
-      <td>${s.tier || ""}</td>
-      <td>$${s.amountDue ?? 0}</td>
-      <td><span class="pill ${s.paid ? "paid" : "unpaid"}">${s.paid ? "PAID" : "UNPAID"}</span></td>
-      <td>${completed}</td>
-      <td>${s.status || "active"}</td>
-    </tr>
-  `;
-}
-
-async function renderStudents() {
-  const wrap = document.getElementById("studentTableWrap");
-  if (!wrap) return;
-  wrap.innerHTML = `<p class="muted">Loading students...</p>`;
+async function loadStudents() {
+  studentsTableBody.innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
 
   try {
-    const data = await apiRequest("list_students", {}, "GET");
-    const students = data.students || [];
+    const q = query(collection(db, "students"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
 
-    if (!students.length) {
-      wrap.innerHTML = `<p class="muted">No students created yet.</p>`;
+    if (snapshot.empty) {
+      studentsTableBody.innerHTML = `<tr><td colspan="6">No student records yet.</td></tr>`;
       return;
     }
 
-    wrap.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Code</th>
-            <th>Tier</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Completed</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${students.map(studentRow).join("")}
-        </tbody>
-      </table>
-    `;
+    studentsTableBody.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+      const s = docSnap.data();
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${s.firstName || ""}</td>
+        <td>${s.lastName || ""}</td>
+        <td>${s.course || ""}</td>
+        <td>${s.completionDate || ""}</td>
+        <td>${s.instructor || ""}</td>
+        <td>${s.email || ""}</td>
+      `;
+      studentsTableBody.appendChild(row);
+    });
   } catch (err) {
-    wrap.innerHTML = `<p class="muted">${err.message}</p>`;
+    studentsTableBody.innerHTML = `<tr><td colspan="6">Error loading students.</td></tr>`;
+    console.error(err);
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const createBtn = document.getElementById("createCodeBtn");
-  const createResult = document.getElementById("createResult");
-  const unlockResult = document.getElementById("unlockResult");
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  loginMsg.textContent = "";
 
-  createBtn?.addEventListener("click", async () => {
-    try {
-      const name = document.getElementById("studentName").value.trim();
-      const email = document.getElementById("studentEmail").value.trim();
-      const tier = document.getElementById("studentTier").value;
-      const paid = document.getElementById("studentPaid").value === "true";
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-      if (!name || !email) {
-        showResult(createResult, "Student name and email are required.", true);
-        return;
-      }
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    showMessage(loginMsg, "Login successful.");
+  } catch (err) {
+    console.error(err);
+    showMessage(loginMsg, err.message, true);
+  }
+});
 
-      const data = await apiRequest("create_student", { name, email, tier, paid });
-      const s = data.student;
-      showResult(
-        createResult,
-        `Code created successfully:\n\n${s.code}\n${s.name} — ${s.email}\nTier: ${s.tier} | Amount: $${s.amountDue} | ${s.paid ? "PAID" : "UNPAID"}`
-      );
-      await renderStudents();
-    } catch (err) {
-      showResult(createResult, err.message, true);
-    }
-  });
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error(err);
+    alert("Logout failed.");
+  }
+});
 
-  document.getElementById("unlockLessonBtn")?.addEventListener("click", async () => {
-    try {
-      const email = document.getElementById("unlockEmail").value.trim();
-      const lessonId = document.getElementById("unlockLessonId").value.trim();
-      await apiRequest("unlock_lesson", { email, lessonId });
-      showResult(unlockResult, `Lesson ${lessonId} unlocked for ${email}.`);
-      await renderStudents();
-    } catch (err) {
-      showResult(unlockResult, err.message, true);
-    }
-  });
+studentForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  saveMsg.textContent = "";
 
-  document.getElementById("forceOverrideBtn")?.addEventListener("click", async () => {
-    try {
-      const email = document.getElementById("unlockEmail").value.trim();
-      const lessonId = document.getElementById("unlockLessonId").value.trim();
-      await apiRequest("require_override", { email, lessonId, required: true });
-      showResult(unlockResult, `Instructor override required for ${lessonId} on ${email}.`);
-      await renderStudents();
-    } catch (err) {
-      showResult(unlockResult, err.message, true);
-    }
-  });
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const course = document.getElementById("course").value.trim();
+  const completionDate = document.getElementById("completionDate").value.trim();
+  const instructor = document.getElementById("instructor").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-  document.getElementById("markPaidBtn")?.addEventListener("click", async () => {
-    try {
-      const email = document.getElementById("unlockEmail").value.trim();
-      await apiRequest("mark_paid", { email, paid: true });
-      showResult(unlockResult, `${email} marked paid.`);
-      await renderStudents();
-    } catch (err) {
-      showResult(unlockResult, err.message, true);
-    }
-  });
+  if (!firstName || !lastName || !course || !completionDate || !instructor) {
+    showMessage(saveMsg, "Please fill in all required fields.", true);
+    return;
+  }
 
-  document.getElementById("issueNewCodeBtn")?.addEventListener("click", async () => {
-    try {
-      const email = document.getElementById("unlockEmail").value.trim();
-      const data = await apiRequest("issue_new_code", { email });
-      showResult(unlockResult, `New code issued for ${email}: ${data.student.code}`);
-      await renderStudents();
-    } catch (err) {
-      showResult(unlockResult, err.message, true);
-    }
-  });
+  try {
+    await addDoc(collection(db, "students"), {
+      firstName,
+      lastName,
+      course,
+      completionDate,
+      instructor,
+      email,
+      createdAt: serverTimestamp()
+    });
 
-  document.getElementById("refreshStudentsBtn")?.addEventListener("click", renderStudents);
+    showMessage(saveMsg, "Student record saved.");
+    studentForm.reset();
+    await loadStudents();
+  } catch (err) {
+    console.error(err);
+    showMessage(saveMsg, err.message, true);
+  }
+});
 
-  renderStudents();
+refreshBtn.addEventListener("click", loadStudents);
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    loginSection.style.display = "none";
+    appSection.style.display = "block";
+    await loadStudents();
+  } else {
+    loginSection.style.display = "block";
+    appSection.style.display = "none";
+    studentsTableBody.innerHTML = "";
+  }
 });
