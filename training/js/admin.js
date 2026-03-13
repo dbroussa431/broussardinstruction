@@ -1,3 +1,5 @@
+alert("admin.js loaded");
+
 import { auth, db } from "../firebase-config.js";
 import {
   signInWithEmailAndPassword,
@@ -58,8 +60,8 @@ async function loadStudents() {
       studentsTableBody.appendChild(row);
     });
   } catch (err) {
+    console.error("Error loading students:", err);
     studentsTableBody.innerHTML = `<tr><td colspan="6">Error loading students.</td></tr>`;
-    console.error(err);
   }
 }
 
@@ -74,7 +76,7 @@ loginForm.addEventListener("submit", async (e) => {
     await signInWithEmailAndPassword(auth, email, password);
     showMessage(loginMsg, "Login successful.");
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     showMessage(loginMsg, err.message, true);
   }
 });
@@ -83,7 +85,7 @@ logoutBtn.addEventListener("click", async () => {
   try {
     await signOut(auth);
   } catch (err) {
-    console.error(err);
+    console.error("Logout error:", err);
     alert("Logout failed.");
   }
 });
@@ -117,9 +119,13 @@ studentForm.addEventListener("submit", async (e) => {
 
     showMessage(saveMsg, "Student record saved.");
     studentForm.reset();
+
+    document.getElementById("course").value = "Louisiana Concealed Carry";
+    document.getElementById("instructor").value = "David Broussard";
+
     await loadStudents();
   } catch (err) {
-    console.error(err);
+    console.error("Save error:", err);
     showMessage(saveMsg, err.message, true);
   }
 });
@@ -136,5 +142,4 @@ onAuthStateChanged(auth, async (user) => {
     appSection.style.display = "none";
     studentsTableBody.innerHTML = "";
   }
-alert("admin.js loaded");
 });
