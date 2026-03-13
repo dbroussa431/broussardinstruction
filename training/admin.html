@@ -3,52 +3,175 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Admin</title>
-  <link rel="stylesheet" href="css/portal.css" />
+  <title>BSA Admin</title>
   <style>
-    .admin-shell{max-width:1200px;margin:28px auto;padding:0 18px}
-    .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px}
-    .admin-table-wrap{background:#fff;border-radius:18px;overflow:auto;box-shadow:0 14px 35px rgba(16,44,99,.12)}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:14px 12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:.95rem}
-    th{background:#173f8a;color:#fff;position:sticky;top:0}
+    :root {
+      --blue: #173f8a;
+      --gold: #d4a11e;
+      --bg: #eef3fb;
+      --text: #1f2a44;
+      --muted: #667085;
+      --danger: #8f1d1d;
+      --success: #176c2b;
+      --card: #ffffff;
+      --line: #e1e8f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #123c86 0%, #1d4ea2 260px, var(--bg) 260px);
+      margin: 0;
+      color: var(--text);
+    }
+    .topbar {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 10px;
+      color: #fff;
+    }
+    .topbar h1 { margin: 0 0 8px; font-size: 38px; }
+    .topbar p { margin: 0; color: rgba(255,255,255,.9); }
+    .admin-wrap {
+      max-width: 1180px;
+      margin: 18px auto 48px;
+      padding: 0 20px;
+    }
+    .admin-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(8, 29, 66, .12);
+      margin-bottom: 22px;
+      border: 1px solid rgba(255,255,255,.45);
+    }
+    h2 { margin: 0 0 16px; font-size: 24px; color: var(--blue); }
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    input, select, button {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1px solid #ccd6e7;
+      font-size: 16px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(23, 63, 138, .12);
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    button {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 190px;
+    }
+    .btn-secondary { background: var(--blue); color: #fff; }
+    .btn-danger { background: #b93535; color: #fff; }
+    button:hover { opacity: .95; }
+    .result-box {
+      margin-top: 14px;
+      padding: 14px;
+      background: #f8fafc;
+      border-left: 4px solid var(--gold);
+      border-radius: 10px;
+      font-weight: 700;
+      white-space: pre-line;
+    }
+    .result-error { border-left-color: #b93535; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f7f9fd;
+      color: var(--blue);
+      position: sticky;
+      top: 0;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .paid { background: #d9f7df; color: var(--success); }
+    .unpaid { background: #ffe2e2; color: var(--danger); }
+    .muted { color: var(--muted); }
+    .table-wrap { overflow-x: auto; }
   </style>
 </head>
-<body class="portal-shell">
-  <header class="portal-header">
-    <img src="images/bsa-logo.png" alt="BSA Logo" />
-    <div class="portal-header-title">
-      <h1>Broussard Shooting Academy Training Admin</h1>
-      <p>Paid / progress / completion / lock tracking</p>
+<body>
+  <div class="topbar">
+    <h1>Broussard Shooting Academy Admin</h1>
+    <p>Generate codes, mark students paid, unlock lesson attempts, and issue manual overrides.</p>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="admin-card">
+      <h2>Create Student Code</h2>
+      <div class="grid">
+        <input id="studentName" placeholder="Student name" />
+        <input id="studentEmail" placeholder="Student email" />
+        <select id="studentTier">
+          <option value="FULL">FULL - $150</option>
+          <option value="DISC">DISC - $100</option>
+          <option value="FREE">FREE - $0</option>
+        </select>
+        <select id="studentPaid">
+          <option value="true">Paid</option>
+          <option value="false">Unpaid</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button id="createCodeBtn">Generate Student Code</button>
+        <button id="refreshStudentsBtn" class="btn-secondary">Refresh Student List</button>
+      </div>
+      <div id="createResult" class="result-box" style="display:none;"></div>
     </div>
-  </header>
-  <main class="admin-shell">
-    <div class="admin-stats">
-      <div class="stat-card"><div class="stat-label">Students</div><div class="stat-value" id="adminCount">0</div></div>
-      <div class="stat-card"><div class="stat-label">Paid or Discount</div><div class="stat-value" id="adminPaid">0</div></div>
-      <div class="stat-card"><div class="stat-label">Online Complete</div><div class="stat-value" id="adminComplete">0</div></div>
+
+    <div class="admin-card">
+      <h2>Unlock / Reset Student Lesson</h2>
+      <div class="grid">
+        <input id="unlockEmail" placeholder="Student email" />
+        <input id="unlockLessonId" placeholder="Lesson ID (example: lesson1)" />
+      </div>
+      <div class="btn-row">
+        <button id="unlockLessonBtn">Unlock Lesson</button>
+        <button id="forceOverrideBtn" class="btn-secondary">Require Instructor Override</button>
+        <button id="markPaidBtn">Mark Paid</button>
+        <button id="issueNewCodeBtn" class="btn-danger">Issue New Code</button>
+      </div>
+      <div id="unlockResult" class="result-box" style="display:none;"></div>
     </div>
-    <div class="admin-table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Student</th>
-            <th>Email</th>
-            <th>Code</th>
-            <th>Type</th>
-            <th>Payment</th>
-            <th>Current Section</th>
-            <th>Lessons</th>
-            <th>Lock Status</th>
-            <th>Online Complete</th>
-          </tr>
-        </thead>
-        <tbody id="studentTableBody"></tbody>
-      </table>
+
+    <div class="admin-card">
+      <h2>Students</h2>
+      <div id="studentTableWrap" class="table-wrap"></div>
     </div>
-  </main>
-  <script src="js/auth.js"></script>
-  <script src="js/app.js"></script>
-  <script>renderAdmin();</script>
+  </div>
+
+  <script src="js/admin.js"></script>
 </body>
 </html>
