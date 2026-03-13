@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broussard Shooting Academy Training Portal</title>
+  <link rel="stylesheet" href="css/portal.css" />
+</head>
+<body class="portal-body">
+  <div class="portal-wrap">
+    <div class="login-card">
+      <img src="../images/bsa-logo.png" alt="Broussard Shooting Academy" class="portal-logo" />
 
+      <p class="eyebrow">Private Training Access</p>
+      <h1>Broussard Shooting Academy Training Portal</h1>
+      <p class="lead">
+        Complete your online prerequisite lessons before attending your live review and range qualification.
+      </p>
+
+      <form id="loginForm" class="portal-form">
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" placeholder="Enter full name" required />
+
+        <label for="studentEmail">Email</label>
+        <input type="email" id="studentEmail" placeholder="Enter email address" required />
+
+        <label for="accessCode">Access Code</label>
+        <input type="text" id="accessCode" placeholder="Enter access code" required />
+
+        <button type="submit" class="portal-btn">Begin Training</button>
+      </form>
+
+      <div id="loginMessage" class="portal-message"></div>
+
+      <div class="portal-note">
+        <strong>Important:</strong> This portal is for enrolled students only. Final certification is issued in person after successful live review and range completion.
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

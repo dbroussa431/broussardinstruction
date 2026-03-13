@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Student Portal Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+  <div class="login-wrap">
+    <div class="panel login-card logo-watermark">
+      <img class="login-logo" src="assets/logo.png" alt="Broussard Shooting Academy logo">
+      <div class="center">
+        <span class="eyebrow">Private student access</span>
+        <h2>Online Prerequisite Portal</h2>
+        <p>Built for students who need to complete the course in smaller, phone-friendly blocks instead of one long sitting. Final certificate is handed in person after live review and range qualification.</p>
+      </div>
+      <form id="loginForm" style="margin-top:18px">
+        <div class="field">
+          <label for="studentName">Student name</label>
+          <input id="studentName" type="text" placeholder="Enter student name">
+        </div>
+        <div class="field">
+          <label for="accessCode">Access code</label>
+          <input id="accessCode" type="text" placeholder="Example: BSAWEEKEND" required>
+        </div>
+        <button class="btn btn-gold" type="submit" style="width:100%">Enter Student Portal</button>
+      </form>
+      <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
+      <p class="footer-note center">Demo codes included in this build: <strong>BSAWEEKEND</strong>, <strong>BSADISCOUNT</strong>, <strong>BSAFREE</strong>, <strong>BSADEMO</strong>.</p>
+    </div>
+  </div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const result = BSA.login(document.getElementById('accessCode').value, document.getElementById('studentName').value);
+      const msg = document.getElementById('loginMsg');
+      if(!result.ok){
+        msg.textContent = result.message;
+        msg.classList.remove('hidden');
+        return;
+      }
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>
