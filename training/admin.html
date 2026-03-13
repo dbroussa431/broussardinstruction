@@ -3,175 +3,214 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Admin</title>
+  <title>BSA Training Admin</title>
   <style>
-    :root {
-      --blue: #173f8a;
-      --gold: #d4a11e;
-      --bg: #eef3fb;
-      --text: #1f2a44;
-      --muted: #667085;
-      --danger: #8f1d1d;
-      --success: #176c2b;
-      --card: #ffffff;
-      --line: #e1e8f2;
-    }
-    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #123c86 0%, #1d4ea2 260px, var(--bg) 260px);
       margin: 0;
-      color: var(--text);
+      background: #f4f6f8;
+      color: #222;
     }
-    .topbar {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 28px 20px 10px;
+
+    header {
+      background: #111;
       color: #fff;
+      padding: 18px 24px;
     }
-    .topbar h1 { margin: 0 0 8px; font-size: 38px; }
-    .topbar p { margin: 0; color: rgba(255,255,255,.9); }
-    .admin-wrap {
-      max-width: 1180px;
-      margin: 18px auto 48px;
-      padding: 0 20px;
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
     }
-    .admin-card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 16px 40px rgba(8, 29, 66, .12);
-      margin-bottom: 22px;
-      border: 1px solid rgba(255,255,255,.45);
+
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
     }
-    h2 { margin: 0 0 16px; font-size: 24px; color: var(--blue); }
-    .grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-    input, select, button {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 12px;
-      border: 1px solid #ccd6e7;
-      font-size: 16px;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(23, 63, 138, .12);
-    }
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    button {
-      background: var(--gold);
-      color: #111;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      min-width: 190px;
-    }
-    .btn-secondary { background: var(--blue); color: #fff; }
-    .btn-danger { background: #b93535; color: #fff; }
-    button:hover { opacity: .95; }
-    .result-box {
-      margin-top: 14px;
-      padding: 14px;
-      background: #f8fafc;
-      border-left: 4px solid var(--gold);
+
+    .card {
+      background: #fff;
       border-radius: 10px;
-      font-weight: 700;
-      white-space: pre-line;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
     }
-    .result-error { border-left-color: #b93535; }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 14px;
-      font-size: 14px;
       background: #fff;
-      overflow: hidden;
     }
+
     th, td {
-      padding: 11px 10px;
-      border-bottom: 1px solid var(--line);
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: left;
-      vertical-align: top;
+      font-size: 14px;
     }
+
     th {
-      background: #f7f9fd;
-      color: var(--blue);
-      position: sticky;
-      top: 0;
+      background: #f0f0f0;
     }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
+
+    #loginForm {
+      display: block;
+      max-width: 420px;
     }
-    .paid { background: #d9f7df; color: var(--success); }
-    .unpaid { background: #ffe2e2; color: var(--danger); }
-    .muted { color: var(--muted); }
-    .table-wrap { overflow-x: auto; }
+
+    #loginForm .field {
+      margin-bottom: 12px;
+    }
+
+    .msg {
+      margin-top: 12px;
+      font-size: 14px;
+      min-height: 18px;
+    }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <h1>Broussard Shooting Academy Admin</h1>
-    <p>Generate codes, mark students paid, unlock lesson attempts, and issue manual overrides.</p>
+  <header>
+    <h1>Broussard Shooting Academy - Training Admin</h1>
+  </header>
+
+  <div class="wrap">
+    <section id="loginSection" class="card">
+      <h2>Admin Login</h2>
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required />
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Login</button>
+        </div>
+
+        <div id="loginMsg" class="msg"></div>
+      </form>
+    </section>
+
+    <section id="appSection" style="display:none;">
+      <div class="card">
+        <h2>Add Student Completion Record</h2>
+
+        <form id="studentForm">
+          <div>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" required />
+          </div>
+
+          <div>
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" required />
+          </div>
+
+          <div>
+            <label for="course">Course</label>
+            <input type="text" id="course" value="Louisiana Concealed Carry" required />
+          </div>
+
+          <div>
+            <label for="completionDate">Completion Date</label>
+            <input type="text" id="completionDate" placeholder="03/13/2026" required />
+          </div>
+
+          <div>
+            <label for="instructor">Instructor</label>
+            <input type="text" id="instructor" value="David Broussard" required />
+          </div>
+
+          <div>
+            <label for="email">Student Email</label>
+            <input type="email" id="email" />
+          </div>
+
+          <div class="full actions">
+            <button type="submit">Save Student</button>
+            <button type="button" id="refreshBtn">Refresh Records</button>
+            <button type="button" id="logoutBtn">Logout</button>
+          </div>
+        </form>
+
+        <div id="saveMsg" class="msg"></div>
+      </div>
+
+      <div class="card">
+        <h2>Student Records</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Course</th>
+              <th>Completion Date</th>
+              <th>Instructor</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <tr><td colspan="6">No records loaded yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </div>
 
-  <div class="admin-wrap">
-    <div class="admin-card">
-      <h2>Create Student Code</h2>
-      <div class="grid">
-        <input id="studentName" placeholder="Student name" />
-        <input id="studentEmail" placeholder="Student email" />
-        <select id="studentTier">
-          <option value="FULL">FULL - $150</option>
-          <option value="DISC">DISC - $100</option>
-          <option value="FREE">FREE - $0</option>
-        </select>
-        <select id="studentPaid">
-          <option value="true">Paid</option>
-          <option value="false">Unpaid</option>
-        </select>
-      </div>
-      <div class="btn-row">
-        <button id="createCodeBtn">Generate Student Code</button>
-        <button id="refreshStudentsBtn" class="btn-secondary">Refresh Student List</button>
-      </div>
-      <div id="createResult" class="result-box" style="display:none;"></div>
-    </div>
-
-    <div class="admin-card">
-      <h2>Unlock / Reset Student Lesson</h2>
-      <div class="grid">
-        <input id="unlockEmail" placeholder="Student email" />
-        <input id="unlockLessonId" placeholder="Lesson ID (example: lesson1)" />
-      </div>
-      <div class="btn-row">
-        <button id="unlockLessonBtn">Unlock Lesson</button>
-        <button id="forceOverrideBtn" class="btn-secondary">Require Instructor Override</button>
-        <button id="markPaidBtn">Mark Paid</button>
-        <button id="issueNewCodeBtn" class="btn-danger">Issue New Code</button>
-      </div>
-      <div id="unlockResult" class="result-box" style="display:none;"></div>
-    </div>
-
-    <div class="admin-card">
-      <h2>Students</h2>
-      <div id="studentTableWrap" class="table-wrap"></div>
-    </div>
-  </div>
-
-  <script src="js/admin.js"></script>
+  <script type="module" src="./admin.js"></script>
 </body>
 </html>
