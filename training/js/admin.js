@@ -136,4 +136,5 @@ onAuthStateChanged(auth, async (user) => {
     appSection.style.display = "none";
     studentsTableBody.innerHTML = "";
   }
+alert("admin.js loaded");
 });
