@@ -38,4 +38,22 @@ window.LESSONS = [
     id: 2,
     title: "Safe Storage and Access Control",
     gist: [
-      "Safe storage protects children, guests, and the own
+      "Safe storage protects children, guests, and the owner from potential firearm accidents.",
+      "Access control ensures only authorized individuals can use the firearm."
+    ],
+    scenarios: [
+      {
+        title: "Gun Locker Safety",
+        prompt: "You have a gun safe at home, but your child has learned to open it. What do you do?",
+        choices: [
+          "Remove the firearm from the safe and leave it on the counter.",
+          "Keep the firearm in the safe and set a higher security lock.",
+          "Allow your child to handle the firearm to teach them about safety.",
+          "Keep the firearm out of the safe but under your direct supervision."
+        ],
+        answer: 1,
+        explanation: "Children should never have access to firearms without adult supervision. You must ensure the safe is secure."
+      }
+    ]
+  }
+];
