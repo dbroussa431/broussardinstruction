@@ -1141,4 +1141,31 @@ body.login-page{
     flex-direction: column;
   }
 }
+  .scenario-choice {
+  display: block;
+  cursor: pointer;
+}
+
+.scenario-choice input {
+  display: none;
+}
+
+.scenario-choice .answer-option.selected {
+  border-color: var(--bsa-blue);
+  background: #edf4ff;
+}
+
+.answer-option.correct {
+  border-color: #c8dfcf;
+  background: #eefaf2;
+}
+
+.answer-option.incorrect {
+  border-color: #f3c7c3;
+  background: #fff1f0;
+}
+
+.scenario-feedback {
+  margin-top: 14px;
+}
 }
