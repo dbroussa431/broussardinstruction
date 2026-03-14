@@ -1,76 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Lesson</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Training Portal | Scenario Review</title>
+  <link rel="stylesheet" href="css/portal.css" />
+  <script src="js/app.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark"><img src="assets/logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Lesson Summary</p></div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-gold" id="toScenarioTop" href="#">Continue to Scenarios</a>
-      </div>
-    </div>
-  </header>
+  <div class="portal-shell">
+    <header class="portal-header">
+      <h1>Broussard Shooting Academy</h1>
+      <p>Scenario Review</p>
+    </header>
 
-  <main class="container lesson-layout">
-    <aside class="panel sidebar">
-      <h3 id="sideTitle">Lesson</h3>
-      <div id="sideSections"></div>
-      <div class="notice warn small">Read the lesson gist before starting scenarios and quiz.</div>
-    </aside>
-    <section class="panel content-card">
-      <span class="eyebrow">Self-contained lesson gist</span>
-      <h2 id="lessonTitle"></h2>
-      <p id="lessonSummary" class="muted"></p>
-      <div id="lessonContent"></div>
-      <div class="callout"><strong>Important:</strong> Score at least 80% to pass. After one or two failed attempts, the portal will direct the student to re-read the chapter summary before trying again.</div>
-      <div class="lesson-actions">
-        <a class="btn btn-blue" id="toScenarioBottom" href="#">Continue to Scenarios</a>
-        <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
-      </div>
-    </section>
-  </main>
+    <main class="page-wrap">
+      <section class="page-card">
+        <h2 class="page-title" id="scenarioTitle">Scenario Review</h2>
+        <div id="scenarioNotice" class="notice info">Loading scenario review...</div>
+        <div id="scenarioWrap" class="scenario-list"></div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+        <div class="page-actions">
+          <button id="completeScenarioBtn" class="btn btn-green">Submit Scenario Review</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
   <script>
-    BSA.requireLogin();
-    const lessonId = Number(BSA.qs('lesson') || 1);
-    const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
-    BSA.setLessonContentViewed(lesson.id);
-    document.getElementById('lessonTitle').textContent = `${lesson.id}. ${lesson.title}`;
-    document.getElementById('lessonSummary').textContent = lesson.summary;
-    document.getElementById('sideTitle').textContent = lesson.title;
-    const side = document.getElementById('sideSections');
-    const content = document.getElementById('lessonContent');
-    lesson.sections.forEach((section, idx) => {
-      const anchor = `sec${idx+1}`;
-      const link = document.createElement('a');
-      link.href = `#${anchor}`;
-      link.textContent = section.heading;
-      if (idx === 0) link.classList.add('active');
-      side.appendChild(link);
+    window.addEventListener("DOMContentLoaded", () => {
+      const lessonId = new URLSearchParams(window.location.search).get("lesson");
+      const lesson = window.LESSONS.find(l => l.id == lessonId);
+      
+      if (!lesson) {
+        document.getElementById("scenarioNotice").innerText = "Lesson not found.";
+        return;
+      }
 
-      const wrap = document.createElement('section');
-      wrap.id = anchor;
-      wrap.innerHTML = `<h3>${section.heading}</h3>`;
-      const ul = document.createElement('ul');
-      section.body.forEach(item => {
-        const li = document.createElement('li'); li.textContent = item; ul.appendChild(li);
+      document.getElementById("scenarioTitle").innerText = `${lesson.id}. ${lesson.title} — Scenario Review`;
+      const wrap = document.getElementById("scenarioWrap");
+
+      lesson.scenarios.forEach((sc, index) => {
+        const card = document.createElement("div");
+        card.className = "scenario-card";
+        card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
+        
+        const options = document.createElement('div');
+        options.className = "answer-list";
+
+        sc.choices.forEach((choice, i) => {
+          const option = document.createElement('label');
+          option.className = "scenario-choice";
+          option.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" /> ${String.fromCharCode(65 + i)}. ${choice}`;
+          options.appendChild(option);
+        });
+
+        card.appendChild(options);
+        wrap.appendChild(card);
       });
-      wrap.appendChild(ul);
-      content.appendChild(wrap);
+
+      document.getElementById("completeScenarioBtn").addEventListener("click", () => {
+        let score = 0;
+        lesson.scenarios.forEach((sc, index) => {
+          const selected = document.querySelector(`input[name="scenario_${index}"]:checked`);
+          if (selected && parseInt(selected.value) === sc.answer) score++;
+        });
+        
+        alert(`You answered ${score} out of ${lesson.scenarios.length} correctly.`);
+      });
     });
-    document.getElementById('toScenarioTop').href = `scenario.html?lesson=${lesson.id}`;
-    document.getElementById('toScenarioBottom').href = `scenario.html?lesson=${lesson.id}`;
   </script>
 </body>
 </html>
