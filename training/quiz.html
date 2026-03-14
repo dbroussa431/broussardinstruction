@@ -10,8 +10,13 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo">
+        </div>
+        <div>
+          <h1>Broussard Shooting Academy</h1>
+          <p>Lesson Quiz</p>
+        </div>
       </div>
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
@@ -51,8 +56,13 @@
 
       const lessonId = Number(BSA.qs("lesson") || 1);
       const reviewOnly = BSA.qs("review") === "1";
-      const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
-      if (!lesson) return;
+      const lesson = (window.LESSONS || []).find(l => Number(l.id) === lessonId) || null;
+
+      if (!lesson) {
+        document.getElementById("quizWrap").innerHTML = '<div class="notice bad">Lesson not found.</div>';
+        document.getElementById("submitWrap").classList.add("hidden");
+        return;
+      }
 
       if (BSA.isAdminLocked(lesson.id)) {
         document.querySelector("main").innerHTML = `
@@ -163,7 +173,7 @@
         return;
       }
 
-      const bank = QUIZ_BANK[lesson.id] || [];
+      const bank = window.QUIZ_BANK?.[lesson.id] || [];
       const pickedQuestions = BSA.randomSample(bank, 20);
 
       if (!pickedQuestions.length) {
@@ -215,9 +225,11 @@
           const q = pickedQuestions[idx];
           const picked = card.dataset.answer === undefined ? null : Number(card.dataset.answer);
           const answers = q.type === "tf" ? ["True", "False"] : q.choices;
-          const normalizedCorrectIndex = q.type === "tf" ? (q.answer === true ? 0 : 1) : Number(q.answer);
-          const isCorrect = picked === normalizedCorrectIndex;
+          const normalizedCorrectIndex = q.type === "tf"
+            ? (q.answer === true ? 0 : 1)
+            : Number(q.answer);
 
+          const isCorrect = picked === normalizedCorrectIndex;
           if (isCorrect) correct++;
 
           details.push({
