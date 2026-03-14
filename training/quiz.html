@@ -1,288 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Lesson Quiz</title>
-  <link rel="stylesheet" href="css/portal.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Training Portal | Lesson Quiz</title>
+  <link rel="stylesheet" href="css/portal.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark">
-          <img src="images/bsa-logo.png" alt="BSA logo">
+  <div class="portal-shell">
+    <header class="portal-header">
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Lesson Quiz</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-dark" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-gold" href="lesson.html?lesson=1">Back to Lesson</a>
+      </div>
+    </header>
+
+    <main class="page-wrap">
+      <section class="page-card">
+        <h2 class="page-title" id="quizTitle">Lesson Quiz</h2>
+
+        <div id="quizWrap" class="notice info">Loading quiz...</div>
+
+        <div class="page-actions">
+          <button class="btn btn-green" id="startQuizBtn" type="button">Start Quiz</button>
         </div>
-        <div>
-          <h1>Broussard Shooting Academy</h1>
-          <p>Lesson Quiz</p>
-        </div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-light" id="backToLesson" href="#">Lesson</a>
-      </div>
-    </div>
-  </header>
+      </section>
+    </main>
+  </div>
 
-  <main class="container">
-    <section class="panel content-card logo-watermark">
-      <span class="eyebrow">20-question randomized quiz</span>
-      <h2 id="quizTitle"></h2>
-      <p class="muted">
-        Students must score at least <strong>80%</strong> to pass this lesson and unlock the next one.
-      </p>
-
-      <div id="warningBox" class="notice warn hidden" style="margin-bottom:16px"></div>
-      <div id="quizWrap"></div>
-
-      <div class="lesson-actions" id="submitWrap">
-        <button class="btn btn-gold" id="submitQuizBtn">Submit Quiz</button>
-      </div>
-
-      <div id="resultsWrap" class="hidden"></div>
-    </section>
-  </main>
-
-  <script src="js/data.js"></script>
   <script type="module">
-    import "./js/app.js";
+    import "/js/app.js";
 
     window.addEventListener("DOMContentLoaded", async () => {
       const BSA = window.BSA;
-      if (!BSA) return;
+      const quizWrap = document.getElementById("quizWrap");
+      const startQuizBtn = document.getElementById("startQuizBtn");
 
-      BSA.requireLogin();
+      if (!BSA) {
+        quizWrap.innerHTML = `<div class="notice bad">Portal logic failed to load.</div>`;
+        return;
+      }
 
-      const lessonId = Number(BSA.qs("lesson") || 1);
-      const reviewOnly = BSA.qs("review") === "1";
-      const lesson = (window.LESSONS || []).find(l => Number(l.id) === lessonId) || null;
+      const lessonId = new URLSearchParams(window.location.search).get("lesson");
+      const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
 
       if (!lesson) {
-        document.getElementById("quizWrap").innerHTML = '<div class="notice bad">Lesson not found.</div>';
-        document.getElementById("submitWrap").classList.add("hidden");
+        quizWrap.innerHTML = `<div class="notice bad">Lesson not found.</div>`;
         return;
       }
 
-      if (BSA.isAdminLocked(lesson.id)) {
-        document.querySelector("main").innerHTML = `
-          <section class="panel content-card">
-            <span class="eyebrow">Instructor unlock required</span>
-            <h2>${lesson.id}. ${lesson.title} — Locked</h2>
-            <p class="muted">This lesson has been locked after 3 failed quiz attempts in a row. Please contact Broussard Shooting Academy for an unlock code.</p>
-            <div class="notice warn" style="margin-bottom:16px">Instructor approval is required before another quiz attempt.</div>
-            <div style="display:grid;gap:12px;max-width:420px">
-              <input id="adminUnlockCode" type="password" placeholder="Enter instructor unlock code" class="input">
-              <button id="unlockLessonBtn" class="btn btn-gold" type="button">Unlock Lesson</button>
-            </div>
-            <div class="lesson-actions" style="margin-top:18px">
-              <a class="btn btn-outline" href="lesson.html?lesson=${lesson.id}">Re-read Lesson</a>
-              <a class="btn btn-blue" href="dashboard.html">Back to Dashboard</a>
-            </div>
-          </section>
-        `;
+      quizWrap.innerHTML = `
+        <h3>Lesson: ${lesson.title}</h3>
+        <p>Students must score at least 80% to pass this lesson and unlock the next one.</p>
+        <div class="callout">
+          <strong>Quiz</strong> for ${lesson.title}
+        </div>
+      `;
 
-        document.getElementById("unlockLessonBtn").addEventListener("click", async () => {
-          const code = document.getElementById("adminUnlockCode").value;
-          const ok = await BSA.adminUnlockLesson(lesson.id, code);
-          if (!ok) {
-            alert("Invalid unlock code.");
-            return;
-          }
-          alert("Lesson unlocked successfully.");
-          window.location.reload();
-        });
-
-        return;
-      }
-
-      const lockRemaining = BSA.getLockRemainingMs(lesson.id);
-      if (lockRemaining > 0) {
-        const progress = BSA.getLessonProgress(lesson.id);
-        const failCount = progress.consecutiveFails || 0;
-
-        document.querySelector("main").innerHTML = `
-          <section class="panel content-card">
-            <span class="eyebrow">${failCount === 1 ? "15-minute review lock" : "24-hour review lock"}</span>
-            <h2>${lesson.id}. ${lesson.title} — Temporarily Locked</h2>
-            <p class="muted">
-              ${
-                failCount === 1
-                  ? "This lesson is locked for 15 minutes after the first failed quiz attempt."
-                  : "This lesson is locked for 24 hours after the second failed quiz attempt."
-              }
-            </p>
-            <div class="notice warn" id="lockBox">Unlocks in ${BSA.formatCountdown(lockRemaining)}</div>
-            <div class="lesson-actions">
-              <a class="btn btn-outline" href="lesson.html?lesson=${lesson.id}">Re-read Lesson</a>
-              <a class="btn btn-blue" href="dashboard.html">Back to Dashboard</a>
-            </div>
-          </section>
-        `;
-
-        const lockBox = document.getElementById("lockBox");
-        setInterval(() => {
-          const ms = BSA.getLockRemainingMs(lesson.id);
-          if (ms <= 0) {
-            window.location.reload();
-            return;
-          }
-          lockBox.textContent = `Unlocks in ${BSA.formatCountdown(ms)}`;
-        }, 1000);
-
-        return;
-      }
-
-      document.getElementById("quizTitle").textContent = `${lesson.id}. ${lesson.title} — Quiz`;
-      document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
-
-      const progress = BSA.getLessonProgress(lesson.id);
-      const attempts = BSA.getAttemptCount(lesson.id);
-      const failStreak = BSA.getConsecutiveFails(lesson.id);
-
-      if (attempts >= 1 && !reviewOnly) {
-        const warning = document.getElementById("warningBox");
-        warning.classList.remove("hidden");
-        warning.textContent = failStreak >= 2
-          ? "Warning: another failed attempt will require an instructor unlock code from Broussard Shooting Academy."
-          : "Review the chapter summary carefully before retaking this quiz.";
-      }
-
-      const wrap = document.getElementById("quizWrap");
-      const resultsWrap = document.getElementById("resultsWrap");
-      const submitWrap = document.getElementById("submitWrap");
-
-      if (reviewOnly) {
-        submitWrap.classList.add("hidden");
-
-        if (!progress.quizDetails || !progress.quizDetails.length) {
-          resultsWrap.innerHTML = '<div class="banner retake">No prior quiz review was found for this lesson yet.</div>';
-        } else {
-          const missed = progress.quizDetails.filter(x => !x.correct);
-          let html = `<div class="banner pass">Last recorded score: ${progress.quizScore || 0}%</div>`;
-          html += missed.length ? "<h3>Missed Questions Review</h3>" : "<h3>No missed questions on the last passing attempt.</h3>";
-
-          missed.forEach((item, i) => {
-            html += `<div class="review-item"><p><strong>${i + 1}. ${item.q}</strong></p><p>Your answer: ${item.userAnswer ?? "No answer selected"}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`;
-          });
-
-          resultsWrap.innerHTML = html;
-        }
-
-        resultsWrap.classList.remove("hidden");
-        return;
-      }
-
-      const bank = window.QUIZ_BANK?.[lesson.id] || [];
-      const pickedQuestions = BSA.randomSample(bank, 20);
-
-      if (!pickedQuestions.length) {
-        wrap.innerHTML = '<div class="notice bad">No quiz bank found for this lesson yet.</div>';
-        submitWrap.classList.add("hidden");
-        return;
-      }
-
-      const list = document.createElement("div");
-      list.className = "q-list";
-
-      pickedQuestions.forEach((item, idx) => {
-        const card = document.createElement("div");
-        card.className = "question-card";
-        card.dataset.index = idx;
-
-        const answers = item.type === "tf" ? ["True", "False"] : item.choices;
-        card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
-
-        const options = document.createElement("div");
-        options.className = "options";
-
-        answers.forEach((choice, choiceIndex) => {
-          const option = document.createElement("button");
-          option.type = "button";
-          option.className = "option";
-          option.textContent = `${String.fromCharCode(65 + choiceIndex)}. ${choice}`;
-
-          option.addEventListener("click", () => {
-            card.querySelectorAll(".option").forEach(el => el.classList.remove("selected"));
-            option.classList.add("selected");
-            card.dataset.answer = choiceIndex;
-          });
-
-          options.appendChild(option);
-        });
-
-        card.appendChild(options);
-        list.appendChild(card);
-      });
-
-      wrap.appendChild(list);
-
-      document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-        let correct = 0;
-        const details = [];
-
-        document.querySelectorAll(".question-card").forEach((card, idx) => {
-          const q = pickedQuestions[idx];
-          const picked = card.dataset.answer === undefined ? null : Number(card.dataset.answer);
-          const answers = q.type === "tf" ? ["True", "False"] : q.choices;
-          const normalizedCorrectIndex = q.type === "tf"
-            ? (q.answer === true ? 0 : 1)
-            : Number(q.answer);
-
-          const isCorrect = picked === normalizedCorrectIndex;
-          if (isCorrect) correct++;
-
-          details.push({
-            q: q.q,
-            correct: isCorrect,
-            userAnswer: picked === null ? "No answer selected" : answers[picked],
-            correctAnswer: answers[normalizedCorrectIndex],
-            explanation: q.explanation || ""
-          });
-        });
-
-        const score = Math.round((correct / pickedQuestions.length) * 100);
-        await BSA.recordQuizResult(lesson.id, score, details);
-
-        wrap.classList.add("hidden");
-        submitWrap.classList.add("hidden");
-
-        const updatedProgress = BSA.getLessonProgress(lesson.id);
-        const updatedFails = updatedProgress.consecutiveFails || 0;
-        const missed = details.filter(x => !x.correct);
-        const passed = score >= BSA.PASSING_SCORE;
-
-        let html = `<div class="banner ${passed ? "pass" : "retake"}">${passed ? `Passed — ${score}%` : `Retake Required — ${score}%`}</div>`;
-        html += "<h3 style='margin-top:22px'>Missed Questions Review</h3>";
-
-        if (!missed.length) {
-          html += '<div class="review-item"><p><strong>No missed questions.</strong> Great work.</p></div>';
-        } else {
-          missed.forEach((item, i) => {
-            html += `<div class="review-item"><p><strong>${i + 1}. ${item.q}</strong></p><p>Your answer: ${item.userAnswer}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`;
-          });
-        }
-
-        html += `<div class="lesson-actions" style="margin-top:18px">
-          <a class="btn btn-outline" href="lesson.html?lesson=${lesson.id}">Re-read Lesson</a>
-          <a class="btn btn-blue" href="dashboard.html">Back to Dashboard</a>
-        </div>`;
-
-        if (!passed) {
-          html += `<div class="notice warn" style="margin-top:14px">${
-            updatedFails >= 3
-              ? "This lesson now requires an instructor unlock code."
-              : updatedFails === 2
-                ? "Lesson locked for 24 hours. Countdown begins now."
-                : "Lesson locked for 15 minutes. Countdown begins now."
-          }</div>`;
-        }
-
-        resultsWrap.innerHTML = html;
-        resultsWrap.classList.remove("hidden");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
-  </script>
-</body>
-</html>
+      startQuizBtn.addEventListener("click", () => {
+        window.location.href = `quiz-questions
