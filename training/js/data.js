@@ -1,5 +1,5 @@
 
-const LESSONS = [
+window.LESSONS = [
   {
     id: 1,
     slug: 'personal-protection-plan',
@@ -522,7 +522,7 @@ const LESSONS = [
   }
 ];
 
-const QUIZ_BANK = {
+window.QUIZ_BANK = {
   1: [
     { q: 'You realize a situation may be turning dangerous and you are now in Condition Red. What are legitimate options?', choices: ['Retreating', 'Taking cover', 'Engaging the threat if necessary', 'Waiting it out without acting'], answer: 2, explanation: 'Condition Red is action based on a clear trigger. Retreat, cover, or engagement may all be options depending on the threat. Passive waiting is not the lesson takeaway.' },
     { q: 'True or False: When in public, your normal awareness level should be at least Condition Yellow.', type: 'tf', answer: true, explanation: 'The course teaches that Condition Yellow is the normal alert state in public.' },
