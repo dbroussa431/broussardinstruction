@@ -184,8 +184,9 @@
     </main>
   </div>
 
-  <script type="module">
-    import "/js/app.js";  // Ensure app.js is imported
+<script src="data.js"></script> <!-- Make sure this is pointing to the correct file -->
+<script type="module" src="js/app.js"></script>
+
 
     function escapeHtml(value) {
       return String(value ?? "")
