@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Lesson</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/portal.css">
 </head>
 <body>
   <header class="topbar">
@@ -39,7 +39,7 @@
       <div id="lessonContent"></div>
 
       <div class="callout">
-        <strong>Important:</strong> Score at least 80% to pass. After one or two failed attempts, the portal will direct the student to re-read the chapter summary before trying again.
+        <strong>Important:</strong> Score at least 80% to pass. After one failed attempt, the portal applies a 15-minute review lock. After a second failed attempt, the portal applies a 24-hour review lock. After a third failed attempt in a row, instructor unlock is required.
       </div>
 
       <div class="lesson-actions">
@@ -50,48 +50,60 @@
   </main>
 
   <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  <script>
-    BSA.requireLogin();
+  <script type="module">
+    import "./js/app.js";
 
-    const lessonId = Number(BSA.qs('lesson') || 1);
-    const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
+    window.addEventListener("DOMContentLoaded", async () => {
+      const BSA = window.BSA;
+      if (!BSA) return;
 
-    BSA.setLessonContentViewed(lesson.id);
+      BSA.requireLogin();
 
-    document.getElementById('lessonTitle').textContent = `${lesson.id}. ${lesson.title}`;
-    document.getElementById('lessonSummary').textContent = lesson.summary;
-    document.getElementById('sideTitle').textContent = lesson.title;
+      const lessonId = Number(BSA.qs("lesson") || 1);
+      const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
+      if (!lesson) return;
 
-    const side = document.getElementById('sideSections');
-    const content = document.getElementById('lessonContent');
+      await BSA.setLessonContentViewed(lesson.id);
 
-    lesson.sections.forEach((section, idx) => {
-      const anchor = `sec${idx + 1}`;
+      document.getElementById("lessonTitle").textContent = `${lesson.id}. ${lesson.title}`;
+      document.getElementById("lessonSummary").textContent = lesson.summary || "";
+      document.getElementById("sideTitle").textContent = lesson.title || "Lesson";
 
-      const link = document.createElement('a');
-      link.href = `#${anchor}`;
-      link.textContent = section.heading;
-      if (idx === 0) link.classList.add('active');
-      side.appendChild(link);
+      const side = document.getElementById("sideSections");
+      const content = document.getElementById("lessonContent");
 
-      const wrap = document.createElement('section');
-      wrap.id = anchor;
-      wrap.innerHTML = `<h3>${section.heading}</h3>`;
+      side.innerHTML = "";
+      content.innerHTML = "";
 
-      const ul = document.createElement('ul');
-      section.body.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        ul.appendChild(li);
+      (lesson.sections || []).forEach((section, idx) => {
+        const anchor = `sec${idx + 1}`;
+
+        const link = document.createElement("a");
+        link.href = `#${anchor}`;
+        link.textContent = section.heading || `Section ${idx + 1}`;
+        link.className = "side-link";
+        if (idx === 0) link.classList.add("active");
+        side.appendChild(link);
+
+        const wrap = document.createElement("section");
+        wrap.id = anchor;
+        wrap.className = "lesson-section";
+        wrap.innerHTML = `<h3>${section.heading || `Section ${idx + 1}`}</h3>`;
+
+        const ul = document.createElement("ul");
+        (section.body || []).forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          ul.appendChild(li);
+        });
+
+        wrap.appendChild(ul);
+        content.appendChild(wrap);
       });
 
-      wrap.appendChild(ul);
-      content.appendChild(wrap);
+      document.getElementById("toScenarioTop").href = `scenario.html?lesson=${lesson.id}`;
+      document.getElementById("toScenarioBottom").href = `scenario.html?lesson=${lesson.id}`;
     });
-
-    document.getElementById('toScenarioTop').href = `scenario.html?lesson=${lesson.id}`;
-    document.getElementById('toScenarioBottom').href = `scenario.html?lesson=${lesson.id}`;
   </script>
 </body>
 </html>
