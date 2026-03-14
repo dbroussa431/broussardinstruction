@@ -1,71 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal | Lesson Quiz</title>
-  <link rel="stylesheet" href="css/portal.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Quiz</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="portal-shell">
-    <header class="portal-header">
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Lesson Quiz</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="assets/logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
       </div>
-      <div class="header-actions">
-        <a class="btn btn-dark" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-gold" href="lesson.html?lesson=1">Back to Lesson</a>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
       </div>
-    </header>
-<script src="data.js"></script> <!-- Make sure this is pointing to the correct file -->
-<script type="module" src="js/app.js"></script>
-    <main class="page-wrap">
-      <section class="page-card">
-        <h2 class="page-title" id="quizTitle">Lesson Quiz</h2>
+    </div>
+  </header>
 
-        <div id="quizWrap" class="notice info">Loading quiz...</div>
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">20 randomized questions • pass at 80%</span>
+      <h2 id="quizTitle"></h2>
+      <p class="muted">Students can review what they missed after finishing. If they fail, the quiz randomizes again from a larger question bank.</p>
+      <div id="rereadNotice" class="notice warn hidden" style="margin-bottom:16px"></div>
+      <div id="quizWrap" class="q-list"></div>
+      <div class="lesson-actions">
+        <button class="btn btn-blue" id="submitQuizBtn">Submit Quiz</button>
+        <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
+      </div>
+    </section>
+    <section id="resultPanel" class="results-grid hidden" style="margin-top:24px"></section>
+  </main>
 
-        <div class="page-actions">
-          <button class="btn btn-green" id="startQuizBtn" type="button">Start Quiz</button>
-        </div>
-      </section>
-    </main>
-  </div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    BSA.requireLogin();
+    const lessonId = Number(BSA.qs('lesson') || 1);
+    const reviewMode = BSA.qs('review') === '1';
+    const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
+    const pool = QUIZ_BANK[lessonId] || QUIZ_BANK[1];
+    const progress = BSA.getLessonProgress(lessonId);
+    document.getElementById('quizTitle').textContent = `${lesson.id}. ${lesson.title} — Quiz`;
+    document.getElementById('backLessonLink').href = `lesson.html?lesson=${lesson.id}`;
 
-<script src="data.js"></script> <!-- Make sure this is pointing to the correct file -->
-<script type="module" src="js/app.js"></script>
+    const attemptCount = BSA.getAttemptCount(lessonId);
+    if (attemptCount >= 1) {
+      document.getElementById('rereadNotice').textContent = attemptCount >= 2
+        ? 'Please re-read the lesson summary before another attempt.'
+        : 'If you score below 80%, you will need to retake the quiz.';
+      document.getElementById('rereadNotice').classList.remove('hidden');
+    }
 
-    window.addEventListener("DOMContentLoaded", async () => {
-      const BSA = window.BSA;
-      const quizWrap = document.getElementById("quizWrap");
-      const startQuizBtn = document.getElementById("startQuizBtn");
-
-      if (!BSA) {
-        quizWrap.innerHTML = `<div class="notice bad">Portal logic failed to load.</div>`;
-        return;
-      }
-
-      const lessonId = new URLSearchParams(window.location.search).get("lesson");
-      const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
-
-      if (!lesson) {
-        quizWrap.innerHTML = `<div class="notice bad">Lesson not found.</div>`;
-        return;
-      }
-
-      quizWrap.innerHTML = `
-        <h3>Lesson: ${lesson.title}</h3>
-        <p>Students must score at least 80% to pass this lesson and unlock the next one.</p>
-        <div class="callout">
-          <strong>Quiz</strong> for ${lesson.title}
-        </div>
-      `;
-
-      startQuizBtn.addEventListener("click", () => {
-        window.location.href = `quiz-questions.html?lesson=${lesson.id}`;
+    if (reviewMode && progress.quizDetails) {
+      renderResults(progress.quizScore, progress.quizDetails, true);
+      document.querySelector('.content-card').classList.add('hidden');
+    } else {
+      const selectedQuestions = BSA.randomSample(pool, 20).map((q, idx) => ({ ...q, _id: idx }));
+      const quizWrap = document.getElementById('quizWrap');
+      selectedQuestions.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
+        const options = document.createElement('div');
+        options.className = 'options';
+        const choices = item.type === 'tf' ? ['True','False'] : item.choices;
+        choices.forEach((choice, i) => {
+          const option = document.createElement('label');
+          option.className = 'option';
+          option.innerHTML = `<input type="radio" name="q_${idx}" value="${item.type === 'tf' ? (i === 0 ? 'true' : 'false') : i}" style="margin-right:8px"> ${choice}`;
+          option.addEventListener('click', () => {
+            options.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+            option.classList.add('selected');
+          });
+          options.appendChild(option);
+        });
+        card.appendChild(options);
+        quizWrap.appendChild(card);
       });
-    });
+
+      document.getElementById('submitQuizBtn').addEventListener('click', () => {
+        let correct = 0;
+        const details = [];
+        selectedQuestions.forEach((item, idx) => {
+          const picked = document.querySelector(`input[name="q_${idx}"]:checked`);
+          let isCorrect = false;
+          let yourAnswer = 'No answer selected';
+          let correctAnswer = '';
+          if (item.type === 'tf') {
+            correctAnswer = item.answer ? 'True' : 'False';
+            if (picked) {
+              yourAnswer = picked.value === 'true' ? 'True' : 'False';
+              isCorrect = String(item.answer) === picked.value;
+            }
+          } else {
+            correctAnswer = item.choices[item.answer];
+            if (picked) {
+              yourAnswer = item.choices[Number(picked.value)];
+              isCorrect = Number(picked.value) === item.answer;
+            }
+          }
+          if (isCorrect) correct++;
+          details.push({ question: item.q, yourAnswer, correctAnswer, explanation: item.explanation, isCorrect });
+        });
+        const score = Math.round((correct / selectedQuestions.length) * 100);
+        BSA.recordQuizResult(lessonId, score, details);
+        renderResults(score, details, false);
+        document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    function renderResults(score, details, reviewOnly) {
+      const passed = score >= BSA.PASSING_SCORE;
+      const resultPanel = document.getElementById('resultPanel');
+      const missed = details.filter(d => !d.isCorrect);
+      resultPanel.classList.remove('hidden');
+      resultPanel.innerHTML = `
+        <div class="panel result-card">
+          <div class="flex-row" style="justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div>
+              <div class="banner ${passed ? 'pass' : 'retake'}">${passed ? 'PASS' : 'RETAKE REQUIRED'} • Score: ${score}%</div>
+              <p class="muted">Passing score is ${BSA.PASSING_SCORE}%.</p>
+            </div>
+            <div class="score-circle" style="--pct:${score}%;"><span>${score}%</span></div>
+          </div>
+          ${passed ? '<div class="notice ok">Lesson quiz passed. You can move forward.</div>' : '<div class="notice bad">Anything below 80% requires a retake. Questions and answers randomize again from the larger question bank.</div>'}
+          ${BSA.getAttemptCount(lessonId) >= 2 && !passed ? '<div class="notice warn" style="margin-top:12px">Please re-read the lesson summary before your next attempt.</div>' : ''}
+          <div class="lesson-actions" style="margin-top:16px;">
+            ${passed ? `<a class="btn btn-blue" href="${lessonId === LESSONS.length ? 'complete.html' : `lesson.html?lesson=${lessonId + 1}`}">${lessonId === LESSONS.length ? 'Finish Online Portion' : 'Proceed to Next Lesson'}</a>` : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`}
+            <a class="btn btn-outline" href="lesson.html?lesson=${lessonId}">Review Lesson Again</a>
+          </div>
+        </div>
+        <div class="panel result-card">
+          <h3>Missed Question Review</h3>
+          ${missed.length ? missed.map(item => `<div class="review-item"><p><strong>${item.question}</strong></p><p>Your answer: ${item.yourAnswer}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`).join('') : '<div class="review-item"><p>No missed questions on this attempt.</p></div>'}
+        </div>`;
+    }
   </script>
 </body>
 </html>

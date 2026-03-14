@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Online Prerequisite Completed</title>
+  <title>BSA Online Portion Complete</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-mark"><img src="assets/logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Final Online Status</p></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Online Prerequisite Completed</p></div>
       </div>
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
@@ -20,17 +20,22 @@
   </header>
 
   <main class="container">
-    <section class="panel completion-box logo-watermark">
-      <span class="eyebrow">Online portion complete</span>
-      <h2>Online Prerequisite Completed</h2>
-      <p>You have successfully completed the online lesson, scenario, and quiz requirements for this course. Final course completion still requires the instructor-led live review, safe handling verification, and successful completion of the range portion.</p>
-      <p><strong>No certificate is printed from this portal.</strong> Your certificate is handed personally by Broussard Shooting Academy after all live requirements are completed.</p>
-      <div class="lesson-actions" style="justify-content:center;margin-top:18px">
-        <a class="btn btn-gold" href="mailto:BroussardShootingAcademy@protonmail.com?subject=Live%20Review%20and%20Range%20Request">Request Live Session</a>
+    <section class="panel content-card center">
+      <span class="eyebrow">Online prerequisite completed</span>
+      <h2>Online work complete</h2>
+      <p class="muted">Status: <strong>Online Prerequisite Completed</strong></p>
+      <div class="banner pass">Your online lessons, scenario reviews, and quizzes are complete.</div>
+      <p>You are now ready to schedule the live class review and range qualification with Broussard Shooting Academy.</p>
+      <div class="callout center"><strong>No printable certificate appears here.</strong><br>Final certificate is handed personally after successful completion of the live portion and range work.</div>
+      <div class="lesson-actions" style="justify-content:center;">
+        <button class="btn btn-gold">Request Live Session</button>
         <a class="btn btn-outline" href="dashboard.html">Return to Dashboard</a>
       </div>
-      <p class="footer-note">Suggested next step: confirm a date and time for your live class review and range qualification.</p>
     </section>
   </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>BSA.requireLogin();</script>
 </body>
 </html>

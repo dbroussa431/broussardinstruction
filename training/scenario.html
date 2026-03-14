@@ -1,425 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal | Scenario Review</title>
-  <link rel="stylesheet" href="css/portal.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-    }
-
-    .portal-shell {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .portal-header {
-      background: linear-gradient(90deg, #050505, #1a1a1a);
-      color: #fff;
-      padding: 18px 24px;
-      border-bottom: 4px solid #c18b2f;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .portal-header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-
-    .page-wrap {
-      width: min(1100px, calc(100% - 32px));
-      margin: 24px auto;
-    }
-
-    .page-card {
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      padding: 24px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .page-title {
-      margin: 0 0 6px;
-      font-size: 2rem;
-    }
-
-    .scenario-list {
-      display: grid;
-      gap: 18px;
-    }
-
-    .scenario-card {
-      border: 1px solid #d1d5db;
-      border-radius: 16px;
-      padding: 20px;
-      background: #fff;
-    }
-
-    .answer-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .scenario-choice {
-      display: block;
-      cursor: pointer;
-    }
-
-    .scenario-choice input {
-      display: none;
-    }
-
-    .answer-option {
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 12px 14px;
-      background: #f9fafb;
-      transition: 0.2s ease;
-      font-weight: 600;
-    }
-
-    .scenario-choice input:checked + .answer-option {
-      border-color: #1d4ed8;
-      background: #eff6ff;
-    }
-
-    .scenario-feedback {
-      margin-top: 14px;
-    }
-
-    .scenario-feedback.hidden {
-      display: none;
-    }
-
-    .callout {
-      background: #f8fafc;
-      border-left: 4px solid #c18b2f;
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: #374151;
-      line-height: 1.55;
-    }
-
-    .page-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 22px;
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      color: #6b7280;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 700px) {
-      .portal-header h1 {
-        font-size: 1.4rem;
-      }
-
-      .page-title {
-        font-size: 1.5rem;
-      }
-
-      .page-card {
-        padding: 18px;
-      }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Scenario Review</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <script type="module">
-    import "/js/app.js";
-      window.addEventListener("DOMContentLoaded", () => {
-  const lessonId = new URLSearchParams(window.location.search).get("lesson");
-  const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
-
-  if (!lesson) {
-    showNotice("bad", "Lesson not found.");
-    return;
-  }
-
-  const wrap = document.getElementById("scenarioWrap");
-  wrap.innerHTML = ""; // Clear loading notice
-
-  lesson.scenarios.forEach((scenario, index) => {
-    const card = document.createElement("div");
-    card.classList.add("scenario-card");
-    card.innerHTML = `
-      <h3>${index + 1}. ${scenario.title}</h3>
-      <p>${scenario.prompt}</p>
-      <div class="answer-list">
-        ${scenario.choices.map((choice, i) => `
-          <label>
-            <input type="radio" name="scenario_${index}" value="${i}">
-            ${String.fromCharCode(65 + i)}. ${choice}
-          </label>
-        `).join('')}
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="assets/logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
       </div>
-    `;
-    wrap.appendChild(card);
-  });
-});
-
-  <div class="portal-shell">
-    <header class="portal-header">
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Scenario Review</p>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
       </div>
-      <div class="header-actions">
-        <a class="btn btn-dark" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-gold" id="backToLesson" href="lesson.html?lesson=1">Back to Lesson</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">2 short scenarios before the quiz</span>
+      <h2 id="scenarioTitle"></h2>
+      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
+      <div id="scenarioWrap"></div>
+      <div id="scenarioResults" class="hidden"></div>
+      <div class="lesson-actions">
+        <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
+        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
       </div>
-    </header>
+    </section>
+  </main>
 
-    <main class="page-wrap">
-      <section class="page-card">
-        <h2 class="page-title" id="scenarioTitle">Scenario Review</h2>
-        <p class="page-subtitle">
-          Read each situation and choose the safest, most defensible response.
-        </p>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    BSA.requireLogin();
+    const lessonId = Number(BSA.qs('lesson') || 1);
+    const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
+    document.getElementById('scenarioTitle').textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
+    document.getElementById('toQuizTop').href = `quiz.html?lesson=${lesson.id}`;
+    document.getElementById('quizLink').href = `quiz.html?lesson=${lesson.id}`;
 
-        <div id="scenarioNotice" class="notice info">Loading scenario review...</div>
+    const wrap = document.getElementById('scenarioWrap');
+    lesson.scenarios.forEach((sc, index) => {
+      const card = document.createElement('div');
+      card.className = 'scenario-card';
+      card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
+      const list = document.createElement('div');
+      list.className = 'answer-list';
+      sc.choices.forEach((choice, i) => {
+        const label = document.createElement('label');
+        label.className = 'answer-option';
+        label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65+i)}. ${choice}`;
+        list.appendChild(label);
+      });
+      card.appendChild(list);
+      wrap.appendChild(card);
+    });
 
-        <div id="scenarioWrap" class="scenario-list"></div>
-
-        <div class="page-actions">
-          <div class="page-actions-left">
-            <a class="btn btn-dark" id="toLessonBtn" href="lesson.html?lesson=1">Return to Lesson</a>
-            <a class="btn btn-blue" id="toQuizBtn" href="quiz.html?lesson=1">Go to Quiz</a>
-          </div>
-          <div class="page-actions-right">
-            <button class="btn btn-green" id="completeScenarioBtn" type="button">
-              Submit Scenario Review
-            </button>
-          </div>
-        </div>
-
-        <div class="footer-note">
-          Scenario review must be completed before moving deeper into the course workflow.
-        </div>
-      </section>
-    </main>
-  </div>
-
-
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function showNotice(type, message) {
-      const notice = document.getElementById("scenarioNotice");
-      notice.className = `notice ${type}`;
-      notice.innerHTML = message;
-    }
-
-    function getLessonsSafe() {
-      if (Array.isArray(window.LESSONS)) return window.LESSONS;
-      if (Array.isArray(window.lessons)) return window.lessons;
-      return [];
-    }
-
-    function normalizeScenario(item, index) {
-      const choices = Array.isArray(item?.choices)
-        ? item.choices
-        : Array.isArray(item?.options)
-        ? item.options
-        : [];
-
-      let answerIndex = item?.answer;
-
-      if (typeof answerIndex === "string") {
-        const upper = answerIndex.trim().toUpperCase();
-        if (/^[A-D]$/.test(upper)) {
-          answerIndex = upper.charCodeAt(0) - 65;
-        } else if (!Number.isNaN(Number(answerIndex))) {
-          answerIndex = Number(answerIndex);
-        }
-      }
-
-      if (typeof answerIndex !== "number" || Number.isNaN(answerIndex)) {
-        answerIndex = 0;
-      }
-
-      return {
-        title: item?.title || `Scenario ${index + 1}`,
-        prompt: item?.prompt || item?.situation || item?.question || "Review this situation and choose the best answer.",
-        choices,
-        answer: answerIndex,
-        explanation:
-          item?.explanation ||
-          item?.why ||
-          "Review the lesson and choose the safest, most defensible response."
-      };
-    }
-
-    async function initScenarioPage() {
-      const wrap = document.getElementById("scenarioWrap");
-      const titleEl = document.getElementById("scenarioTitle");
-      const backToLesson = document.getElementById("backToLesson");
-      const toLessonBtn = document.getElementById("toLessonBtn");
-      const toQuizBtn = document.getElementById("toQuizBtn");
-      const completeBtn = document.getElementById("completeScenarioBtn");
-
-      try {
-        const BSA = window.BSA;
-
-        if (!BSA) {
-          showNotice("bad", "Portal logic failed to load. The <strong>BSA</strong> object is missing.");
-          wrap.innerHTML = "";
-          return;
-        }
-
-        if (typeof BSA.requireLogin === "function") {
-          BSA.requireLogin();
-        }
-
-        const lessonId = Number(
-          typeof BSA.qs === "function"
-            ? (BSA.qs("lesson") || 1)
-            : (new URLSearchParams(window.location.search).get("lesson") || 1)
-        );
-
-        const lessons = getLessonsSafe();
-
-        if (!lessons.length) {
-          showNotice(
-            "bad",
-            "No lesson data was found. Your <strong>data.js</strong> or lesson loader is not available on this page."
-          );
-          wrap.innerHTML = "";
-          return;
-        }
-
-        const lesson = lessons.find(l => Number(l?.id) === lessonId);
-
-        if (!lesson) {
-          showNotice("bad", `Lesson ${lessonId} was not found.`);
-          wrap.innerHTML = "";
-          return;
-        }
-
-        titleEl.textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
-        backToLesson.href = `lesson.html?lesson=${lesson.id}`;
-        toLessonBtn.href = `lesson.html?lesson=${lesson.id}`;
-        toQuizBtn.href = `quiz.html?lesson=${lesson.id}`;
-
-        const bankRaw = Array.isArray(lesson.scenarios) ? lesson.scenarios : [];
-        const bank = bankRaw.map(normalizeScenario).filter(item => item.choices.length > 0);
-
-        if (!bank.length) {
-          showNotice(
-            "bad",
-            "This lesson does not currently have scenario questions in a valid format."
-          );
-          wrap.innerHTML = "";
-          completeBtn.disabled = true;
-          return;
-        }
-
-        wrap.innerHTML = bank.map((item, index) => {
-          const choicesHtml = item.choices.map((choice, i) => `
-            <label class="scenario-choice">
-              <input type="radio" name="scenario_${index}" value="${i}">
-              <div class="answer-option">${String.fromCharCode(65 + i)}. ${escapeHtml(choice)}</div>
-            </label>
-          `).join("");
-
-          return `
-            <article class="scenario-card" data-index="${index}">
-              <h3>${index + 1}. ${escapeHtml(item.title)}</h3>
-              <p>${escapeHtml(item.prompt)}</p>
-              <div class="answer-list">${choicesHtml}</div>
-              <div class="scenario-feedback hidden"></div>
-            </article>
-          `;
-        }).join("");
-
-        showNotice("good", `Loaded ${bank.length} scenario${bank.length === 1 ? "" : "s"} for Lesson ${lesson.id}.`);
-
-        completeBtn.disabled = false;
-        completeBtn.textContent = "Submit Scenario Review";
-
-        completeBtn.addEventListener("click", async () => {
-          let answeredCount = 0;
-
-          document.querySelectorAll(".scenario-card").forEach((card, index) => {
-            const item = bank[index];
-            const selected = card.querySelector(`input[name="scenario_${index}"]:checked`);
-            const feedback = card.querySelector(".scenario-feedback");
-
-            if (selected) answeredCount++;
-
-            card.querySelectorAll(".answer-option").forEach((opt, i) => {
-              opt.classList.remove("correct", "incorrect");
-
-              if (i === Number(item.answer)) {
-                opt.classList.add("correct");
-              }
-            });
-
-            if (selected) {
-              const chosen = Number(selected.value);
-              const chosenOption = selected.closest(".scenario-choice")?.querySelector(".answer-option");
-
-              if (chosen !== Number(item.answer) && chosenOption) {
-                chosenOption.classList.add("incorrect");
-              }
-            }
-
-            feedback.classList.remove("hidden");
-            feedback.innerHTML = `
-              <div class="callout">
-                <strong>Best Answer:</strong> ${String.fromCharCode(65 + Number(item.answer))}<br>
-                <strong>Why:</strong> ${escapeHtml(item.explanation)}
-              </div>
-            `;
-          });
-
-          if (typeof BSA.setScenarioCompleted === "function") {
-            await BSA.setScenarioCompleted(lesson.id);
-          }
-
-          completeBtn.disabled = true;
-          completeBtn.textContent = "Scenario Review Submitted";
-
-          showNotice(
-            "good",
-            `Scenario review submitted. You answered ${answeredCount} of ${bank.length} scenario${bank.length === 1 ? "" : "s"}.`
-          );
-        });
-      } catch (err) {
-        console.error("Scenario page error:", err);
-        showNotice(
-          "bad",
-          `Scenario page failed to load. Error: ${escapeHtml(err?.message || err)}`
-        );
-        document.getElementById("scenarioWrap").innerHTML = "";
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", initScenarioPage);
+    document.getElementById('submitScenarioBtn').addEventListener('click', () => {
+      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
+      lesson.scenarios.forEach((sc, index) => {
+        const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
+        const pickedIndex = picked ? Number(picked.value) : -1;
+        html += `<div class="review-item"><p><strong>Scenario ${index+1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : 'No answer selected'}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
+      });
+      document.getElementById('scenarioResults').innerHTML = html;
+      document.getElementById('scenarioResults').classList.remove('hidden');
+      BSA.setScenarioCompleted(lesson.id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
