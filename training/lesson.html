@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Lesson</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <img src="images/bsa-logo.png" alt="BSA logo">
-        <div>
-          <h1>Broussard Shooting Academy</h1>
-          <p>Lesson Summary</p>
-        </div>
+        <div class="brand-mark"><img src="images/logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Lesson Summary</p></div>
       </div>
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
@@ -27,17 +24,14 @@
     <aside class="panel sidebar">
       <h3 id="sideTitle">Lesson</h3>
       <div id="sideSections"></div>
-      <div class="notice warn small">Read this lesson gist before starting the scenarios and quiz.</div>
+      <div class="notice warn small">Read the lesson gist before starting scenarios and quiz.</div>
     </aside>
-
-    <section class="panel content-card logo-watermark">
+    <section class="panel content-card">
       <span class="eyebrow">Self-contained lesson gist</span>
       <h2 id="lessonTitle"></h2>
       <p id="lessonSummary" class="muted"></p>
       <div id="lessonContent"></div>
-      <div class="callout">
-        <strong>Pass rule:</strong> Students must score at least 80%. If they fail, they should re-read the chapter summary before trying again.
-      </div>
+      <div class="callout"><strong>Important:</strong> Score at least 80% to pass. After one or two failed attempts, the portal will direct the student to re-read the chapter summary before trying again.</div>
       <div class="lesson-actions">
         <a class="btn btn-blue" id="toScenarioBottom" href="#">Continue to Scenarios</a>
         <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
@@ -45,39 +39,38 @@
     </section>
   </main>
 
-  <script src="js/data.js"></script>
-  <script type="module" src="js/app.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
   <script>
     BSA.requireLogin();
-
     const lessonId = Number(BSA.qs('lesson') || 1);
     const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
-
     BSA.setLessonContentViewed(lesson.id);
-
-    document.getElementById('sideTitle').textContent = `${lesson.id}. ${lesson.title}`;
     document.getElementById('lessonTitle').textContent = `${lesson.id}. ${lesson.title}`;
     document.getElementById('lessonSummary').textContent = lesson.summary;
-    document.getElementById('toScenarioTop').href = `scenario.html?lesson=${lesson.id}`;
-    document.getElementById('toScenarioBottom').href = `scenario.html?lesson=${lesson.id}`;
-
+    document.getElementById('sideTitle').textContent = lesson.title;
     const side = document.getElementById('sideSections');
     const content = document.getElementById('lessonContent');
-
-    lesson.sections.forEach((section, i) => {
+    lesson.sections.forEach((section, idx) => {
+      const anchor = `sec${idx+1}`;
       const link = document.createElement('a');
-      link.className = `side-link ${i === 0 ? 'active' : ''}`;
-      link.href = `#section-${i + 1}`;
+      link.href = `#${anchor}`;
       link.textContent = section.heading;
+      if (idx === 0) link.classList.add('active');
       side.appendChild(link);
 
-      const block = document.createElement('section');
-      block.className = 'lesson-section';
-      block.id = `section-${i + 1}`;
-      const items = section.body.map(item => `<li>${item}</li>`).join('');
-      block.innerHTML = `<h3>${section.heading}</h3><ul>${items}</ul>`;
-      content.appendChild(block);
+      const wrap = document.createElement('section');
+      wrap.id = anchor;
+      wrap.innerHTML = `<h3>${section.heading}</h3>`;
+      const ul = document.createElement('ul');
+      section.body.forEach(item => {
+        const li = document.createElement('li'); li.textContent = item; ul.appendChild(li);
+      });
+      wrap.appendChild(ul);
+      content.appendChild(wrap);
     });
+    document.getElementById('toScenarioTop').href = `scenario.html?lesson=${lesson.id}`;
+    document.getElementById('toScenarioBottom').href = `scenario.html?lesson=${lesson.id}`;
   </script>
 </body>
 </html>
