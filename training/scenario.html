@@ -1,69 +1,94 @@
-<script src="js/data.js"></script>
-<script type="module">
-  import "./js/app.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Lesson Scenarios</title>
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo">
+        </div>
+        <div>
+          <h1>Broussard Shooting Academy</h1>
+          <p>Scenario Review</p>
+        </div>
+      </div>
 
-  window.addEventListener("DOMContentLoaded", async () => {
-    const BSA = window.BSA;
-    if (!BSA) return;
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-light" id="backToLesson" href="#">Lesson</a>
+      </div>
+    </div>
+  </header>
 
-    BSA.requireLogin();
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">Scenario decision training</span>
+      <h2 id="scenarioTitle">Lesson Scenarios</h2>
+      <p class="muted">
+        Read each situation carefully. Choose the safest and most defensible response before moving to the quiz.
+      </p>
 
-    const lessonId = Number(BSA.qs("lesson") || 1);
-    const lesson = window.LESSONS?.find(l => l.id === lessonId) || null;
-    if (!lesson) return;
+      <div id="scenarioWrap"></div>
 
-    document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
-    document.getElementById("toQuizBtn").href = `quiz.html?lesson=${lesson.id}`;
+      <div class="lesson-actions" style="margin-top:18px">
+        <button class="btn btn-blue" id="completeScenarioBtn" type="button">Mark Scenarios Complete</button>
+        <a class="btn btn-outline" id="toQuizBtn" href="#">Continue to Quiz</a>
+      </div>
+    </section>
+  </main>
 
-    const wrap = document.getElementById("scenarioWrap");
+  <script src="js/data.js"></script>
+  <script type="module">
+    import "./js/app.js";
 
-    // Try multiple possible data shapes
-    const scenarioSource =
-      window.SCENARIOS ||
-      window.scenarios ||
-      {};
+    function getScenarioBankForLesson(lessonId) {
+      const source =
+        window.SCENARIOS ??
+        window.scenarios ??
+        {};
 
-    let bank = [];
+      let bank = [];
 
-    if (Array.isArray(scenarioSource)) {
-      bank = scenarioSource.filter(x => Number(x.lessonId) === lesson.id);
-    } else if (Array.isArray(scenarioSource[lesson.id])) {
-      bank = scenarioSource[lesson.id];
-    } else if (scenarioSource[String(lesson.id)] && Array.isArray(scenarioSource[String(lesson.id)])) {
-      bank = scenarioSource[String(lesson.id)];
-    } else if (
-      scenarioSource.lessons &&
-      Array.isArray(scenarioSource.lessons[lesson.id])
-    ) {
-      bank = scenarioSource.lessons[lesson.id];
+      if (Array.isArray(source)) {
+        bank = source.filter(item =>
+          Number(item.lessonId ?? item.lesson ?? item.id) === lessonId
+        );
+      } else if (Array.isArray(source[lessonId])) {
+        bank = source[lessonId];
+      } else if (Array.isArray(source[String(lessonId)])) {
+        bank = source[String(lessonId)];
+      } else if (source.byLesson && Array.isArray(source.byLesson[lessonId])) {
+        bank = source.byLesson[lessonId];
+      } else if (source.byLesson && Array.isArray(source.byLesson[String(lessonId)])) {
+        bank = source.byLesson[String(lessonId)];
+      } else if (source.lessons && Array.isArray(source.lessons[lessonId])) {
+        bank = source.lessons[lessonId];
+      } else if (source.lessons && Array.isArray(source.lessons[String(lessonId)])) {
+        bank = source.lessons[String(lessonId)];
+      }
+
+      return Array.isArray(bank) ? bank : [];
     }
-console.log("lessonId:", lessonId);
-console.log("window.LESSONS:", window.LESSONS);
-console.log("window.SCENARIOS:", window.SCENARIOS);
-console.log("window.scenarios:", window.scenarios);
-console.log("lesson object:", lesson);
-console.log("scenarioSource:", scenarioSource);
-console.log("bank:", bank);
-    
-    if (!bank.length) {
-      wrap.innerHTML = '<div class="notice bad">No scenarios found for this lesson yet.</div>';
-      return;
-    }
 
-    wrap.innerHTML = "";
-
-    bank.forEach((item, idx) => {
-      const card = document.createElement("div");
-      card.className = "scenario-card";
-
-      const title = item.title || `Scenario ${idx + 1}`;
-      const prompt = item.prompt || item.situation || item.question || "";
+    function renderScenarioCard(item, index) {
+      const title = item.title || `Scenario ${index + 1}`;
+      const prompt = item.prompt || item.situation || item.question || item.text || "";
       const choices = Array.isArray(item.choices) ? item.choices : [];
-      const bestAnswer = item.bestAnswer || item.answer || "";
-      const explanation = item.explanation || item.why || "";
+      const bestAnswer = item.bestAnswer || item.answer || item.correctAnswer || "";
+      const explanation = item.explanation || item.why || item.reason || "";
 
-      let html = `<h3>${idx + 1}. ${title}</h3>`;
-      html += `<p>${prompt}</p>`;
+      let html = `<div class="scenario-card">`;
+      html += `<h3>${index + 1}. ${title}</h3>`;
+
+      if (prompt) {
+        html += `<p>${prompt}</p>`;
+      }
 
       if (choices.length) {
         html += `<div class="answer-list">`;
@@ -81,13 +106,64 @@ console.log("bank:", bank);
         html += `<p><strong>Why it matters:</strong> ${explanation}</p>`;
       }
 
-      card.innerHTML = html;
-      wrap.appendChild(card);
-    });
+      html += `</div>`;
+      return html;
+    }
 
-    document.getElementById("completeScenarioBtn").addEventListener("click", async () => {
-      await BSA.setScenarioCompleted(lesson.id);
-      window.location.href = `quiz.html?lesson=${lesson.id}`;
+    window.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const BSA = window.BSA;
+        const wrap = document.getElementById("scenarioWrap");
+        const titleEl = document.getElementById("scenarioTitle");
+        const backToLesson = document.getElementById("backToLesson");
+        const toQuizBtn = document.getElementById("toQuizBtn");
+        const completeBtn = document.getElementById("completeScenarioBtn");
+
+        if (!BSA) {
+          wrap.innerHTML = `<div class="notice bad">Portal logic failed to load.</div>`;
+          return;
+        }
+
+        BSA.requireLogin();
+
+        const lessonId = Number(BSA.qs("lesson") || 1);
+
+        const lessonList = window.LESSONS || [];
+        const lesson = Array.isArray(lessonList)
+          ? lessonList.find(l => Number(l.id) === lessonId)
+          : null;
+
+        titleEl.textContent = lesson
+          ? `${lesson.id}. ${lesson.title} — Scenarios`
+          : `Lesson ${lessonId} — Scenarios`;
+
+        backToLesson.href = `lesson.html?lesson=${lessonId}`;
+        toQuizBtn.href = `quiz.html?lesson=${lessonId}`;
+
+        const bank = getScenarioBankForLesson(lessonId);
+
+        if (!bank.length) {
+          wrap.innerHTML = `<div class="notice bad">No scenarios found for this lesson yet.</div>`;
+        } else {
+          wrap.innerHTML = bank.map(renderScenarioCard).join("");
+        }
+
+        completeBtn.addEventListener("click", async () => {
+          try {
+            await BSA.setScenarioCompleted(lessonId);
+          } catch (err) {
+            console.error("Failed to mark scenarios complete:", err);
+          }
+          window.location.href = `quiz.html?lesson=${lessonId}`;
+        });
+      } catch (err) {
+        console.error("Scenario page error:", err);
+        const wrap = document.getElementById("scenarioWrap");
+        if (wrap) {
+          wrap.innerHTML = `<div class="notice bad">Scenario page failed to load. Check the browser console for details.</div>`;
+        }
+      }
     });
-  });
-</script>
+  </script>
+</body>
+</html>
