@@ -110,7 +110,8 @@
       color: #1f2937;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       padding: 12px 13px;
       border: 1px solid var(--border);
@@ -120,7 +121,8 @@
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(193,139,47,0.18);
@@ -231,7 +233,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 980px;
+      min-width: 1100px;
     }
 
     th, td {
@@ -271,6 +273,17 @@
       font-size: 0.88rem;
     }
 
+    .code-box {
+      background: #fff8e8;
+      border: 1px solid #e8c97a;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+    }
+
     @media (max-width: 980px) {
       .grid {
         grid-template-columns: 1fr;
@@ -289,7 +302,7 @@
 <body>
   <header>
     <h1>Broussard Shooting Academy - Training Admin</h1>
-    <p>Student records, class completions, and certificate generation</p>
+    <p>Student records, class completions, certificates, and portal access codes</p>
   </header>
 
   <div class="wrap">
@@ -319,17 +332,58 @@
     <section id="appSection" style="display:none;">
       <div class="stats">
         <div class="stat">
-          <span class="label">Total Students</span>
+          <span class="label">Certificate Records</span>
           <div class="value" id="totalStudents">0</div>
         </div>
         <div class="stat">
-          <span class="label">Course</span>
-          <div class="value" id="currentCourseStat" style="font-size:1rem;">Louisiana Concealed Carry</div>
+          <span class="label">Portal Access Codes</span>
+          <div class="value" id="totalPortalStudents">0</div>
         </div>
         <div class="stat">
           <span class="label">Instructor</span>
           <div class="value" id="currentInstructorStat" style="font-size:1rem;">David Broussard</div>
         </div>
+      </div>
+
+      <div class="card" style="margin-bottom:22px;">
+        <h2>Generate Student Access Code</h2>
+        <p class="card-sub">Create a student login code for the training portal.</p>
+
+        <form id="codeForm">
+          <div class="field">
+            <label for="codeName">Student Name</label>
+            <input type="text" id="codeName" required />
+          </div>
+
+          <div class="field">
+            <label for="codeEmail">Student Email</label>
+            <input type="email" id="codeEmail" required />
+          </div>
+
+          <div class="field">
+            <label for="codeTier">Access Tier</label>
+            <select id="codeTier">
+              <option value="FULL">FULL ($150)</option>
+              <option value="DISC">DISC ($100)</option>
+              <option value="FREE">FREE ($0)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="codePaid">Paid?</label>
+            <select id="codePaid">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+
+          <div class="actions full">
+            <button type="submit" class="btn-primary">Generate Access Code</button>
+          </div>
+        </form>
+
+        <div id="codeMsg" class="msg"></div>
+        <div id="generatedCodeBox" class="code-box" style="display:none;"></div>
       </div>
 
       <div class="grid">
@@ -371,6 +425,7 @@
             <div class="actions full">
               <button type="submit" class="btn-primary">Save Student</button>
               <button type="button" id="refreshBtn" class="btn-secondary">Refresh Records</button>
+              <button type="button" id="refreshCodesBtn" class="btn-secondary">Refresh Codes</button>
               <button type="button" id="printBlankCertificateBtn" class="btn-gold">Blank Certificate Layout</button>
               <button type="button" id="logoutBtn" class="btn-danger">Logout</button>
             </div>
@@ -405,7 +460,7 @@
           </div>
 
           <div class="search-wrap">
-            <label for="searchInput">Search Students</label>
+            <label for="searchInput">Search Certificate Records</label>
             <input type="text" id="searchInput" placeholder="Search by name, course, email, or instructor" />
           </div>
         </div>
@@ -425,6 +480,38 @@
             </thead>
             <tbody id="studentsTableBody">
               <tr><td colspan="7">No records loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:22px;">
+        <div class="toolbar">
+          <div>
+            <h2 style="margin-bottom:6px;">Portal Access Codes</h2>
+            <div class="small-muted">These codes are for students to enter the online training portal.</div>
+          </div>
+
+          <div class="search-wrap">
+            <label for="codeSearchInput">Search Portal Codes</label>
+            <input type="text" id="codeSearchInput" placeholder="Search by name, email, code, or tier" />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Access Code</th>
+                <th>Tier</th>
+                <th>Paid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="portalStudentsTableBody">
+              <tr><td colspan="6">No portal codes loaded yet.</td></tr>
             </tbody>
           </table>
         </div>
