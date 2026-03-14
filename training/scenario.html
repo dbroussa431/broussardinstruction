@@ -37,7 +37,14 @@
     ) {
       bank = scenarioSource.lessons[lesson.id];
     }
-
+console.log("lessonId:", lessonId);
+console.log("window.LESSONS:", window.LESSONS);
+console.log("window.SCENARIOS:", window.SCENARIOS);
+console.log("window.scenarios:", window.scenarios);
+console.log("lesson object:", lesson);
+console.log("scenarioSource:", scenarioSource);
+console.log("bank:", bank);
+    
     if (!bank.length) {
       wrap.innerHTML = '<div class="notice bad">No scenarios found for this lesson yet.</div>';
       return;
