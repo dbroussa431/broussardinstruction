@@ -142,6 +142,39 @@
   </style>
 </head>
 <body>
+    <script type="module">
+    import "/js/app.js";
+      window.addEventListener("DOMContentLoaded", () => {
+  const lessonId = new URLSearchParams(window.location.search).get("lesson");
+  const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
+
+  if (!lesson) {
+    showNotice("bad", "Lesson not found.");
+    return;
+  }
+
+  const wrap = document.getElementById("scenarioWrap");
+  wrap.innerHTML = ""; // Clear loading notice
+
+  lesson.scenarios.forEach((scenario, index) => {
+    const card = document.createElement("div");
+    card.classList.add("scenario-card");
+    card.innerHTML = `
+      <h3>${index + 1}. ${scenario.title}</h3>
+      <p>${scenario.prompt}</p>
+      <div class="answer-list">
+        ${scenario.choices.map((choice, i) => `
+          <label>
+            <input type="radio" name="scenario_${index}" value="${i}">
+            ${String.fromCharCode(65 + i)}. ${choice}
+          </label>
+        `).join('')}
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+});
+
   <div class="portal-shell">
     <header class="portal-header">
       <div>
@@ -184,8 +217,7 @@
     </main>
   </div>
 
-  <script type="module">
-    import "/js/app.js";
+
 
     function escapeHtml(value) {
       return String(value ?? "")
