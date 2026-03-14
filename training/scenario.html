@@ -1,104 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Lesson Scenarios</title>
-  <link rel="stylesheet" href="css/portal.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-light" id="backToLesson" href="#">Lesson</a>
-      </div>
-    </div>
-  </header>
+<script src="js/data.js"></script>
+<script type="module">
+  import "./js/app.js";
 
-  <main class="container">
-    <section class="panel content-card">
-      <span class="eyebrow">Scenario decision training</span>
-      <h2 id="scenarioTitle"></h2>
-      <p class="muted">Read each situation carefully. Choose the safest and most defensible response before moving to the quiz.</p>
+  window.addEventListener("DOMContentLoaded", async () => {
+    const BSA = window.BSA;
+    if (!BSA) return;
 
-      <div id="scenarioWrap"></div>
+    BSA.requireLogin();
 
-      <div class="lesson-actions" style="margin-top:18px">
-        <button class="btn btn-blue" id="completeScenarioBtn" type="button">Mark Scenarios Complete</button>
-        <a class="btn btn-outline" id="toQuizBtn" href="#">Continue to Quiz</a>
-      </div>
-    </section>
-  </main>
+    const lessonId = Number(BSA.qs("lesson") || 1);
+    const lesson = window.LESSONS?.find(l => l.id === lessonId) || null;
+    if (!lesson) return;
 
-  <script src="js/data.js"></script>
-  <script type="module">
-    import "./js/app.js";
+    document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
+    document.getElementById("toQuizBtn").href = `quiz.html?lesson=${lesson.id}`;
 
-    window.addEventListener("DOMContentLoaded", async () => {
-      const BSA = window.BSA;
-      if (!BSA) return;
+    const wrap = document.getElementById("scenarioWrap");
 
-      BSA.requireLogin();
+    // Try multiple possible data shapes
+    const scenarioSource =
+      window.SCENARIOS ||
+      window.scenarios ||
+      {};
 
-      const lessonId = Number(BSA.qs("lesson") || 1);
-      const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
-      if (!lesson) return;
+    let bank = [];
 
-      document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenarios`;
-      document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
-      document.getElementById("toQuizBtn").href = `quiz.html?lesson=${lesson.id}`;
+    if (Array.isArray(scenarioSource)) {
+      bank = scenarioSource.filter(x => Number(x.lessonId) === lesson.id);
+    } else if (Array.isArray(scenarioSource[lesson.id])) {
+      bank = scenarioSource[lesson.id];
+    } else if (scenarioSource[String(lesson.id)] && Array.isArray(scenarioSource[String(lesson.id)])) {
+      bank = scenarioSource[String(lesson.id)];
+    } else if (
+      scenarioSource.lessons &&
+      Array.isArray(scenarioSource.lessons[lesson.id])
+    ) {
+      bank = scenarioSource.lessons[lesson.id];
+    }
 
-      const wrap = document.getElementById("scenarioWrap");
+    if (!bank.length) {
+      wrap.innerHTML = '<div class="notice bad">No scenarios found for this lesson yet.</div>';
+      return;
+    }
 
-      const bank =
-        (typeof SCENARIOS !== "undefined" && SCENARIOS[lesson.id]) ||
-        (typeof scenarios !== "undefined" && scenarios[lesson.id]) ||
-        [];
+    wrap.innerHTML = "";
 
-      if (!bank.length) {
-        wrap.innerHTML = '<div class="notice bad">No scenarios found for this lesson yet.</div>';
-        return;
+    bank.forEach((item, idx) => {
+      const card = document.createElement("div");
+      card.className = "scenario-card";
+
+      const title = item.title || `Scenario ${idx + 1}`;
+      const prompt = item.prompt || item.situation || item.question || "";
+      const choices = Array.isArray(item.choices) ? item.choices : [];
+      const bestAnswer = item.bestAnswer || item.answer || "";
+      const explanation = item.explanation || item.why || "";
+
+      let html = `<h3>${idx + 1}. ${title}</h3>`;
+      html += `<p>${prompt}</p>`;
+
+      if (choices.length) {
+        html += `<div class="answer-list">`;
+        choices.forEach(choice => {
+          html += `<div class="answer-option">${choice}</div>`;
+        });
+        html += `</div>`;
       }
 
-      wrap.innerHTML = "";
+      if (bestAnswer) {
+        html += `<div class="callout"><strong>Best Response:</strong> ${bestAnswer}</div>`;
+      }
 
-      bank.forEach((item, idx) => {
-        const card = document.createElement("div");
-        card.className = "scenario-card";
+      if (explanation) {
+        html += `<p><strong>Why it matters:</strong> ${explanation}</p>`;
+      }
 
-        let html = `<h3>${idx + 1}. ${item.title || "Scenario"}</h3>`;
-        html += `<p>${item.prompt || item.situation || ""}</p>`;
-
-        if (Array.isArray(item.choices) && item.choices.length) {
-          html += `<div class="answer-list">`;
-          item.choices.forEach(choice => {
-            html += `<div class="answer-option">${choice}</div>`;
-          });
-          html += `</div>`;
-        }
-
-        if (item.bestAnswer) {
-          html += `<div class="callout"><strong>Best Response:</strong> ${item.bestAnswer}</div>`;
-        }
-
-        if (item.explanation) {
-          html += `<p><strong>Why it matters:</strong> ${item.explanation}</p>`;
-        }
-
-        card.innerHTML = html;
-        wrap.appendChild(card);
-      });
-
-      document.getElementById("completeScenarioBtn").addEventListener("click", async () => {
-        await BSA.setScenarioCompleted(lesson.id);
-        window.location.href = `quiz.html?lesson=${lesson.id}`;
-      });
+      card.innerHTML = html;
+      wrap.appendChild(card);
     });
-  </script>
-</body>
-</html>
+
+    document.getElementById("completeScenarioBtn").addEventListener("click", async () => {
+      await BSA.setScenarioCompleted(lesson.id);
+      window.location.href = `quiz.html?lesson=${lesson.id}`;
+    });
+  });
+</script>
