@@ -1,142 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard | Broussard Shooting Academy</title>
-  <link rel="stylesheet" href="css/portal.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Dashboard | Broussard Shooting Academy</title>
+
+<link rel="stylesheet" href="css/portal.css" />
+
 </head>
+
 <body class="portal-shell">
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark">
-          <img src="images/bsa-logo.png" alt="Broussard Shooting Academy logo" class="portal-logo">
-        </div>
-        <div class="portal-header-title">
-          <h1>Broussard Shooting Academy</h1>
-          <p>Private Student Portal • Online Prerequisite Training</p>
-        </div>
-      </div>
+<header class="topbar">
 
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-light" href="#live-range">Live Review &amp; Range</a>
-        <button id="logoutBtn" class="btn btn-gold logout-btn">Logout</button>
-      </div>
-    </div>
-  </header>
+<div class="topbar-inner">
 
-  <main class="portal-main container">
+<div class="brand">
 
-    <section class="hero">
-      <div class="panel hero-main">
-        <span class="eyebrow">Online prerequisite completed in stages</span>
-        <h2 id="welcomeLine">Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.</h2>
-        <p>
-          This portal is built for students who cannot give up one long training block all at once.
-          Complete each lesson in smaller sections, finish the required work, and then schedule your
-          in-person live portion with Broussard Shooting Academy.
-        </p>
+<div class="brand-mark">
+<img src="images/bsa-logo.png" alt="BSA logo" class="portal-logo">
+</div>
 
-        <div class="meta-row">
-          <span class="pill">8 Lessons</span>
-          <span class="pill">Quizzes Required</span>
-          <span class="pill">Scenario Review</span>
-          <span class="pill">Live Range Required</span>
-        </div>
+<div class="portal-header-title">
+<h1>Broussard Shooting Academy</h1>
+<p>Private Student Portal • Online Prerequisite Training</p>
+</div>
 
-        <div class="lesson-actions hero-buttons">
-          <button class="btn btn-blue portal-btn" onclick="window.location.href='lesson.html?lesson=1'">
-            Start / Continue Training
-          </button>
-          <button class="btn btn-outline secondary-btn" onclick="window.location.href='complete.html'">
-            Completion Status
-          </button>
-        </div>
-      </div>
+</div>
 
-      <div class="panel hero-side">
-        <div class="stat-card">
-          <small>Student</small>
-          <strong id="studentName">—</strong>
-          <div id="studentEmail" class="muted-text"></div>
-        </div>
+<div class="top-actions">
+<a class="btn btn-light" href="dashboard.html">Dashboard</a>
+<a class="btn btn-light" href="#live-range">Live Review & Range</a>
+<button id="logoutBtn" class="btn btn-gold logout-btn">Logout</button>
+</div>
 
-        <div class="stat-card">
-          <small>Access Type</small>
-          <strong id="studentType">—</strong>
-          <div id="studentCode" class="muted-text"></div>
-        </div>
+</div>
 
-        <div class="stat-card">
-          <small>Overall Progress</small>
-          <strong id="lessonCount">0 / 8</strong>
-          <div class="progress-wrap">
-            <div class="progress-bar">
-              <span id="progressFill" style="width:0%"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+</header>
 
-    <div class="section-head">
-      <div>
-        <h3>Lesson Dashboard</h3>
-        <p>Lesson summaries, progress tracking, and next-step access.</p>
-      </div>
-    </div>
+<main class="portal-main container">
 
-    <section class="lesson-grid lesson-list" id="lessonList"></section>
+<section class="hero">
 
-    <section class="next-step panel" id="live-range">
-      <h3>Final Step: Live Review &amp; Range Qualification</h3>
-      <p>
-        After all 8 online lessons are successfully completed, the student moves to the final in-person
-        portion for live review and range qualification. Final paperwork and completion confirmation are
-        handled directly by Broussard Shooting Academy.
-      </p>
+<div class="panel hero-main">
 
-      <div class="lesson-actions">
-        <button class="btn btn-gold" onclick="window.location.href='complete.html'">
-          View Completion Requirements
-        </button>
-        <button class="btn btn-outline" onclick="window.location.href='lesson.html?lesson=1'">
-          Return to Training
-        </button>
-      </div>
+<span class="eyebrow">Online prerequisite completed in stages</span>
 
-      <div class="footer-note">
-        Private access only. Student progress is tracked inside the portal.
-      </div>
-    </section>
+<h2 id="welcomeLine">
+Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.
+</h2>
 
-  </main>
+<p>
+This portal is built for students who cannot give up one long training block all at once.
+Complete each lesson in smaller sections, finish the required work, and then schedule your
+in-person live portion with Broussard Shooting Academy.
+</p>
 
-  <script src="js/data.js"></script>
-  <script type="module" src="js/app.js"></script>
+<div class="meta-row">
+<span class="pill">8 Lessons</span>
+<span class="pill">Quizzes Required</span>
+<span class="pill">Scenario Review</span>
+<span class="pill">Live Range Required</span>
+</div>
 
-  <script>
-    // Lightweight visual enhancement only.
-    // Keeps compatibility with your existing app.js IDs.
-    document.addEventListener("DOMContentLoaded", () => {
-      const studentName = document.getElementById("studentName");
-      const welcomeLine = document.getElementById("welcomeLine");
+<div class="lesson-actions hero-buttons">
 
-      const observer = new MutationObserver(() => {
-        const name = (studentName?.textContent || "").trim();
-        if (name && name !== "—") {
-          welcomeLine.textContent =
-            `${name}, train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.`;
-        }
-      });
+<button class="btn btn-blue portal-btn"
+onclick="window.location.href='lesson.html?lesson=1'">
 
-      if (studentName) {
-        observer.observe(studentName, { childList: true, subtree: true, characterData: true });
-      }
-    });
-  </script>
+Start / Continue Training
+
+</button>
+
+<button class="btn btn-outline secondary-btn"
+onclick="window.location.href='complete.html'">
+
+Completion Status
+
+</button>
+
+</div>
+
+</div>
+
+<div class="panel hero-side">
+
+<div class="stat-card">
+<small>Student</small>
+<strong id="studentName">—</strong>
+<div id="studentEmail" class="muted-text"></div>
+</div>
+
+<div class="stat-card">
+<small>Access Type</small>
+<strong id="studentType">—</strong>
+<div id="studentCode" class="muted-text"></div>
+</div>
+
+<div class="stat-card">
+<small>Overall Progress</small>
+<strong id="lessonCount">0 / 8</strong>
+
+<div class="progress-wrap">
+<div class="progress-bar">
+<span id="progressFill"></span>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<div class="section-head">
+<div>
+<h3>Lesson Dashboard</h3>
+<p>Lesson summaries, progress tracking, and next-step access.</p>
+</div>
+</div>
+
+<section class="lesson-grid lesson-list" id="lessonList"></section>
+
+<section class="next-step panel" id="live-range">
+
+<h3>Final Step: Live Review & Range Qualification</h3>
+
+<p>
+After all 8 online lessons are successfully completed, the student moves to the final
+in-person portion for live review and range qualification.
+</p>
+
+<div class="lesson-actions">
+
+<button class="btn btn-gold"
+onclick="window.location.href='complete.html'">
+
+View Completion Requirements
+
+</button>
+
+<button class="btn btn-outline"
+onclick="window.location.href='lesson.html?lesson=1'">
+
+Return to Training
+
+</button>
+
+</div>
+
+<div class="footer-note">
+Private access only. Student progress is tracked inside the portal.
+</div>
+
+</section>
+
+</main>
+
+<script src="js/data.js"></script>
+<script type="module" src="js/app.js"></script>
+
 </body>
 </html>
