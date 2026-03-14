@@ -104,6 +104,11 @@
       opacity: 0.95;
     }
 
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
     .notice {
       background: #fff8e8;
       border: 1px solid #e8c97a;
@@ -112,13 +117,20 @@
       margin-top: 18px;
       color: #4b5563;
       font-size: 0.95rem;
+      line-height: 1.5;
     }
 
     .msg {
-      min-height: 18px;
+      min-height: 20px;
       margin-top: 8px;
       font-weight: 700;
       font-size: 0.94rem;
+    }
+
+    .help {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: -6px;
     }
   </style>
 </head>
@@ -138,19 +150,28 @@
       <form id="studentLoginForm">
         <div>
           <label for="studentEmail">Student Email</label>
-          <input type="email" id="studentEmail" required />
+          <input type="email" id="studentEmail" autocomplete="email" required />
         </div>
 
         <div>
           <label for="studentCode">Access Code</label>
-          <input type="text" id="studentCode" placeholder="BSA-FULL-1234" required />
+          <input
+            type="text"
+            id="studentCode"
+            placeholder="BSA-FULL-1234"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            required
+          />
+          <div class="help">You can type or paste the full access code exactly as provided.</div>
         </div>
 
         <div class="actions">
-          <button type="submit">Login to Portal</button>
+          <button type="submit" id="loginBtn">Login to Portal</button>
         </div>
 
-        <div id="loginMsg" class="msg"></div>
+        <div id="loginMsg" class="msg" aria-live="polite"></div>
       </form>
 
       <div class="notice">
@@ -164,30 +185,46 @@
 
     const form = document.getElementById("studentLoginForm");
     const loginMsg = document.getElementById("loginMsg");
+    const loginBtn = document.getElementById("loginBtn");
+    const emailInput = document.getElementById("studentEmail");
+    const codeInput = document.getElementById("studentCode");
+
+    function setMessage(text, color) {
+      loginMsg.textContent = text;
+      loginMsg.style.color = color;
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      loginMsg.textContent = "";
+      setMessage("", "");
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Checking...";
 
-      const email = document.getElementById("studentEmail").value.trim();
-      const code = document.getElementById("studentCode").value.trim();
+      const email = emailInput.value;
+      const code = codeInput.value;
 
       try {
-        const student = await window.BSA.loginStudent(code, email);
-
-        if (!student) {
-          loginMsg.textContent = "Invalid email or access code.";
-          loginMsg.style.color = "#b00020";
+        if (!window.BSA || typeof window.BSA.loginStudent !== "function") {
+          setMessage("Portal failed to load. Please refresh and try again.", "#b00020");
           return;
         }
 
-        loginMsg.textContent = "Login successful. Redirecting...";
-        loginMsg.style.color = "#0f9d58";
+        const student = await window.BSA.loginStudent(code, email);
+
+        if (!student) {
+          setMessage("Invalid email or access code. Please verify both and try again.", "#b00020");
+          loginBtn.disabled = false;
+          loginBtn.textContent = "Login to Portal";
+          return;
+        }
+
+        setMessage("Login successful. Redirecting...", "#0f9d58");
         window.location.href = "dashboard.html";
       } catch (err) {
         console.error(err);
-        loginMsg.textContent = "Login failed. Please try again.";
-        loginMsg.style.color = "#b00020";
+        setMessage("Login failed. Please try again.", "#b00020");
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login to Portal";
       }
     });
   </script>
