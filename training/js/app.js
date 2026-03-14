@@ -12,6 +12,7 @@ import {
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
 const PASSING_SCORE = 80;
 const TOTAL_LESSONS = 8;
+const ADMIN_UNLOCK_CODE = "BSA-UNLOCK-2026"; // CHANGE THIS
 
 const LESSON_TITLES = {
   1: "Firearm Safety Basics",
@@ -27,6 +28,13 @@ const LESSON_TITLES = {
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
 
+  const normalizedProgress = {};
+  if (student.progress && typeof student.progress === "object") {
+    for (const [key, value] of Object.entries(student.progress)) {
+      normalizedProgress[Number(key)] = { ...(value || {}) };
+    }
+  }
+
   return {
     id: student.id || "",
     name: String(student.name || "").trim(),
@@ -35,7 +43,7 @@ function normalizeStudent(rawStudent) {
     tier: String(student.tier || "FULL").toUpperCase(),
     paid: !!student.paid,
     status: String(student.status || "active"),
-    progress: student.progress && typeof student.progress === "object" ? { ...student.progress } : {},
+    progress: normalizedProgress,
     completedLessons: Array.isArray(student.completedLessons)
       ? [...new Set(student.completedLessons.map(Number).filter(Boolean))]
       : []
@@ -102,6 +110,34 @@ function getAttemptCount(lessonId) {
   return Number(progress.attemptCount || 0);
 }
 
+function getConsecutiveFails(lessonId) {
+  const progress = getLessonProgress(lessonId);
+  return Number(progress.consecutiveFails || 0);
+}
+
+function getLockRemainingMs(lessonId) {
+  const progress = getLessonProgress(lessonId);
+  if (!progress.lockUntil) return 0;
+
+  const remaining = new Date(progress.lockUntil).getTime() - Date.now();
+  return remaining > 0 ? remaining : 0;
+}
+
+function isAdminLocked(lessonId) {
+  const progress = getLessonProgress(lessonId);
+  return progress.adminLocked === true;
+}
+
+function formatCountdown(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  return `${minutes}m ${seconds}s`;
+}
+
 function hasPassedLesson(student, lessonId) {
   return !!(
     student.progress?.[lessonId]?.quizPassed ||
@@ -124,15 +160,30 @@ function isLessonAccessible(student, lessonId) {
 
 function getLessonLockState(student, lessonId) {
   const progress = student.progress?.[lessonId] || {};
-  const attempts = Number(progress.attemptCount || 0);
-  const passed = !!progress.quizPassed;
 
-  if (passed) {
+  if (progress.quizPassed) {
     return { locked: false, kind: null, text: "" };
   }
 
-  if (attempts >= 2 && !passed) {
-    return { locked: true, kind: "hard", text: "Re-read lesson before retry" };
+  if (progress.adminLocked) {
+    return {
+      locked: true,
+      kind: "hard",
+      text: "Instructor unlock required"
+    };
+  }
+
+  const remaining = progress.lockUntil
+    ? new Date(progress.lockUntil).getTime() - Date.now()
+    : 0;
+
+  if (remaining > 0) {
+    const failCount = Number(progress.consecutiveFails || 0);
+    return {
+      locked: true,
+      kind: failCount === 1 ? "short" : "day",
+      text: failCount === 1 ? `15 min lock` : `24 hr lock`
+    };
   }
 
   return { locked: false, kind: null, text: "" };
@@ -177,19 +228,54 @@ async function setScenarioCompleted(lessonId) {
   });
 }
 
+async function adminUnlockLesson(lessonId, codeEntered) {
+  if (String(codeEntered || "").trim() !== ADMIN_UNLOCK_CODE) return false;
+
+  await updateCurrentStudent((student) => {
+    student.progress ||= {};
+    student.progress[lessonId] ||= {};
+
+    student.progress[lessonId].adminLocked = false;
+    student.progress[lessonId].lockUntil = null;
+    student.progress[lessonId].consecutiveFails = 0;
+  });
+
+  return true;
+}
+
 async function recordQuizResult(lessonId, score, details) {
   return updateCurrentStudent((student) => {
     student.progress ||= {};
     student.progress[lessonId] ||= {};
 
     const p = student.progress[lessonId];
+    const passed = score >= PASSING_SCORE;
+    const currentFails = Number(p.consecutiveFails || 0);
+    const nextFails = passed ? 0 : currentFails + 1;
+
     p.attemptCount = Number(p.attemptCount || 0) + 1;
     p.quizScore = score;
     p.quizDetails = Array.isArray(details) ? details : [];
-    p.quizPassed = score >= PASSING_SCORE;
+    p.quizPassed = passed;
     p.lastAttemptAt = new Date().toISOString();
+    p.consecutiveFails = nextFails;
 
-    if (score >= PASSING_SCORE && !student.completedLessons.includes(lessonId)) {
+    // reset / set locks
+    p.lockUntil = null;
+    p.adminLocked = false;
+
+    if (!passed) {
+      if (nextFails === 1) {
+        p.lockUntil = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+      } else if (nextFails === 2) {
+        p.lockUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      } else if (nextFails >= 3) {
+        p.adminLocked = true;
+        p.lockUntil = null;
+      }
+    }
+
+    if (passed && !student.completedLessons.includes(lessonId)) {
       student.completedLessons.push(lessonId);
     }
 
@@ -217,6 +303,45 @@ function requireLogin() {
   if (!student) {
     window.location.href = "index.html";
   }
+}
+
+function getDashboardLessonStatus(student, lessonId) {
+  const progress = student.progress?.[lessonId] || {};
+  const access = isLessonAccessible(student, lessonId);
+  const lock = getLessonLockState(student, lessonId);
+
+  if (!access) {
+    return {
+      className: "locked",
+      text: "Complete previous lesson"
+    };
+  }
+
+  if (progress.quizPassed) {
+    return {
+      className: "passed",
+      text: `Passed (${progress.quizScore || PASSING_SCORE}%)`
+    };
+  }
+
+  if (lock.locked) {
+    return {
+      className: "locked",
+      text: lock.text
+    };
+  }
+
+  if (progress.contentViewed || progress.scenarioCompleted || Number(progress.attemptCount || 0) > 0) {
+    return {
+      className: "in-progress",
+      text: "In Progress"
+    };
+  }
+
+  return {
+    className: "not-started",
+    text: "Ready"
+  };
 }
 
 async function renderDashboard() {
@@ -253,45 +378,32 @@ async function renderDashboard() {
     const progress = student.progress?.[i] || {};
     const access = isLessonAccessible(student, i);
     const lock = getLessonLockState(student, i);
+    const status = getDashboardLessonStatus(student, i);
 
-    let badgeClass = "locked";
-    let badgeText = "Locked";
+    const card = document.createElement("div");
+    card.className = "lesson-card";
 
-    if (!access) {
-      badgeClass = "locked";
-      badgeText = "Complete previous lesson";
-    } else if (progress.quizPassed) {
-      badgeClass = "complete";
-      badgeText = `Passed (${progress.quizScore || PASSING_SCORE}%)`;
-    } else if (lock.locked) {
-      badgeClass = "locked";
-      badgeText = lock.text;
-    } else if (progress.contentViewed || progress.scenarioCompleted || progress.attemptCount > 0) {
-      badgeClass = "inprogress";
-      badgeText = "In progress";
-    } else {
-      badgeClass = "inprogress";
-      badgeText = "Ready";
-    }
-
-    const row = document.createElement("div");
-    row.className = "lesson-item";
-    row.innerHTML = `
-      <div class="lesson-meta">
-        <h3>${i}. ${LESSON_TITLES[i]}</h3>
-        <p>Attempts: ${Number(progress.attemptCount || 0)}</p>
+    card.innerHTML = `
+      <div class="lesson-top">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="lesson-num">${i}</div>
+          <div>
+            <h3 class="lesson-title">${LESSON_TITLES[i]}</h3>
+            <p class="lesson-desc">Attempts: ${Number(progress.attemptCount || 0)}</p>
+          </div>
+        </div>
+        <span class="status ${status.className}">${status.text}</span>
       </div>
-      <div><span class="badge ${badgeClass}">${badgeText}</span></div>
     `;
 
     if (access && !lock.locked) {
-      row.style.cursor = "pointer";
-      row.addEventListener("click", () => {
+      card.style.cursor = "pointer";
+      card.addEventListener("click", () => {
         window.location.href = `lesson.html?lesson=${i}`;
       });
     }
 
-    listEl.appendChild(row);
+    listEl.appendChild(card);
   }
 
   if (logoutBtn) {
@@ -311,8 +423,13 @@ window.BSA = {
   setLessonContentViewed,
   setScenarioCompleted,
   getAttemptCount,
+  getConsecutiveFails,
+  getLockRemainingMs,
+  isAdminLocked,
+  adminUnlockLesson,
   recordQuizResult,
   randomSample,
+  formatCountdown,
   qs,
   requireLogin,
   renderDashboard
