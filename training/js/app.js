@@ -25,6 +25,21 @@ const LESSON_TITLES = {
   8: "Final Review & Range Prep"
 };
 
+function normalizeCode(value) {
+  return String(value || "")
+    .replace(/\u00A0/g, " ")
+    .replace(/\s+/g, "")
+    .toUpperCase()
+    .trim();
+}
+
+function normalizeEmail(value) {
+  return String(value || "")
+    .replace(/\u00A0/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
 
@@ -38,8 +53,8 @@ function normalizeStudent(rawStudent) {
   return {
     id: student.id || "",
     name: String(student.name || "").trim(),
-    email: String(student.email || "").trim().toLowerCase(),
-    accessCode: String(student.accessCode || "").trim().toUpperCase(),
+    email: normalizeEmail(student.email || ""),
+    accessCode: normalizeCode(student.accessCode || ""),
     tier: String(student.tier || "FULL").toUpperCase(),
     paid: !!student.paid,
     status: String(student.status || "active"),
@@ -81,21 +96,58 @@ async function refreshCurrentStudent() {
 }
 
 async function loginStudent(code, email = "") {
-  const cleanCode = String(code || "").trim().toUpperCase();
-  const cleanEmail = String(email || "").trim().toLowerCase();
+  const cleanCode = normalizeCode(code);
+  const cleanEmail = normalizeEmail(email);
+
+  if (!cleanCode || !cleanEmail) return null;
 
   const q = query(
     collection(db, "portalStudents"),
-    where("accessCode", "==", cleanCode),
-    where("email", "==", cleanEmail)
+    where("accessCode", "==", cleanCode)
   );
 
   const snapshot = await getDocs(q);
   if (snapshot.empty) return null;
 
-  const docSnap = snapshot.docs[0];
-  const student = normalizeStudent({ id: docSnap.id, ...docSnap.data() });
+  const matches = snapshot.docs.map((docSnap) =>
+    normalizeStudent({ id: docSnap.id, ...docSnap.data() })
+  );
+
+  const student = matches.find((s) => normalizeEmail(s.email) === cleanEmail);
+
+  if (!student) return null;
+
   setCurrentStudent(student);
+  return student;
+}
+
+// Temporary debug helper if needed in console:
+// await window.BSA.debugLoginStudent("BSA-FULL-1234", "student@email.com")
+async function debugLoginStudent(code, email = "") {
+  const cleanCode = normalizeCode(code);
+  const cleanEmail = normalizeEmail(email);
+
+  console.log("LOGIN ATTEMPT");
+  console.log("Entered code:", cleanCode);
+  console.log("Entered email:", cleanEmail);
+
+  const q = query(
+    collection(db, "portalStudents"),
+    where("accessCode", "==", cleanCode)
+  );
+
+  const snapshot = await getDocs(q);
+  console.log("Matching code records:", snapshot.size);
+
+  const matches = snapshot.docs.map((docSnap) =>
+    normalizeStudent({ id: docSnap.id, ...docSnap.data() })
+  );
+
+  console.log("Matched records:", matches);
+
+  const student = matches.find((s) => normalizeEmail(s.email) === cleanEmail);
+  console.log("Final student:", student);
+
   return student;
 }
 
@@ -182,7 +234,7 @@ function getLessonLockState(student, lessonId) {
     return {
       locked: true,
       kind: failCount === 1 ? "short" : "day",
-      text: failCount === 1 ? `15 min lock` : `24 hr lock`
+      text: failCount === 1 ? "15 min lock" : "24 hr lock"
     };
   }
 
@@ -234,7 +286,6 @@ async function adminUnlockLesson(lessonId, codeEntered) {
   await updateCurrentStudent((student) => {
     student.progress ||= {};
     student.progress[lessonId] ||= {};
-
     student.progress[lessonId].adminLocked = false;
     student.progress[lessonId].lockUntil = null;
     student.progress[lessonId].consecutiveFails = 0;
@@ -260,7 +311,6 @@ async function recordQuizResult(lessonId, score, details) {
     p.lastAttemptAt = new Date().toISOString();
     p.consecutiveFails = nextFails;
 
-    // reset / set locks
     p.lockUntil = null;
     p.adminLocked = false;
 
@@ -504,9 +554,11 @@ async function renderDashboard() {
     };
   }
 }
+
 window.BSA = {
   PASSING_SCORE,
   loginStudent,
+  debugLoginStudent,
   getCurrentStudent,
   refreshCurrentStudent,
   getLessonProgress,
