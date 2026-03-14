@@ -1044,4 +1044,101 @@ body.login-page{
     flex-direction: column;
   }
 }
+  .lesson-card {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -50px -50px auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216,166,42,.12), transparent 70%);
+  pointer-events: none;
+}
+
+.lesson-card .lesson-actions {
+  margin-top: 2px;
+}
+
+.lesson-card .btn[disabled] {
+  opacity: .7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status.passed {
+  background: #dff5e8;
+  color: var(--success);
+}
+
+.status.in-progress {
+  background: #fff3da;
+  color: var(--warning);
+}
+
+.status.not-started {
+  background: #eef2f8;
+  color: #58657a;
+}
+
+.status.locked {
+  background: #eceef3;
+  color: #7b8595;
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .88rem;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  background: #f9fbff;
+}
+
+.lesson-desc {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.lesson-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.lesson-num {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(31,70,140,.08);
+  color: var(--bsa-blue);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.lesson-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 640px) {
+  .lesson-card .lesson-actions .btn {
+    width: 100%;
+  }
+
+  .lesson-top {
+    flex-direction: column;
+  }
+}
 }
