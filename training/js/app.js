@@ -374,14 +374,60 @@ async function renderDashboard() {
 
   listEl.innerHTML = "";
 
+  const estimatedTimes = {
+    1: "18 min",
+    2: "20 min",
+    3: "22 min",
+    4: "20 min",
+    5: "24 min",
+    6: "18 min",
+    7: "16 min",
+    8: "15 min"
+  };
+
+  const lessonDescriptions = {
+    1: "Universal safety rules, muzzle direction, clearance checks, and safe handling principles.",
+    2: "Color codes of awareness, avoidance, movement, barriers, and recognizing possible threats.",
+    3: "Actions, magazines, ammunition basics, and common firearm understanding.",
+    4: "Grip, sight alignment, target focus, and defensive accuracy concepts.",
+    5: "Reasonable force, de-escalation, retreat principles, and defensive decision-making.",
+    6: "Fight-or-flight effects, tunnel vision, auditory exclusion, memory gaps, and command presence.",
+    7: "Safe rooms, communication plans, home hardening, and family defense considerations.",
+    8: "Final knowledge review, range expectations, mindset, safety, and next-step preparation."
+  };
+
   for (let i = 1; i <= TOTAL_LESSONS; i++) {
     const progress = student.progress?.[i] || {};
     const access = isLessonAccessible(student, i);
     const lock = getLessonLockState(student, i);
-    const status = getDashboardLessonStatus(student, i);
+
+    let statusClass = "locked";
+    let statusText = "Locked";
+
+    if (!access) {
+      statusClass = "locked";
+      statusText = "Complete previous lesson";
+    } else if (progress.quizPassed) {
+      statusClass = "passed";
+      statusText = `Passed • ${progress.quizScore || PASSING_SCORE}%`;
+    } else if (lock.locked) {
+      statusClass = "locked";
+      statusText = lock.text || "Locked";
+    } else if (progress.contentViewed || progress.scenarioCompleted || Number(progress.attemptCount || 0) > 0) {
+      statusClass = "in-progress";
+      statusText = "Ready for Quiz";
+    } else {
+      statusClass = "not-started";
+      statusText = "Ready";
+    }
 
     const card = document.createElement("div");
     card.className = "lesson-card";
+
+    const canOpenLesson = access;
+    const canOpenScenario = access && !lock.locked;
+    const canOpenQuiz = access && !lock.locked;
+    const passed = !!progress.quizPassed;
 
     card.innerHTML = `
       <div class="lesson-top">
@@ -389,19 +435,64 @@ async function renderDashboard() {
           <div class="lesson-num">${i}</div>
           <div>
             <h3 class="lesson-title">${LESSON_TITLES[i]}</h3>
-            <p class="lesson-desc">Attempts: ${Number(progress.attemptCount || 0)}</p>
+            <p class="lesson-desc">${lessonDescriptions[i] || ""}</p>
           </div>
         </div>
-        <span class="status ${status.className}">${status.text}</span>
+        <span class="status ${statusClass}">${statusText}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="chip">Estimated Time: ${estimatedTimes[i] || "20 min"}</span>
+        <span class="chip">20-question quiz</span>
+        <span class="chip">2 scenarios</span>
+        <span class="chip">Attempts: ${Number(progress.attemptCount || 0)}</span>
+      </div>
+
+      <div class="lesson-actions">
+        ${
+          canOpenLesson
+            ? `<button class="btn btn-blue" data-action="lesson" data-lesson="${i}">${passed ? "Review Lesson" : "Continue Lesson"}</button>`
+            : `<button class="btn btn-blue" disabled>Complete Previous Lesson First</button>`
+        }
+
+        ${
+          canOpenScenario
+            ? `<button class="btn btn-outline" data-action="scenario" data-lesson="${i}">Open Scenarios</button>`
+            : ``
+        }
+
+        ${
+          canOpenQuiz
+            ? `<button class="btn btn-outline" data-action="quiz" data-lesson="${i}">Take Quiz</button>`
+            : ``
+        }
+
+        ${
+          passed && progress.quizDetails?.some(x => !x.correct)
+            ? `<button class="btn btn-ghost" data-action="review" data-lesson="${i}">See Missed Questions</button>`
+            : ``
+        }
       </div>
     `;
 
-    if (access && !lock.locked) {
-      card.style.cursor = "pointer";
-      card.addEventListener("click", () => {
-        window.location.href = `lesson.html?lesson=${i}`;
+    card.querySelectorAll("button[data-action]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        const lessonId = Number(btn.dataset.lesson);
+        const action = btn.dataset.action;
+
+        if (action === "lesson") {
+          window.location.href = `lesson.html?lesson=${lessonId}`;
+        } else if (action === "scenario") {
+          window.location.href = `scenario.html?lesson=${lessonId}`;
+        } else if (action === "quiz") {
+          window.location.href = `quiz.html?lesson=${lessonId}`;
+        } else if (action === "review") {
+          window.location.href = `quiz.html?lesson=${lessonId}&review=1`;
+        }
       });
-    }
+    });
 
     listEl.appendChild(card);
   }
@@ -413,7 +504,6 @@ async function renderDashboard() {
     };
   }
 }
-
 window.BSA = {
   PASSING_SCORE,
   loginStudent,
