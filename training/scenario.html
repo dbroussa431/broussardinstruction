@@ -3,24 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal | Scenarios</title>
+  <title>BSA Training Portal | Scenario Review</title>
   <link rel="stylesheet" href="css/portal.css" />
   <style>
+    /* Base variables and styles */
     :root {
       --bsa-gold: #c18b2f;
       --bsa-dark: #111827;
-      --bsa-slate: #374151;
-      --bsa-light: #f8fafc;
-      --bsa-border: #d1d5db;
-      --bsa-green: #166534;
-      --bsa-red: #b91c1c;
-      --bsa-blue: #1d4ed8;
       --bsa-bg: #f3f4f6;
+      --bsa-card: #ffffff;
+      --bsa-border: #dbe3ea;
+      --bsa-green: #15803d;
+      --bsa-blue: #1d4ed8;
+      --bsa-gray: #64748b;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -35,6 +33,7 @@
       flex-direction: column;
     }
 
+    /* Header and navigation */
     .portal-header {
       background: linear-gradient(90deg, #050505, #1a1a1a);
       color: #fff;
@@ -80,35 +79,14 @@
       opacity: 0.95;
     }
 
-    .btn-gold {
-      background: var(--bsa-gold);
-      color: #111;
-    }
-
-    .btn-dark {
-      background: #1f2937;
-      color: #fff;
-    }
-
-    .btn-blue {
-      background: var(--bsa-blue);
-      color: #fff;
-    }
-
-    .btn-green {
-      background: var(--bsa-green);
-      color: #fff;
-    }
-
-    .btn[disabled] {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-gold { background: var(--bsa-gold); color: #111; }
+    .btn-dark { background: #1f2937; color: #fff; }
+    .btn-blue { background: var(--bsa-blue); color: #fff; }
+    .btn-green { background: var(--bsa-green); color: #fff; }
 
     .page-wrap {
       width: min(1100px, calc(100% - 32px));
-      margin: 24px auto 40px;
+      margin: 24px auto;
     }
 
     .page-card {
@@ -137,23 +115,9 @@
       border: 1px solid transparent;
     }
 
-    .notice.good {
-      background: #ecfdf5;
-      color: #065f46;
-      border-color: #a7f3d0;
-    }
-
-    .notice.bad {
-      background: #fef2f2;
-      color: #991b1b;
-      border-color: #fecaca;
-    }
-
-    .notice.info {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-color: #bfdbfe;
-    }
+    .notice.good { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .notice.bad { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+    .notice.info { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
 
     .scenario-list {
       display: grid;
