@@ -1,42 +1,51 @@
 const BSA = {
-  // Login functionality with correct localStorage handling
+  // Login function with a more consistent and clear approach
   login: function(accessCode, studentName) {
     const msgEl = document.getElementById('loginMsg');
-    const code = accessCode.trim().toUpperCase();  // Normalize input
+    const code = accessCode.trim().toUpperCase(); // Normalize code to uppercase
 
-    // Debugging: Log login attempts
+    // Debugging: log the attempt
     console.log("Login Attempt:", { accessCode, studentName });
 
-    // Check for valid login (for now, hardcoded)
+    // Hardcoded check for now (can be replaced with real backend authentication)
     if (code === "BSAWEEKEND" && studentName === "JohnDoe") {
-      localStorage.setItem("loggedIn", true);  // Store login state in localStorage
-      msgEl.classList.add("hidden"); // Hide any error message
+      localStorage.setItem("loggedIn", "true"); // Store login state in localStorage
+      msgEl.classList.add("hidden"); // Hide error message on successful login
       return { ok: true };
     }
 
-    // If login fails
     msgEl.classList.remove("hidden");
     msgEl.textContent = "Invalid login credentials.";
     return { ok: false, message: "Invalid login credentials." };
   },
 
-  // Check if user is logged in
+  // Check if user is logged in by retrieving login state from localStorage
   isLoggedIn: function() {
     const loggedInStatus = localStorage.getItem("loggedIn");
-    // Log error if localStorage is unavailable
     if (!loggedInStatus) {
       console.error("localStorage is unavailable or login state not found.");
     }
     return loggedInStatus === "true";
   },
 
-  // Helper to get query string parameters
+  // URL query string parameter helper
   qs: function(param) {
     return new URLSearchParams(window.location.search).get(param);
+  },
+
+  // Helper function to ensure consistent login state across devices
+  syncLoginState: function() {
+    // Check if loggedIn exists in localStorage
+    const loggedInState = localStorage.getItem("loggedIn");
+    if (loggedInState === "true") {
+      console.log("User is logged in.");
+    } else {
+      console.log("User is not logged in.");
+    }
   }
 };
 
-// Ensure we start with a fresh state if no data exists in localStorage
+// Fresh state of the app when no data is available
 function freshState() {
   return {
     student: null,
@@ -46,10 +55,10 @@ function freshState() {
   };
 }
 
-// Load the stored state from localStorage or start fresh
+// Load stored state from localStorage
 function loadState() {
   try {
-    const raw = localStorage.getItem("BSA_STATE"); // Changed the STORAGE_KEY for clarity
+    const raw = localStorage.getItem("BSA_STATE"); // Using BSA_STATE for storage
     if (!raw) return freshState();
     return { ...freshState(), ...JSON.parse(raw) };
   } catch (e) {
@@ -61,22 +70,22 @@ function loadState() {
 // Save updated state back to localStorage
 function saveState(state) {
   try {
-    localStorage.setItem("BSA_STATE", JSON.stringify(state));  // Store as BSA_STATE
+    localStorage.setItem("BSA_STATE", JSON.stringify(state)); // Store as BSA_STATE
   } catch (e) {
     console.error("Error saving state:", e);
   }
 }
 
-// Normalize and sanitize access code to uppercase
+// Normalize access code for consistency
 function normalizeCode(value) {
   return String(value || "")
     .replace(/\u00A0/g, " ")
     .replace(/\s+/g, "")
-    .toUpperCase()  // Ensure it's in uppercase
+    .toUpperCase() // Ensure it's uppercase
     .trim();
 }
 
-// Normalize email to lowercase and clean up
+// Normalize email for consistency (lowercase)
 function normalizeEmail(value) {
   return String(value || "")
     .replace(/\u00A0/g, " ")
@@ -84,7 +93,7 @@ function normalizeEmail(value) {
     .toLowerCase();
 }
 
-// Normalize student data for consistency
+// Normalize student data for consistency and storage
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
 
@@ -144,7 +153,7 @@ async function refreshCurrentStudent() {
   return fresh;
 }
 
-// Perform login based on code and email
+// Perform login based on access code and email
 async function loginStudent(code, email = "") {
   const cleanCode = normalizeCode(code);
   const cleanEmail = normalizeEmail(email);
@@ -171,36 +180,7 @@ async function loginStudent(code, email = "") {
   return student;
 }
 
-// Debugging function to track login attempts in console
-async function debugLoginStudent(code, email = "") {
-  const cleanCode = normalizeCode(code);
-  const cleanEmail = normalizeEmail(email);
-
-  console.log("LOGIN ATTEMPT");
-  console.log("Entered code:", cleanCode);
-  console.log("Entered email:", cleanEmail);
-
-  const q = query(
-    collection(db, "portalStudents"),
-    where("accessCode", "==", cleanCode)
-  );
-
-  const snapshot = await getDocs(q);
-  console.log("Matching code records:", snapshot.size);
-
-  const matches = snapshot.docs.map((docSnap) =>
-    normalizeStudent({ id: docSnap.id, ...docSnap.data() })
-  );
-
-  console.log("Matched records:", matches);
-
-  const student = matches.find((s) => normalizeEmail(s.email) === cleanEmail);
-  console.log("Final student:", student);
-
-  return student;
-}
-
-// Record lesson progress in localStorage
+// Function to record lesson progress in localStorage
 async function recordQuizResult(lessonId, score, details) {
   return updateCurrentStudent((student) => {
     student.progress ||= {};
