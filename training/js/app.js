@@ -1,10 +1,5 @@
 import { db } from "../firebase-config.js";
-import {
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
 
@@ -34,24 +29,12 @@ function normalizeStudent(rawStudent) {
 }
 
 function setCurrentStudent(student) {
-  localStorage.setItem(
-    CURRENT_STUDENT_KEY,
-    JSON.stringify(normalizeStudent(student))
-  );
+  localStorage.setItem(CURRENT_STUDENT_KEY, JSON.stringify(normalizeStudent(student)));
 }
 
 function getCurrentStudent() {
-  try {
-    const raw = localStorage.getItem(CURRENT_STUDENT_KEY);
-    return raw ? normalizeStudent(JSON.parse(raw)) : null;
-  } catch (error) {
-    console.error("Failed to read current student from localStorage:", error);
-    return null;
-  }
-}
-
-function clearCurrentStudent() {
-  localStorage.removeItem(CURRENT_STUDENT_KEY);
+  const raw = localStorage.getItem(CURRENT_STUDENT_KEY);
+  return raw ? normalizeStudent(JSON.parse(raw)) : null;
 }
 
 async function loginStudent(code) {
@@ -77,13 +60,10 @@ async function loginStudent(code) {
     }
 
     const docSnap = snapshot.docs[0];
-    const student = normalizeStudent({
-      id: docSnap.id,
-      ...docSnap.data()
-    });
-
+    const student = normalizeStudent({ id: docSnap.id, ...docSnap.data() });
     setCurrentStudent(student);
     return student;
+
   } catch (error) {
     console.error("Error during student login:", error);
     return null;
@@ -93,13 +73,4 @@ async function loginStudent(code) {
 window.BSA = {
   loginStudent,
   getCurrentStudent,
-  clearCurrentStudent
-};
-
-export {
-  loginStudent,
-  getCurrentStudent,
-  clearCurrentStudent,
-  setCurrentStudent,
-  normalizeStudent
 };
