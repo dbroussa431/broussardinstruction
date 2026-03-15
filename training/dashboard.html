@@ -3,58 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Student Dashboard</title>
+  <title>Student Dashboard | Broussard Shooting Academy</title>
   <link rel="stylesheet" href="./css/portal.css" />
 </head>
 <body class="portal-shell">
   <header class="portal-header">
-    <div class="portal-header-left">
-      <h1>Broussard Shooting Academy</h1>
-      <p>Student Training Dashboard</p>
+    <div class="portal-header-title">
+      <h1>Broussard Shooting Academy Training Portal</h1>
+      <p>Online Prerequisite Dashboard</p>
     </div>
-
-    <div class="portal-header-right">
-      <button id="logoutBtn" class="btn-dark" type="button">Logout</button>
-    </div>
+    <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
   </header>
 
   <main class="portal-main">
-    <section class="portal-card dashboard-card">
-      <h2 id="welcomeHeading">Welcome</h2>
-      <p class="dashboard-subtext">
-        Your student portal is active.
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <div class="stat-label">Student</div>
+        <div id="studentName" class="stat-value">Loading...</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Email</div>
+        <div id="studentEmail" class="stat-value">Loading...</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Access Code</div>
+        <div id="studentCode" class="stat-value">Loading...</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Tier</div>
+        <div id="studentTier" class="stat-value">Loading...</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Status</div>
+        <div id="studentStatus" class="stat-value">Loading...</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Completed Lessons</div>
+        <div id="studentLessons" class="stat-value">0</div>
+      </div>
+    </div>
+
+    <section class="portal-card" style="margin-top: 24px;">
+      <h2>Welcome to Your Training Portal</h2>
+      <p>
+        Your account is active and connected. Your lesson access, progress,
+        and course data will load from your student record.
       </p>
-
-      <div class="dashboard-grid">
-        <div class="stat-card">
-          <span class="stat-label">Student Name</span>
-          <strong id="studentName">Loading...</strong>
-        </div>
-
-        <div class="stat-card">
-          <span class="stat-label">Access Code</span>
-          <strong id="studentCode">Loading...</strong>
-        </div>
-
-        <div class="stat-card">
-          <span class="stat-label">Portal Status</span>
-          <strong id="portalStatus">Loading...</strong>
-        </div>
-
-        <div class="stat-card">
-          <span class="stat-label">Progress</span>
-          <strong id="progressLabel">Loading...</strong>
-        </div>
-
-        <div class="stat-card">
-          <span class="stat-label">Course</span>
-          <strong id="courseName">Loading...</strong>
-        </div>
-      </div>
-
-      <div class="dashboard-actions">
-        <a href="./course.html" class="btn-primary">Enter Training</a>
-      </div>
     </section>
   </main>
 
