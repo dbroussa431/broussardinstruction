@@ -1,99 +1,103 @@
-import { auth, db } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
 import {
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  doc,
-  getDoc
+  collection,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+const SESSION_KEY = "bsaStudentSession";
+
 const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const accessCodeInput = document.getElementById("accessCode");
 const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 
 function showMessage(message, isError = false) {
   loginMessage.textContent = message;
-  loginMessage.style.color = isError ? "#b00020" : "#1f6f3f";
+  loginMessage.classList.remove("error", "success");
+
+  if (!message) return;
+
+  loginMessage.classList.add(isError ? "error" : "success");
 }
 
 function setLoading(isLoading) {
   loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading ? "Logging in..." : "Log In";
+  loginBtn.textContent = isLoading ? "Signing In..." : "Login to Portal";
 }
 
-async function routeUser(user) {
-  try {
-    const studentRef = doc(db, "students", user.uid);
-    const studentSnap = await getDoc(studentRef);
-
-    if (!studentSnap.exists()) {
-      showMessage("Login worked, but no student record was found.", true);
-      return;
-    }
-
-    const student = studentSnap.data();
-
-    if (student.portalStatus && student.portalStatus.toLowerCase() !== "active") {
-      showMessage("Your portal is not active yet. Please contact Broussard Shooting Academy.", true);
-      return;
-    }
-
-    window.location.href = "./dashboard.html";
-  } catch (error) {
-    console.error("Routing error:", error);
-    showMessage("Logged in, but failed to load your portal record.", true);
-  }
+function normalizeCode(value) {
+  return value.trim().toUpperCase();
 }
 
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    await routeUser(user);
+function clearOldSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function saveSession(studentId, studentData, code) {
+  const session = {
+    id: studentId,
+    studentName: studentData.studentName || studentData.name || "Student",
+    accessCode: studentData.accessCode || code,
+    portalStatus: studentData.portalStatus || "Active",
+    progressLabel: studentData.progressLabel || "Not Started",
+    course: studentData.course || "Training Course"
+  };
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
+
+async function findStudentByCode(code) {
+  const studentsRef = collection(db, "students");
+  const codeQuery = query(studentsRef, where("accessCode", "==", code));
+  const snapshot = await getDocs(codeQuery);
+
+  if (!snapshot.empty) {
+    return snapshot.docs[0];
   }
-});
+
+  return null;
+}
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  showMessage("");
+  clearOldSession();
 
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
+  const code = normalizeCode(accessCodeInput.value);
 
-  if (!email || !password) {
-    showMessage("Enter your email and password.", true);
+  if (!code) {
+    showMessage("Please enter your access code.", true);
     return;
   }
 
-  setLoading(true);
-  showMessage("");
-
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-    showMessage("Login successful. Redirecting...");
-  } catch (error) {
-    console.error("Login error:", error);
+    setLoading(true);
 
-    let friendly = "Login failed. Please try again.";
+    const studentDoc = await findStudentByCode(code);
 
-    switch (error.code) {
-      case "auth/invalid-email":
-        friendly = "That email address is not valid.";
-        break;
-      case "auth/user-not-found":
-      case "auth/wrong-password":
-      case "auth/invalid-credential":
-        friendly = "Incorrect email or password.";
-        break;
-      case "auth/too-many-requests":
-        friendly = "Too many attempts. Please wait a little and try again.";
-        break;
-      case "auth/network-request-failed":
-        friendly = "Network error. Check your connection and try again.";
-        break;
+    if (!studentDoc) {
+      showMessage("Invalid access code. Please try again.", true);
+      return;
     }
 
-    showMessage(friendly, true);
+    const studentData = studentDoc.data();
+
+    if (
+      studentData.portalStatus &&
+      String(studentData.portalStatus).toLowerCase() !== "active"
+    ) {
+      showMessage("Your portal is not active yet. Please contact your instructor.", true);
+      return;
+    }
+
+    saveSession(studentDoc.id, studentData, code);
+    showMessage("Login successful. Redirecting...");
+    window.location.href = "./dashboard.html";
+  } catch (error) {
+    console.error("Login error:", error);
+    showMessage("Login failed. Please try again in a moment.", true);
   } finally {
     setLoading(false);
   }
