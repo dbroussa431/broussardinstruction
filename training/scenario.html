@@ -1,54 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Scenario</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Scenario Review</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero">
-    <h1>Broussard Shooting Academy</h1>
-    <p>Scenario Practice</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
+      </div>
+    </div>
   </header>
 
-  <main class="wrap">
-    <section class="card">
-      <h2 id="scenarioTitle">Scenario Title</h2>
-      <p id="scenarioDescription">Description of the scenario.</p>
-      <button id="startScenarioBtn">Start Scenario</button>
-    </section>
-
-    <section class="actions">
-      <button id="logoutBtn">Logout</button>
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">2 short scenarios before the quiz</span>
+      <h2 id="scenarioTitle"></h2>
+      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
+      <div id="scenarioWrap"></div>
+      <div id="scenarioResults" class="hidden"></div>
+      <div class="lesson-actions">
+        <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
+        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
+      </div>
     </section>
   </main>
 
+  <script src="data.js"></script>
   <script type="module">
-    import { db } from './firebase-config.js';
-    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+      requireLogin,
+      refreshCurrentStudentFromFirestore,
+      getCurrentStudent,
+      lessonSequenceUnlocked,
+      isLessonAllowedByTier,
+      getLessonProgress,
+      setScenarioCompleted
+    } from "./app.js";
 
-    async function loadScenario(scenarioId) {
-      const scenarioRef = doc(db, "scenarios", scenarioId);
-      const scenarioSnap = await getDoc(scenarioRef);
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-      if (scenarioSnap.exists()) {
-        const scenarioData = scenarioSnap.data();
-        document.getElementById("scenarioTitle").textContent = scenarioData.title;
-        document.getElementById("scenarioDescription").textContent = scenarioData.description;
-      }
+    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
+      window.location.href = "dashboard.html";
     }
 
-    document.getElementById("startScenarioBtn").onclick = () => {
-      window.location.href = "quiz.html";  // Redirect to quiz page after scenario
-    };
+    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
+    const progress = getLessonProgress(lesson.id, student);
 
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("currentStudent");
-      window.location.href = "index.html";
-    };
+    if (!progress.contentViewed) {
+      window.location.href = `lesson.html?lesson=${lesson.id}`;
+    }
 
-    loadScenario(1);  // Load scenario 1 for example
+    document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
+    document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
+    document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
+
+    const wrap = document.getElementById("scenarioWrap");
+    lesson.scenarios.forEach((sc, index) => {
+      const card = document.createElement("div");
+      card.className = "scenario-card";
+      card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
+      const list = document.createElement("div");
+      list.className = "answer-list";
+      sc.choices.forEach((choice, i) => {
+        const label = document.createElement("label");
+        label.className = "answer-option";
+        label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65 + i)}. ${choice}`;
+        list.appendChild(label);
+      });
+      card.appendChild(list);
+      wrap.appendChild(card);
+    });
+
+    document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
+      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
+      lesson.scenarios.forEach((sc, index) => {
+        const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
+        const pickedIndex = picked ? Number(picked.value) : -1;
+        html += `<div class="review-item"><p><strong>Scenario ${index + 1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : "No answer selected"}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
+      });
+
+      document.getElementById("scenarioResults").innerHTML = html;
+      document.getElementById("scenarioResults").classList.remove("hidden");
+      await setScenarioCompleted(lesson.id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    });
   </script>
 </body>
 </html>

@@ -1,33 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Completion</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Online Portion Complete</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero">
-    <h1>Broussard Shooting Academy</h1>
-    <p>Training Completed</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Online Prerequisite Completion</p></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+      </div>
+    </div>
   </header>
 
-  <main class="wrap">
-    <section class="card">
-      <h2>Congratulations!</h2>
-      <p>You have completed all lessons and passed the required quizzes. You are now a certified student of Broussard Shooting Academy.</p>
-    </section>
+  <main class="container">
+    <section class="panel complete-panel">
+      <span class="eyebrow">Final online step</span>
+      <h2 id="completeHeadline">Online prerequisite complete</h2>
+      <p id="completeBody">You have completed the online portion of the training portal. Your final certificate is still handed in person after live review and range qualification with Broussard Shooting Academy.</p>
 
-    <section class="actions">
-      <button id="logoutBtn">Logout</button>
+      <ul class="complete-list">
+        <li>Bring any required documents and equipment for the live class.</li>
+        <li>Arrive ready to review safety, legal standards, handling, and range qualification.</li>
+        <li>Your online completion is saved to your student record in Firebase.</li>
+        <li>Certificate delivery remains instructor-controlled and is not downloadable here.</li>
+      </ul>
+
+      <div class="lesson-actions" style="margin-top:20px;">
+        <a class="btn btn-gold" href="dashboard.html#live-range">Return to Live Review Section</a>
+        <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
+      </div>
     </section>
   </main>
 
+  <script src="data.js"></script>
   <script type="module">
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("currentStudent");
-      window.location.href = "index.html";
-    };
+    import { requireLogin, refreshCurrentStudentFromFirestore, getCurrentStudent, allLessonsComplete } from "./app.js";
+
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+
+    if (!allLessonsComplete(student)) {
+      document.getElementById("completeHeadline").textContent = "Online prerequisite still in progress";
+      document.getElementById("completeBody").textContent = "Finish all 8 lessons, scenario reviews, and quizzes at 80% or better before scheduling your live review and range qualification.";
+    } else {
+      document.getElementById("completeHeadline").textContent = `${student.name}, your online prerequisite is complete`;
+    }
   </script>
 </body>
 </html>
