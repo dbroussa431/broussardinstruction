@@ -1,9 +1,13 @@
 import { db } from "../firebase-config.js";
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
 
-// Function to normalize student data
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
 
@@ -21,7 +25,7 @@ function normalizeStudent(rawStudent) {
     accessCode: String(student.accessCode || "").trim().toUpperCase(),
     tier: String(student.tier || "FULL").toUpperCase(),
     paid: !!student.paid,
-    status: String(student.status || "active"),
+    status: String(student.status || "active").toLowerCase(),
     progress: normalizedProgress,
     completedLessons: Array.isArray(student.completedLessons)
       ? [...new Set(student.completedLessons.map(Number).filter(Boolean))]
@@ -29,49 +33,73 @@ function normalizeStudent(rawStudent) {
   };
 }
 
-// Function to set the current student in localStorage
 function setCurrentStudent(student) {
-  localStorage.setItem(CURRENT_STUDENT_KEY, JSON.stringify(normalizeStudent(student)));
+  localStorage.setItem(
+    CURRENT_STUDENT_KEY,
+    JSON.stringify(normalizeStudent(student))
+  );
 }
 
-// Function to get the current student from localStorage
 function getCurrentStudent() {
-  const raw = localStorage.getItem(CURRENT_STUDENT_KEY);
-  return raw ? normalizeStudent(JSON.parse(raw)) : null;
+  try {
+    const raw = localStorage.getItem(CURRENT_STUDENT_KEY);
+    return raw ? normalizeStudent(JSON.parse(raw)) : null;
+  } catch (error) {
+    console.error("Failed to read current student from localStorage:", error);
+    return null;
+  }
 }
 
-// Function to login student based on email and access code
-async function loginStudent(code, email = "") {
+function clearCurrentStudent() {
+  localStorage.removeItem(CURRENT_STUDENT_KEY);
+}
+
+async function loginStudent(code) {
   const cleanCode = String(code || "").trim().toUpperCase();
-  const cleanEmail = String(email || "").trim().toLowerCase();
+
+  if (!cleanCode) {
+    console.error("Access code is required.");
+    return null;
+  }
 
   try {
     const q = query(
       collection(db, "portalStudents"),
       where("accessCode", "==", cleanCode),
-      where("email", "==", cleanEmail)
+      where("status", "==", "active")
     );
 
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      console.error('Invalid email or access code.');
+      console.error("Invalid or inactive access code.");
       return null;
     }
 
     const docSnap = snapshot.docs[0];
-    const student = normalizeStudent({ id: docSnap.id, ...docSnap.data() });
+    const student = normalizeStudent({
+      id: docSnap.id,
+      ...docSnap.data()
+    });
+
     setCurrentStudent(student);
     return student;
-
   } catch (error) {
     console.error("Error during student login:", error);
     return null;
   }
 }
 
-// Expose the loginStudent function to the window object
 window.BSA = {
   loginStudent,
   getCurrentStudent,
+  clearCurrentStudent
+};
+
+export {
+  loginStudent,
+  getCurrentStudent,
+  clearCurrentStudent,
+  setCurrentStudent,
+  normalizeStudent
 };
