@@ -1,18 +1,7 @@
 import { db } from "../firebase-config.js";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
-const PASSING_SCORE = 80;
-const TOTAL_LESSONS = 8;
-const ADMIN_UNLOCK_CODE = "BSA-UNLOCK-2026"; // CHANGE THIS
 
 // Function to normalize student data
 function normalizeStudent(rawStudent) {
@@ -40,41 +29,18 @@ function normalizeStudent(rawStudent) {
   };
 }
 
-// Function to set the current student in local storage
+// Function to set the current student in localStorage
 function setCurrentStudent(student) {
   localStorage.setItem(CURRENT_STUDENT_KEY, JSON.stringify(normalizeStudent(student)));
 }
 
-// Function to get the current student from local storage
+// Function to get the current student from localStorage
 function getCurrentStudent() {
   const raw = localStorage.getItem(CURRENT_STUDENT_KEY);
   return raw ? normalizeStudent(JSON.parse(raw)) : null;
 }
 
-// Function to clear the active student from local storage
-function clearActiveStudent() {
-  localStorage.removeItem(CURRENT_STUDENT_KEY);
-}
-
-// Function to refresh the current student from the database
-async function refreshCurrentStudent() {
-  const current = getCurrentStudent();
-  if (!current || !current.id) return null;
-
-  const ref = doc(db, "portalStudents", current.id);
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) {
-    clearActiveStudent();
-    return null;
-  }
-
-  const fresh = normalizeStudent({ id: snap.id, ...snap.data() });
-  setCurrentStudent(fresh);
-  return fresh;
-}
-
-// Function to login student based on access code and email
+// Function to login student based on email and access code
 async function loginStudent(code, email = "") {
   const cleanCode = String(code || "").trim().toUpperCase();
   const cleanEmail = String(email || "").trim().toLowerCase();
@@ -104,10 +70,8 @@ async function loginStudent(code, email = "") {
   }
 }
 
-// Exposing required functions to the window object for use in index.html
+// Expose the loginStudent function to the window object
 window.BSA = {
-  PASSING_SCORE,
   loginStudent,
   getCurrentStudent,
-  refreshCurrentStudent,
 };
