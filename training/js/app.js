@@ -1,15 +1,27 @@
 const BSA = {
   login: function(accessCode, studentName) {
-    // Simulate login logic (replace with actual backend authentication)
-    if (accessCode === "BSAWEEKEND" && studentName === "JohnDoe") {
+    const msgEl = document.getElementById('loginMsg');
+    const code = accessCode.toUpperCase();
+
+    if (code === "BSAWEEKEND" && studentName === "JohnDoe") {
       localStorage.setItem("loggedIn", true);
+      msgEl.classList.add("hidden");
       return { ok: true };
     }
+
+    msgEl.classList.remove("hidden");
+    msgEl.textContent = "Invalid login credentials.";
     return { ok: false, message: "Invalid login credentials." };
   },
+
   isLoggedIn: function() {
-    return localStorage.getItem("loggedIn") === "true";
+    const loggedInStatus = localStorage.getItem("loggedIn");
+    if (!loggedInStatus) {
+      console.error("localStorage is unavailable or login state is not found.");
+    }
+    return loggedInStatus === "true";
   },
+
   qs: function(param) {
     return new URLSearchParams(window.location.search).get(param);
   }
