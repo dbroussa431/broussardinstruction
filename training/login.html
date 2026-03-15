@@ -2,50 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>BSA Training Portal | Login</title>
-  <link rel="stylesheet" href="/training/css/portal.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Login | Broussard Shooting Academy</title>
+  <link rel="stylesheet" href="./css/portal.css" />
 </head>
-<body>
-  <div class="portal-shell">
-    <header class="portal-header">
-      <h1>Broussard Shooting Academy</h1>
-      <p>Student Training Portal Login</p>
-    </header>
+<body class="portal-shell">
+  <main class="portal-login-wrap">
+    <section class="portal-login-card">
+      <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="portal-logo login-logo">
+      <h1>BSA Training Portal</h1>
+      <p class="portal-subtext">Sign in to access your training dashboard.</p>
 
-    <main class="page-wrap">
-      <section class="page-card">
-        <h2 class="page-title">Access Your Training</h2>
-        <form id="loginForm">
-          <label for="studentEmail">Student Email</label>
-          <input type="email" id="studentEmail" placeholder="you@example.com" required />
+      <form id="loginForm" class="portal-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" autocomplete="username" required />
+        </div>
 
-          <label for="accessCode">Access Code</label>
-          <input type="text" id="accessCode" placeholder="Enter Access Code" required />
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="current-password" required />
+        </div>
 
-          <button type="submit" class="btn btn-green">Login to Portal</button>
-          <p id="loginMsg" class="notice hidden"></p>
-        </form>
-      </section>
-    </main>
-  </div>
+        <button type="submit" class="primary-btn" id="loginBtn">Log In</button>
+        <p id="loginMessage" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
 
-  <!-- Firebase + App Logic -->
-  <script type="module" src="/training/js/app.js"></script>
-
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('studentEmail').value.trim();
-      const code = document.getElementById('accessCode').value.trim();
-      const result = await BSA.login(code, email);
-      if (!result.ok) {
-        document.getElementById('loginMsg').textContent = result.message;
-        document.getElementById('loginMsg').classList.remove('hidden');
-      } else {
-        window.location.href = "dashboard.html";
-      }
-    });
-  </script>
+  <script type="module" src="./js/login.js"></script>
 </body>
 </html>
