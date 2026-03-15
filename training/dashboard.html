@@ -3,24 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard | Broussard Shooting Academy</title>
+  <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="./css/portal.css" />
 </head>
 <body class="portal-shell">
   <header class="portal-header">
-    <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="portal-logo">
-    <div class="portal-header-title">
-      <h1>Broussard Shooting Academy Training Portal</h1>
-      <p>Online Prerequisite Dashboard</p>
+    <div class="portal-header-left">
+      <h1>Broussard Shooting Academy</h1>
+      <p>Student Training Dashboard</p>
     </div>
-    <button id="logoutBtn" class="logout-btn">Logout</button>
+
+    <div class="portal-header-right">
+      <button id="logoutBtn" class="btn-dark" type="button">Logout</button>
+    </div>
   </header>
 
   <main class="portal-main">
-    <h2>Welcome to your training dashboard</h2>
-    <p id="studentEmail"></p>
+    <section class="portal-card dashboard-card">
+      <h2 id="welcomeHeading">Welcome</h2>
+      <p class="dashboard-subtext">
+        Your student portal is active.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <span class="stat-label">Student Name</span>
+          <strong id="studentName">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Access Code</span>
+          <strong id="studentCode">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Portal Status</span>
+          <strong id="portalStatus">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Progress</span>
+          <strong id="progressLabel">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Course</span>
+          <strong id="courseName">Loading...</strong>
+        </div>
+      </div>
+
+      <div class="dashboard-actions">
+        <a href="./course.html" class="btn-primary">Enter Training</a>
+      </div>
+    </section>
   </main>
 
-  <script type="module" src="./js/dashboard-auth.js"></script>
+  <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
