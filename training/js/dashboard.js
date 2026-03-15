@@ -1,8 +1,4 @@
-import {
-  getCurrentStudent,
-  clearCurrentStudent,
-  refreshCurrentStudentFromFirestore
-} from "./app.js";
+import { getCurrentStudent } from "./app.js";
 
 const studentName = document.getElementById("studentName");
 const studentEmail = document.getElementById("studentEmail");
