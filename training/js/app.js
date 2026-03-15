@@ -1,12 +1,19 @@
-const BSA = (() => {
-  const STORAGE_KEY = 'bsa_portal_v2';
-  const PASSING_SCORE = 80;
-  const ACCESS_CODES = {
-    'BSAWEEKEND': { course: 'Online Prerequisite', discount: false },
-    'BSAFREE': { course: 'Online Prerequisite', discount: true },
-    'BSADISCOUNT': { course: 'Online Prerequisite', discount: true },
-    'BSADEMO': { course: 'Demo Access', discount: true }
-  };
+const BSA = {
+  login: function(accessCode, studentName) {
+    // Simulate login logic (replace with actual backend authentication)
+    if (accessCode === "BSAWEEKEND" && studentName === "JohnDoe") {
+      localStorage.setItem("loggedIn", true);
+      return { ok: true };
+    }
+    return { ok: false, message: "Invalid login credentials." };
+  },
+  isLoggedIn: function() {
+    return localStorage.getItem("loggedIn") === "true";
+  },
+  qs: function(param) {
+    return new URLSearchParams(window.location.search).get(param);
+  }
+};
 
   // Fresh state of the app when no data is available
   function freshState() {
