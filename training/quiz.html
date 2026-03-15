@@ -1,181 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSA Quiz</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./css/portal.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      </div>
+<body class="portal-shell">
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="./dashboard.html">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="site-logo" />
+        <div class="site-brand-copy">
+          <h1>Broussard Shooting Academy</h1>
+          <p>Private Student Portal • Online Prerequisite Training</p>
+        </div>
+      </a>
+
+      <nav class="site-nav" aria-label="Student portal navigation">
+        <a class="nav-link" href="./dashboard.html">Dashboard</a>
+        <a class="nav-link active" href="./quiz.html">Quiz</a>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="panel content-card" id="quizPanel">
-      <span class="eyebrow">20 randomized questions • pass at 80%</span>
-      <h2 id="quizTitle"></h2>
-      <p class="muted">Students can review what they missed after finishing. If they fail, the quiz randomizes again from a larger question bank.</p>
-      <div id="rereadNotice" class="notice warn hidden" style="margin-bottom:16px"></div>
-      <div id="quizLockNotice" class="notice info hidden quiz-lock-note"></div>
-      <div id="quizWrap" class="q-list"></div>
-      <div class="lesson-actions">
-        <button class="btn btn-blue" id="submitQuizBtn">Submit Quiz</button>
-        <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
-      </div>
-    </section>
-    <section id="resultPanel" class="results-grid hidden" style="margin-top:24px"></section>
+  <main class="content-page">
+    <div class="content-stack">
+      <section class="content-card hero">
+        <a class="back-link" id="lessonBackLink" href="./lesson.html">← Back to Lesson</a>
+        <div class="content-kicker">LESSON QUIZ</div>
+        <h1 id="quizTitle" class="content-title">Loading quiz...</h1>
+        <p class="content-summary">
+          Answer all 20 questions. A score of 80% or higher is required to pass the lesson.
+        </p>
+      </section>
+
+      <section class="content-card">
+        <div class="quiz-topbar">
+          <div id="quizProgress" class="quiz-progress">Question 1 of 20</div>
+          <div id="quizScorePreview" class="quiz-score-preview">Score: 0</div>
+        </div>
+      </section>
+
+      <section id="questionCard" class="question-card"></section>
+
+      <section id="quizResultCard" class="quiz-result-card" hidden></section>
+    </div>
   </main>
 
-  <script src="data.js"></script>
+  <script src="./js/data.js"></script>
   <script type="module">
     import {
-      PASSING_SCORE,
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
       getCurrentStudent,
-      lessonSequenceUnlocked,
-      isLessonAllowedByTier,
+      clearCurrentStudent,
+      refreshCurrentStudentFromFirestore,
       getLessonProgress,
-      getAttemptCount,
-      recordQuizResult,
-      randomSample
-    } from "./app.js";
+      saveStudentProgress
+    } from "./js/app.js";
 
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-    const params = new URLSearchParams(window.location.search);
-    const lessonId = Number(params.get("lesson") || 1);
-    const reviewMode = params.get("review") === "1";
+    const logoutBtn = document.getElementById("logoutBtn");
+    const lessonBackLink = document.getElementById("lessonBackLink");
+    const quizTitle = document.getElementById("quizTitle");
+    const quizProgress = document.getElementById("quizProgress");
+    const quizScorePreview = document.getElementById("quizScorePreview");
+    const questionCard = document.getElementById("questionCard");
+    const quizResultCard = document.getElementById("quizResultCard");
 
-    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
-      window.location.href = "dashboard.html";
+    function redirectLogin() {
+      window.location.href = "./index.html";
     }
 
-    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-    const pool = window.QUIZ_BANK[lessonId] || window.QUIZ_BANK[1];
-    const progress = getLessonProgress(lessonId, student);
-
-    document.getElementById("quizTitle").textContent = `${lesson.id}. ${lesson.title} — Quiz`;
-    document.getElementById("backLessonLink").href = `lesson.html?lesson=${lesson.id}`;
-
-    if (!progress.scenarioCompleted && !reviewMode) {
-      document.getElementById("quizLockNotice").textContent = "Complete the scenario review before taking the quiz.";
-      document.getElementById("quizLockNotice").classList.remove("hidden");
-      document.getElementById("submitQuizBtn").disabled = true;
+    function getLessonId() {
+      const params = new URLSearchParams(window.location.search);
+      return Number(params.get("lesson") || 1);
     }
 
-    const attemptCount = getAttemptCount(lessonId, student);
-    if (attemptCount >= 1 && !reviewMode) {
-      document.getElementById("rereadNotice").textContent = attemptCount >= 2
-        ? "Please re-read the lesson summary before another attempt."
-        : "If you score below 80%, you will need to retake the quiz.";
-      document.getElementById("rereadNotice").classList.remove("hidden");
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
 
-    if (reviewMode && progress.quizDetails?.length) {
-      renderResults(progress.quizScore, progress.quizDetails);
-      document.getElementById("quizPanel").classList.add("hidden");
-    } else {
-      const selectedQuestions = randomSample(pool, 20).map((q, idx) => ({ ...q, _id: idx }));
-      const quizWrap = document.getElementById("quizWrap");
+    function normalizeQuestion(question) {
+      if (question.type === "tf") {
+        return {
+          ...question,
+          choices: ["True", "False"],
+          answer: question.answer === true ? 0 : 1
+        };
+      }
+      return question;
+    }
 
-      selectedQuestions.forEach((item, idx) => {
-        const card = document.createElement("div");
-        card.className = "question-card";
-        card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
-        const options = document.createElement("div");
-        options.className = "options";
-        const choices = item.type === "tf" ? ["True", "False"] : item.choices;
+    async function init() {
+      let student = getCurrentStudent();
+      if (!student) {
+        redirectLogin();
+        return;
+      }
 
-        choices.forEach((choice, i) => {
-          const option = document.createElement("label");
-          option.className = "option";
-          option.innerHTML = `<input type="radio" name="q_${idx}" value="${item.type === "tf" ? (i === 0 ? "true" : "false") : i}" style="margin-right:8px"> ${choice}`;
-          option.addEventListener("click", () => {
-            options.querySelectorAll(".option").forEach((el) => el.classList.remove("selected"));
-            option.classList.add("selected");
+      student = await refreshCurrentStudentFromFirestore();
+      if (!student) {
+        redirectLogin();
+        return;
+      }
+
+      const lessonId = getLessonId();
+      const lessons = window.LESSONS || [];
+      const lesson = lessons.find(l => Number(l.id) === lessonId);
+      const bank = (window.QUIZ_BANK && window.QUIZ_BANK[lessonId]) || [];
+
+      if (!lesson || !bank.length) {
+        quizTitle.textContent = "Quiz not found";
+        questionCard.innerHTML = "<p>Quiz data is missing for this lesson.</p>";
+        return;
+      }
+
+      lessonBackLink.href = `./lesson.html?lesson=${lessonId}`;
+      quizTitle.textContent = `${lesson.title} — Quiz`;
+
+      const priorProgress = getLessonProgress(student, lessonId);
+      const questions = shuffle(bank).slice(0, 20).map(normalizeQuestion);
+
+      let currentIndex = 0;
+      let correctCount = 0;
+      let attempts = Number(priorProgress.attempts || 0) + 1;
+      const missedQuestions = [];
+
+      function renderQuestion() {
+        const item = questions[currentIndex];
+
+        quizProgress.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+        quizScorePreview.textContent = `Correct So Far: ${correctCount}`;
+
+        const answers = item.choices.map((choice, index) => `
+          <button class="answer-btn" data-index="${index}">
+            ${choice}
+          </button>
+        `).join("");
+
+        questionCard.innerHTML = `
+          <div class="question-number">QUESTION ${currentIndex + 1}</div>
+          <h2 class="question-text">${item.q}</h2>
+          <div class="answer-list">${answers}</div>
+          <div id="questionExplanation" class="explanation-box" hidden></div>
+          <div class="quiz-footer">
+            <div></div>
+            <button id="nextQuestionBtn" class="btn-primary" type="button" disabled>
+              ${currentIndex === questions.length - 1 ? "Finish Quiz" : "Next Question"}
+            </button>
+          </div>
+        `;
+
+        const answerButtons = [...questionCard.querySelectorAll(".answer-btn")];
+        const explanation = document.getElementById("questionExplanation");
+        const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+        let answered = false;
+
+        answerButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            if (answered) return;
+            answered = true;
+
+            const selected = Number(button.dataset.index);
+            const isCorrect = selected === item.answer;
+
+            answerButtons.forEach((btn, idx) => {
+              btn.disabled = true;
+              if (idx === item.answer) btn.classList.add("correct");
+              if (idx === selected && !isCorrect) btn.classList.add("incorrect");
+              if (idx === selected) btn.classList.add("selected");
+            });
+
+            if (isCorrect) {
+              correctCount += 1;
+            } else {
+              missedQuestions.push(item.q);
+            }
+
+            quizScorePreview.textContent = `Correct So Far: ${correctCount}`;
+            explanation.hidden = false;
+            explanation.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+            nextQuestionBtn.disabled = false;
           });
-          options.appendChild(option);
         });
 
-        card.appendChild(options);
-        quizWrap.appendChild(card);
-      });
-
-      document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-        if (!progress.scenarioCompleted) return;
-
-        let correct = 0;
-        const details = [];
-
-        selectedQuestions.forEach((item, idx) => {
-          const picked = document.querySelector(`input[name="q_${idx}"]:checked`);
-          let isCorrect = false;
-          let yourAnswer = "No answer selected";
-          let correctAnswer = "";
-
-          if (item.type === "tf") {
-            correctAnswer = item.answer ? "True" : "False";
-            if (picked) {
-              yourAnswer = picked.value === "true" ? "True" : "False";
-              isCorrect = String(item.answer) === picked.value;
-            }
-          } else {
-            correctAnswer = item.choices[item.answer];
-            if (picked) {
-              yourAnswer = item.choices[Number(picked.value)];
-              isCorrect = Number(picked.value) === item.answer;
-            }
+        nextQuestionBtn.addEventListener("click", async () => {
+          if (currentIndex < questions.length - 1) {
+            currentIndex += 1;
+            renderQuestion();
+            return;
           }
 
-          if (isCorrect) correct += 1;
-          details.push({ question: item.q, yourAnswer, correctAnswer, explanation: item.explanation, isCorrect });
-        });
+          const score = Math.round((correctCount / questions.length) * 100);
+          const passed = score >= 80;
 
-        const score = Math.round((correct / selectedQuestions.length) * 100);
-        await recordQuizResult(lessonId, score, details);
-        renderResults(score, details, attemptCount + 1);
-        document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth" });
-      });
-    }
+          await saveStudentProgress(lessonId, {
+            attempts,
+            quizPassed: passed,
+            quizScore: score,
+            missedQuestions
+          });
 
-    function renderResults(score, details, attemptsOverride) {
-      const passed = score >= PASSING_SCORE;
-      const resultPanel = document.getElementById("resultPanel");
-      const missed = details.filter((d) => !d.isCorrect);
-      const attemptsSeen = attemptsOverride || attemptCount;
-
-      resultPanel.classList.remove("hidden");
-      resultPanel.innerHTML = `
-        <div class="panel result-card">
-          <div class="flex-row" style="justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <div>
-              <div class="banner ${passed ? "pass" : "retake"}">${passed ? "PASS" : "RETAKE REQUIRED"} • Score: ${score}%</div>
-              <p class="muted">Passing score is ${PASSING_SCORE}%.</p>
+          questionCard.hidden = true;
+          quizResultCard.hidden = false;
+          quizResultCard.innerHTML = `
+            <div class="content-kicker">QUIZ COMPLETE</div>
+            <h2 class="content-title">Lesson ${lessonId} Results</h2>
+            <div class="quiz-result-score">${score}%</div>
+            <p class="${passed ? "quiz-result-pass" : "quiz-result-fail"}">
+              ${passed ? "Passed — lesson unlocked successfully." : "Not yet passing — review the lesson and try again."}
+            </p>
+            <p class="content-summary">
+              ${passed
+                ? "Great work. Your lesson has been marked complete."
+                : "A score of 80% or higher is required. Review the material, revisit scenarios, and retake the quiz."}
+            </p>
+            <div class="content-actions" style="margin-top:18px;">
+              <a class="lesson-btn primary" href="./dashboard.html">Return to Dashboard</a>
+              <a class="lesson-btn" href="./lesson.html?lesson=${lessonId}">Review Lesson</a>
+              <a class="lesson-btn" href="./scenario.html?lesson=${lessonId}">Review Scenarios</a>
+              ${!passed ? `<a class="lesson-btn" href="./quiz.html?lesson=${lessonId}">Retake Quiz</a>` : ""}
             </div>
-            <div class="score-circle" style="--pct:${score}%"><span>${score}%</span></div>
-          </div>
-          ${passed ? '<div class="notice ok">Lesson quiz passed. Your progress is now saved to Firebase and the next lesson is unlocked.</div>' : '<div class="notice bad">Anything below 80% requires a retake. Questions and answers randomize again from the larger question bank.</div>'}
-          ${!passed && attemptsSeen >= 2 ? '<div class="notice warn" style="margin-top:12px">Please re-read the lesson summary before your next attempt.</div>' : ""}
-          <div class="lesson-actions" style="margin-top:16px;">
-            ${passed ? `<a class="btn btn-blue" href="${lessonId === window.LESSONS.length ? "complete.html" : `lesson.html?lesson=${lessonId + 1}`}">${lessonId === window.LESSONS.length ? "Finish Online Portion" : "Proceed to Next Lesson"}</a>` : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`}
-            <a class="btn btn-outline" href="lesson.html?lesson=${lessonId}">Review Lesson Again</a>
-          </div>
-        </div>
-        <div class="panel result-card">
-          <h3>Missed Question Review</h3>
-          ${missed.length ? missed.map((item) => `<div class="review-item"><p><strong>${item.question}</strong></p><p>Your answer: ${item.yourAnswer}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`).join("") : '<div class="review-item"><p>No missed questions on this attempt.</p></div>'}
-        </div>`;
+          `;
+        });
+      }
+
+      renderQuestion();
     }
+
+    logoutBtn?.addEventListener("click", () => {
+      clearCurrentStudent();
+      redirectLogin();
+    });
+
+    init();
   </script>
 </body>
 </html>
