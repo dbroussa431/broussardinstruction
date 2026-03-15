@@ -1,53 +1,58 @@
-const SESSION_KEY = "bsaStudentSession";
+import {
+  getCurrentStudent,
+  clearCurrentStudent,
+  refreshCurrentStudentFromFirestore
+} from "./app.js";
 
-const welcomeHeading = document.getElementById("welcomeHeading");
 const studentName = document.getElementById("studentName");
+const studentEmail = document.getElementById("studentEmail");
 const studentCode = document.getElementById("studentCode");
-const portalStatus = document.getElementById("portalStatus");
-const progressLabel = document.getElementById("progressLabel");
-const courseName = document.getElementById("courseName");
+const studentTier = document.getElementById("studentTier");
+const studentStatus = document.getElementById("studentStatus");
+const studentLessons = document.getElementById("studentLessons");
 const logoutBtn = document.getElementById("logoutBtn");
 
-function getSession() {
-  const raw = localStorage.getItem(SESSION_KEY);
-
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    console.error("Session parse error:", error);
-    return null;
-  }
-}
-
-function goToLogin() {
+function redirectToLogin() {
   window.location.href = "./index.html";
 }
 
-function loadDashboard() {
-  const session = getSession();
+function renderStudent(student) {
+  if (!student) return;
 
-  if (!session) {
-    goToLogin();
+  studentName.textContent = student.name || "Student";
+  studentEmail.textContent = student.email || "No email on file";
+  studentCode.textContent = student.accessCode || "N/A";
+  studentTier.textContent = student.tier || "FREE";
+  studentStatus.textContent = student.status || "active";
+  studentLessons.textContent = Array.isArray(student.completedLessons)
+    ? student.completedLessons.length
+    : 0;
+}
+
+async function initDashboard() {
+  const cachedStudent = getCurrentStudent();
+
+  if (!cachedStudent || !cachedStudent.accessCode) {
+    redirectToLogin();
     return;
   }
 
-  const name = session.studentName || "Student";
+  renderStudent(cachedStudent);
 
-  welcomeHeading.textContent = `Welcome, ${name}`;
-  studentName.textContent = name;
-  studentCode.textContent = session.accessCode || "N/A";
-  portalStatus.textContent = session.portalStatus || "Active";
-  progressLabel.textContent = session.progressLabel || "Not Started";
-  courseName.textContent = session.course || "Training Course";
+  const refreshedStudent = await refreshCurrentStudentFromFirestore();
+
+  if (!refreshedStudent || refreshedStudent.status !== "active") {
+    clearCurrentStudent();
+    redirectToLogin();
+    return;
+  }
+
+  renderStudent(refreshedStudent);
 }
 
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem(SESSION_KEY);
-  goToLogin();
+logoutBtn?.addEventListener("click", () => {
+  clearCurrentStudent();
+  redirectToLogin();
 });
 
-loadDashboard();
+initDashboard();
