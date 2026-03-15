@@ -3,64 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Student Dashboard | Broussard Shooting Academy</title>
+  <link rel="stylesheet" href="./css/portal.css" />
 </head>
-<body>
-  <header class="hero">
-    <h1>Broussard Shooting Academy</h1>
-    <p>Welcome to Your Student Dashboard</p>
+<body class="portal-shell">
+  <header class="portal-header">
+    <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="portal-logo">
+    <div class="portal-header-title">
+      <h1>Broussard Shooting Academy Training Portal</h1>
+      <p>Online Prerequisite Dashboard</p>
+    </div>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
   </header>
 
-  <main class="wrap">
-    <section class="card">
-      <h2>Your Progress</h2>
-      <div id="lessonList"></div>
-    </section>
-
-    <section class="actions">
-      <button id="logoutBtn">Logout</button>
-    </section>
+  <main class="portal-main">
+    <h2>Welcome to your training dashboard</h2>
+    <p id="studentEmail"></p>
   </main>
 
-  <script type="module">
-    import { db } from './firebase-config.js';
-    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-    async function refreshCurrentStudent() {
-      const currentStudent = JSON.parse(localStorage.getItem("currentStudent"));
-      if (!currentStudent || !currentStudent.id) return null;
-
-      const ref = doc(db, "portalStudents", currentStudent.id);
-      const snap = await getDoc(ref);
-
-      if (!snap.exists()) {
-        localStorage.removeItem("currentStudent");
-        window.location.href = "index.html";
-        return null;
-      }
-
-      const student = { id: snap.id, ...snap.data() };
-      localStorage.setItem("currentStudent", JSON.stringify(student));
-      return student;
-    }
-
-    async function renderDashboard() {
-      const student = await refreshCurrentStudent();
-      if (!student) return;
-
-      document.getElementById("studentName").textContent = student.name;
-      document.getElementById("studentEmail").textContent = student.email;
-
-      // Add additional dashboard functionality here
-    }
-
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("currentStudent");
-      window.location.href = "index.html";
-    };
-
-    renderDashboard();
-  </script>
+  <script type="module" src="./js/dashboard-auth.js"></script>
 </body>
 </html>
