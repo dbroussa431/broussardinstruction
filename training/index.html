@@ -5,17 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSA Student Portal Login</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(rgba(255, 255, 255, 0.93), rgba(255, 255, 255, 0.93)),
-        radial-gradient(circle at top right, rgba(193, 139, 47, 0.18), transparent 28%);
-      color: #111827;
-    }
-    /* Add your additional styles here */
-    /* ... */
-  </style>
 </head>
 <body>
   <header class="hero">
@@ -55,11 +44,26 @@
   </main>
 
   <script type="module">
-    import { db } from "./firebase-config.js";  // Correct Firebase config file path
-    import { query, where, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { db } from './firebase-config.js';
+    import { collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     const form = document.getElementById("studentLoginForm");
     const loginMsg = document.getElementById("loginMsg");
+
+    async function loginStudent(code, email) {
+      const cleanCode = String(code || "").trim().toUpperCase();
+      const cleanEmail = String(email || "").trim().toLowerCase();
+      const q = query(
+        collection(db, "portalStudents"),
+        where("accessCode", "==", cleanCode),
+        where("email", "==", cleanEmail)
+      );
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) return null;
+
+      const docSnap = snapshot.docs[0];
+      return { id: docSnap.id, ...docSnap.data() };
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -69,30 +73,18 @@
       const code = document.getElementById("studentCode").value.trim();
 
       try {
-        // Firebase query to check email and access code combination
-        const snapshot = await getDocs(
-          query(
-            collection(db, "portalStudents"),
-            where("email", "==", email),
-            where("accessCode", "==", code)
-          )
-        );
+        const student = await loginStudent(code, email);
 
-        if (snapshot.empty) {
+        if (!student) {
           loginMsg.textContent = "Invalid email or access code.";
           loginMsg.style.color = "#b00020";
           return;
         }
 
-        const studentDoc = snapshot.docs[0];
-        const studentData = studentDoc.data();
-
         loginMsg.textContent = "Login successful. Redirecting...";
         loginMsg.style.color = "#0f9d58";
-        
-        // Store the student data and redirect
-        localStorage.setItem("student", JSON.stringify(studentData));
-        window.location.href = "dashboard.html";  // Or wherever you want to redirect
+        localStorage.setItem("currentStudent", JSON.stringify(student));
+        window.location.href = "dashboard.html";
       } catch (err) {
         console.error(err);
         loginMsg.textContent = "Login failed. Please try again.";
