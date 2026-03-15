@@ -3,56 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal | Lesson Quiz</title>
-  <link rel="stylesheet" href="css/portal.css" />
-  <script src="js/app.js"></script>
+  <title>BSA Quiz</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="portal-shell">
-    <header class="portal-header">
-      <h1>Broussard Shooting Academy</h1>
-      <p>Lesson Quiz</p>
-    </header>
+  <header class="hero">
+    <h1>Broussard Shooting Academy</h1>
+    <p>Quiz Time</p>
+  </header>
 
-    <main class="page-wrap">
-      <section class="page-card">
-        <h2 class="page-title">Lesson Quiz</h2>
-        <p id="quizNotice" class="notice info">Loading quiz...</p>
-        <div id="quizWrap"></div>
+  <main class="wrap">
+    <section class="card">
+      <h2 id="quizTitle">Quiz Title</h2>
+      <div id="quizQuestions"></div>
+      <button id="submitQuizBtn">Submit Quiz</button>
+    </section>
 
-        <div class="page-actions">
-          <div class="page-actions-left">
-            <a class="btn btn-dark" id="backToLesson" href="lesson.html?lesson=1">Back to Lesson</a>
-          </div>
-          <div class="page-actions-right">
-            <button class="btn btn-green" id="startQuizBtn">Start Quiz</button>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+    <section class="actions">
+      <button id="logoutBtn">Logout</button>
+    </section>
+  </main>
 
-  <script>
-    async function initQuizPage() {
-      const quizWrap = document.getElementById("quizWrap");
-      const startQuizBtn = document.getElementById("startQuizBtn");
+  <script type="module">
+    import { db } from './firebase-config.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-      const lessonId = window.BSA.qs("lesson");
-      const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
+    async function loadQuiz(quizId) {
+      const quizRef = doc(db, "quizzes", quizId);
+      const quizSnap = await getDoc(quizRef);
 
-      if (!lesson) {
-        document.getElementById("quizNotice").innerHTML = `Lesson not found.`;
-        return;
+      if (quizSnap.exists()) {
+        const quizData = quizSnap.data();
+        document.getElementById("quizTitle").textContent = quizData.title;
+
+        // Render the questions here
+        const questions = quizData.questions;
+        const quizQuestionsDiv = document.getElementById("quizQuestions");
+        questions.forEach((q, idx) => {
+          const questionDiv = document.createElement("div");
+          questionDiv.innerHTML = `
+            <p>${q.text}</p>
+            <input type="radio" name="question${idx}" value="1"> ${q.options[0]}<br>
+            <input type="radio" name="question${idx}" value="2"> ${q.options[1]}<br>
+            <input type="radio" name="question${idx}" value="3"> ${q.options[2]}<br>
+          `;
+          quizQuestionsDiv.appendChild(questionDiv);
+        });
       }
-
-      document.getElementById("quizNotice").innerHTML = `Loading quiz for ${lesson.title}...`;
-
-      startQuizBtn.addEventListener("click", () => {
-        window.location.href = `quiz-questions.html?lesson=${lessonId}`;
-      });
     }
 
-    window.addEventListener("DOMContentLoaded", initQuizPage);
+    document.getElementById("submitQuizBtn").onclick = () => {
+      window.location.href = "results.html";  // Redirect to quiz results page
+    };
+
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("currentStudent");
+      window.location.href = "index.html";
+    };
+
+    loadQuiz(1);  // Load quiz 1 for example
   </script>
 </body>
 </html>
