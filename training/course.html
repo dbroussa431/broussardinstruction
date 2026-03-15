@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Training Course</title>
+  <link rel="stylesheet" href="./css/portal.css" />
+</head>
+<body class="portal-shell">
+  <header class="portal-header">
+    <div class="portal-header-left">
+      <h1>Broussard Shooting Academy</h1>
+      <p>Student Training Course</p>
+    </div>
+
+    <div class="portal-header-right">
+      <button id="logoutBtn" class="btn-dark" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="portal-main">
+    <section class="portal-card dashboard-card">
+      <h2 id="courseWelcome">Training Portal</h2>
+      <p class="dashboard-subtext">
+        This is the temporary live student access page.
+      </p>
+
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <span class="stat-label">Student</span>
+          <strong id="courseStudentName">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Course</span>
+          <strong id="courseStudentCourse">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Progress</span>
+          <strong id="courseStudentProgress">Loading...</strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">Status</span>
+          <strong id="courseStudentStatus">Loading...</strong>
+        </div>
+      </div>
+
+      <div class="portal-note" style="margin-top:24px;">
+        Students are successfully inside the portal. Lesson pages, quizzes,
+        scenarios, and automatic progress logic can be layered in next.
+      </div>
+
+      <div class="dashboard-actions">
+        <a href="./dashboard.html" class="btn-primary">Back to Dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/course.js"></script>
+</body>
+</html>
