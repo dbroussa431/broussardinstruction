@@ -1,54 +1,110 @@
-import { getCurrentStudent } from "./app.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Student Dashboard</title>
+  <link rel="stylesheet" href="./css/portal.css" />
+</head>
+<body class="portal-shell">
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="./dashboard.html">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="site-logo" />
+        <div class="site-brand-copy">
+          <h1>Broussard Shooting Academy</h1>
+          <p>Private Student Portal • Online Prerequisite Training</p>
+        </div>
+      </a>
 
-const studentName = document.getElementById("studentName");
-const studentEmail = document.getElementById("studentEmail");
-const studentCode = document.getElementById("studentCode");
-const studentTier = document.getElementById("studentTier");
-const studentStatus = document.getElementById("studentStatus");
-const studentLessons = document.getElementById("studentLessons");
-const logoutBtn = document.getElementById("logoutBtn");
+      <nav class="site-nav" aria-label="Student portal navigation">
+        <a class="nav-link active" href="./dashboard.html">Dashboard</a>
+        <a class="nav-link" href="#final-step">Live Review &amp; Range</a>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </nav>
+    </div>
+  </header>
 
-function redirectToLogin() {
-  window.location.href = "./index.html";
-}
+  <main class="dashboard-page">
+    <section class="dashboard-hero">
+      <div class="hero-card">
+        <div class="hero-kicker">ONLINE PREREQUISITE COMPLETED IN STAGES</div>
+        <h2 id="welcomeHeadline">
+          Train on your schedule. Finish your lessons. Then meet in person for
+          live review and range qualification.
+        </h2>
+        <p class="hero-copy">
+          This portal is built for students who cannot give up one long 10-hour
+          block all at once. Complete each lesson in smaller chunks, pass each
+          quiz with at least 80%, finish the scenario review, and then schedule
+          your in-person live portion with Broussard Shooting Academy.
+        </p>
 
-function renderStudent(student) {
-  if (!student) return;
+        <div class="hero-pills">
+          <span class="pill">8 Lessons</span>
+          <span class="pill">20-Question Randomized Quizzes</span>
+          <span class="pill">2 Scenarios Per Lesson</span>
+          <span class="pill">Live Range Required</span>
+          <span class="pill" id="tierPill">Tier: --</span>
+        </div>
+      </div>
 
-  studentName.textContent = student.name || "Student";
-  studentEmail.textContent = student.email || "No email on file";
-  studentCode.textContent = student.accessCode || "N/A";
-  studentTier.textContent = student.tier || "FREE";
-  studentStatus.textContent = student.status || "active";
-  studentLessons.textContent = Array.isArray(student.completedLessons)
-    ? student.completedLessons.length
-    : 0;
-}
+      <aside class="summary-panel">
+        <div class="summary-box">
+          <div class="summary-label">OVERALL PROGRESS</div>
+          <div id="progressText" class="summary-value">0 / 8 Lessons Passed</div>
+          <div class="progress-track">
+            <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
 
-async function initDashboard() {
-  const cachedStudent = getCurrentStudent();
+        <div class="summary-box">
+          <div class="summary-label">STUDENT STATUS</div>
+          <div id="studentStatusText" class="summary-value">In Progress</div>
+        </div>
 
-  if (!cachedStudent || !cachedStudent.accessCode) {
-    redirectToLogin();
-    return;
-  }
+        <div class="summary-box">
+          <div class="summary-label">CERTIFICATE STATUS</div>
+          <div id="certificateStatusText" class="summary-value">Handed in Person Only</div>
+        </div>
+      </aside>
+    </section>
 
-  renderStudent(cachedStudent);
+    <section class="lesson-dashboard-section">
+      <h3>Lesson Dashboard</h3>
+      <p class="section-subtitle">
+        Lesson summaries, scenario reviews, and pass/retake tracking.
+      </p>
 
-  const refreshedStudent = await refreshCurrentStudentFromFirestore();
+      <div id="lessonGrid" class="lesson-grid"></div>
+    </section>
 
-  if (!refreshedStudent || refreshedStudent.status !== "active") {
-    clearCurrentStudent();
-    redirectToLogin();
-    return;
-  }
+    <section id="final-step" class="final-step-card">
+      <h3>Final Step: Live Review &amp; Range Qualification</h3>
+      <p>
+        After all 8 online lessons, quizzes, and scenarios are successfully
+        completed, the student status changes to
+        <strong>Online Prerequisite Completed</strong>. From there, the student
+        requests an in-person appointment for the live class review and range
+        portion. Final certificate is handed personally by Broussard Shooting
+        Academy after successful completion.
+      </p>
 
-  renderStudent(refreshedStudent);
-}
+      <div class="final-step-actions">
+        <button id="requestLiveSessionBtn" class="btn-primary" type="button">
+          Request Live Session
+        </button>
+        <button id="viewRequirementsBtn" class="btn-secondary" type="button">
+          View Completion Requirements
+        </button>
+      </div>
 
-logoutBtn?.addEventListener("click", () => {
-  clearCurrentStudent();
-  redirectToLogin();
-});
+      <p class="final-step-note">
+        Private access only. No printable certificate is shown inside the portal.
+      </p>
+    </section>
+  </main>
 
-initDashboard();
+  <script type="module" src="./js/dashboard.js"></script>
+</body>
+</html>
