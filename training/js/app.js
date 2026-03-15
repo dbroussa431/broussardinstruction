@@ -1,39 +1,42 @@
 const BSA = {
+  // Login functionality with correct localStorage handling
   login: function(accessCode, studentName) {
     const msgEl = document.getElementById('loginMsg');
-    const code = accessCode.toUpperCase();  // Ensure uppercase handling
+    const code = accessCode.trim().toUpperCase();  // Normalize input
 
-    // Debugging: log the attempt
+    // Debugging: Log login attempts
     console.log("Login Attempt:", { accessCode, studentName });
 
+    // Check for valid login (for now, hardcoded)
     if (code === "BSAWEEKEND" && studentName === "JohnDoe") {
-      localStorage.setItem("loggedIn", true); // Store login state
-      msgEl.classList.add("hidden"); // Hide error message on successful login
+      localStorage.setItem("loggedIn", true);  // Store login state in localStorage
+      msgEl.classList.add("hidden"); // Hide any error message
       return { ok: true };
     }
 
-    msgEl.classList.remove("hidden"); // Show error message if login fails
+    // If login fails
+    msgEl.classList.remove("hidden");
     msgEl.textContent = "Invalid login credentials.";
     return { ok: false, message: "Invalid login credentials." };
   },
 
+  // Check if user is logged in
   isLoggedIn: function() {
     const loggedInStatus = localStorage.getItem("loggedIn");
-
-    // Check for availability of localStorage on mobile devices
+    // Log error if localStorage is unavailable
     if (!loggedInStatus) {
       console.error("localStorage is unavailable or login state not found.");
     }
     return loggedInStatus === "true";
   },
 
-  // URL search param helper
+  // Helper to get query string parameters
   qs: function(param) {
     return new URLSearchParams(window.location.search).get(param);
   }
 };
 
-// Fresh state of the app when no data is available
+// Ensure we start with a fresh state if no data exists in localStorage
 function freshState() {
   return {
     student: null,
@@ -43,23 +46,28 @@ function freshState() {
   };
 }
 
-// Load stored state from localStorage
+// Load the stored state from localStorage or start fresh
 function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem("BSA_STATE"); // Changed the STORAGE_KEY for clarity
     if (!raw) return freshState();
     return { ...freshState(), ...JSON.parse(raw) };
-  } catch {
+  } catch (e) {
+    console.error("Error loading state:", e);
     return freshState();
   }
 }
 
-// Save updated state to localStorage
+// Save updated state back to localStorage
 function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem("BSA_STATE", JSON.stringify(state));  // Store as BSA_STATE
+  } catch (e) {
+    console.error("Error saving state:", e);
+  }
 }
 
-// Normalize and convert the access code to uppercase
+// Normalize and sanitize access code to uppercase
 function normalizeCode(value) {
   return String(value || "")
     .replace(/\u00A0/g, " ")
@@ -68,7 +76,7 @@ function normalizeCode(value) {
     .trim();
 }
 
-// Normalize email to lowercase for consistency
+// Normalize email to lowercase and clean up
 function normalizeEmail(value) {
   return String(value || "")
     .replace(/\u00A0/g, " ")
@@ -76,7 +84,7 @@ function normalizeEmail(value) {
     .toLowerCase();
 }
 
-// Normalize student data to store in localStorage
+// Normalize student data for consistency
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
 
@@ -102,23 +110,23 @@ function normalizeStudent(rawStudent) {
   };
 }
 
-// Set current student to localStorage
+// Set the current student to localStorage
 function setCurrentStudent(student) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeStudent(student)));
+  localStorage.setItem("BSA_STATE", JSON.stringify(normalizeStudent(student)));
 }
 
-// Get current student from localStorage
+// Get current student data from localStorage
 function getCurrentStudent() {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = localStorage.getItem("BSA_STATE");
   return raw ? normalizeStudent(JSON.parse(raw)) : null;
 }
 
 // Clear active student from localStorage
 function clearActiveStudent() {
-  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("BSA_STATE");
 }
 
-// Refresh current student data by querying Firestore
+// Refresh current student data by querying Firestore (Firebase)
 async function refreshCurrentStudent() {
   const current = getCurrentStudent();
   if (!current || !current.id) return null;
@@ -136,7 +144,7 @@ async function refreshCurrentStudent() {
   return fresh;
 }
 
-// Log in the student by verifying the access code and email
+// Perform login based on code and email
 async function loginStudent(code, email = "") {
   const cleanCode = normalizeCode(code);
   const cleanEmail = normalizeEmail(email);
@@ -163,7 +171,7 @@ async function loginStudent(code, email = "") {
   return student;
 }
 
-// Helper function to debug login attempt (for debugging purposes only)
+// Debugging function to track login attempts in console
 async function debugLoginStudent(code, email = "") {
   const cleanCode = normalizeCode(code);
   const cleanEmail = normalizeEmail(email);
@@ -192,7 +200,7 @@ async function debugLoginStudent(code, email = "") {
   return student;
 }
 
-// Function to record lesson progress and score in the system
+// Record lesson progress in localStorage
 async function recordQuizResult(lessonId, score, details) {
   return updateCurrentStudent((student) => {
     student.progress ||= {};
@@ -235,17 +243,13 @@ async function recordQuizResult(lessonId, score, details) {
 }
 
 return {
-  PASSING_SCORE,
-  ACCESS_CODES,
-  loadState,
-  saveState,
   login,
-  logout,
-  requireLogin,
-  getStudent,
-  setLessonContentViewed,
-  setScenarioCompleted,
+  isLoggedIn,
+  qs,
+  getCurrentStudent,
+  setCurrentStudent,
+  refreshCurrentStudent,
   recordQuizResult,
-  debugLoginStudent,
-  getCurrentStudent
+  saveState,
+  loadState
 };
