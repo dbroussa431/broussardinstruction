@@ -1,4 +1,4 @@
-import { loginStudent } from "./app.js";
+import { loginStudent, getCurrentStudent } from "./app.js";
 
 const form = document.getElementById("loginForm");
 const accessCodeInput = document.getElementById("accessCode");
@@ -18,10 +18,15 @@ function setLoading(isLoading) {
   loginBtn.textContent = isLoading ? "Checking Code..." : "Login to Portal";
 }
 
+const existingStudent = getCurrentStudent();
+if (existingStudent && existingStudent.accessCode && existingStudent.status === "active") {
+  window.location.href = "./dashboard.html";
+}
+
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const code = accessCodeInput?.value?.trim() || "";
+  const code = String(accessCodeInput?.value || "").trim();
 
   if (!code) {
     showMessage("Please enter your access code.", "error");
@@ -37,13 +42,10 @@ form?.addEventListener("submit", async (event) => {
 
     if (!student) {
       showMessage("Invalid or inactive access code.", "error");
-      setLoading(false);
       return;
     }
 
     showMessage("Login successful. Redirecting...", "success");
-
-    // Change this if your dashboard file name/path is different
     window.location.href = "./dashboard.html";
   } catch (error) {
     console.error("Login page error:", error);
