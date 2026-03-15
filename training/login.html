@@ -20,8 +20,8 @@
         <form id="loginForm">
           <label for="accessCode">Access Code</label>
           <input type="text" id="accessCode" required />
-          <label for="studentName">Student Name</label>
-          <input type="text" id="studentName" required />
+          <label for="studentEmail">Student Email</label>
+          <input type="email" id="studentEmail" required />
           <button type="submit" class="btn btn-green">Log in</button>
           <p id="loginMsg" class="notice hidden"></p>
         </form>
@@ -30,20 +30,7 @@
   </div>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const result = BSA.login(
-        document.getElementById('accessCode').value, 
-        document.getElementById('studentName').value
-      );
-      const msg = document.getElementById('loginMsg');
-      if (!result.ok) {
-        msg.textContent = result.message;
-        msg.classList.remove('hidden');
-        return;
-      }
-      window.location.href = 'dashboard.html';
-    });
+    // The app.js script will handle the login flow when the form is submitted.
   </script>
 </body>
 </html>
