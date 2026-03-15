@@ -1,181 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSA Student Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./css/portal.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-       <img src="images/bsa-logo.png" alt="Broussard Shooting Academy" />
-        <div>
+<body class="portal-shell">
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-brand" href="./dashboard.html">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="site-logo" />
+        <div class="site-brand-copy">
           <h1>Broussard Shooting Academy</h1>
           <p>Private Student Portal • Online Prerequisite Training</p>
         </div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-        <button class="btn btn-gold" id="logoutBtn">Logout</button>
-      </div>
+      </a>
+
+      <nav class="site-nav" aria-label="Student portal navigation">
+        <a class="nav-link active" href="./dashboard.html">Dashboard</a>
+        <a class="nav-link" href="#final-step">Live Review &amp; Range</a>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <div class="panel hero-main">
-        <span class="eyebrow">Online prerequisite completed in stages</span>
-        <h2 id="welcomeLine">Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.</h2>
-        <p>This portal is built for students who cannot give up one long 10-hour block all at once. Complete each lesson in smaller chunks, pass each quiz with at least 80%, finish the scenario review, and then schedule your in-person live portion with Broussard Shooting Academy.</p>
-        <div class="meta-row">
+  <main class="dashboard-page">
+    <section class="dashboard-hero">
+      <div class="hero-card">
+        <div class="hero-kicker">ONLINE PREREQUISITE COMPLETED IN STAGES</div>
+        <h2 id="welcomeHeadline">
+          Train on your schedule. Finish your lessons. Then meet in person for
+          live review and range qualification.
+        </h2>
+        <p class="hero-copy">
+          This portal is built for students who cannot give up one long 10-hour
+          block all at once. Complete each lesson in smaller chunks, pass each
+          quiz with at least 80%, finish the scenario review, and then schedule
+          your in-person live portion with Broussard Shooting Academy.
+        </p>
+
+        <div class="hero-pills">
           <span class="pill">8 Lessons</span>
           <span class="pill">20-Question Randomized Quizzes</span>
           <span class="pill">2 Scenarios Per Lesson</span>
-          <span class="pill" id="tierPill">Tier: FREE</span>
+          <span class="pill">Live Range Required</span>
+          <span class="pill" id="tierPill">Tier: --</span>
         </div>
       </div>
-      <div class="panel hero-side">
-        <div class="stat-card">
-          <small>Overall Progress</small>
-          <strong id="progressLabel">0 / 8 Lessons Passed</strong>
-          <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+      <aside class="summary-panel">
+        <div class="summary-box">
+          <div class="summary-label">OVERALL PROGRESS</div>
+          <div id="progressText" class="summary-value">0 / 8 Lessons Passed</div>
+          <div class="progress-track">
+            <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
+          </div>
         </div>
-        <div class="stat-card">
-          <small>Student Status</small>
-          <strong id="studentStatus">In Progress</strong>
+
+        <div class="summary-box">
+          <div class="summary-label">STUDENT STATUS</div>
+          <div id="studentStatusText" class="summary-value">In Progress</div>
         </div>
-        <div class="stat-card">
-          <small>Certificate Status</small>
-          <strong id="certificateStatus">Handed in Person Only</strong>
+
+        <div class="summary-box">
+          <div class="summary-label">CERTIFICATE STATUS</div>
+          <div id="certificateStatusText" class="summary-value">Handed in Person Only</div>
         </div>
-      </div>
+      </aside>
     </section>
 
-    <div class="section-head">
-      <div>
-        <h3>Lesson Dashboard</h3>
-        <p>Lesson summaries, scenario reviews, and pass/retake tracking.</p>
-      </div>
-    </div>
+    <section class="lesson-dashboard-section">
+      <h3>Lesson Dashboard</h3>
+      <p class="section-subtitle">
+        Lesson summaries, scenario reviews, and pass/retake tracking.
+      </p>
 
-    <section class="lesson-grid" id="lessonGrid"></section>
+      <div id="lessonGrid" class="lesson-grid"></div>
+    </section>
 
-    <section class="next-step panel" id="live-range">
-      <h3>Final Step: Live Review & Range Qualification</h3>
-      <p>After all 8 online lessons, quizzes, and scenarios are successfully completed, the student status changes to <strong>Online Prerequisite Completed</strong>. From there, the student requests an in-person appointment for the live class review and range portion. Final certificate is handed personally by Broussard Shooting Academy after successful completion.</p>
-      <div class="lesson-actions">
-        <button class="btn btn-gold" id="requestLiveBtn">Request Live Session</button>
-        <a class="btn btn-outline" href="complete.html">View Completion Requirements</a>
+    <section id="final-step" class="final-step-card">
+      <h3>Final Step: Live Review &amp; Range Qualification</h3>
+      <p>
+        After all 8 online lessons, quizzes, and scenarios are successfully
+        completed, the student status changes to
+        <strong>Online Prerequisite Completed</strong>. From there, the student
+        requests an in-person appointment for the live class review and range
+        portion. Final certificate is handed personally by Broussard Shooting
+        Academy after successful completion.
+      </p>
+
+      <div class="final-step-actions">
+        <button id="requestLiveSessionBtn" class="btn-primary" type="button">
+          Request Live Session
+        </button>
+        <button id="viewRequirementsBtn" class="btn-secondary" type="button">
+          View Completion Requirements
+        </button>
       </div>
-      <div class="footer-note">Private access only. No printable certificate is shown inside the portal.</div>
+
+      <p class="final-step-note">
+        Private access only. No printable certificate is shown inside the portal.
+      </p>
     </section>
   </main>
 
-  <script src="data.js"></script>
-  <script type="module">
-    import {
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
-      getCurrentStudent,
-      overallProgress,
-      allLessonsComplete,
-      lessonStatus,
-      getLessonProgress,
-      isLessonAllowedByTier,
-      logout
-    } from "./app.js";
-
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-
-    const prog = overallProgress(student);
-    document.getElementById("welcomeLine").textContent = `${student?.name || "Student"}, train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.`;
-    document.getElementById("progressLabel").textContent = `${prog.passed} / ${prog.total} Lessons Passed`;
-    document.getElementById("progressBar").style.width = `${prog.percent}%`;
-    document.getElementById("studentStatus").textContent = allLessonsComplete(student) ? "Online Prerequisite Completed" : "In Progress";
-    document.getElementById("certificateStatus").textContent = allLessonsComplete(student) ? "Ready for Live Review" : "Handed in Person Only";
-    document.getElementById("tierPill").textContent = `Tier: ${student?.tier || "FREE"}`;
-
-    const requestLiveBtn = document.getElementById("requestLiveBtn");
-    if (!allLessonsComplete(student)) {
-      requestLiveBtn.disabled = true;
-      requestLiveBtn.textContent = "Complete All 8 Lessons First";
-      requestLiveBtn.classList.add("btn-disabled");
-    } else {
-      requestLiveBtn.addEventListener("click", () => {
-        window.location.href = "complete.html";
-      });
-    }
-
-    const grid = document.getElementById("lessonGrid");
-    window.LESSONS.forEach((lesson) => {
-      const status = lessonStatus(lesson.id, student);
-      const progress = getLessonProgress(lesson.id, student);
-
-      const card = document.createElement("article");
-      card.className = `panel lesson-card ${status.locked ? "locked-card" : ""}`;
-
-      let primaryLabel = "Start Lesson";
-      let primaryHref = `lesson.html?lesson=${lesson.id}`;
-
-      if (!isLessonAllowedByTier(lesson.id, student.tier)) {
-        primaryLabel = "Available in FULL Tier";
-        primaryHref = "#";
-      } else if (status.locked) {
-        primaryLabel = "Complete Previous Lesson First";
-        primaryHref = "#";
-      } else if (progress.contentViewed) {
-        primaryLabel = "Continue Lesson";
-      }
-
-      const actionButtons = [];
-      actionButtons.push(`<a class="btn btn-blue" href="${primaryHref}">${primaryLabel}</a>`);
-
-      if (!status.locked && progress.contentViewed) {
-        actionButtons.push(`<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Open Scenarios</a>`);
-      }
-
-      if (!status.locked && progress.scenarioCompleted) {
-        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>`);
-      }
-
-      if (progress.quizPassed && Array.isArray(progress.quizDetails) && progress.quizDetails.length) {
-        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>`);
-      }
-
-      const attemptChip = progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : "";
-
-      card.innerHTML = `
-        <div class="lesson-top">
-          <div style="display:flex;gap:12px;align-items:start;">
-            <div class="lesson-num">${lesson.id}</div>
-            <div>
-              <h4 class="lesson-title">${lesson.title}</h4>
-              <p class="lesson-desc">${lesson.summary}</p>
-            </div>
-          </div>
-          <span class="status ${status.className}">${status.label}</span>
-        </div>
-        <div class="lesson-meta">
-          <span class="chip">Estimated Time: ${lesson.estTime}</span>
-          <span class="chip">20-question quiz</span>
-          <span class="chip">2 scenarios</span>
-          ${attemptChip}
-        </div>
-        <div class="lesson-actions">
-          ${actionButtons.join("")}
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      logout();
-      window.location.href = "login.html";
-    });
-  </script>
+  <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
