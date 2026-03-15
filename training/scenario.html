@@ -17,58 +17,134 @@
     <main class="page-wrap">
       <section class="page-card">
         <h2 class="page-title" id="scenarioTitle">Scenario Review</h2>
+        <p class="page-subtitle">Read each situation and choose the safest, most defensible response.</p>
+
         <div id="scenarioNotice" class="notice info">Loading scenario review...</div>
         <div id="scenarioWrap" class="scenario-list"></div>
 
         <div class="page-actions">
-          <button id="completeScenarioBtn" class="btn btn-green">Submit Scenario Review</button>
+          <div class="page-actions-left">
+            <a class="btn btn-dark" id="toLessonBtn" href="lesson.html?lesson=1">Return to Lesson</a>
+            <a class="btn btn-blue" id="toQuizBtn" href="quiz.html?lesson=1">Go to Quiz</a>
+          </div>
+          <div class="page-actions-right">
+            <button class="btn btn-green" id="completeScenarioBtn" type="button">Submit Scenario Review</button>
+          </div>
         </div>
+        <div class="footer-note">Scenario review must be completed before moving deeper into the course workflow.</div>
       </section>
     </main>
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const lessonId = new URLSearchParams(window.location.search).get("lesson");
-      const lesson = window.LESSONS.find(l => l.id == lessonId);
-      
-      if (!lesson) {
-        document.getElementById("scenarioNotice").innerText = "Lesson not found.";
-        return;
-      }
+    import "/js/app.js";  // Ensure app.js is imported
 
-      document.getElementById("scenarioTitle").innerText = `${lesson.id}. ${lesson.title} — Scenario Review`;
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    async function initScenarioPage() {
       const wrap = document.getElementById("scenarioWrap");
+      const titleEl = document.getElementById("scenarioTitle");
+      const backToLesson = document.getElementById("backToLesson");
+      const toLessonBtn = document.getElementById("toLessonBtn");
+      const toQuizBtn = document.getElementById("toQuizBtn");
+      const completeBtn = document.getElementById("completeScenarioBtn");
 
-      lesson.scenarios.forEach((sc, index) => {
-        const card = document.createElement("div");
-        card.className = "scenario-card";
-        card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
-        
-        const options = document.createElement("div");
-        options.className = "answer-list";
-        
-        sc.choices.forEach((choice, i) => {
-          const option = document.createElement("label");
-          option.className = "scenario-choice";
-          option.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" /> ${String.fromCharCode(65 + i)}. ${choice}`;
-          options.appendChild(option);
+      try {
+        const BSA = window.BSA;
+        if (!BSA) {
+          showNotice("bad", "Portal logic failed to load.");
+          return;
+        }
+
+        if (typeof BSA.requireLogin === "function") {
+          BSA.requireLogin();
+        }
+
+        const lessonId = Number(BSA.qs("lesson") || 1);
+        const lessons = window.LESSONS;
+
+        const lesson = lessons.find(l => Number(l?.id) === lessonId);
+        if (!lesson) {
+          showNotice("bad", `Lesson ${lessonId} not found.`);
+          return;
+        }
+
+        titleEl.textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
+        backToLesson.href = `lesson.html?lesson=${lesson.id}`;
+        toLessonBtn.href = `lesson.html?lesson=${lesson.id}`;
+        toQuizBtn.href = `quiz.html?lesson=${lesson.id}`;
+
+        const bank = lesson.scenarios.map(normalizeScenario);
+        if (!bank.length) {
+          showNotice("bad", "No scenarios found.");
+          return;
+        }
+
+        wrap.innerHTML = bank.map((item, index) => {
+          const choicesHtml = item.choices.map((choice, i) => `
+            <label class="scenario-choice">
+              <input type="radio" name="scenario_${index}" value="${i}">
+              <div class="answer-option">${String.fromCharCode(65 + i)}. ${escapeHtml(choice)}</div>
+            </label>
+          `).join("");
+
+          return `
+            <article class="scenario-card" data-index="${index}">
+              <h3>${index + 1}. ${escapeHtml(item.title)}</h3>
+              <p>${escapeHtml(item.prompt)}</p>
+              <div class="answer-list">${choicesHtml}</div>
+              <div class="scenario-feedback hidden"></div>
+            </article>
+          `;
+        }).join("");
+
+        completeBtn.disabled = false;
+        completeBtn.addEventListener("click", async () => {
+          let answeredCount = 0;
+          document.querySelectorAll(".scenario-card").forEach((card, index) => {
+            const item = bank[index];
+            const selected = card.querySelector(`input[name="scenario_${index}"]:checked`);
+            const feedback = card.querySelector(".scenario-feedback");
+
+            if (selected) answeredCount++;
+
+            card.querySelectorAll(".answer-option").forEach((opt, i) => {
+              opt.classList.remove("correct", "incorrect");
+              if (i === Number(item.answer)) {
+                opt.classList.add("correct");
+              }
+            });
+
+            if (selected) {
+              const chosen = Number(selected.value);
+              const chosenOption = selected.closest(".scenario-choice")?.querySelector(".answer-option");
+              if (chosen !== Number(item.answer) && chosenOption) {
+                chosenOption.classList.add("incorrect");
+              }
+            }
+
+            feedback.classList.remove("hidden");
+            feedback.innerHTML = `<div class="callout"><strong>Best Answer:</strong> ${String.fromCharCode(65 + Number(item.answer))}<br><strong>Why:</strong> ${escapeHtml(item.explanation)}</div>`;
+          });
+
+          await BSA.setScenarioCompleted(lesson.id);
+          completeBtn.disabled = true;
+          completeBtn.textContent = "Scenario Review Submitted";
         });
+      } catch (err) {
+        console.error("Scenario page error:", err);
+        showNotice("bad", `Scenario page failed to load: ${err.message}`);
+      }
+    }
 
-        card.appendChild(options);
-        wrap.appendChild(card);
-      });
-
-      document.getElementById("completeScenarioBtn").addEventListener("click", () => {
-        let score = 0;
-        lesson.scenarios.forEach((sc, index) => {
-          const selected = document.querySelector(`input[name="scenario_${index}"]:checked`);
-          if (selected && parseInt(selected.value) === sc.answer) score++;
-        });
-        
-        alert(`You answered ${score} out of ${lesson.scenarios.length} correctly.`);
-      });
-    });
+    window.addEventListener("DOMContentLoaded", initScenarioPage);
   </script>
 </body>
 </html>
