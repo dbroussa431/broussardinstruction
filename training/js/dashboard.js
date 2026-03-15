@@ -1,110 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Student Dashboard</title>
-  <link rel="stylesheet" href="./css/portal.css" />
-</head>
-<body class="portal-shell">
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="./dashboard.html">
-        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="site-logo" />
-        <div class="site-brand-copy">
-          <h1>Broussard Shooting Academy</h1>
-          <p>Private Student Portal • Online Prerequisite Training</p>
-        </div>
-      </a>
+import {
+  getCurrentStudent,
+  clearCurrentStudent,
+  refreshCurrentStudentFromFirestore,
+  getStudentLessonState,
+  getOverallCompletionCount
+} from "./app.js";
 
-      <nav class="site-nav" aria-label="Student portal navigation">
-        <a class="nav-link active" href="./dashboard.html">Dashboard</a>
-        <a class="nav-link" href="#final-step">Live Review &amp; Range</a>
-        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
-      </nav>
+const LESSONS = window.LESSONS || [];
+
+const TOTAL_LESSONS = LESSONS.length || 8;
+
+const lessonGrid = document.getElementById("lessonGrid");
+const progressText = document.getElementById("progressText");
+const progressBar = document.getElementById("progressBar");
+const studentStatusText = document.getElementById("studentStatusText");
+const certificateStatusText = document.getElementById("certificateStatusText");
+const tierPill = document.getElementById("tierPill");
+const logoutBtn = document.getElementById("logoutBtn");
+
+function redirectLogin() {
+  window.location.href = "./index.html";
+}
+
+function getProgressPercent(count) {
+  return Math.round((count / TOTAL_LESSONS) * 100);
+}
+
+function getBadge(state) {
+
+  if (state.quizPassed) {
+    return `<span class="lesson-badge passed">Passed • ${state.quizScore}%</span>`;
+  }
+
+  if (state.unlocked) {
+    return `<span class="lesson-badge ready">Ready for Quiz</span>`;
+  }
+
+  return `<span class="lesson-badge locked">Locked</span>`;
+}
+
+function lessonButtons(lessonId, state) {
+
+  if (state.quizPassed) {
+    return `
+    <div class="lesson-actions">
+      <a class="lesson-btn primary" href="lesson.html?lesson=${lessonId}">Continue Lesson</a>
+      <a class="lesson-btn" href="scenario.html?lesson=${lessonId}">Open Scenarios</a>
+      <a class="lesson-btn" href="quiz.html?lesson=${lessonId}">Take Quiz</a>
+      <a class="lesson-btn" href="quiz.html?lesson=${lessonId}&review=missed">Missed Questions</a>
     </div>
-  </header>
+    `;
+  }
 
-  <main class="dashboard-page">
-    <section class="dashboard-hero">
-      <div class="hero-card">
-        <div class="hero-kicker">ONLINE PREREQUISITE COMPLETED IN STAGES</div>
-        <h2 id="welcomeHeadline">
-          Train on your schedule. Finish your lessons. Then meet in person for
-          live review and range qualification.
-        </h2>
-        <p class="hero-copy">
-          This portal is built for students who cannot give up one long 10-hour
-          block all at once. Complete each lesson in smaller chunks, pass each
-          quiz with at least 80%, finish the scenario review, and then schedule
-          your in-person live portion with Broussard Shooting Academy.
-        </p>
+  if (state.unlocked) {
+    return `
+    <div class="lesson-actions">
+      <a class="lesson-btn primary" href="lesson.html?lesson=${lessonId}">Continue Lesson</a>
+      <a class="lesson-btn" href="scenario.html?lesson=${lessonId}">Open Scenarios</a>
+      <a class="lesson-btn" href="quiz.html?lesson=${lessonId}">Take Quiz</a>
+    </div>
+    `;
+  }
 
-        <div class="hero-pills">
-          <span class="pill">8 Lessons</span>
-          <span class="pill">20-Question Randomized Quizzes</span>
-          <span class="pill">2 Scenarios Per Lesson</span>
-          <span class="pill">Live Range Required</span>
-          <span class="pill" id="tierPill">Tier: --</span>
-        </div>
-      </div>
+  return `
+  <div class="lesson-actions">
+    <button class="lesson-btn disabled" disabled>Complete Previous Lesson</button>
+  </div>
+  `;
+}
 
-      <aside class="summary-panel">
-        <div class="summary-box">
-          <div class="summary-label">OVERALL PROGRESS</div>
-          <div id="progressText" class="summary-value">0 / 8 Lessons Passed</div>
-          <div class="progress-track">
-            <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
-          </div>
-        </div>
+function renderLesson(lesson, state) {
 
-        <div class="summary-box">
-          <div class="summary-label">STUDENT STATUS</div>
-          <div id="studentStatusText" class="summary-value">In Progress</div>
-        </div>
+  return `
+  <div class="lesson-card">
 
-        <div class="summary-box">
-          <div class="summary-label">CERTIFICATE STATUS</div>
-          <div id="certificateStatusText" class="summary-value">Handed in Person Only</div>
-        </div>
-      </aside>
-    </section>
+    <div class="lesson-card-header">
 
-    <section class="lesson-dashboard-section">
-      <h3>Lesson Dashboard</h3>
-      <p class="section-subtitle">
-        Lesson summaries, scenario reviews, and pass/retake tracking.
-      </p>
+      <div class="lesson-number">${lesson.id}</div>
 
-      <div id="lessonGrid" class="lesson-grid"></div>
-    </section>
+      ${getBadge(state)}
 
-    <section id="final-step" class="final-step-card">
-      <h3>Final Step: Live Review &amp; Range Qualification</h3>
-      <p>
-        After all 8 online lessons, quizzes, and scenarios are successfully
-        completed, the student status changes to
-        <strong>Online Prerequisite Completed</strong>. From there, the student
-        requests an in-person appointment for the live class review and range
-        portion. Final certificate is handed personally by Broussard Shooting
-        Academy after successful completion.
-      </p>
+    </div>
 
-      <div class="final-step-actions">
-        <button id="requestLiveSessionBtn" class="btn-primary" type="button">
-          Request Live Session
-        </button>
-        <button id="viewRequirementsBtn" class="btn-secondary" type="button">
-          View Completion Requirements
-        </button>
-      </div>
+    <h4>${lesson.title}</h4>
 
-      <p class="final-step-note">
-        Private access only. No printable certificate is shown inside the portal.
-      </p>
-    </section>
-  </main>
+    <p>${lesson.summary}</p>
 
-  <script type="module" src="./js/dashboard.js"></script>
-</body>
-</html>
+    <div class="lesson-meta">
+
+      <span>${lesson.estTime}</span>
+
+      <span>20-question quiz</span>
+
+      <span>${lesson.scenarios.length} scenarios</span>
+
+      <span>Attempts: ${state.attempts || 0}</span>
+
+    </div>
+
+    ${lessonButtons(lesson.id, state)}
+
+  </div>
+  `;
+}
+
+function renderLessons(student) {
+
+  let html = "";
+
+  LESSONS.forEach(lesson => {
+
+    const state = getStudentLessonState(student, lesson.id);
+
+    html += renderLesson(lesson, state);
+
+  });
+
+  lessonGrid.innerHTML = html;
+
+}
+
+function updateDashboard(student) {
+
+  const completed = getOverallCompletionCount(student);
+
+  progressText.innerText = `${completed} / ${TOTAL_LESSONS} Lessons Passed`;
+
+  progressBar.style.width = `${getProgressPercent(completed)}%`;
+
+  tierPill.innerText = `Tier: ${student.tier}`;
+
+  if (completed === TOTAL_LESSONS) {
+
+    studentStatusText.innerText = "Online Prerequisite Completed";
+
+    certificateStatusText.innerText = "Ready for In-Person Completion";
+
+  } else {
+
+    studentStatusText.innerText = "In Progress";
+
+    certificateStatusText.innerText = "Handed in Person Only";
+
+  }
+
+}
+
+async function init() {
+
+  let student = getCurrentStudent();
+
+  if (!student) {
+
+    redirectLogin();
+
+    return;
+
+  }
+
+  student = await refreshCurrentStudentFromFirestore();
+
+  if (!student) {
+
+    redirectLogin();
+
+    return;
+
+  }
+
+  updateDashboard(student);
+
+  renderLessons(student);
+
+}
+
+logoutBtn.addEventListener("click", () => {
+
+  clearCurrentStudent();
+
+  redirectLogin();
+
+});
+
+init();
