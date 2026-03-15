@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal | Quiz</title>
+  <title>BSA Training Portal | Lesson Quiz</title>
   <link rel="stylesheet" href="css/portal.css" />
   <script src="js/app.js"></script>
 </head>
@@ -11,64 +11,48 @@
   <div class="portal-shell">
     <header class="portal-header">
       <h1>Broussard Shooting Academy</h1>
-      <p>Quiz</p>
+      <p>Lesson Quiz</p>
     </header>
 
     <main class="page-wrap">
       <section class="page-card">
-        <h2 class="page-title" id="quizTitle">Quiz</h2>
-        <div id="quizWrap" class="notice info">Loading quiz...</div>
+        <h2 class="page-title">Lesson Quiz</h2>
+        <p id="quizNotice" class="notice info">Loading quiz...</p>
+        <div id="quizWrap"></div>
 
         <div class="page-actions">
-          <button id="submitQuizBtn" class="btn btn-green">Submit Quiz</button>
+          <div class="page-actions-left">
+            <a class="btn btn-dark" id="backToLesson" href="lesson.html?lesson=1">Back to Lesson</a>
+          </div>
+          <div class="page-actions-right">
+            <button class="btn btn-green" id="startQuizBtn">Start Quiz</button>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const lessonId = new URLSearchParams(window.location.search).get("lesson");
-      const lesson = window.LESSONS.find(l => l.id == lessonId);
+    async function initQuizPage() {
+      const quizWrap = document.getElementById("quizWrap");
+      const startQuizBtn = document.getElementById("startQuizBtn");
+
+      const lessonId = window.BSA.qs("lesson");
+      const lesson = window.LESSONS.find(l => l.id === Number(lessonId));
 
       if (!lesson) {
-        document.getElementById("quizWrap").innerText = "Lesson not found.";
+        document.getElementById("quizNotice").innerHTML = `Lesson not found.`;
         return;
       }
 
-      document.getElementById("quizTitle").innerText = `${lesson.id}. ${lesson.title} — Quiz`;
-      const wrap = document.getElementById("quizWrap");
-      wrap.innerHTML = "<p>Answer the following questions:</p>";
+      document.getElementById("quizNotice").innerHTML = `Loading quiz for ${lesson.title}...`;
 
-      lesson.scenarios.forEach((sc, index) => {
-        const card = document.createElement("div");
-        card.className = "scenario-card";
-        card.innerHTML = `<h4>Question ${index + 1}</h4><p>${sc.prompt}</p>`;
-        
-        const options = document.createElement('div');
-        options.className = "answer-list";
-
-        sc.choices.forEach((choice, i) => {
-          const option = document.createElement('label');
-          option.className = "scenario-choice";
-          option.innerHTML = `<input type="radio" name="quiz_${index}" value="${i}" /> ${String.fromCharCode(65 + i)}. ${choice}`;
-          options.appendChild(option);
-        });
-
-        card.appendChild(options);
-        wrap.appendChild(card);
+      startQuizBtn.addEventListener("click", () => {
+        window.location.href = `quiz-questions.html?lesson=${lessonId}`;
       });
+    }
 
-      document.getElementById("submitQuizBtn").addEventListener("click", () => {
-        let score = 0;
-        lesson.scenarios.forEach((sc, index) => {
-          const selected = document.querySelector(`input[name="quiz_${index}"]:checked`);
-          if (selected && parseInt(selected.value) === sc.answer) score++;
-        });
-
-        alert(`You scored ${score} out of ${lesson.scenarios.length}.`);
-      });
-    });
+    window.addEventListener("DOMContentLoaded", initQuizPage);
   </script>
 </body>
 </html>
