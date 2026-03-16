@@ -36,6 +36,7 @@
         <div class="content-pills">
           <span id="lessonTime" class="pill">Estimated Time</span>
           <span id="lessonScenarios" class="pill">Scenarios</span>
+          <span id="lessonQuizCount" class="pill">Quiz</span>
           <span class="pill">Pass quiz at 80% or higher</span>
         </div>
       </section>
@@ -58,14 +59,26 @@
       <section id="lessonGistCard" class="content-card"></section>
 
       <section class="content-card">
+        <h2 class="section-heading">Lesson Review Confirmation</h2>
+        <p class="content-summary">
+          When you finish reading this lesson, confirm the review and continue to the scenario portion.
+        </p>
+
+        <div class="content-actions" style="margin-top: 12px;">
+          <button id="confirmViewedBtn" class="btn-primary" type="button">I Have Reviewed This Lesson</button>
+        </div>
+      </section>
+
+      <section class="content-card">
         <h2 class="section-heading">Next Step</h2>
         <p class="content-summary">
-          Finish the reading, then complete your scenario review and take the lesson quiz.
+          Finish the reading, then complete your randomized scenario review and take the lesson quiz.
         </p>
 
         <div class="content-actions">
           <a id="scenarioLink" class="lesson-btn primary" href="./scenario.html">Open Scenarios</a>
-          <a id="quizLink" class="lesson-btn" href="./quiz.html">Take Quiz</a>
+          <button id="quizLockedBtn" class="lesson-btn disabled" type="button" disabled>Finish Scenarios First</button>
+          <a id="quizLink" class="lesson-btn" href="./quiz.html" hidden>Take Quiz</a>
           <a class="lesson-btn" href="./dashboard.html">Back to Dashboard</a>
         </div>
       </section>
@@ -78,7 +91,7 @@
       clearCurrentStudent,
       refreshCurrentStudentFromFirestore,
       getLessonProgress,
-      saveStudentProgress
+      markLessonContentViewed
     } from "./js/app.js";
 
     import { LESSONS } from "./js/data.js";
@@ -88,12 +101,15 @@
     const lessonSummary = document.getElementById("lessonSummary");
     const lessonTime = document.getElementById("lessonTime");
     const lessonScenarios = document.getElementById("lessonScenarios");
+    const lessonQuizCount = document.getElementById("lessonQuizCount");
     const lessonGistCard = document.getElementById("lessonGistCard");
     const contentViewedStatus = document.getElementById("contentViewedStatus");
     const scenarioStatus = document.getElementById("scenarioStatus");
     const quizStatus = document.getElementById("quizStatus");
     const scenarioLink = document.getElementById("scenarioLink");
     const quizLink = document.getElementById("quizLink");
+    const quizLockedBtn = document.getElementById("quizLockedBtn");
+    const confirmViewedBtn = document.getElementById("confirmViewedBtn");
 
     function redirectLogin() {
       window.location.href = "./index.html";
@@ -102,6 +118,15 @@
     function getLessonNumber() {
       const params = new URLSearchParams(window.location.search);
       return Number(params.get("lesson") || 1);
+    }
+
+    function escapeHtml(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     function renderGist(lesson) {
@@ -115,15 +140,31 @@
 
       const paragraphs = gist
         .split(/\n\s*\n|\n/)
-        .map(line => line.trim())
+        .map((line) => line.trim())
         .filter(Boolean)
-        .map(line => `<p class="content-summary" style="margin-top:0; margin-bottom:16px;">${line}</p>`)
+        .map((line) => `<p class="content-summary" style="margin-top:0; margin-bottom:16px;">${escapeHtml(line)}</p>`)
         .join("");
 
       lessonGistCard.innerHTML = `
         <h2 class="section-heading">Chapter Gist</h2>
         ${paragraphs}
       `;
+    }
+
+    function updateStatuses(progress) {
+      contentViewedStatus.textContent = progress.contentViewed ? "Viewed" : "Not Yet";
+      scenarioStatus.textContent = progress.scenarioCompleted ? "Completed" : "Pending";
+      quizStatus.textContent = progress.quizPassed
+        ? `Passed • ${progress.quizScore}%`
+        : "Not Passed";
+
+      if (progress.scenarioCompleted) {
+        quizLockedBtn.hidden = true;
+        quizLink.hidden = false;
+      } else {
+        quizLockedBtn.hidden = false;
+        quizLink.hidden = true;
+      }
     }
 
     async function init() {
@@ -140,7 +181,7 @@
       }
 
       const lessonNumber = getLessonNumber();
-      const lesson = LESSONS.find(l => Number(l.lessonNumber) === lessonNumber);
+      const lesson = LESSONS.find((l) => Number(l.lessonNumber) === lessonNumber);
 
       if (!lesson) {
         lessonTitle.textContent = "Lesson not found";
@@ -152,9 +193,12 @@
         return;
       }
 
-      const scenarioCount =
+      const scenarioPoolCount =
         Array.isArray(lesson.scenarioBank) ? lesson.scenarioBank.length :
         Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
+
+      const quizCount =
+        Number(lesson.quizDrawCount || lesson.quizQuestionCount || lesson.quizCount || 20);
 
       lessonTitle.textContent = lesson.title || `Lesson ${lessonNumber}`;
       lessonSummary.textContent = String(
@@ -164,21 +208,24 @@
       );
 
       lessonTime.textContent = `Estimated Time: ${Number(lesson.estimatedMinutes || 20)} min`;
-      lessonScenarios.textContent = `${scenarioCount} Scenarios Available`;
+      lessonScenarios.textContent = `2 Random Scenarios from ${scenarioPoolCount || 2}`;
+      lessonQuizCount.textContent = `${quizCount}-Question Quiz Draw`;
 
       scenarioLink.href = `./scenario.html?lesson=${lessonNumber}`;
       quizLink.href = `./quiz.html?lesson=${lessonNumber}`;
 
       renderGist(lesson);
 
-      const updatedStudent = await saveStudentProgress(lessonNumber, { contentViewed: true });
-      const progress = getLessonProgress(updatedStudent || student, lessonNumber);
+      let updatedStudent = await markLessonContentViewed(lessonNumber);
+      let progress = getLessonProgress(updatedStudent || student, lessonNumber);
+      updateStatuses(progress);
 
-      contentViewedStatus.textContent = progress.contentViewed ? "Viewed" : "Not Yet";
-      scenarioStatus.textContent = progress.scenarioCompleted ? "Completed" : "Pending";
-      quizStatus.textContent = progress.quizPassed
-        ? `Passed • ${progress.quizScore}%`
-        : "Not Passed";
+      confirmViewedBtn?.addEventListener("click", async () => {
+        updatedStudent = await markLessonContentViewed(lessonNumber);
+        progress = getLessonProgress(updatedStudent || student, lessonNumber);
+        updateStatuses(progress);
+        alert("Lesson review recorded. Continue to the scenario portion next.");
+      });
     }
 
     logoutBtn?.addEventListener("click", () => {
