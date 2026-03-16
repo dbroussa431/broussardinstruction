@@ -105,11 +105,9 @@ function tierPrice(tier) {
 
 function normalizeTier(value = "") {
   const v = String(value).trim().toUpperCase();
-
   if (v.includes("FREE")) return "FREE";
   if (v.includes("DISC")) return "DISC";
   if (v.includes("FULL")) return "FULL";
-
   return v || "FULL";
 }
 
@@ -129,13 +127,11 @@ function displayPortalStatus(value = "") {
 
 function normalizePaymentStatus(value = "", paid = false) {
   const raw = String(value || "").trim().toLowerCase();
-
   if (!raw) return paid ? "Paid" : "Pending";
   if (raw === "paid") return "Paid";
   if (raw === "waived") return "Waived";
   if (raw === "unpaid") return "Unpaid";
   if (raw === "pending") return "Pending";
-
   return String(value).trim();
 }
 
@@ -144,11 +140,8 @@ function formatDateForInput(value) {
 
   if (typeof value === "string") {
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-
     const parsed = new Date(value);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toISOString().slice(0, 10);
-    }
+    if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
     return "";
   }
 
@@ -157,7 +150,6 @@ function formatDateForInput(value) {
       const d = value.toDate();
       if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
     }
-
     if (typeof value.seconds === "number") {
       const d = new Date(value.seconds * 1000);
       if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
@@ -191,7 +183,7 @@ function deriveProgressPercent(completedLessons = []) {
 function deriveProgressLabel(completedLessons = []) {
   if (!Array.isArray(completedLessons) || !completedLessons.length) return "Not Started";
   if (completedLessons.length >= 8) return "Completed";
-  return `Lesson ${completedLessons.length}`;
+  return `Lesson ${completedLessons.length} Complete`;
 }
 
 function normalizeStudent(id, raw = {}) {
@@ -205,7 +197,9 @@ function normalizeStudent(id, raw = {}) {
   );
 
   let progressLabel = String(
-    raw.progressLabel || deriveProgressLabel(completedLessons)
+    raw.adminProgressLabel ||
+    raw.progressLabel ||
+    deriveProgressLabel(completedLessons)
   ).trim();
 
   if (!progressLabel) progressLabel = "Not Started";
@@ -239,7 +233,8 @@ function normalizeStudent(id, raw = {}) {
     paid: paymentStatus === "Paid",
     createdAt: raw.createdAt || null,
     updatedAt: raw.updatedAt || null,
-    completedLessons
+    completedLessons,
+    totalOnlineMinutes: Number(raw.totalOnlineMinutes || 0)
   };
 }
 
@@ -309,48 +304,36 @@ function renderTable() {
     return;
   }
 
-  els.studentTableBody.innerHTML = state.filtered
-    .map((student) => {
-      const prettyStatus = displayPortalStatus(student.portalStatus);
+  els.studentTableBody.innerHTML = state.filtered.map((student) => {
+    const prettyStatus = displayPortalStatus(student.portalStatus);
 
-      return `
-        <tr>
-          <td>${escapeHtml(student.name)}</td>
-          <td>${escapeHtml(student.email)}</td>
-          <td>${escapeHtml(student.course)}</td>
-          <td>$${Number(student.price).toLocaleString()}</td>
-          <td>${escapeHtml(student.paymentMethod)}</td>
-          <td>
-            <span class="payment-pill ${paymentClass(student.paymentStatus)}">
-              ${escapeHtml(student.paymentStatus)}
-            </span>
-          </td>
-          <td>
-            <span class="status-pill ${portalClass(student.portalStatus)}">
-              ${escapeHtml(prettyStatus)}
-            </span>
-          </td>
-          <td>
-            <div>${escapeHtml(student.progressLabel)}</div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(student.progressPercent) || 0))}%"></div>
-            </div>
-          </td>
-          <td>${Number(student.progressPercent) || 0}%</td>
-          <td>
-            <div class="action-group">
-              <button class="btn btn-blue btn-sm" type="button" data-action="edit" data-id="${student.id}">
-                View/Edit
-              </button>
-              <button class="btn btn-green btn-sm" type="button" data-action="toggle-lock" data-id="${student.id}">
-                ${student.portalStatus === "locked" ? "Unlock" : "Lock"}
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    })
-    .join("");
+    return `
+      <tr>
+        <td>${escapeHtml(student.name)}</td>
+        <td>${escapeHtml(student.email)}</td>
+        <td>${escapeHtml(student.course)}</td>
+        <td>$${Number(student.price).toLocaleString()}</td>
+        <td>${escapeHtml(student.paymentMethod)}</td>
+        <td><span class="payment-pill ${paymentClass(student.paymentStatus)}">${escapeHtml(student.paymentStatus)}</span></td>
+        <td><span class="status-pill ${portalClass(student.portalStatus)}">${escapeHtml(prettyStatus)}</span></td>
+        <td>
+          <div>${escapeHtml(student.progressLabel)}</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(student.progressPercent) || 0))}%"></div>
+          </div>
+        </td>
+        <td>${Number(student.progressPercent) || 0}%</td>
+        <td>
+          <div class="action-group">
+            <button class="btn btn-blue btn-sm" type="button" data-action="edit" data-id="${student.id}">View/Edit</button>
+            <button class="btn btn-green btn-sm" type="button" data-action="toggle-lock" data-id="${student.id}">
+              ${student.portalStatus === "locked" ? "Unlock" : "Lock"}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function currentSearch() {
@@ -375,26 +358,16 @@ function applyFilters() {
   let items = [...state.students];
 
   if (search) {
-    items = items.filter((s) => {
-      return (
-        s.name.toLowerCase().includes(search) ||
-        s.email.toLowerCase().includes(search) ||
-        s.accessCode.toLowerCase().includes(search)
-      );
-    });
+    items = items.filter((s) =>
+      s.name.toLowerCase().includes(search) ||
+      s.email.toLowerCase().includes(search) ||
+      s.accessCode.toLowerCase().includes(search)
+    );
   }
 
-  if (payment) {
-    items = items.filter((s) => s.paymentStatus === payment);
-  }
-
-  if (portal) {
-    items = items.filter((s) => normalizePortalStatus(s.portalStatus) === normalizePortalStatus(portal));
-  }
-
-  if (tier) {
-    items = items.filter((s) => normalizeTier(s.tier) === tier);
-  }
+  if (payment) items = items.filter((s) => s.paymentStatus === payment);
+  if (portal) items = items.filter((s) => normalizePortalStatus(s.portalStatus) === normalizePortalStatus(portal));
+  if (tier) items = items.filter((s) => normalizeTier(s.tier) === tier);
 
   switch (sort) {
     case "name":
@@ -424,132 +397,74 @@ function applyFilters() {
 }
 
 function syncSearchInputs(source) {
-  if (source === els.searchInput && els.searchInput2) {
-    els.searchInput2.value = els.searchInput.value;
-  }
-  if (source === els.searchInput2 && els.searchInput) {
-    els.searchInput.value = els.searchInput2.value;
-  }
+  if (source === els.searchInput && els.searchInput2) els.searchInput2.value = els.searchInput.value;
+  if (source === els.searchInput2 && els.searchInput) els.searchInput.value = els.searchInput2.value;
 }
 
 function syncPaymentFilters(source) {
-  if (source === els.paymentFilter && els.paymentFilter2) {
-    els.paymentFilter2.value = els.paymentFilter.value;
-  }
-  if (source === els.paymentFilter2 && els.paymentFilter) {
-    els.paymentFilter.value = els.paymentFilter2.value;
-  }
+  if (source === els.paymentFilter && els.paymentFilter2) els.paymentFilter2.value = els.paymentFilter.value;
+  if (source === els.paymentFilter2 && els.paymentFilter) els.paymentFilter.value = els.paymentFilter2.value;
 }
 
 function setSelectValue(selectEl, preferredValue, fallbacks = []) {
   if (!selectEl) return;
   const options = Array.from(selectEl.options || []).map((o) => String(o.value));
-
   const tryValues = [preferredValue, ...fallbacks]
     .filter((v) => v !== undefined && v !== null)
     .map((v) => String(v));
-
   const match = tryValues.find((value) => options.includes(value));
-
   if (match !== undefined) {
     selectEl.value = match;
     return;
   }
-
-  if (options.length) {
-    selectEl.value = options[0];
-  }
+  if (options.length) selectEl.value = options[0];
 }
 
 function openModal(student = null) {
   state.editingId = student?.id || null;
 
-  if (els.modalTitle) {
-    els.modalTitle.textContent = student ? "Edit Student" : "Add Student";
-  }
-
+  if (els.modalTitle) els.modalTitle.textContent = student ? "Edit Student" : "Add Student";
   if (els.studentName) els.studentName.value = student?.name || "";
   if (els.studentEmail) els.studentEmail.value = student?.email || "";
 
   if (els.priceTier) {
-    setSelectValue(
-      els.priceTier,
-      student?.tier || "FULL",
-      [
-        normalizeTier(student?.tier || "FULL"),
-        student?.course || "",
-        "FULL",
-        "Louisiana Concealed Carry — FULL"
-      ]
-    );
+    setSelectValue(els.priceTier, student?.tier || "FULL", [
+      normalizeTier(student?.tier || "FULL"),
+      "FULL"
+    ]);
   }
 
-  if (els.price) {
-    els.price.value = student?.price ?? tierPrice(student?.tier || "FULL");
-  }
+  if (els.price) els.price.value = student?.price ?? tierPrice(student?.tier || "FULL");
 
   if (els.paymentMethod) {
-    setSelectValue(
-      els.paymentMethod,
-      student?.paymentMethod || "Direct",
-      ["Direct", "Waived", "Card", "Cash"]
-    );
+    setSelectValue(els.paymentMethod, student?.paymentMethod || "Direct", ["Direct", "Waived", "PayPal", "Cash"]);
   }
 
   if (els.paymentStatusSelect) {
-    setSelectValue(
-      els.paymentStatusSelect,
-      student?.paymentStatus || "Pending",
-      ["Pending", "Paid", "Waived", "Unpaid"]
-    );
+    setSelectValue(els.paymentStatusSelect, student?.paymentStatus || "Pending", ["Pending", "Paid", "Waived", "Unpaid"]);
   }
 
   if (els.portalStatus) {
-    setSelectValue(
-      els.portalStatus,
-      displayPortalStatus(student?.portalStatus || "active"),
-      [student?.portalStatus || "active", "Active"]
-    );
+    setSelectValue(els.portalStatus, student?.portalStatus || "active", ["active"]);
   }
 
   if (els.progressLabel) {
-    setSelectValue(
-      els.progressLabel,
-      student?.progressLabel || "Not Started",
-      ["Not Started"]
-    );
+    setSelectValue(els.progressLabel, student?.progressLabel || "Not Started", ["Not Started"]);
   }
 
-  if (els.progressPercent) {
-    els.progressPercent.value = student?.progressPercent ?? 0;
-  }
-
-  if (els.startDate) {
-    els.startDate.value = student?.startDate || "";
-  }
-
-  if (els.completionDate) {
-    els.completionDate.value = student?.completionDate || "";
-  }
+  if (els.progressPercent) els.progressPercent.value = student?.progressPercent ?? 0;
+  if (els.startDate) els.startDate.value = student?.startDate || "";
+  if (els.completionDate) els.completionDate.value = student?.completionDate || "";
 
   if (els.certificateIssued) {
-    setSelectValue(
-      els.certificateIssued,
-      student?.certificateIssued ? "true" : "false",
-      ["false"]
-    );
+    setSelectValue(els.certificateIssued, student?.certificateIssued ? "true" : "false", ["false"]);
   }
 
-  if (els.courseVersion) {
-    els.courseVersion.value = student?.courseVersion || "2026-03";
-  }
-
-  if (els.accessCode) {
-    els.accessCode.value = student?.accessCode || "";
-  }
-
+  if (els.courseVersion) els.courseVersion.value = student?.courseVersion || "2026-03";
+  if (els.accessCode) els.accessCode.value = student?.accessCode || "";
   if (els.notes) {
-    els.notes.value = student?.notes || "";
+    const minutesNote = student?.totalOnlineMinutes ? `\nOnline Minutes: ${student.totalOnlineMinutes}` : "";
+    els.notes.value = `${student?.notes || ""}${minutesNote}`.trim();
   }
 
   if (els.studentModalBackdrop) {
@@ -560,15 +475,8 @@ function openModal(student = null) {
 
 function closeModal() {
   state.editingId = null;
-
-  if (els.studentModalBackdrop) {
-    els.studentModalBackdrop.classList.add("hidden");
-  }
-
-  if (els.studentForm) {
-    els.studentForm.reset();
-  }
-
+  if (els.studentModalBackdrop) els.studentModalBackdrop.classList.add("hidden");
+  if (els.studentForm) els.studentForm.reset();
   if (els.price) els.price.value = tierPrice("FULL");
   if (els.progressPercent) els.progressPercent.value = 0;
   if (els.courseVersion) els.courseVersion.value = "2026-03";
@@ -588,9 +496,9 @@ function getNumberValue(el, fallback = 0) {
 function buildPayloadFromForm() {
   const tier = normalizeTier(getValue(els.priceTier, "FULL"));
   const paymentStatus = normalizePaymentStatus(getValue(els.paymentStatusSelect, "Pending"));
-  const portalStatus = normalizePortalStatus(getValue(els.portalStatus, "Active"));
+  const portalStatus = normalizePortalStatus(getValue(els.portalStatus, "active"));
 
-  const payload = {
+  return {
     name: getValue(els.studentName),
     email: getValue(els.studentEmail).toLowerCase(),
     tier,
@@ -611,8 +519,6 @@ function buildPayloadFromForm() {
     notes: getValue(els.notes),
     updatedAt: serverTimestamp()
   };
-
-  return payload;
 }
 
 async function saveStudent(event) {
@@ -641,6 +547,7 @@ async function saveStudent(event) {
         ...payload,
         progress: {},
         completedLessons: [],
+        totalOnlineMinutes: 0,
         createdAt: serverTimestamp()
       });
     }
@@ -674,25 +581,11 @@ async function toggleLock(id) {
 }
 
 function exportCSV() {
-  const rows = [
-    [
-      "Name",
-      "Email",
-      "Course",
-      "Tier",
-      "Price",
-      "Payment Method",
-      "Payment Status",
-      "Portal Status",
-      "Progress Label",
-      "Progress %",
-      "Start Date",
-      "Completion Date",
-      "Access Code",
-      "Course Version",
-      "Notes"
-    ]
-  ];
+  const rows = [[
+    "Name", "Email", "Course", "Tier", "Price", "Payment Method", "Payment Status",
+    "Portal Status", "Progress Label", "Progress %", "Start Date", "Completion Date",
+    "Total Online Minutes", "Access Code", "Course Version", "Notes"
+  ]];
 
   state.filtered.forEach((student) => {
     rows.push([
@@ -708,6 +601,7 @@ function exportCSV() {
       student.progressPercent,
       student.startDate,
       student.completionDate,
+      student.totalOnlineMinutes || 0,
       student.accessCode,
       student.courseVersion,
       student.notes
@@ -758,25 +652,15 @@ function bindEvents() {
   els.studentForm?.addEventListener("submit", saveStudent);
 
   els.studentModalBackdrop?.addEventListener("click", (e) => {
-    if (e.target === els.studentModalBackdrop) {
-      closeModal();
-    }
+    if (e.target === els.studentModalBackdrop) closeModal();
   });
 
   els.priceTier?.addEventListener("change", () => {
     const tier = normalizeTier(getValue(els.priceTier, "FULL"));
-
-    if (els.price) {
-      els.price.value = tierPrice(tier);
-    }
-
+    if (els.price) els.price.value = tierPrice(tier);
     if (tier === "FREE") {
-      if (els.paymentMethod) {
-        setSelectValue(els.paymentMethod, "Waived", ["Waived"]);
-      }
-      if (els.paymentStatusSelect) {
-        setSelectValue(els.paymentStatusSelect, "Waived", ["Waived"]);
-      }
+      if (els.paymentMethod) setSelectValue(els.paymentMethod, "Waived", ["Waived"]);
+      if (els.paymentStatusSelect) setSelectValue(els.paymentStatusSelect, "Waived", ["Waived"]);
     }
   });
 
@@ -805,7 +689,6 @@ function bindEvents() {
 
   els.clearFiltersBtn?.addEventListener("click", (e) => {
     e.preventDefault();
-
     if (els.searchInput) els.searchInput.value = "";
     if (els.searchInput2) els.searchInput2.value = "";
     if (els.paymentFilter) els.paymentFilter.value = "";
@@ -814,7 +697,6 @@ function bindEvents() {
     if (els.tierFilter) els.tierFilter.value = "";
     if (els.sortInput) els.sortInput.value = "newest";
     if (els.sortInput2) els.sortInput2.value = "newest";
-
     applyFilters();
   });
 
@@ -831,9 +713,7 @@ function bindEvents() {
       return;
     }
 
-    if (action === "toggle-lock") {
-      toggleLock(id);
-    }
+    if (action === "toggle-lock") toggleLock(id);
   });
 
   els.logoutBtn?.addEventListener("click", (e) => {
@@ -845,7 +725,6 @@ function bindEvents() {
 async function init() {
   if (state.initialized) return;
   state.initialized = true;
-
   cacheEls();
   bindEvents();
   await loadStudents();
