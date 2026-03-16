@@ -86,15 +86,31 @@
       return arr;
     }
 
+    function pickQuizArray(lesson) {
+      if (Array.isArray(lesson.quizBank)) return lesson.quizBank;
+      if (Array.isArray(lesson.questionBank)) return lesson.questionBank;
+      if (Array.isArray(lesson.questions)) return lesson.questions;
+      if (Array.isArray(lesson.quizQuestions)) return lesson.quizQuestions;
+      return [];
+    }
+
     function normalizeQuestion(item) {
+      const rawChoices = Array.isArray(item.choices) ? item.choices : [];
+
+      if (item.type === "tf" && rawChoices.length === 0) {
+        return {
+          question: item.question || item.q || "Question text missing.",
+          choices: ["True", "False"],
+          correct: item.correct === true || item.answer === true ? 0 : 1,
+          explanation: item.explanation || ""
+        };
+      }
+
       return {
         question: item.question || item.q || "Question text missing.",
-        choices: Array.isArray(item.choices) ? item.choices : [],
-        correct: Number(
-          item.correct ??
-          item.answer ??
-          0
-        )
+        choices: rawChoices,
+        correct: Number(item.correct ?? item.answer ?? 0),
+        explanation: item.explanation || ""
       };
     }
 
@@ -120,11 +136,16 @@
         return;
       }
 
-      const quizBank = Array.isArray(lesson.quizBank) ? lesson.quizBank : [];
+      const rawQuizBank = pickQuizArray(lesson);
 
-      if (!quizBank.length) {
+      if (!rawQuizBank.length) {
         quizTitle.textContent = "Quiz not found";
-        questionCard.innerHTML = "<p>Quiz data is missing for this lesson.</p>";
+        questionCard.innerHTML = `
+          <p>Quiz data is missing for this lesson.</p>
+          <p style="margin-top:10px; color:#69788f;">
+            The lesson was found, but no usable quiz bank field was detected.
+          </p>
+        `;
         return;
       }
 
@@ -132,11 +153,11 @@
       quizTitle.textContent = `${lesson.title} — Quiz`;
 
       const priorProgress = getLessonProgress(student, lessonNumber);
-      const questions = shuffle(quizBank).slice(0, 20).map(normalizeQuestion);
+      const questions = shuffle(rawQuizBank).slice(0, 20).map(normalizeQuestion);
 
       let currentIndex = 0;
       let correctCount = 0;
-      let attempts = Number(priorProgress.attempts || 0) + 1;
+      const attempts = Number(priorProgress.attempts || 0) + 1;
       const missedQuestions = [];
 
       function renderQuestion() {
@@ -151,6 +172,7 @@
           </button>
         `).join("");
 
+        questionCard.hidden = false;
         questionCard.innerHTML = `
           <div class="question-number">QUESTION ${currentIndex + 1}</div>
           <h2 class="question-text">${item.question}</h2>
@@ -191,11 +213,15 @@
             }
 
             quizScorePreview.textContent = `Correct So Far: ${correctCount}`;
-            explanation.hidden = false;
-            explanation.innerHTML = `
-              <strong>Review Note:</strong>
-              Revisit the lesson gist and chapter material for the principle behind this question.
-            `;
+
+            if (item.explanation) {
+              explanation.hidden = false;
+              explanation.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+            } else {
+              explanation.hidden = false;
+              explanation.innerHTML = `<strong>Review Note:</strong> Revisit the lesson gist and chapter material for the principle behind this question.`;
+            }
+
             nextQuestionBtn.disabled = false;
           });
         });
