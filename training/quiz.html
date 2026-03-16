@@ -32,14 +32,14 @@
         <div class="content-kicker">LESSON QUIZ</div>
         <h1 id="quizTitle" class="content-title">Loading quiz...</h1>
         <p class="content-summary">
-          Answer all 20 questions. A score of 80% or higher is required to pass the lesson.
+          Answer 20 randomized questions. A score of 80% or higher is required to pass the lesson.
         </p>
       </section>
 
       <section class="content-card">
         <div class="quiz-topbar">
           <div id="quizProgress" class="quiz-progress">Question 1 of 20</div>
-          <div id="quizScorePreview" class="quiz-score-preview">Score: 0</div>
+          <div id="quizScorePreview" class="quiz-score-preview">Correct So Far: 0</div>
         </div>
       </section>
 
@@ -49,7 +49,6 @@
     </div>
   </main>
 
-  <script src="./js/data.js"></script>
   <script type="module">
     import {
       getCurrentStudent,
@@ -58,6 +57,8 @@
       getLessonProgress,
       saveStudentProgress
     } from "./js/app.js";
+
+    import { LESSONS } from "./js/data.js";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const lessonBackLink = document.getElementById("lessonBackLink");
@@ -71,7 +72,7 @@
       window.location.href = "./index.html";
     }
 
-    function getLessonId() {
+    function getLessonNumber() {
       const params = new URLSearchParams(window.location.search);
       return Number(params.get("lesson") || 1);
     }
@@ -85,15 +86,16 @@
       return arr;
     }
 
-    function normalizeQuestion(question) {
-      if (question.type === "tf") {
-        return {
-          ...question,
-          choices: ["True", "False"],
-          answer: question.answer === true ? 0 : 1
-        };
-      }
-      return question;
+    function normalizeQuestion(item) {
+      return {
+        question: item.question || item.q || "Question text missing.",
+        choices: Array.isArray(item.choices) ? item.choices : [],
+        correct: Number(
+          item.correct ??
+          item.answer ??
+          0
+        )
+      };
     }
 
     async function init() {
@@ -109,22 +111,28 @@
         return;
       }
 
-      const lessonId = getLessonId();
-      const lessons = window.LESSONS || [];
-      const lesson = lessons.find(l => Number(l.id) === lessonId);
-      const bank = (window.QUIZ_BANK && window.QUIZ_BANK[lessonId]) || [];
+      const lessonNumber = getLessonNumber();
+      const lesson = LESSONS.find(l => Number(l.lessonNumber) === lessonNumber);
 
-      if (!lesson || !bank.length) {
+      if (!lesson) {
+        quizTitle.textContent = "Quiz not found";
+        questionCard.innerHTML = "<p>Lesson data is missing for this quiz.</p>";
+        return;
+      }
+
+      const quizBank = Array.isArray(lesson.quizBank) ? lesson.quizBank : [];
+
+      if (!quizBank.length) {
         quizTitle.textContent = "Quiz not found";
         questionCard.innerHTML = "<p>Quiz data is missing for this lesson.</p>";
         return;
       }
 
-      lessonBackLink.href = `./lesson.html?lesson=${lessonId}`;
+      lessonBackLink.href = `./lesson.html?lesson=${lessonNumber}`;
       quizTitle.textContent = `${lesson.title} — Quiz`;
 
-      const priorProgress = getLessonProgress(student, lessonId);
-      const questions = shuffle(bank).slice(0, 20).map(normalizeQuestion);
+      const priorProgress = getLessonProgress(student, lessonNumber);
+      const questions = shuffle(quizBank).slice(0, 20).map(normalizeQuestion);
 
       let currentIndex = 0;
       let correctCount = 0;
@@ -145,7 +153,7 @@
 
         questionCard.innerHTML = `
           <div class="question-number">QUESTION ${currentIndex + 1}</div>
-          <h2 class="question-text">${item.q}</h2>
+          <h2 class="question-text">${item.question}</h2>
           <div class="answer-list">${answers}</div>
           <div id="questionExplanation" class="explanation-box" hidden></div>
           <div class="quiz-footer">
@@ -167,11 +175,11 @@
             answered = true;
 
             const selected = Number(button.dataset.index);
-            const isCorrect = selected === item.answer;
+            const isCorrect = selected === item.correct;
 
             answerButtons.forEach((btn, idx) => {
               btn.disabled = true;
-              if (idx === item.answer) btn.classList.add("correct");
+              if (idx === item.correct) btn.classList.add("correct");
               if (idx === selected && !isCorrect) btn.classList.add("incorrect");
               if (idx === selected) btn.classList.add("selected");
             });
@@ -179,12 +187,15 @@
             if (isCorrect) {
               correctCount += 1;
             } else {
-              missedQuestions.push(item.q);
+              missedQuestions.push(item.question);
             }
 
             quizScorePreview.textContent = `Correct So Far: ${correctCount}`;
             explanation.hidden = false;
-            explanation.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+            explanation.innerHTML = `
+              <strong>Review Note:</strong>
+              Revisit the lesson gist and chapter material for the principle behind this question.
+            `;
             nextQuestionBtn.disabled = false;
           });
         });
@@ -199,7 +210,7 @@
           const score = Math.round((correctCount / questions.length) * 100);
           const passed = score >= 80;
 
-          await saveStudentProgress(lessonId, {
+          await saveStudentProgress(lessonNumber, {
             attempts,
             quizPassed: passed,
             quizScore: score,
@@ -210,7 +221,7 @@
           quizResultCard.hidden = false;
           quizResultCard.innerHTML = `
             <div class="content-kicker">QUIZ COMPLETE</div>
-            <h2 class="content-title">Lesson ${lessonId} Results</h2>
+            <h2 class="content-title">Lesson ${lessonNumber} Results</h2>
             <div class="quiz-result-score">${score}%</div>
             <p class="${passed ? "quiz-result-pass" : "quiz-result-fail"}">
               ${passed ? "Passed — lesson unlocked successfully." : "Not yet passing — review the lesson and try again."}
@@ -218,13 +229,13 @@
             <p class="content-summary">
               ${passed
                 ? "Great work. Your lesson has been marked complete."
-                : "A score of 80% or higher is required. Review the material, revisit scenarios, and retake the quiz."}
+                : "A score of 80% or higher is required. Review the lesson gist, revisit scenarios, and retake the quiz."}
             </p>
             <div class="content-actions" style="margin-top:18px;">
               <a class="lesson-btn primary" href="./dashboard.html">Return to Dashboard</a>
-              <a class="lesson-btn" href="./lesson.html?lesson=${lessonId}">Review Lesson</a>
-              <a class="lesson-btn" href="./scenario.html?lesson=${lessonId}">Review Scenarios</a>
-              ${!passed ? `<a class="lesson-btn" href="./quiz.html?lesson=${lessonId}">Retake Quiz</a>` : ""}
+              <a class="lesson-btn" href="./lesson.html?lesson=${lessonNumber}">Review Lesson</a>
+              <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">Review Scenarios</a>
+              ${!passed ? `<a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}">Retake Quiz</a>` : ""}
             </div>
           `;
         });
