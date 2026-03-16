@@ -18,8 +18,18 @@ function todayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function nowIso() {
+  return new Date().toISOString();
+}
+
 function uniqueSortedLessonNumbers(values = []) {
   return [...new Set(values.map(Number).filter((n) => Number.isFinite(n) && n > 0))].sort((a, b) => a - b);
+}
+
+function clampMinutes(value) {
+  const num = Number(value || 0);
+  if (!Number.isFinite(num) || num < 0) return 0;
+  return Math.round(num);
 }
 
 function normalizeProgress(progress) {
@@ -45,7 +55,14 @@ function normalizeProgress(progress) {
         attempts: Number(value?.attempts || 0),
         missedQuestions: Array.isArray(value?.missedQuestions) ? value.missedQuestions : [],
         startedAt: value?.startedAt || "",
-        completedAt: value?.completedAt || ""
+        completedAt: value?.completedAt || "",
+        lessonTimeMinutes: clampMinutes(value?.lessonTimeMinutes),
+        lessonStartedAt: value?.lessonStartedAt || "",
+        lessonLastSeenAt: value?.lessonLastSeenAt || "",
+        quizStartedAt: value?.quizStartedAt || "",
+        quizCompletedAt: value?.quizCompletedAt || "",
+        scenarioStartedAt: value?.scenarioStartedAt || "",
+        scenarioCompletedAt: value?.scenarioCompletedAt || ""
       };
     }
   }
@@ -72,6 +89,19 @@ function deriveProgressLabel(completedLessons = []) {
   return `Lesson ${count}`;
 }
 
+function deriveTotalOnlineMinutes(progress = {}) {
+  return Object.values(progress).reduce((sum, lesson) => {
+    return sum + clampMinutes(lesson?.lessonTimeMinutes);
+  }, 0);
+}
+
+function formatAdminStatus(completedLessons = []) {
+  const count = completedLessons.length;
+  if (count <= 0) return "Not Started";
+  if (count >= TOTAL_LESSONS) return "Completed";
+  return `Lesson ${count} Complete`;
+}
+
 function normalizeStudent(rawStudent) {
   const student = { ...(rawStudent || {}) };
   const progress = normalizeProgress(student.progress);
@@ -93,8 +123,10 @@ function normalizeStudent(rawStudent) {
     completedLessons,
     progressPercent: Number(student.progressPercent ?? deriveProgressPercent(completedLessons)),
     progressLabel: String(student.progressLabel || deriveProgressLabel(completedLessons)).trim(),
+    adminProgressLabel: String(student.adminProgressLabel || formatAdminStatus(completedLessons)).trim(),
     startDate: String(student.startDate || "").trim(),
-    completionDate: String(student.completionDate || "").trim()
+    completionDate: String(student.completionDate || "").trim(),
+    totalOnlineMinutes: clampMinutes(student.totalOnlineMinutes ?? deriveTotalOnlineMinutes(progress))
   };
 }
 
@@ -188,7 +220,14 @@ function getLessonProgress(student, lessonNumber) {
     attempts: Number(progress.attempts || 0),
     missedQuestions: Array.isArray(progress.missedQuestions) ? progress.missedQuestions : [],
     startedAt: progress.startedAt || "",
-    completedAt: progress.completedAt || ""
+    completedAt: progress.completedAt || "",
+    lessonTimeMinutes: clampMinutes(progress.lessonTimeMinutes),
+    lessonStartedAt: progress.lessonStartedAt || "",
+    lessonLastSeenAt: progress.lessonLastSeenAt || "",
+    quizStartedAt: progress.quizStartedAt || "",
+    quizCompletedAt: progress.quizCompletedAt || "",
+    scenarioStartedAt: progress.scenarioStartedAt || "",
+    scenarioCompletedAt: progress.scenarioCompletedAt || ""
   };
 }
 
@@ -217,6 +256,8 @@ function buildDerivedStudent(current, nextProgress) {
   const completedLessons = deriveCompletedLessons(nextProgress);
   const progressPercent = deriveProgressPercent(completedLessons);
   const progressLabel = deriveProgressLabel(completedLessons);
+  const adminProgressLabel = formatAdminStatus(completedLessons);
+  const totalOnlineMinutes = deriveTotalOnlineMinutes(nextProgress);
 
   let startDate = current.startDate || "";
   const anyQuizPassed = Object.values(nextProgress).some((lesson) => lesson?.quizPassed);
@@ -234,8 +275,10 @@ function buildDerivedStudent(current, nextProgress) {
     completedLessons,
     progressPercent,
     progressLabel,
+    adminProgressLabel,
     startDate,
-    completionDate
+    completionDate,
+    totalOnlineMinutes
   };
 }
 
@@ -260,6 +303,8 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
     (mergedLesson.scenarioCompleted ? 2 : 0)
   );
 
+  mergedLesson.lessonTimeMinutes = clampMinutes(mergedLesson.lessonTimeMinutes);
+
   if (mergedLesson.quizPassed && !mergedLesson.startedAt) {
     mergedLesson.startedAt = todayString();
   }
@@ -280,8 +325,10 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
     completedLessons: derived.completedLessons,
     progressPercent: derived.progressPercent,
     progressLabel: derived.progressLabel,
+    adminProgressLabel: derived.adminProgressLabel,
     startDate: derived.startDate,
     completionDate: derived.completionDate,
+    totalOnlineMinutes: derived.totalOnlineMinutes,
     updatedAt: serverTimestamp()
   };
 
@@ -295,8 +342,10 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
       completedLessons: derived.completedLessons,
       progressPercent: derived.progressPercent,
       progressLabel: derived.progressLabel,
+      adminProgressLabel: derived.adminProgressLabel,
       startDate: derived.startDate,
-      completionDate: derived.completionDate
+      completionDate: derived.completionDate,
+      totalOnlineMinutes: derived.totalOnlineMinutes
     });
   } catch (error) {
     console.error("Failed to save student progress:", error);
@@ -305,15 +354,45 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
 }
 
 async function markLessonContentViewed(lessonNumber) {
+  const current = getCurrentStudent();
+  const existing = getLessonProgress(current, lessonNumber);
+
   return saveStudentProgress(lessonNumber, {
-    contentViewed: true
+    contentViewed: true,
+    lessonStartedAt: existing.lessonStartedAt || nowIso(),
+    lessonLastSeenAt: nowIso()
+  });
+}
+
+async function recordLessonTime(lessonNumber, minutesToAdd = 1) {
+  const current = getCurrentStudent();
+  const existing = getLessonProgress(current, lessonNumber);
+
+  return saveStudentProgress(lessonNumber, {
+    lessonTimeMinutes: clampMinutes(existing.lessonTimeMinutes + minutesToAdd),
+    lessonStartedAt: existing.lessonStartedAt || nowIso(),
+    lessonLastSeenAt: nowIso()
   });
 }
 
 async function markLessonScenariosComplete(lessonNumber, scenarioPassedCount = 2) {
+  const current = getCurrentStudent();
+  const existing = getLessonProgress(current, lessonNumber);
+
   return saveStudentProgress(lessonNumber, {
     scenarioCompleted: true,
-    scenarioPassedCount: Math.max(2, Number(scenarioPassedCount || 2))
+    scenarioPassedCount: Math.max(2, Number(scenarioPassedCount || 2)),
+    scenarioStartedAt: existing.scenarioStartedAt || nowIso(),
+    scenarioCompletedAt: nowIso()
+  });
+}
+
+async function markLessonQuizStarted(lessonNumber) {
+  const current = getCurrentStudent();
+  const existing = getLessonProgress(current, lessonNumber);
+
+  return saveStudentProgress(lessonNumber, {
+    quizStartedAt: existing.quizStartedAt || nowIso()
   });
 }
 
@@ -328,7 +407,9 @@ async function markLessonQuizResult(lessonNumber, quizScore, attempts = null, mi
     quizPassed: passed,
     quizScore: score,
     attempts: attempts == null ? Number(existing.attempts || 0) + 1 : Number(attempts || 0),
-    missedQuestions: Array.isArray(missedQuestions) ? missedQuestions : []
+    missedQuestions: Array.isArray(missedQuestions) ? missedQuestions : [],
+    quizStartedAt: existing.quizStartedAt || nowIso(),
+    quizCompletedAt: nowIso()
   });
 }
 
@@ -342,7 +423,9 @@ window.BSA = {
   getOverallCompletionCount,
   saveStudentProgress,
   markLessonContentViewed,
+  recordLessonTime,
   markLessonScenariosComplete,
+  markLessonQuizStarted,
   markLessonQuizResult
 };
 
@@ -358,6 +441,8 @@ export {
   getOverallCompletionCount,
   saveStudentProgress,
   markLessonContentViewed,
+  recordLessonTime,
   markLessonScenariosComplete,
+  markLessonQuizStarted,
   markLessonQuizResult
 };
