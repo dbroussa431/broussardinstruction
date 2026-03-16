@@ -6,7 +6,8 @@ import {
   getOverallCompletionCount
 } from "./app.js";
 
-const LESSONS = window.LESSONS || [];
+import { LESSONS } from "./data.js";
+
 const TOTAL_LESSONS = LESSONS.length || 8;
 
 const lessonGrid = document.getElementById("lessonGrid");
@@ -47,14 +48,14 @@ function getLessonBadge(state) {
   return `<span class="lesson-badge locked">Locked</span>`;
 }
 
-function getLessonButtons(lessonId, state) {
+function getLessonButtons(lessonNumber, state) {
   if (state.quizPassed) {
     return `
       <div class="lesson-actions">
-        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonId}">Continue Lesson</a>
-        <a class="lesson-btn" href="./scenario.html?lesson=${lessonId}">Open Scenarios</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonId}">Take Quiz</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonId}&review=missed">See Missed Questions</a>
+        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonNumber}">Continue Lesson</a>
+        <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">Open Scenarios</a>
+        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}">Take Quiz</a>
+        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}&review=missed">See Missed Questions</a>
       </div>
     `;
   }
@@ -62,9 +63,9 @@ function getLessonButtons(lessonId, state) {
   if (state.unlocked) {
     return `
       <div class="lesson-actions">
-        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonId}">Continue Lesson</a>
-        <a class="lesson-btn" href="./scenario.html?lesson=${lessonId}">Open Scenarios</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonId}">Take Quiz</a>
+        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonNumber}">Continue Lesson</a>
+        <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">Open Scenarios</a>
+        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}">Take Quiz</a>
       </div>
     `;
   }
@@ -77,24 +78,30 @@ function getLessonButtons(lessonId, state) {
 }
 
 function renderLessonCard(lesson, state) {
+  const lessonNumber = Number(lesson.lessonNumber);
+  const description = String(lesson.description || "");
+  const estimatedMinutes = Number(lesson.estimatedMinutes || 20);
+  const quizQuestionCount = Number(lesson.quizQuestionCount || 20);
+  const scenarioCount = Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
+
   return `
     <article class="lesson-card">
       <div class="lesson-card-header">
-        <div class="lesson-number">${lesson.id}</div>
+        <div class="lesson-number">${lessonNumber}</div>
         ${getLessonBadge(state)}
       </div>
 
       <h4>${lesson.title}</h4>
-      <p>${lesson.summary}</p>
+      <p>${description}</p>
 
       <div class="lesson-meta">
-        <span>${lesson.estTime}</span>
-        <span>20-question quiz</span>
-        <span>${lesson.scenarios.length} scenarios</span>
+        <span>Estimated Time: ${estimatedMinutes} min</span>
+        <span>${quizQuestionCount}-question quiz</span>
+        <span>${scenarioCount} scenarios</span>
         <span>Attempts: ${state.attempts || 0}</span>
       </div>
 
-      ${getLessonButtons(lesson.id, state)}
+      ${getLessonButtons(lessonNumber, state)}
     </article>
   `;
 }
@@ -102,18 +109,8 @@ function renderLessonCard(lesson, state) {
 function renderLessons(student) {
   if (!lessonGrid) return;
 
-  if (!LESSONS.length) {
-    lessonGrid.innerHTML = `
-      <article class="lesson-card">
-        <h4>Lesson data not loaded</h4>
-        <p>The dashboard loaded, but <code>data.js</code> did not provide lesson data.</p>
-      </article>
-    `;
-    return;
-  }
-
   lessonGrid.innerHTML = LESSONS.map((lesson) => {
-    const state = getStudentLessonState(student, lesson.id);
+    const state = getStudentLessonState(student, lesson.lessonNumber);
     return renderLessonCard(lesson, state);
   }).join("");
 }
