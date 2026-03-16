@@ -37,42 +37,52 @@ function getProgressPercent(count) {
 }
 
 function getLessonBadge(state) {
-  if (state.quizPassed) {
-    return `<span class="lesson-badge passed">Passed • ${state.quizScore}%</span>`;
+  if (state.completed) {
+    return `<span class="lesson-badge passed">Completed</span>`;
+  }
+
+  if (state.quizPassed && !state.scenarioCompleted) {
+    return `<span class="lesson-badge ready">Quiz Passed • Scenarios Pending</span>`;
+  }
+
+  if (!state.quizPassed && state.scenarioCompleted) {
+    return `<span class="lesson-badge ready">Scenarios Done • Quiz Pending</span>`;
   }
 
   if (state.unlocked) {
-    return `<span class="lesson-badge ready">Ready for Quiz</span>`;
+    return `<span class="lesson-badge ready">Ready</span>`;
   }
 
   return `<span class="lesson-badge locked">Locked</span>`;
 }
 
 function getLessonButtons(lessonNumber, state) {
-  if (state.quizPassed) {
+  if (!state.unlocked) {
     return `
       <div class="lesson-actions">
-        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonNumber}">Continue Lesson</a>
-        <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">Open Scenarios</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}">Take Quiz</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}&review=missed">See Missed Questions</a>
+        <button class="lesson-btn disabled" type="button" disabled>Complete Previous Lesson First</button>
       </div>
     `;
   }
 
-  if (state.unlocked) {
-    return `
-      <div class="lesson-actions">
-        <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonNumber}">Continue Lesson</a>
-        <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">Open Scenarios</a>
-        <a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}">Take Quiz</a>
-      </div>
-    `;
-  }
+  const scenarioLabel = state.scenarioCompleted ? "Review Scenarios" : "Open Scenarios";
+  const quizDisabled = !state.scenarioCompleted;
+  const quizHref = quizDisabled ? "#" : `./quiz.html?lesson=${lessonNumber}`;
 
   return `
     <div class="lesson-actions">
-      <button class="lesson-btn disabled" type="button" disabled>Complete Previous Lesson First</button>
+      <a class="lesson-btn primary" href="./lesson.html?lesson=${lessonNumber}">Open Lesson</a>
+      <a class="lesson-btn" href="./scenario.html?lesson=${lessonNumber}">${scenarioLabel}</a>
+      ${
+        quizDisabled
+          ? `<button class="lesson-btn disabled" type="button" disabled>Finish Scenarios First</button>`
+          : `<a class="lesson-btn" href="${quizHref}">${state.quizPassed ? "Retake Quiz" : "Take Quiz"}</a>`
+      }
+      ${
+        state.quizPassed
+          ? `<a class="lesson-btn" href="./quiz.html?lesson=${lessonNumber}&review=missed">See Missed Questions</a>`
+          : ``
+      }
     </div>
   `;
 }
@@ -81,8 +91,9 @@ function renderLessonCard(lesson, state) {
   const lessonNumber = Number(lesson.lessonNumber);
   const description = String(lesson.description || "");
   const estimatedMinutes = Number(lesson.estimatedMinutes || 20);
-  const quizQuestionCount = Number(lesson.quizQuestionCount || 20);
-  const scenarioCount = Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
+  const quizQuestionCount =
+    Number(lesson.quizDrawCount || lesson.quizQuestionCount || lesson.quizCount || 20);
+  const scenarioPoolCount = Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
 
   return `
     <article class="lesson-card">
@@ -96,8 +107,8 @@ function renderLessonCard(lesson, state) {
 
       <div class="lesson-meta">
         <span>Estimated Time: ${estimatedMinutes} min</span>
-        <span>${quizQuestionCount}-question quiz</span>
-        <span>${scenarioCount} scenarios</span>
+        <span>${quizQuestionCount}-question quiz draw</span>
+        <span>2 random scenarios from ${scenarioPoolCount || 2}</span>
         <span>Attempts: ${state.attempts || 0}</span>
       </div>
 
@@ -178,7 +189,7 @@ requestLiveSessionBtn?.addEventListener("click", () => {
 });
 
 viewRequirementsBtn?.addEventListener("click", () => {
-  alert("Completion requires all 8 lessons, all scenario reviews, and a quiz score of at least 80% for each lesson.");
+  alert("Completion requires all 8 lessons, both randomized scenarios per lesson, and a quiz score of at least 80% for each lesson.");
 });
 
 initDashboard();
