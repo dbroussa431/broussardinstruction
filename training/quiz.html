@@ -43,6 +43,13 @@
         </div>
       </section>
 
+      <section class="content-card">
+        <div class="quiz-topbar">
+          <div class="quiz-progress">Quiz Time Logged</div>
+          <div id="quizTimeStatus" class="quiz-score-preview">0 min</div>
+        </div>
+      </section>
+
       <section id="questionCard" class="question-card"></section>
       <section id="quizResultCard" class="quiz-result-card" hidden></section>
     </div>
@@ -55,7 +62,8 @@
       refreshCurrentStudentFromFirestore,
       getLessonProgress,
       markLessonQuizStarted,
-      markLessonQuizResult
+      markLessonQuizResult,
+      recordLessonTime
     } from "./js/app.js";
 
     import * as courseData from "./js/data.js";
@@ -69,8 +77,13 @@
     const quizIntroText = document.getElementById("quizIntroText");
     const quizProgress = document.getElementById("quizProgress");
     const quizScorePreview = document.getElementById("quizScorePreview");
+    const quizTimeStatus = document.getElementById("quizTimeStatus");
     const questionCard = document.getElementById("questionCard");
     const quizResultCard = document.getElementById("quizResultCard");
+
+    let timeInterval = null;
+    let studentActive = true;
+    let lastTickAt = Date.now();
 
     function redirectLogin() {
       window.location.href = "./index.html";
@@ -106,10 +119,7 @@
         Number(lesson?.quizCount) ||
         0;
 
-      if (explicit > 0) {
-        return Math.min(explicit, bankLength);
-      }
-
+      if (explicit > 0) return Math.min(explicit, bankLength);
       return Math.min(20, bankLength);
     }
 
@@ -183,6 +193,32 @@
         .map(randomizeQuestionChoices);
     }
 
+    async function logOneMinute(lessonNumber) {
+      if (document.hidden || !studentActive) return null;
+
+      const now = Date.now();
+      if (now - lastTickAt < 55000) return null;
+      lastTickAt = now;
+
+      return recordLessonTime(lessonNumber, 1);
+    }
+
+    function bindActivityWatchers() {
+      const markActive = () => { studentActive = true; };
+      const markInactive = () => { studentActive = false; };
+
+      ["mousemove", "keydown", "scroll", "click", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, markActive, { passive: true });
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        studentActive = !document.hidden;
+      });
+
+      window.addEventListener("blur", markInactive);
+      window.addEventListener("focus", markActive);
+    }
+
     async function init() {
       let student = getCurrentStudent();
       if (!student) {
@@ -220,7 +256,19 @@
 
       await markLessonQuizStarted(lessonNumber);
 
+      bindActivityWatchers();
+
       const priorProgress = getLessonProgress(student, lessonNumber);
+      quizTimeStatus.textContent = `${Number(priorProgress.lessonTimeMinutes || 0)} min`;
+
+      timeInterval = setInterval(async () => {
+        const refreshed = await logOneMinute(lessonNumber);
+        if (refreshed) {
+          const progress = getLessonProgress(refreshed, lessonNumber);
+          quizTimeStatus.textContent = `${Number(progress.lessonTimeMinutes || 0)} min`;
+        }
+      }, 15000);
+
       const nextAttemptNumber = Number(priorProgress.attempts || 0) + 1;
 
       lessonBackLink.href = `./lesson.html?lesson=${lessonNumber}`;
@@ -318,6 +366,11 @@
           const scenariosAlreadyComplete = !!lessonProgress.scenarioCompleted;
           const lessonFullyComplete = !!(passed && scenariosAlreadyComplete);
 
+          const progress = getLessonProgress(updatedStudent, lessonNumber);
+          quizTimeStatus.textContent = `${Number(progress.lessonTimeMinutes || 0)} min`;
+
+          if (timeInterval) clearInterval(timeInterval);
+
           questionCard.hidden = true;
           quizResultCard.hidden = false;
           quizResultCard.innerHTML = `
@@ -345,6 +398,8 @@
               }
             </p>
 
+            <p class="content-summary"><strong>Total time logged for this lesson so far:</strong> ${Number(progress.lessonTimeMinutes || 0)} min</p>
+
             <div class="content-actions" style="margin-top:18px;">
               <a class="lesson-btn primary" href="./dashboard.html">Return to Dashboard</a>
               <a class="lesson-btn" href="./lesson.html?lesson=${lessonNumber}">Review Lesson</a>
@@ -356,9 +411,14 @@
       }
 
       renderQuestion();
+
+      window.addEventListener("beforeunload", () => {
+        if (timeInterval) clearInterval(timeInterval);
+      });
     }
 
     logoutBtn?.addEventListener("click", () => {
+      if (timeInterval) clearInterval(timeInterval);
       clearCurrentStudent();
       redirectLogin();
     });
