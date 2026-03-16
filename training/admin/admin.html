@@ -1,221 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>BSA Admin Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-body{
-font-family:Arial;
-background:#eef3fb;
-margin:0;
-}
-
-.header{
-background:#173f8a;
-color:white;
-padding:20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.header h1{
-margin:0;
-}
-
-.container{
-max-width:1300px;
-margin:auto;
-padding:20px;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px;
-margin-bottom:20px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,.1);
-}
-
-.card h3{
-margin:0;
-color:#666;
-}
-
-.card span{
-font-size:32px;
-font-weight:bold;
-}
-
-.controls{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-}
-
-button{
-padding:12px 16px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.gold{background:#d4a11e}
-.blue{background:#173f8a;color:white}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-}
-
-th,td{
-padding:12px;
-border-bottom:1px solid #eee;
-text-align:left;
-}
-
-th{
-background:#f6f6f6;
-}
-
-.status{
-padding:4px 10px;
-border-radius:20px;
-font-size:12px;
-}
-
-.paid{background:#d4f7df;color:#176c2b}
-.unpaid{background:#ffe2e2;color:#8f1d1d}
-
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.4);
-display:none;
-align-items:center;
-justify-content:center;
-}
-
-.modal-inner{
-background:white;
-padding:30px;
-width:500px;
-border-radius:12px;
-}
-
-.modal input, .modal select{
-width:100%;
-padding:10px;
-margin-bottom:10px;
-}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Training Admin</title>
+  <link rel="stylesheet" href="./css/admin.css" />
 </head>
-
 <body>
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <div class="brand-wrap">
+        <div class="brand-dot"></div>
+        <div>
+          <h1>Admin Dashboard</h1>
+        </div>
+      </div>
 
-<div class="header">
-<h1>BSA Admin</h1>
-<button id="logoutBtn" class="gold">Logout</button>
-</div>
+      <div class="topbar-actions">
+        <button id="addStudentBtn" class="btn btn-gold">Add Student</button>
+        <button id="refreshBtn" class="btn btn-dark">Refresh Records</button>
+        <button id="exportBtn" class="btn btn-dark">Export CSV</button>
+        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+      </div>
+    </header>
 
-<div class="container">
+    <main class="admin-main">
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Total Students</span>
+            <span id="metricStudentsSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricStudents" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
 
-<div class="cards">
+        <div class="metric-card metric-card-gold">
+          <div class="metric-head">
+            <span>Pending Payments</span>
+            <span id="metricPendingSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricPending" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-gold"></div>
+        </div>
 
-<div class="card">
-<h3>Total Students</h3>
-<span id="metricStudents">0</span>
-</div>
+        <div class="metric-card metric-card-green">
+          <div class="metric-head">
+            <span>Paid Students</span>
+            <span id="metricPaidSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricPaid" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-green"></div>
+        </div>
 
-<div class="card">
-<h3>Pending Payments</h3>
-<span id="metricPending">0</span>
-</div>
+        <div class="metric-card metric-card-gold">
+          <div class="metric-head">
+            <span>Revenue Collected</span>
+            <span id="metricRevenueSmall" class="metric-mini">$0</span>
+          </div>
+          <div id="metricRevenue" class="metric-big">$0</div>
+          <div class="metric-bar metric-bar-gold"></div>
+        </div>
+      </section>
 
-<div class="card">
-<h3>Paid Students</h3>
-<span id="metricPaid">0</span>
-</div>
+      <section class="quick-actions">
+        <button id="quickAddBtn" class="btn btn-gold">Add Student</button>
+        <button id="reloadBtn" class="btn btn-dark">Refresh Records</button>
 
-<div class="card">
-<h3>Revenue</h3>
-<span id="metricRevenue">$0</span>
-</div>
+        <div class="quick-filter-row">
+          <input id="searchInput" class="search-input" type="text" placeholder="Search by name, email, or code" />
+          <select id="paymentFilter" class="filter-select">
+            <option value="">Payment Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Pending">Pending</option>
+            <option value="Waived">Waived</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
+          <select id="sortInput" class="filter-select">
+            <option value="newest">Sort By</option>
+            <option value="newest">Newest</option>
+            <option value="name">Name</option>
+            <option value="amountHigh">Highest Amount</option>
+            <option value="amountLow">Lowest Amount</option>
+            <option value="progressHigh">Highest Progress</option>
+          </select>
+          <button id="filterBtn" class="btn btn-brown">Filter</button>
+        </div>
+      </section>
 
-</div>
+      <section class="table-card">
+        <div class="table-toolbar">
+          <div class="toolbar-label">Search Records:</div>
 
-<div class="controls">
-<button id="addStudentBtn" class="gold">Add Student</button>
-<button id="refreshBtn" class="blue">Refresh</button>
-<button id="exportBtn" class="blue">Export CSV</button>
-<input id="searchInput" placeholder="Search student">
-</div>
+          <input id="searchInput2" class="toolbar-input" type="text" placeholder="Search by name, email, or code" />
 
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Email</th>
-<th>Tier</th>
-<th>Price</th>
-<th>Paid</th>
-<th>Status</th>
-<th>Progress</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="studentTable"></tbody>
-</table>
+          <select id="paymentFilter2" class="toolbar-select">
+            <option value="">All Payment Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Pending">Pending</option>
+            <option value="Waived">Waived</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
 
-</div>
+          <select id="portalFilter" class="toolbar-select">
+            <option value="">All Portal Statuses</option>
+            <option value="active">Active</option>
+            <option value="locked">Locked</option>
+            <option value="expired">Expired</option>
+          </select>
 
+          <select id="tierFilter" class="toolbar-select">
+            <option value="">Sort By</option>
+            <option value="FREE">FREE</option>
+            <option value="DISC">DISC</option>
+            <option value="FULL">FULL</option>
+          </select>
 
-<div id="studentModal" class="modal">
-<div class="modal-inner">
+          <select id="sortInput2" class="toolbar-select">
+            <option value="newest">Newest</option>
+            <option value="name">Name</option>
+            <option value="amountHigh">Highest Amount</option>
+            <option value="amountLow">Lowest Amount</option>
+            <option value="progressHigh">Highest Progress</option>
+          </select>
 
-<h2>Add Student</h2>
+          <button id="clearFiltersBtn" class="btn btn-light">Clear</button>
+        </div>
 
-<input id="studentName" placeholder="Name">
-<input id="studentEmail" placeholder="Email">
+        <div class="table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Price</th>
+                <th>Payment Method</th>
+                <th>Payment Status</th>
+                <th>Portal Status</th>
+                <th>Progress</th>
+                <th>Progress</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
 
-<select id="tier">
-<option value="FULL">Full ($150)</option>
-<option value="DISC">Discount ($100)</option>
-<option value="FREE">Free</option>
-</select>
+  <div id="studentModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Student</h2>
+      </div>
 
-<select id="paymentStatus">
-<option value="Paid">Paid</option>
-<option value="Pending">Pending</option>
-<option value="Waived">Waived</option>
-</select>
+      <form id="studentForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" required />
+          </div>
 
-<select id="portalStatus">
-<option value="Active">Active</option>
-<option value="Locked">Locked</option>
-</select>
+          <div class="field">
+            <label for="studentEmail">Email</label>
+            <input type="email" id="studentEmail" required />
+          </div>
 
-<button id="saveStudent" class="gold">Save</button>
+          <div class="field">
+            <label for="priceTier">Course / Tier</label>
+            <select id="priceTier">
+              <option value="FULL">Louisiana Concealed Carry — FULL</option>
+              <option value="DISC">Discounted Class — DISC</option>
+              <option value="FREE">Free (Waived) — FREE</option>
+            </select>
+          </div>
 
-</div>
-</div>
+          <div class="field">
+            <label for="price">Price</label>
+            <input type="number" id="price" min="0" step="1" />
+          </div>
 
-<script type="module" src="admin.js"></script>
+          <div class="field">
+            <label for="paymentMethod">Payment Method</label>
+            <select id="paymentMethod">
+              <option value="Direct">Direct</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Cash">Cash</option>
+              <option value="Waived">Waived</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
+          <div class="field">
+            <label for="paymentStatusSelect">Payment Status</label>
+            <select id="paymentStatusSelect">
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Waived">Waived</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="portalStatus">Portal Status</label>
+            <select id="portalStatus">
+              <option value="active">Active</option>
+              <option value="locked">Locked</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="progressLabel">Progress Label</label>
+            <select id="progressLabel">
+              <option value="Not Started">Not Started</option>
+              <option value="Lesson 1">Lesson 1</option>
+              <option value="Lesson 2">Lesson 2</option>
+              <option value="Lesson 3">Lesson 3</option>
+              <option value="Lesson 4">Lesson 4</option>
+              <option value="Lesson 5">Lesson 5</option>
+              <option value="Lesson 6">Lesson 6</option>
+              <option value="Lesson 7">Lesson 7</option>
+              <option value="Lesson 8">Lesson 8</option>
+              <option value="Quiz Passed">Quiz Passed</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="progressPercent">Progress %</label>
+            <input type="number" id="progressPercent" min="0" max="100" step="1" value="0" />
+          </div>
+
+          <div class="field">
+            <label for="completionDate">Completion Date</label>
+            <input type="date" id="completionDate" />
+          </div>
+
+          <div class="field">
+            <label for="certificateIssued">Certificate Issued</label>
+            <select id="certificateIssued">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="courseVersion">Course Version</label>
+            <input type="text" id="courseVersion" value="2026-03" />
+          </div>
+
+          <div class="field full">
+            <label for="accessCode">Access Code</label>
+            <input type="text" id="accessCode" placeholder="Auto-generated if left blank" />
+          </div>
+
+          <div class="field full">
+            <label for="notes">Notes</label>
+            <textarea id="notes" rows="4" placeholder="Optional notes about payment, direct pay, waived reason, follow-up, etc."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-light" id="cancelStudentBtn">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="./js/admin.js"></script>
 </body>
 </html>
