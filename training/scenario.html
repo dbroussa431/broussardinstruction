@@ -53,7 +53,6 @@
     </div>
   </main>
 
-  <script src="./js/data.js"></script>
   <script type="module">
     import {
       getCurrentStudent,
@@ -61,6 +60,8 @@
       refreshCurrentStudentFromFirestore,
       saveStudentProgress
     } from "./js/app.js";
+
+    import { LESSONS } from "./js/data.js";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const scenarioTitle = document.getElementById("scenarioTitle");
@@ -73,12 +74,45 @@
       window.location.href = "./index.html";
     }
 
-    function getLessonId() {
+    function getLessonNumber() {
       const params = new URLSearchParams(window.location.search);
       return Number(params.get("lesson") || 1);
     }
 
-    function buildScenarioCard(scenario, index) {
+    function normalizeScenarioSet(lesson) {
+      const rawScenarios = Array.isArray(lesson?.scenarios) ? lesson.scenarios : [];
+
+      return rawScenarios.map((scenario, index) => {
+        // Full object scenario
+        if (scenario && typeof scenario === "object" && Array.isArray(scenario.choices)) {
+          return {
+            label: `Scenario ${index + 1}`,
+            prompt: scenario.prompt || `Scenario ${index + 1}`,
+            choices: scenario.choices,
+            answer: Number(scenario.answer ?? 0),
+            explanation: scenario.explanation || "Review the lesson summary and apply the chapter principles."
+          };
+        }
+
+        // String placeholder scenario from simplified LESSONS data
+        const labelText = typeof scenario === "string" ? scenario : `Scenario ${index + 1}`;
+
+        return {
+          label: labelText,
+          prompt: `${lesson.title} — ${labelText}`,
+          choices: [
+            "This response best follows the lesson’s safety and decision-making principles.",
+            "This response ignores important lesson principles and creates avoidable risk.",
+            "This response escalates too early without enough justification.",
+            "This response fails to apply the lesson correctly."
+          ],
+          answer: 0,
+          explanation: `This scenario placeholder is tied to ${lesson.title}. Your live data currently includes simplified scenario labels, so this page is providing a working review structure until you finish loading the full scenario bank.`
+        };
+      });
+    }
+
+    function renderScenarioCard(scenario, index) {
       const choiceHtml = scenario.choices.map((choice, choiceIndex) => `
         <button class="choice-btn" data-choice="${choiceIndex}">
           ${choice}
@@ -87,7 +121,7 @@
 
       return `
         <article class="scenario-card" data-scenario-index="${index}">
-          <div class="scenario-label">SCENARIO ${index + 1}</div>
+          <div class="scenario-label">${scenario.label.toUpperCase()}</div>
           <h2 class="scenario-question">${scenario.prompt}</h2>
           <div class="choice-list">
             ${choiceHtml}
@@ -110,29 +144,43 @@
         return;
       }
 
-      const lessonId = getLessonId();
-      const lessons = window.LESSONS || [];
-      const lesson = lessons.find(l => Number(l.id) === lessonId);
+      const lessonNumber = getLessonNumber();
+      const lesson = LESSONS.find((l) => Number(l.lessonNumber) === lessonNumber);
 
       if (!lesson) {
         scenarioTitle.textContent = "Scenario set not found";
+        scenarioList.innerHTML = "";
         return;
       }
 
-      scenarioTitle.textContent = `${lesson.title} — Scenario Review`;
-      lessonBackLink.href = `./lesson.html?lesson=${lessonId}`;
-      lessonLinkBottom.href = `./lesson.html?lesson=${lessonId}`;
-      quizLink.href = `./quiz.html?lesson=${lessonId}`;
+      const scenarios = normalizeScenarioSet(lesson);
 
-      scenarioList.innerHTML = lesson.scenarios
-        .map((scenario, index) => buildScenarioCard(scenario, index))
+      scenarioTitle.textContent = `${lesson.title} — Scenario Review`;
+      lessonBackLink.href = `./lesson.html?lesson=${lessonNumber}`;
+      lessonLinkBottom.href = `./lesson.html?lesson=${lessonNumber}`;
+      quizLink.href = `./quiz.html?lesson=${lessonNumber}`;
+
+      if (!scenarios.length) {
+        scenarioList.innerHTML = `
+          <article class="content-card">
+            <h2 class="section-heading">No scenarios loaded yet</h2>
+            <p class="content-summary">
+              This lesson was found, but no scenario items are available in the current data source.
+            </p>
+          </article>
+        `;
+        return;
+      }
+
+      scenarioList.innerHTML = scenarios
+        .map((scenario, index) => renderScenarioCard(scenario, index))
         .join("");
 
       const cards = [...document.querySelectorAll(".scenario-card")];
       let completedCount = 0;
 
       cards.forEach((card, scenarioIndex) => {
-        const scenario = lesson.scenarios[scenarioIndex];
+        const scenario = scenarios[scenarioIndex];
         const buttons = [...card.querySelectorAll(".choice-btn")];
         const explanationBox = card.querySelector(".explanation-box");
         let answered = false;
@@ -155,8 +203,8 @@
 
             completedCount += 1;
 
-            if (completedCount === lesson.scenarios.length) {
-              await saveStudentProgress(lessonId, { scenarioCompleted: true });
+            if (completedCount === scenarios.length) {
+              await saveStudentProgress(lessonNumber, { scenarioCompleted: true });
             }
           });
         });
