@@ -31,8 +31,8 @@
         <a class="back-link" id="lessonBackLink" href="./lesson.html">← Back to Lesson</a>
         <div class="content-kicker">SCENARIO REVIEW</div>
         <h1 id="scenarioTitle" class="content-title">Loading scenarios...</h1>
-        <p class="content-summary">
-          Review both scenarios carefully. Choose the best answer and read the explanation before moving on.
+        <p id="scenarioIntroText" class="content-summary">
+          Complete 2 randomized scenarios for this lesson. Read the explanation after each answer before moving on.
         </p>
       </section>
 
@@ -41,7 +41,7 @@
       <section class="content-card">
         <h2 class="section-heading">Next Step</h2>
         <p class="content-summary">
-          Once you complete both scenarios, move on to the lesson quiz.
+          After both scenarios are completed, move on to the lesson quiz.
         </p>
 
         <div class="content-actions">
@@ -58,17 +58,21 @@
       getCurrentStudent,
       clearCurrentStudent,
       refreshCurrentStudentFromFirestore,
-      saveStudentProgress
+      getLessonProgress,
+      markLessonScenariosComplete
     } from "./js/app.js";
 
     import { LESSONS } from "./js/data.js";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const scenarioTitle = document.getElementById("scenarioTitle");
+    const scenarioIntroText = document.getElementById("scenarioIntroText");
     const scenarioList = document.getElementById("scenarioList");
     const lessonBackLink = document.getElementById("lessonBackLink");
     const lessonLinkBottom = document.getElementById("lessonLinkBottom");
     const quizLink = document.getElementById("quizLink");
+
+    const SCENARIOS_PER_ATTEMPT = 2;
 
     function redirectLogin() {
       window.location.href = "./index.html";
@@ -79,50 +83,80 @@
       return Number(params.get("lesson") || 1);
     }
 
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function escapeHtml(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     function normalizeScenarioSet(lesson) {
       const rawScenarios = Array.isArray(lesson?.scenarios) ? lesson.scenarios : [];
 
       return rawScenarios.map((scenario, index) => {
-        // Full object scenario
-        if (scenario && typeof scenario === "object" && Array.isArray(scenario.choices)) {
+        if (
+          scenario &&
+          typeof scenario === "object" &&
+          Array.isArray(scenario.choices) &&
+          scenario.choices.length >= 2
+        ) {
           return {
-            label: `Scenario ${index + 1}`,
-            prompt: scenario.prompt || `Scenario ${index + 1}`,
-            choices: scenario.choices,
+            label: String(scenario.label || `Scenario ${index + 1}`),
+            prompt: String(scenario.prompt || `Scenario ${index + 1}`),
+            choices: scenario.choices.map((choice) => String(choice)),
             answer: Number(scenario.answer ?? 0),
-            explanation: scenario.explanation || "Review the lesson summary and apply the chapter principles."
+            explanation: String(
+              scenario.explanation ||
+              "Review the lesson summary and apply the chapter principles."
+            )
           };
         }
 
-        // String placeholder scenario from simplified LESSONS data
         const labelText = typeof scenario === "string" ? scenario : `Scenario ${index + 1}`;
 
         return {
-          label: labelText,
+          label: String(labelText),
           prompt: `${lesson.title} — ${labelText}`,
           choices: [
-            "This response best follows the lesson’s safety and decision-making principles.",
-            "This response ignores important lesson principles and creates avoidable risk.",
-            "This response escalates too early without enough justification.",
-            "This response fails to apply the lesson correctly."
+            "This option best follows the lesson’s safety and decision-making principles.",
+            "This option ignores important lesson principles and creates avoidable risk.",
+            "This option escalates too early without enough justification.",
+            "This option fails to apply the lesson correctly."
           ],
           answer: 0,
-          explanation: `This scenario placeholder is tied to ${lesson.title}. Your live data currently includes simplified scenario labels, so this page is providing a working review structure until you finish loading the full scenario bank.`
+          explanation: `This scenario is connected to ${lesson.title}. Replace simplified placeholder text with your finalized scenario bank as you continue improving the course.`
         };
       });
     }
 
+    function pickScenarioSet(lesson) {
+      const normalized = normalizeScenarioSet(lesson);
+      if (!normalized.length) return [];
+      return shuffle(normalized).slice(0, Math.min(SCENARIOS_PER_ATTEMPT, normalized.length));
+    }
+
     function renderScenarioCard(scenario, index) {
       const choiceHtml = scenario.choices.map((choice, choiceIndex) => `
-        <button class="choice-btn" data-choice="${choiceIndex}">
-          ${choice}
+        <button class="choice-btn" type="button" data-choice="${choiceIndex}">
+          ${escapeHtml(choice)}
         </button>
       `).join("");
 
       return `
         <article class="scenario-card" data-scenario-index="${index}">
-          <div class="scenario-label">${scenario.label.toUpperCase()}</div>
-          <h2 class="scenario-question">${scenario.prompt}</h2>
+          <div class="scenario-label">${escapeHtml(scenario.label.toUpperCase())}</div>
+          <h2 class="scenario-question">${escapeHtml(scenario.prompt)}</h2>
           <div class="choice-list">
             ${choiceHtml}
           </div>
@@ -153,12 +187,17 @@
         return;
       }
 
-      const scenarios = normalizeScenarioSet(lesson);
+      const priorProgress = getLessonProgress(student, lessonNumber);
+      const scenarios = pickScenarioSet(lesson);
 
       scenarioTitle.textContent = `${lesson.title} — Scenario Review`;
       lessonBackLink.href = `./lesson.html?lesson=${lessonNumber}`;
       lessonLinkBottom.href = `./lesson.html?lesson=${lessonNumber}`;
       quizLink.href = `./quiz.html?lesson=${lessonNumber}`;
+
+      if (scenarioIntroText) {
+        scenarioIntroText.textContent = `Complete ${scenarios.length} randomized scenarios for this lesson. Read the explanation after each answer before moving on.`;
+      }
 
       if (!scenarios.length) {
         scenarioList.innerHTML = `
@@ -178,6 +217,7 @@
 
       const cards = [...document.querySelectorAll(".scenario-card")];
       let completedCount = 0;
+      let saveTriggered = false;
 
       cards.forEach((card, scenarioIndex) => {
         const scenario = scenarios[scenarioIndex];
@@ -196,15 +236,20 @@
               btn.disabled = true;
               if (idx === scenario.answer) btn.classList.add("correct");
               if (idx === chosen && chosen !== scenario.answer) btn.classList.add("incorrect");
+              if (idx === chosen) btn.classList.add("selected");
             });
 
             explanationBox.hidden = false;
-            explanationBox.innerHTML = `<strong>Explanation:</strong> ${scenario.explanation}`;
+            explanationBox.innerHTML = `<strong>Explanation:</strong> ${escapeHtml(scenario.explanation)}`;
 
             completedCount += 1;
 
-            if (completedCount === scenarios.length) {
-              await saveStudentProgress(lessonNumber, { scenarioCompleted: true });
+            if (!saveTriggered && completedCount >= scenarios.length) {
+              saveTriggered = true;
+              await markLessonScenariosComplete(
+                lessonNumber,
+                Math.max(Number(priorProgress.scenarioPassedCount || 0), scenarios.length)
+              );
             }
           });
         });
