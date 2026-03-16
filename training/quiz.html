@@ -58,7 +58,10 @@
       saveStudentProgress
     } from "./js/app.js";
 
-    import { LESSONS } from "./js/data.js";
+    import * as courseData from "./js/data.js";
+
+    const LESSONS = Array.isArray(courseData.LESSONS) ? courseData.LESSONS : [];
+    const QUIZ_BANK = courseData.QUIZ_BANK || {};
 
     const logoutBtn = document.getElementById("logoutBtn");
     const lessonBackLink = document.getElementById("lessonBackLink");
@@ -86,18 +89,19 @@
       return arr;
     }
 
-    function pickQuizArray(lesson) {
-      if (Array.isArray(lesson.quizBank)) return lesson.quizBank;
-      if (Array.isArray(lesson.questionBank)) return lesson.questionBank;
-      if (Array.isArray(lesson.questions)) return lesson.questions;
-      if (Array.isArray(lesson.quizQuestions)) return lesson.quizQuestions;
+    function pickQuizArray(lesson, lessonNumber) {
+      if (Array.isArray(lesson?.quizBank)) return lesson.quizBank;
+      if (Array.isArray(lesson?.quizQuestions)) return lesson.quizQuestions;
+      if (Array.isArray(lesson?.questions)) return lesson.questions;
+      if (Array.isArray(lesson?.questionBank)) return lesson.questionBank;
+      if (Array.isArray(QUIZ_BANK?.[lessonNumber])) return QUIZ_BANK[lessonNumber];
       return [];
     }
 
     function normalizeQuestion(item) {
-      const rawChoices = Array.isArray(item.choices) ? item.choices : [];
+      const rawChoices = Array.isArray(item?.choices) ? item.choices : [];
 
-      if (item.type === "tf" && rawChoices.length === 0) {
+      if (item?.type === "tf" && rawChoices.length === 0) {
         return {
           question: item.question || item.q || "Question text missing.",
           choices: ["True", "False"],
@@ -107,10 +111,10 @@
       }
 
       return {
-        question: item.question || item.q || "Question text missing.",
+        question: item?.question || item?.q || "Question text missing.",
         choices: rawChoices,
-        correct: Number(item.correct ?? item.answer ?? 0),
-        explanation: item.explanation || ""
+        correct: Number(item?.correct ?? item?.answer ?? 0),
+        explanation: item?.explanation || ""
       };
     }
 
@@ -136,7 +140,7 @@
         return;
       }
 
-      const rawQuizBank = pickQuizArray(lesson);
+      const rawQuizBank = pickQuizArray(lesson, lessonNumber);
 
       if (!rawQuizBank.length) {
         quizTitle.textContent = "Quiz not found";
@@ -214,13 +218,10 @@
 
             quizScorePreview.textContent = `Correct So Far: ${correctCount}`;
 
-            if (item.explanation) {
-              explanation.hidden = false;
-              explanation.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
-            } else {
-              explanation.hidden = false;
-              explanation.innerHTML = `<strong>Review Note:</strong> Revisit the lesson gist and chapter material for the principle behind this question.`;
-            }
+            explanation.hidden = false;
+            explanation.innerHTML = item.explanation
+              ? `<strong>Explanation:</strong> ${item.explanation}`
+              : `<strong>Review Note:</strong> Revisit the lesson gist and chapter material for the principle behind this question.`;
 
             nextQuestionBtn.disabled = false;
           });
