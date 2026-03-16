@@ -55,7 +55,7 @@
         </div>
       </section>
 
-      <section id="lessonSections" class="content-card"></section>
+      <section id="lessonGistCard" class="content-card"></section>
 
       <section class="content-card">
         <h2 class="section-heading">Next Step</h2>
@@ -72,7 +72,6 @@
     </div>
   </main>
 
-  <script src="./js/data.js"></script>
   <script type="module">
     import {
       getCurrentStudent,
@@ -82,12 +81,14 @@
       saveStudentProgress
     } from "./js/app.js";
 
+    import { LESSONS } from "./js/data.js";
+
     const logoutBtn = document.getElementById("logoutBtn");
     const lessonTitle = document.getElementById("lessonTitle");
     const lessonSummary = document.getElementById("lessonSummary");
     const lessonTime = document.getElementById("lessonTime");
     const lessonScenarios = document.getElementById("lessonScenarios");
-    const lessonSections = document.getElementById("lessonSections");
+    const lessonGistCard = document.getElementById("lessonGistCard");
     const contentViewedStatus = document.getElementById("contentViewedStatus");
     const scenarioStatus = document.getElementById("scenarioStatus");
     const quizStatus = document.getElementById("quizStatus");
@@ -98,22 +99,31 @@
       window.location.href = "./index.html";
     }
 
-    function getLessonId() {
+    function getLessonNumber() {
       const params = new URLSearchParams(window.location.search);
       return Number(params.get("lesson") || 1);
     }
 
-    function renderSections(lesson) {
-      const html = lesson.sections.map(section => `
-        <div class="section-block">
-          <h2 class="section-heading">${section.heading}</h2>
-          <ul class="section-body">
-            ${section.body.map(line => `<li>${line}</li>`).join("")}
-          </ul>
-        </div>
-      `).join("");
+    function renderGist(lesson) {
+      const gist = String(
+        lesson.chapterSummary ||
+        lesson.gist ||
+        lesson.summary ||
+        lesson.description ||
+        "Lesson material is being loaded."
+      );
 
-      lessonSections.innerHTML = html;
+      const paragraphs = gist
+        .split(/\n\s*\n|\n/)
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => `<p class="content-summary" style="margin-top:0; margin-bottom:16px;">${line}</p>`)
+        .join("");
+
+      lessonGistCard.innerHTML = `
+        <h2 class="section-heading">Chapter Gist</h2>
+        ${paragraphs}
+      `;
     }
 
     async function init() {
@@ -129,27 +139,40 @@
         return;
       }
 
-      const lessonId = getLessonId();
-      const lessons = window.LESSONS || [];
-      const lesson = lessons.find(l => Number(l.id) === lessonId);
+      const lessonNumber = getLessonNumber();
+      const lesson = LESSONS.find(l => Number(l.lessonNumber) === lessonNumber);
 
       if (!lesson) {
         lessonTitle.textContent = "Lesson not found";
+        lessonSummary.textContent = "The requested lesson could not be found in the course dataset.";
+        lessonGistCard.innerHTML = `
+          <h2 class="section-heading">Lesson Missing</h2>
+          <p class="content-summary">Check that your lesson links and lesson numbers match the dataset.</p>
+        `;
         return;
       }
 
-      lessonTitle.textContent = lesson.title;
-      lessonSummary.textContent = lesson.summary;
-      lessonTime.textContent = `Estimated Time: ${lesson.estTime}`;
-      lessonScenarios.textContent = `${lesson.scenarios.length} Scenarios`;
+      const scenarioCount =
+        Array.isArray(lesson.scenarioBank) ? lesson.scenarioBank.length :
+        Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
 
-      scenarioLink.href = `./scenario.html?lesson=${lessonId}`;
-      quizLink.href = `./quiz.html?lesson=${lessonId}`;
+      lessonTitle.textContent = lesson.title || `Lesson ${lessonNumber}`;
+      lessonSummary.textContent = String(
+        lesson.description ||
+        lesson.chapterSummary ||
+        "Review this lesson carefully before moving on."
+      );
 
-      renderSections(lesson);
+      lessonTime.textContent = `Estimated Time: ${Number(lesson.estimatedMinutes || 20)} min`;
+      lessonScenarios.textContent = `${scenarioCount} Scenarios Available`;
 
-      const updatedStudent = await saveStudentProgress(lessonId, { contentViewed: true });
-      const progress = getLessonProgress(updatedStudent || student, lessonId);
+      scenarioLink.href = `./scenario.html?lesson=${lessonNumber}`;
+      quizLink.href = `./quiz.html?lesson=${lessonNumber}`;
+
+      renderGist(lesson);
+
+      const updatedStudent = await saveStudentProgress(lessonNumber, { contentViewed: true });
+      const progress = getLessonProgress(updatedStudent || student, lessonNumber);
 
       contentViewedStatus.textContent = progress.contentViewed ? "Viewed" : "Not Yet";
       scenarioStatus.textContent = progress.scenarioCompleted ? "Completed" : "Pending";
