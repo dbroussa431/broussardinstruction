@@ -11,7 +11,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
-const TOTAL_LESSONS = 8;
 
 function normalizeProgress(progress) {
   const normalized = {};
@@ -43,6 +42,7 @@ function normalizeStudent(rawStudent) {
     tier: String(student.tier || "FREE").trim().toUpperCase(),
     paid: !!student.paid,
     status: String(student.status || "active").trim().toLowerCase(),
+    courseVersion: String(student.courseVersion || "2026-03").trim(),
     progress: normalizeProgress(student.progress),
     completedLessons: Array.isArray(student.completedLessons)
       ? [...new Set(student.completedLessons.map(Number).filter(Boolean))].sort((a, b) => a - b)
@@ -73,7 +73,6 @@ function clearCurrentStudent() {
 
 async function loginStudent(code) {
   const cleanCode = String(code || "").trim().toUpperCase();
-
   if (!cleanCode) return null;
 
   try {
@@ -84,16 +83,13 @@ async function loginStudent(code) {
     );
 
     const snapshot = await getDocs(q);
-
     if (snapshot.empty) return null;
 
     const docSnap = snapshot.docs[0];
-    const student = setCurrentStudent({
+    return setCurrentStudent({
       id: docSnap.id,
       ...docSnap.data()
     });
-
-    return student;
   } catch (error) {
     console.error("Error during student login:", error);
     return null;
@@ -132,8 +128,8 @@ async function refreshCurrentStudentFromFirestore() {
 }
 
 function getLessonProgress(student, lessonNumber) {
-  const lessonKey = Number(lessonNumber);
-  const progress = student?.progress?.[lessonKey] || {};
+  const key = Number(lessonNumber);
+  const progress = student?.progress?.[key] || {};
 
   return {
     contentViewed: !!progress.contentViewed,
@@ -150,16 +146,13 @@ function getOverallCompletionCount(student) {
 }
 
 function isLessonUnlocked(student, lessonNumber) {
-  const lessonNum = Number(lessonNumber);
-  if (lessonNum <= 1) return true;
-
-  const previousLesson = lessonNum - 1;
-  return Array.isArray(student?.completedLessons) && student.completedLessons.includes(previousLesson);
+  const num = Number(lessonNumber);
+  if (num <= 1) return true;
+  return Array.isArray(student?.completedLessons) && student.completedLessons.includes(num - 1);
 }
 
 function getStudentLessonState(student, lessonNumber) {
   const progress = getLessonProgress(student, lessonNumber);
-
   return {
     ...progress,
     unlocked: isLessonUnlocked(student, lessonNumber)
@@ -170,27 +163,20 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
   const current = getCurrentStudent();
   if (!current || !current.id) return null;
 
-  const lessonKey = Number(lessonNumber);
-  const existing = getLessonProgress(current, lessonKey);
+  const key = Number(lessonNumber);
+  const existing = getLessonProgress(current, key);
 
-  const mergedLesson = {
-    ...existing,
-    ...updates
-  };
+  const mergedLesson = { ...existing, ...updates };
+  const nextProgress = { ...current.progress, [key]: mergedLesson };
 
-  const nextProgress = {
-    ...current.progress,
-    [lessonKey]: mergedLesson
-  };
-
-  const nextCompletedLessons = new Set(current.completedLessons || []);
+  const completed = new Set(current.completedLessons || []);
   if (mergedLesson.quizPassed) {
-    nextCompletedLessons.add(lessonKey);
+    completed.add(key);
   }
 
   const payload = {
     progress: nextProgress,
-    completedLessons: [...nextCompletedLessons].sort((a, b) => a - b),
+    completedLessons: [...completed].sort((a, b) => a - b),
     updatedAt: serverTimestamp()
   };
 
@@ -198,12 +184,11 @@ async function saveStudentProgress(lessonNumber, updates = {}) {
     const ref = doc(db, "portalStudents", current.id);
     await updateDoc(ref, payload);
 
-    const updatedStudent = setCurrentStudent({
+    return setCurrentStudent({
       ...current,
-      ...payload
+      progress: nextProgress,
+      completedLessons: [...completed].sort((a, b) => a - b)
     });
-
-    return updatedStudent;
   } catch (error) {
     console.error("Failed to save student progress:", error);
     return current;
@@ -222,7 +207,6 @@ window.BSA = {
 };
 
 export {
-  CURRENT_STUDENT_KEY,
   normalizeStudent,
   setCurrentStudent,
   getCurrentStudent,
