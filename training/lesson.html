@@ -54,6 +54,10 @@
           <div class="status-item-label">QUIZ STATUS</div>
           <div id="quizStatus" class="status-item-value">Not Passed</div>
         </div>
+        <div class="status-item">
+          <div class="status-item-label">TIME LOGGED</div>
+          <div id="timeTrackedStatus" class="status-item-value">0 min</div>
+        </div>
       </section>
 
       <section id="lessonGistCard" class="content-card"></section>
@@ -64,7 +68,7 @@
           When you finish reading this lesson, confirm the review and continue to the scenario portion.
         </p>
 
-        <div class="content-actions" style="margin-top: 12px;">
+        <div class="content-actions" style="margin-top:12px;">
           <button id="confirmViewedBtn" class="btn-primary" type="button">I Have Reviewed This Lesson</button>
         </div>
       </section>
@@ -91,7 +95,8 @@
       clearCurrentStudent,
       refreshCurrentStudentFromFirestore,
       getLessonProgress,
-      markLessonContentViewed
+      markLessonContentViewed,
+      recordLessonTime
     } from "./js/app.js";
 
     import { LESSONS } from "./js/data.js";
@@ -106,10 +111,15 @@
     const contentViewedStatus = document.getElementById("contentViewedStatus");
     const scenarioStatus = document.getElementById("scenarioStatus");
     const quizStatus = document.getElementById("quizStatus");
+    const timeTrackedStatus = document.getElementById("timeTrackedStatus");
     const scenarioLink = document.getElementById("scenarioLink");
     const quizLink = document.getElementById("quizLink");
     const quizLockedBtn = document.getElementById("quizLockedBtn");
     const confirmViewedBtn = document.getElementById("confirmViewedBtn");
+
+    let timeInterval = null;
+    let studentActive = true;
+    let lastTickAt = Date.now();
 
     function redirectLogin() {
       window.location.href = "./index.html";
@@ -157,6 +167,7 @@
       quizStatus.textContent = progress.quizPassed
         ? `Passed • ${progress.quizScore}%`
         : "Not Passed";
+      timeTrackedStatus.textContent = `${Number(progress.lessonTimeMinutes || 0)} min`;
 
       if (progress.scenarioCompleted) {
         quizLockedBtn.hidden = true;
@@ -165,6 +176,37 @@
         quizLockedBtn.hidden = false;
         quizLink.hidden = true;
       }
+    }
+
+    async function logOneMinute(lessonNumber) {
+      if (document.hidden || !studentActive) return null;
+
+      const now = Date.now();
+      if (now - lastTickAt < 55000) return null;
+      lastTickAt = now;
+
+      return recordLessonTime(lessonNumber, 1);
+    }
+
+    function bindActivityWatchers() {
+      const markActive = () => {
+        studentActive = true;
+      };
+
+      const markInactive = () => {
+        studentActive = false;
+      };
+
+      ["mousemove", "keydown", "scroll", "click", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, markActive, { passive: true });
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        studentActive = !document.hidden;
+      });
+
+      window.addEventListener("blur", markInactive);
+      window.addEventListener("focus", markActive);
     }
 
     async function init() {
@@ -193,12 +235,8 @@
         return;
       }
 
-      const scenarioPoolCount =
-        Array.isArray(lesson.scenarioBank) ? lesson.scenarioBank.length :
-        Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
-
-      const quizCount =
-        Number(lesson.quizDrawCount || lesson.quizQuestionCount || lesson.quizCount || 20);
+      const scenarioPoolCount = Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
+      const quizCount = Number(lesson.quizDrawCount || lesson.quizQuestionCount || lesson.quizCount || 20);
 
       lessonTitle.textContent = lesson.title || `Lesson ${lessonNumber}`;
       lessonSummary.textContent = String(
@@ -220,15 +258,30 @@
       let progress = getLessonProgress(updatedStudent || student, lessonNumber);
       updateStatuses(progress);
 
+      bindActivityWatchers();
+
+      timeInterval = setInterval(async () => {
+        const refreshed = await logOneMinute(lessonNumber);
+        if (refreshed) {
+          progress = getLessonProgress(refreshed, lessonNumber);
+          updateStatuses(progress);
+        }
+      }, 15000);
+
       confirmViewedBtn?.addEventListener("click", async () => {
         updatedStudent = await markLessonContentViewed(lessonNumber);
         progress = getLessonProgress(updatedStudent || student, lessonNumber);
         updateStatuses(progress);
         alert("Lesson review recorded. Continue to the scenario portion next.");
       });
+
+      window.addEventListener("beforeunload", () => {
+        if (timeInterval) clearInterval(timeInterval);
+      });
     }
 
     logoutBtn?.addEventListener("click", () => {
+      if (timeInterval) clearInterval(timeInterval);
       clearCurrentStudent();
       redirectLogin();
     });
