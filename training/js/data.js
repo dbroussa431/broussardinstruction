@@ -1,5 +1,6 @@
 // Broussard Shooting Academy - Full Firebase Portal Dataset
-// Generated for training portal use. Educational content only; not legal advice.
+// Rebuilt to remove giveaway questions, reduce repetition, and support randomized quiz delivery.
+// Educational content only; not legal advice.
 
 export const LESSONS = [
   {
@@ -8,7 +9,7 @@ export const LESSONS = [
     "description": "Situational awareness, avoidance, route planning, environmental positioning, and defensive decision-making before force becomes necessary.",
     "chapterSummary": "Personal protection starts before danger becomes immediate. Students are taught that awareness, route choice, distance management, lighting, barriers, habits, and mental rehearsal reduce the chances of being surprised or cornered. The safest defensive win is often avoiding the event entirely. Students should notice exits, keep their head up, avoid distraction, preserve personal space, and move toward light, people, and better positions when something feels wrong. Awareness is not paranoia; it is disciplined attention that creates time, options, and safer choices.",
     "estimatedMinutes": 18,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Awareness and Positioning",
@@ -104,7 +105,7 @@ export const LESSONS = [
     "description": "Safe handling, loading and unloading, platform knowledge, ammunition basics, storage, and defensive operation.",
     "chapterSummary": "Students must understand that safe gun handling begins before a shot is fired. The four safety rules always apply. Students verify a firearm’s condition personally, not by assumption or someone else’s statement. They learn chambers, magazine wells, revolver and semi-automatic controls, compatible ammunition, loading and unloading procedures, secure storage, and why careless handling around others is unacceptable. A defensive firearm is a serious responsibility that demands deliberate, repeatable safety habits.",
     "estimatedMinutes": 20,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Core Safety Rules",
@@ -213,7 +214,7 @@ export const LESSONS = [
     "description": "Grip, stance, sight picture, trigger control, recoil management, and accountable hits under realistic pressure.",
     "chapterSummary": "Good defensive shooting starts with repeatable fundamentals. Students learn stable stance, a consistent grip, sight alignment, sight picture, controlled trigger press, follow-through, recoil management, and accountable hits. Defensive shooting is not reckless speed; it is safe, timely, accurate performance. The lesson stresses that equipment does not replace fundamentals and that students should build consistency before attempting more advanced speed or complexity.",
     "estimatedMinutes": 20,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Body Position and Grip",
@@ -321,7 +322,7 @@ export const LESSONS = [
     "description": "General self-defense principles, Gulf South practical realities, Louisiana rule-of-thumb guidance, and local New Orleans/Metairie/Kenner considerations.",
     "chapterSummary": "Legal notice: Broussard Shooting Academy is not a law firm and does not provide legal advice. This lesson is educational only and is taught as a practical rule-of-thumb framework that moves from general self-defense principles, to Gulf South regional realities, to Louisiana guidance, and then to local New Orleans, Metairie, and Kenner considerations. Students learn that legal outcomes depend on specific facts, changing law, witnesses, evidence, and professional legal review. The safest defensive principle is to use only the force reasonably believed necessary to stop an immediate unlawful threat.\n\nGeneral principles: self-defense claims are usually judged through reasonableness, imminence, proportionality, innocence, and necessity. Students are taught to think in terms of ability, opportunity, and jeopardy, along with whether a threat is immediate and whether the person claiming self-defense was acting as an innocent party.\n\nGulf South realities: self-defense incidents are often reviewed closely by law enforcement, prosecutors, and juries. Articulation matters. Students should be able to explain what they saw, why they believed the threat was immediate, and why their response matched the danger instead of exceeding it.\n\nLouisiana rule of thumb: Louisiana generally recognizes self-defense, defense of others, and stronger protection for lawful defense in the home or habitation, but students should never assume a slogan or internet quote replaces legal analysis. Defense of life is treated more seriously than protection of property alone. Deadly force is a grave matter and may still be investigated even when the defender believes the action was justified.\n\nLocal environment: New Orleans, Metairie, and Kenner create additional practical issues: crowded parking lots, cameras, witnesses, bars, festivals, gas stations, apartment complexes, and late-night traffic patterns. Urban density means bystanders and evidence are everywhere. Students should avoid escalating ordinary disputes, avoid chasing fleeing property thieves, and understand that calling 911, preserving evidence, and articulating why the threat was immediate may matter greatly afterward.",
     "estimatedMinutes": 26,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "General Legal Principles",
@@ -478,7 +479,7 @@ export const LESSONS = [
     "description": "Stress physiology, fight-flight-freeze, trauma responses, coping, substance risks, crisis warning signs, and responsible intervention.",
     "chapterSummary": "Violent encounters affect both body and mind. Students learn how the sympathetic nervous system, adrenaline, fear, and survival stress can influence perception, movement, hearing, vision, memory, and decision-making. Tunnel vision, auditory exclusion, shaky hands, and time distortion can happen to ordinary people under threat. After an event, people may experience shock, sleep disruption, intrusive thoughts, guilt, anger, hypervigilance, emotional swings, or physical stress responses.\n\nMental wellness is part of responsible armed citizenship. Students learn that trauma responses vary, that coping strategies can include support systems, talking with trusted people, prayer or meditation, music and art, stretching or yoga, journaling, counseling, and community connection. Students are also taught to avoid worsening stress through alcohol, drugs, nicotine overuse, sleep disruption, and poor habits. Alcohol and drugs can slow reaction time, impair judgment, increase aggression, worsen memory, and intensify mental health problems.\n\nThe lesson also addresses suicide prevention and crisis response in a responsible, non-stigmatizing way. Students are taught that talking about suicide does not plant the idea, that suicide is preventable, and that access to lethal means increases risk. Warning signs may include talking about wanting to die, guilt, shame, hopelessness, being a burden, emotional pain, mood swings, dangerous behavior, giving away important items, or increased substance use. Intervention basics include asking direct questions, listening, supporting, encouraging professional help, and separating the person from lethal means. If a suicide attempt seems imminent, call 911; for emotional crisis and suicidal distress, the 988 Suicide & Crisis Lifeline provides free, confidential support 24/7. Students also learn that firearm owners should treat crisis planning, secure storage, and temporary separation from lethal means as part of responsible life preservation.",
     "estimatedMinutes": 24,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Stress and Survival Response",
@@ -634,7 +635,7 @@ export const LESSONS = [
     "description": "Holsters, carry methods, flashlights, lasers, belts, clothing, retention, and practical defensive setup choices.",
     "chapterSummary": "Defensive gear should support safety, access, and realistic daily use. Students learn that holsters should cover the trigger guard, secure the firearm, support consistent access, and match the way the gun is actually carried. The lesson reviews carry positions, retention, quality belts, flashlights, lasers, spare magazines, and why equipment must be tested and practiced with. Good gear supports skill; it does not replace judgment, safety, or training.",
     "estimatedMinutes": 18,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Holsters and Carry",
@@ -742,7 +743,7 @@ export const LESSONS = [
     "description": "Dry practice, live fire, safe improvement, defensive drills, continued education, and maintaining proficiency over time.",
     "chapterSummary": "Skill fades without practice. Students learn that safe, consistent dry practice and live-fire work help maintain handling, accuracy, and decision-making. The lesson encourages students to train with a purpose, document weaknesses, and continue learning after the first class. Safe development means working from fundamentals upward, avoiding ego-driven training, and understanding that education is ongoing. Students are reminded that owning gear is not the same as maintaining skill.",
     "estimatedMinutes": 18,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "Practice Fundamentals",
@@ -850,7 +851,7 @@ export const LESSONS = [
     "description": "Course integration, local prep, live-range expectations, when not to carry, and final mental readiness for responsible completion.",
     "chapterSummary": "The online portal prepares students for the live class; it does not replace instructor observation, safety verification, or range performance. Students should arrive for the live phase with their material reviewed, gear understood, and weak areas honestly identified. The final lesson also reinforces that responsible carry includes knowing when not to carry: when impaired, emotionally unstable, exhausted, reckless, or otherwise unfit to make good decisions. Final mental readiness means humility, safe conduct, lawful thinking, and willingness to slow down and ask for clarification. Certificates come after successful live completion, not from simply clicking through a website.",
     "estimatedMinutes": 16,
-    "quizQuestionCount": 20,
+    "quizQuestionCount": 15,
     "sections": [
       {
         "heading": "What the Online Portion Does",
@@ -933,5758 +934,1257 @@ export const LESSONS = [
 export const QUIZ_BANK = {
   "1": [
     {
-      "q": "What is the first layer of personal protection taught in Lesson 1?",
+      "q": "What is the safest mindset for moving through a public place?",
       "choices": [
-        "A more expensive firearm",
-        "Situational awareness",
-        "A darker parking spot",
-        "Walking faster"
+        "Stay calmly alert and keep track of exits, people, and distance",
+        "Act suspicious so others avoid you",
+        "Focus only on your phone unless something obvious happens",
+        "Assume trouble cannot happen in familiar places"
+      ],
+      "answer": 0,
+      "explanation": "Lesson 1 teaches calm awareness, not distraction or paranoia."
+    },
+    {
+      "q": "True or False: Avoidance can be a successful defensive outcome if it keeps a problem from escalating.",
+      "type": "tf",
+      "answer": true,
+      "explanation": "Avoiding the encounter entirely is often the smartest win."
+    },
+    {
+      "q": "Which route choice best matches the lesson?",
+      "choices": [
+        "Take the darkest shortcut because it saves time",
+        "Choose the path with better lighting, visibility, and people nearby",
+        "Walk between parked cars so fewer people notice you",
+        "Ignore the route because being armed solves the problem"
       ],
       "answer": 1,
-      "explanation": "Lesson 1 begins with awareness as the first layer of protection."
+      "explanation": "Lighting, visibility, and witnesses usually improve safety and options."
     },
     {
-      "q": "True or False: In public, calm alert awareness is safer than walking distracted and unaware.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 1 contrasts alert awareness with distraction."
-    },
-    {
-      "q": "Which habit best reflects Lesson 1?",
+      "q": "You notice someone changing direction to match your movement in a parking lot. What is your best first action?",
       "choices": [
-        "Head down, phone up",
-        "Notice exits, distance, and people around you",
-        "Ignore changes in the environment",
-        "Assume convenience is always the safest route"
+        "Close distance and demand an explanation",
+        "Move toward light, people, or the store while keeping the person in view",
+        "Keep walking to your car without changing anything",
+        "Turn your back so the person knows you are calm"
       ],
       "answer": 1,
-      "explanation": "The lesson teaches students to stay aware of exits, people, and changing conditions."
+      "explanation": "Lesson 1 favors movement, awareness, and better positioning before escalation."
     },
     {
-      "q": "How does Lesson 1 describe avoidance?",
+      "q": "True or False: Looking down at your phone while moving through a garage can reduce your ability to notice danger early.",
+      "type": "tf",
+      "answer": true,
+      "explanation": "Distraction cuts into early recognition and decision time."
+    },
+    {
+      "q": "Why does Lesson 1 emphasize maintaining personal space?",
       "choices": [
-        "A sign of weakness",
-        "Often the smartest defensive decision",
-        "Only useful if unarmed",
-        "Illegal in parking lots"
+        "Distance gives you more time and options to react",
+        "Distance always ends the encounter by itself",
+        "Distance matters only if you are unarmed",
+        "Distance is mainly about being polite"
+      ],
+      "answer": 0,
+      "explanation": "More space can improve reaction time, movement options, and awareness."
+    },
+    {
+      "q": "Which example best reflects condition yellow?",
+      "choices": [
+        "Calm alertness in public without acting fearful",
+        "Constant panic and scanning every second",
+        "Relaxing only when carrying a firearm",
+        "Ignoring surroundings unless someone speaks to you"
+      ],
+      "answer": 0,
+      "explanation": "Condition yellow is calm, alert awareness."
+    },
+    {
+      "q": "What is one useful purpose of mental rehearsal?",
+      "choices": [
+        "It replaces all live instruction",
+        "It helps you think through choices before stress hits",
+        "It guarantees the law will favor you",
+        "It removes the need to stay aware in public"
       ],
       "answer": 1,
-      "explanation": "The lesson says avoidance often creates the safest outcome."
+      "explanation": "Mental rehearsal helps prepare decisions in advance."
     },
     {
-      "q": "True or False: Avoidance can be a successful defensive win because it prevents the encounter from escalating.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson treats prevention as a win."
-    },
-    {
-      "q": "Which move usually improves safety when something feels wrong in public?",
+      "q": "You are unlocking your apartment door and notice an unknown person trying to slip in behind you. What lesson principle applies most directly?",
       "choices": [
-        "Move toward light, people, and exits",
-        "Keep moving into darker areas",
-        "Stand still and hope it improves",
-        "Turn your back and look at your phone"
-      ],
-      "answer": 0,
-      "explanation": "The lesson teaches better positioning: light, witnesses, exits, and barriers."
-    },
-    {
-      "q": "True or False: Moving toward witnesses, light, and barriers can improve your options.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 1 repeatedly links positioning to options."
-    },
-    {
-      "q": "Why is distraction dangerous in Lesson 1?",
-      "choices": [
-        "It improves confidence too much",
-        "It reduces early recognition of danger",
-        "It increases legal liability automatically",
-        "It makes lights appear dimmer"
+        "Let them in to avoid being rude",
+        "Preserve barriers and controlled access",
+        "Ignore them because locked doors are only for property",
+        "Turn your back and finish texting"
       ],
       "answer": 1,
-      "explanation": "The lesson warns that distraction shortens your decision time."
+      "explanation": "Barriers and access control are part of a personal protection plan."
     },
     {
-      "q": "True or False: Using a phone while moving through a public area can reduce awareness.",
+      "q": "True or False: Preparedness and paranoia are the same thing.",
       "type": "tf",
-      "answer": true,
-      "explanation": "The lesson treats distraction as a safety problem."
+      "answer": false,
+      "explanation": "The lesson specifically separates disciplined preparedness from paranoia."
     },
     {
-      "q": "What is one value of mental rehearsal?",
+      "q": "Which statement best matches the lesson on parking choices?",
       "choices": [
-        "It replaces live training completely",
-        "It helps prepare decisions before stress",
-        "It removes the need for awareness",
-        "It improves ammunition quality"
+        "Parking location can create or reduce risk before anything happens",
+        "Parking choice matters only after a confrontation begins",
+        "Convenience is always the safest option",
+        "Where you park does not affect your defensive choices"
+      ],
+      "answer": 0,
+      "explanation": "Route and parking decisions shape your options before trouble starts."
+    },
+    {
+      "q": "If something feels wrong near an exit of a store, what should you generally favor?",
+      "choices": [
+        "Drifting into a more isolated area to avoid embarrassment",
+        "Moving toward better visibility, witnesses, and escape routes",
+        "Standing still so you do not look suspicious",
+        "Ignoring the feeling unless you see a weapon"
       ],
       "answer": 1,
-      "explanation": "Mental rehearsal is taught as preparation before stress hits."
+      "explanation": "Lesson 1 favors better positions, exits, and witnesses."
     },
     {
-      "q": "True or False: Mental rehearsal is part of preparedness, not paranoia.",
+      "q": "True or False: Home security habits like locking doors and setting alarms are part of a broader personal protection plan.",
       "type": "tf",
       "answer": true,
-      "explanation": "Lesson 1 frames preparedness as disciplined attention."
+      "explanation": "The lesson includes daily habits and barriers as part of preparedness."
     },
     {
-      "q": "Why do parking and route selection matter?",
+      "q": "Which person is acting most like condition white?",
       "choices": [
-        "They create or reduce risk before a confrontation begins",
-        "They only matter after a shooting starts",
-        "They are only about convenience",
-        "They replace awareness"
-      ],
-      "answer": 0,
-      "explanation": "The lesson teaches that route choice and parking affect your options before a problem develops."
-    },
-    {
-      "q": "True or False: A poorly lit shortcut can reduce your options compared with a safer route.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Route choice is a core topic in Lesson 1."
-    },
-    {
-      "q": "How does Lesson 1 describe preparedness?",
-      "choices": [
-        "Paranoia",
-        "Disciplined attention that creates options",
-        "An excuse to escalate early",
-        "Only a gear issue"
+        "A shopper calmly watching entrances while walking to the car",
+        "A person texting with earbuds in and no awareness of nearby people",
+        "A student who notices lighting and keeps an exit path open",
+        "A driver who parks under lights near other occupied vehicles"
       ],
       "answer": 1,
-      "explanation": "The chapter explicitly says preparedness is disciplined attention, not paranoia."
+      "explanation": "Condition white is distracted and unaware."
     },
     {
-      "q": "True or False: Preparedness is not the same thing as paranoia.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is taught directly in the gist."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Situational awareness is the first layer of personal protection.",
+      "q": "What is the core message of Lesson 1?",
       "choices": [
-        "Situational awareness is the first layer of personal protection.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Good awareness and positioning create time, options, and safer decisions",
+        "Carrying a gun removes most need for planning",
+        "The best route is whichever is fastest",
+        "If a place feels wrong, stay there so you do not look afraid"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "True or False: Situational awareness is the first layer of personal protection.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Avoidance is often the smartest defensive decision.",
-      "choices": [
-        "Avoidance is often the smartest defensive decision.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "True or False: Avoidance is often the smartest defensive decision.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Moving toward light, people, cameras, and exits usually improves safety.",
-      "choices": [
-        "Moving toward light, people, cameras, and exits usually improves safety.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "True or False: Moving toward light, people, cameras, and exits usually improves safety.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Distraction reduces your ability to notice danger early.",
-      "choices": [
-        "Distraction reduces your ability to notice danger early.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "True or False: Distraction reduces your ability to notice danger early.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Mental rehearsal helps prepare decisions before stress hits.",
-      "choices": [
-        "Mental rehearsal helps prepare decisions before stress hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "True or False: Mental rehearsal helps prepare decisions before stress hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "choices": [
-        "Parking, route choice, and barriers affect safety before a confrontation begins.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "True or False: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Preparedness is disciplined attention, not paranoia.",
-      "choices": [
-        "Preparedness is disciplined attention, not paranoia.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "True or False: Preparedness is disciplined attention, not paranoia.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Situational awareness is the first layer of personal protection.",
-      "choices": [
-        "Situational awareness is the first layer of personal protection.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "True or False: Situational awareness is the first layer of personal protection.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Avoidance is often the smartest defensive decision.",
-      "choices": [
-        "Avoidance is often the smartest defensive decision.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "True or False: Avoidance is often the smartest defensive decision.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Moving toward light, people, cameras, and exits usually improves safety.",
-      "choices": [
-        "Moving toward light, people, cameras, and exits usually improves safety.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "True or False: Moving toward light, people, cameras, and exits usually improves safety.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Distraction reduces your ability to notice danger early.",
-      "choices": [
-        "Distraction reduces your ability to notice danger early.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "True or False: Distraction reduces your ability to notice danger early.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Mental rehearsal helps prepare decisions before stress hits.",
-      "choices": [
-        "Mental rehearsal helps prepare decisions before stress hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "True or False: Mental rehearsal helps prepare decisions before stress hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "choices": [
-        "Parking, route choice, and barriers affect safety before a confrontation begins.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "True or False: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Preparedness is disciplined attention, not paranoia.",
-      "choices": [
-        "Preparedness is disciplined attention, not paranoia.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "True or False: Preparedness is disciplined attention, not paranoia.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Situational awareness is the first layer of personal protection.",
-      "choices": [
-        "Situational awareness is the first layer of personal protection.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "True or False: Situational awareness is the first layer of personal protection.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Avoidance is often the smartest defensive decision.",
-      "choices": [
-        "Avoidance is often the smartest defensive decision.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "True or False: Avoidance is often the smartest defensive decision.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoidance is often the smartest defensive decision."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Moving toward light, people, cameras, and exits usually improves safety.",
-      "choices": [
-        "Moving toward light, people, cameras, and exits usually improves safety.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "True or False: Moving toward light, people, cameras, and exits usually improves safety.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Moving toward light, people, cameras, and exits usually improves safety."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Distraction reduces your ability to notice danger early.",
-      "choices": [
-        "Distraction reduces your ability to notice danger early.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "True or False: Distraction reduces your ability to notice danger early.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Distraction reduces your ability to notice danger early."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Mental rehearsal helps prepare decisions before stress hits.",
-      "choices": [
-        "Mental rehearsal helps prepare decisions before stress hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "True or False: Mental rehearsal helps prepare decisions before stress hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Mental rehearsal helps prepare decisions before stress hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "choices": [
-        "Parking, route choice, and barriers affect safety before a confrontation begins.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "True or False: Parking, route choice, and barriers affect safety before a confrontation begins.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Parking, route choice, and barriers affect safety before a confrontation begins."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Preparedness is disciplined attention, not paranoia.",
-      "choices": [
-        "Preparedness is disciplined attention, not paranoia.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "True or False: Preparedness is disciplined attention, not paranoia.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Preparedness is disciplined attention, not paranoia."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Situational awareness is the first layer of personal protection.",
-      "choices": [
-        "Situational awareness is the first layer of personal protection.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "True or False: Situational awareness is the first layer of personal protection.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Situational awareness is the first layer of personal protection."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Avoidance is often the smartest defensive decision.",
-      "choices": [
-        "Avoidance is often the smartest defensive decision.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Avoidance is often the smartest defensive decision."
+      "explanation": "The chapter ties awareness, route choice, barriers, and decision-making together."
     }
   ],
   "2": [
     {
-      "q": "Which safety rule says to treat every firearm as loaded?",
+      "q": "What is the safest way to treat any firearm you handle?",
       "choices": [
-        "Rule about target background",
-        "Rule about trigger finger",
-        "Rule about treating every firearm as loaded",
-        "Rule about ammunition selection"
+        "As unloaded until someone says otherwise",
+        "As loaded until you personally verify its condition",
+        "As safe if the magazine is removed",
+        "As harmless if the action is open"
       ],
-      "answer": 2,
-      "explanation": "This is one of the four safety rules."
+      "answer": 1,
+      "explanation": "The first safety rule is to treat every firearm as if it is loaded."
     },
     {
-      "q": "True or False: Treat every firearm as if it is loaded, even if someone tells you otherwise.",
+      "q": "True or False: Removing the magazine from a semi-automatic pistol automatically means the chamber is empty.",
       "type": "tf",
-      "answer": true,
-      "explanation": "This rule applies at all times."
+      "answer": false,
+      "explanation": "A round can still remain in the chamber after the magazine is removed."
     },
     {
-      "q": "Which safety rule is most clearly violated when someone sweeps others with the gun?",
+      "q": "A friend says, 'It's clear.' What should you do first?",
       "choices": [
-        "Use only correct ammunition",
+        "Accept the statement because it is their firearm",
+        "Point it safely and personally verify the chamber and feeding source",
+        "Dry fire it to prove it is empty",
+        "Put it away until later"
+      ],
+      "answer": 1,
+      "explanation": "Personal verification is required; do not rely on assumptions."
+    },
+    {
+      "q": "Which rule is most directly violated when someone sweeps others with the muzzle?",
+      "choices": [
+        "Use only factory ammunition",
         "Keep the muzzle pointed in a safe direction",
-        "Keep your support hand low",
-        "Store guns unloaded only"
+        "Store firearms unloaded only",
+        "Use eye and ear protection"
       ],
       "answer": 1,
-      "explanation": "Muzzle direction is a core safety rule."
+      "explanation": "Muzzle discipline is a core safety rule."
     },
     {
-      "q": "True or False: Muzzle discipline matters even when you believe the gun is unloaded.",
+      "q": "True or False: Your trigger finger should stay off the trigger until your sights are on target and you have decided to fire.",
       "type": "tf",
       "answer": true,
-      "explanation": "The rule applies regardless of assumptions."
+      "explanation": "Trigger discipline is one of the core safety rules."
     },
     {
-      "q": "When should your finger go on the trigger?",
+      "q": "You find loose cartridges and are not sure whether they match your gun. What is the right move?",
       "choices": [
-        "As soon as you pick up the gun",
-        "Only when your sights are on target and you have decided to fire",
-        "Whenever the safety is on",
-        "When loading magazines"
+        "Load one and test it carefully",
+        "Use only ammunition you know is correct and undamaged for the firearm",
+        "Mix them with other ammo and sort later",
+        "Assume any round that looks close will work"
       ],
       "answer": 1,
-      "explanation": "Trigger discipline is one of the four rules."
+      "explanation": "Only correct, compatible, undamaged ammunition should be used."
     },
     {
-      "q": "True or False: Good trigger discipline means keeping your finger off the trigger until you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Why does the lesson say you must know your target and what is beyond it?",
+      "q": "Why does Lesson 2 emphasize visual and physical checks?",
       "choices": [
-        "Because bullets stop automatically at the first surface",
-        "Because accountable shooting includes foreground and background awareness",
-        "Because it only matters outdoors",
-        "Because backstops make misses harmless"
+        "Because safeties make checks unnecessary",
+        "Because you need to verify both chamber condition and feeding source yourself",
+        "Because only beginners need to check guns",
+        "Because range officers handle all verification for you"
       ],
       "answer": 1,
-      "explanation": "The four rules include knowing your target, foreground, and background."
+      "explanation": "Visual and physical checks reduce dangerous assumptions."
     },
     {
-      "q": "True or False: Being sure of your target includes thinking about what is beyond it.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is a direct safety rule."
-    },
-    {
-      "q": "Removing the magazine from a semi-automatic pistol means:",
+      "q": "Which storage choice best fits responsible ownership?",
       "choices": [
-        "The chamber is always empty",
-        "The gun still may have a round chambered",
-        "The muzzle rule no longer applies",
-        "The gun becomes a revolver"
+        "Leave the handgun where visitors can reach it if it is unloaded",
+        "Use a storage method that limits unauthorized access and fits the home environment",
+        "Hide the firearm under a pillow for fast access",
+        "Store ammo in the chamber so the gun stays ready"
       ],
       "answer": 1,
-      "explanation": "A chamber check is still required."
+      "explanation": "Secure storage must consider unauthorized access, especially by children or prohibited persons."
     },
     {
-      "q": "True or False: A removed magazine does not prove the chamber is empty.",
+      "q": "True or False: If you are unsure how a particular firearm operates, slowing down and learning the controls is safer than guessing.",
       "type": "tf",
       "answer": true,
-      "explanation": "This point appears repeatedly in the lesson."
+      "explanation": "The lesson stresses slowing down rather than forcing unfamiliar controls."
     },
     {
-      "q": "What does the lesson say about someone else telling you a gun is unloaded?",
+      "q": "What does being sure of your target include?",
       "choices": [
-        "Their word is enough",
-        "You still verify the firearm personally",
-        "Only instructors need to check",
-        "Only the magazine matters"
+        "Only knowing what you want to shoot",
+        "Knowing the target, the foreground, and the background",
+        "Firing quickly before the target moves",
+        "Trusting that indoor walls will stop rounds"
       ],
       "answer": 1,
-      "explanation": "Students must verify the chamber and feeding source themselves."
+      "explanation": "Safe shooting includes awareness of the target and what is around and beyond it."
     },
     {
-      "q": "True or False: Personal verification of chamber and feeding source condition is part of safe handling.",
+      "q": "Which statement about a defensive firearm is most accurate?",
+      "choices": [
+        "It is a serious responsibility that requires repeatable safety habits",
+        "It is safe once the owner gets comfortable handling it",
+        "It becomes less dangerous after the first range trip",
+        "It is mainly an equipment issue, not a behavior issue"
+      ],
+      "answer": 0,
+      "explanation": "Lesson 2 frames ownership as a continuing responsibility."
+    },
+    {
+      "q": "You unload a semi-automatic pistol. Which sequence is safest in principle?",
+      "choices": [
+        "Point safely, remove source of ammunition, then verify chamber condition",
+        "Pull the trigger first, then check later",
+        "Look away from the muzzle while working the slide",
+        "Start by putting your finger on the trigger for control"
+      ],
+      "answer": 0,
+      "explanation": "The lesson centers on safe direction, removing the feeding source, and personal verification."
+    },
+    {
+      "q": "True or False: Good safety habits matter even when practicing with an unloaded firearm.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is directly taught."
+      "explanation": "The rules always apply; unloaded practice is not an excuse for careless handling."
     },
     {
-      "q": "What kind of ammunition should be used?",
+      "q": "Why is platform knowledge important?",
       "choices": [
-        "Any round that almost fits",
-        "Correct, compatible, undamaged ammunition",
-        "Only reloads from friends",
-        "Mixed loose rounds"
+        "Because revolvers and semi-automatics use the same controls",
+        "Because each design has different controls, checks, and handling steps",
+        "Because once you know one firearm, you know them all",
+        "Because storage rules change but handling rules do not"
       ],
       "answer": 1,
-      "explanation": "The lesson requires correct, compatible, undamaged ammunition."
+      "explanation": "Different platforms require different operating knowledge."
     },
     {
-      "q": "True or False: Damaged or questionable ammunition should not be used just for practice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson warns against guessing with ammunition."
-    },
-    {
-      "q": "What is the safest response when you are unfamiliar with a firearm?",
+      "q": "What is the main lesson of Chapter 2?",
       "choices": [
-        "Guess and test it",
-        "Slow down and learn the controls safely",
-        "Point it at the floor and pull the trigger",
-        "Hand it to another beginner"
-      ],
-      "answer": 1,
-      "explanation": "The lesson says to slow down instead of guessing."
-    },
-    {
-      "q": "True or False: Guessing with unfamiliar firearms is inconsistent with Lesson 2.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Students are taught to slow down when unsure."
-    },
-    {
-      "q": "Safe storage should consider:",
-      "choices": [
-        "Only how expensive the gun is",
-        "Whether unauthorized people could access it",
-        "Only humidity",
-        "Only ammunition brand"
-      ],
-      "answer": 1,
-      "explanation": "Unauthorized access is part of the lesson’s storage discussion."
-    },
-    {
-      "q": "True or False: Children or prohibited persons are part of safe-storage planning.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson says storage must account for unauthorized access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Treat every firearm as if it is loaded.",
-      "choices": [
-        "Treat every firearm as if it is loaded.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Safety is deliberate and repeatable, not casual or assumed",
+        "Defensive guns are safe if they stay expensive",
+        "Confidence matters more than verification",
+        "Most accidents come from bad ammunition only"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "True or False: Treat every firearm as if it is loaded.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep the muzzle pointed in a safe direction.",
-      "choices": [
-        "Keep the muzzle pointed in a safe direction.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "True or False: Keep the muzzle pointed in a safe direction.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep your finger off the trigger until you have decided to fire.",
-      "choices": [
-        "Keep your finger off the trigger until you have decided to fire.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "True or False: Keep your finger off the trigger until you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Be sure of your target and what is beyond it.",
-      "choices": [
-        "Be sure of your target and what is beyond it.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "True or False: Be sure of your target and what is beyond it.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Removing the magazine does not guarantee the chamber is empty.",
-      "choices": [
-        "Removing the magazine does not guarantee the chamber is empty.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "True or False: Removing the magazine does not guarantee the chamber is empty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students must personally verify chamber and feeding source condition.",
-      "choices": [
-        "Students must personally verify chamber and feeding source condition.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "True or False: Students must personally verify chamber and feeding source condition.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Only correct, compatible, undamaged ammunition should be used.",
-      "choices": [
-        "Only correct, compatible, undamaged ammunition should be used.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "True or False: Only correct, compatible, undamaged ammunition should be used.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Slow down instead of guessing with unfamiliar firearms.",
-      "choices": [
-        "Slow down instead of guessing with unfamiliar firearms.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "True or False: Slow down instead of guessing with unfamiliar firearms.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Safe storage must consider unauthorized access.",
-      "choices": [
-        "Safe storage must consider unauthorized access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "True or False: Safe storage must consider unauthorized access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Treat every firearm as if it is loaded.",
-      "choices": [
-        "Treat every firearm as if it is loaded.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "True or False: Treat every firearm as if it is loaded.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep the muzzle pointed in a safe direction.",
-      "choices": [
-        "Keep the muzzle pointed in a safe direction.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "True or False: Keep the muzzle pointed in a safe direction.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep your finger off the trigger until you have decided to fire.",
-      "choices": [
-        "Keep your finger off the trigger until you have decided to fire.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "True or False: Keep your finger off the trigger until you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Be sure of your target and what is beyond it.",
-      "choices": [
-        "Be sure of your target and what is beyond it.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "True or False: Be sure of your target and what is beyond it.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Removing the magazine does not guarantee the chamber is empty.",
-      "choices": [
-        "Removing the magazine does not guarantee the chamber is empty.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "True or False: Removing the magazine does not guarantee the chamber is empty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students must personally verify chamber and feeding source condition.",
-      "choices": [
-        "Students must personally verify chamber and feeding source condition.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "True or False: Students must personally verify chamber and feeding source condition.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Only correct, compatible, undamaged ammunition should be used.",
-      "choices": [
-        "Only correct, compatible, undamaged ammunition should be used.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "True or False: Only correct, compatible, undamaged ammunition should be used.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Slow down instead of guessing with unfamiliar firearms.",
-      "choices": [
-        "Slow down instead of guessing with unfamiliar firearms.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "True or False: Slow down instead of guessing with unfamiliar firearms.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Safe storage must consider unauthorized access.",
-      "choices": [
-        "Safe storage must consider unauthorized access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "True or False: Safe storage must consider unauthorized access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Treat every firearm as if it is loaded.",
-      "choices": [
-        "Treat every firearm as if it is loaded.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "True or False: Treat every firearm as if it is loaded.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep the muzzle pointed in a safe direction.",
-      "choices": [
-        "Keep the muzzle pointed in a safe direction.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "True or False: Keep the muzzle pointed in a safe direction.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep your finger off the trigger until you have decided to fire.",
-      "choices": [
-        "Keep your finger off the trigger until you have decided to fire.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "True or False: Keep your finger off the trigger until you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Be sure of your target and what is beyond it.",
-      "choices": [
-        "Be sure of your target and what is beyond it.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "True or False: Be sure of your target and what is beyond it.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Removing the magazine does not guarantee the chamber is empty.",
-      "choices": [
-        "Removing the magazine does not guarantee the chamber is empty.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "True or False: Removing the magazine does not guarantee the chamber is empty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Removing the magazine does not guarantee the chamber is empty."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students must personally verify chamber and feeding source condition.",
-      "choices": [
-        "Students must personally verify chamber and feeding source condition.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "True or False: Students must personally verify chamber and feeding source condition.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students must personally verify chamber and feeding source condition."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Only correct, compatible, undamaged ammunition should be used.",
-      "choices": [
-        "Only correct, compatible, undamaged ammunition should be used.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "True or False: Only correct, compatible, undamaged ammunition should be used.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Slow down instead of guessing with unfamiliar firearms.",
-      "choices": [
-        "Slow down instead of guessing with unfamiliar firearms.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "True or False: Slow down instead of guessing with unfamiliar firearms.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Slow down instead of guessing with unfamiliar firearms."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Safe storage must consider unauthorized access.",
-      "choices": [
-        "Safe storage must consider unauthorized access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "True or False: Safe storage must consider unauthorized access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Safe storage must consider unauthorized access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Treat every firearm as if it is loaded.",
-      "choices": [
-        "Treat every firearm as if it is loaded.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "True or False: Treat every firearm as if it is loaded.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Treat every firearm as if it is loaded."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep the muzzle pointed in a safe direction.",
-      "choices": [
-        "Keep the muzzle pointed in a safe direction.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "True or False: Keep the muzzle pointed in a safe direction.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep the muzzle pointed in a safe direction."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Keep your finger off the trigger until you have decided to fire.",
-      "choices": [
-        "Keep your finger off the trigger until you have decided to fire.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "True or False: Keep your finger off the trigger until you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Keep your finger off the trigger until you have decided to fire."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Be sure of your target and what is beyond it.",
-      "choices": [
-        "Be sure of your target and what is beyond it.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Be sure of your target and what is beyond it."
-    },
-    {
-      "q": "True or False: Be sure of your target and what is beyond it.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Be sure of your target and what is beyond it."
+      "explanation": "The chapter focuses on deliberate safety, personal verification, and responsibility."
     }
   ],
   "3": [
     {
-      "q": "Why does a stable stance matter in defensive shooting?",
+      "q": "What should come before trying to shoot faster?",
       "choices": [
-        "It makes the pistol quieter",
-        "It supports balance, recoil control, and consistency",
-        "It guarantees legal protection",
-        "It only matters in competition"
+        "A stronger flashlight",
+        "Repeatable fundamentals like grip, sights, and trigger control",
+        "A bigger magazine",
+        "More advanced drills on day one"
       ],
       "answer": 1,
-      "explanation": "The lesson ties stable stance to control and consistency."
+      "explanation": "Lesson 3 teaches students to build speed on top of fundamentals."
     },
     {
-      "q": "True or False: A stable stance helps balance and recoil control.",
+      "q": "True or False: Defensive shooting means reckless speed as long as shots stay on paper.",
       "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
+      "answer": false,
+      "explanation": "The lesson stresses accountable hits, not reckless speed."
     },
     {
-      "q": "What does a proper grip help do?",
+      "q": "Why does a stable stance matter?",
       "choices": [
-        "Decrease magazine capacity",
-        "Keep the firearm stable during the shot",
-        "Replace sight alignment",
-        "Eliminate the need for follow-through"
-      ],
-      "answer": 1,
-      "explanation": "Grip supports control and consistency."
-    },
-    {
-      "q": "True or False: Grip is part of repeatable fundamentals, not an optional add-on.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 3 emphasizes grip as a core fundamental."
-    },
-    {
-      "q": "Why are sight alignment and sight picture important?",
-      "choices": [
-        "They help place the gun where the shot is intended to go",
-        "They are only for bullseye shooters",
-        "They replace trigger control",
-        "They are not needed under pressure"
+        "It helps with balance, recoil control, and movement",
+        "It makes the gun lighter",
+        "It guarantees perfect accuracy",
+        "It matters only for competition shooters"
       ],
       "answer": 0,
-      "explanation": "The lesson teaches accountable hits through sight use."
+      "explanation": "A stable stance supports recoil control and practical movement."
     },
     {
-      "q": "True or False: Lesson 3 treats sight alignment and sight picture as part of accountable shooting.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is in the gist."
-    },
-    {
-      "q": "Trigger control means:",
+      "q": "What is trigger control?",
       "choices": [
-        "Snapping the trigger quickly before recoil starts",
+        "Pulling the trigger as fast as possible",
         "Pressing the trigger without disturbing the sights",
-        "Pulling harder with the support hand",
-        "Waiting until the sights disappear"
+        "Using two fingers for more strength",
+        "Jerking through the break to beat recoil"
       ],
       "answer": 1,
-      "explanation": "The lesson defines trigger control this way."
+      "explanation": "Good trigger control keeps the sights stable through the shot."
     },
     {
-      "q": "True or False: If the sights move sharply off target during the press, trigger control may be the issue.",
+      "q": "True or False: Equipment can replace weak fundamentals if the sights are expensive enough.",
       "type": "tf",
-      "answer": true,
-      "explanation": "The lesson connects trigger control with sight disturbance."
+      "answer": false,
+      "explanation": "The chapter makes clear that gear does not replace fundamentals."
     },
     {
-      "q": "What is one benefit of follow-through?",
+      "q": "A shooter dips the muzzle low every time the trigger breaks. What concept needs work most directly?",
       "choices": [
-        "It removes all recoil",
-        "It supports control and faster accountable follow-up shots",
-        "It changes the law",
-        "It replaces stance"
-      ],
-      "answer": 1,
-      "explanation": "Follow-through supports control after the shot."
-    },
-    {
-      "q": "True or False: Recoil management and follow-through help with repeatable follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is explicitly taught."
-    },
-    {
-      "q": "How should new students build skill according to Lesson 3?",
-      "choices": [
-        "Speed first, fundamentals later",
-        "Fundamentals first, then more speed and complexity",
-        "Only one-handed shooting",
-        "Only point shooting"
-      ],
-      "answer": 1,
-      "explanation": "The lesson emphasizes building from basics upward."
-    },
-    {
-      "q": "True or False: Lesson 3 encourages students to master basics before chasing speed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is a direct theme."
-    },
-    {
-      "q": "Which statement best matches Lesson 3?",
-      "choices": [
-        "Better gear makes fundamentals less important",
-        "Equipment does not replace practice and mechanics",
-        "Sights matter only with cheap guns",
-        "Grip matters only with revolvers"
-      ],
-      "answer": 1,
-      "explanation": "The lesson says gear does not replace skill."
-    },
-    {
-      "q": "True or False: Owning quality equipment does not remove the need for practice and sound mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is part of the chapter summary."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A stable stance helps balance, recoil control, and consistency.",
-      "choices": [
-        "A stable stance helps balance, recoil control, and consistency.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Trigger control",
+        "Holster retention",
+        "Caliber selection",
+        "Legal articulation"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A stable stance helps balance, recoil control, and consistency."
+      "explanation": "Moving the sights during the trigger press points to a trigger-control problem."
     },
     {
-      "q": "True or False: A stable stance helps balance, recoil control, and consistency.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper grip helps keep the firearm stable during the shot.",
+      "q": "What is the value of follow-through after a shot?",
       "choices": [
-        "A proper grip helps keep the firearm stable during the shot.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "It supports recoil management and faster accountable follow-up shots",
+        "It lets you relax your grip immediately",
+        "It is mainly for style points on the range",
+        "It matters only when shooting one-handed"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper grip helps keep the firearm stable during the shot."
+      "explanation": "Follow-through helps maintain control and readiness for additional accurate shots."
     },
     {
-      "q": "True or False: A proper grip helps keep the firearm stable during the shot.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Sight alignment and sight picture support accountable hits.",
+      "q": "Which statement best reflects the lesson on sights?",
       "choices": [
-        "Sight alignment and sight picture support accountable hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Sight picture and alignment matter because the gun must be pointed where the shot should go",
+        "Looking over the top of the gun is usually enough at any distance",
+        "Only trigger speed matters once the gun is drawn",
+        "The rear sight matters, but the front sight does not"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Sight alignment and sight picture support accountable hits."
+      "explanation": "The chapter ties sighting and trigger control to accountable hits."
     },
     {
-      "q": "True or False: Sight alignment and sight picture support accountable hits.",
+      "q": "True or False: Dry practice can help improve consistency when it is done safely and deliberately.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Sight alignment and sight picture support accountable hits."
+      "explanation": "The lesson encourages disciplined dry practice to reinforce fundamentals."
     },
     {
-      "q": "Which answer best matches this lesson point: Trigger control means pressing the trigger without disturbing the sights.",
+      "q": "A student wants to skip fundamentals because they want 'realistic' speed. What should the instructor say?",
       "choices": [
-        "Trigger control means pressing the trigger without disturbing the sights.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Start with controlled basics, then build toward realistic speed",
+        "Speed will automatically fix poor trigger control",
+        "Grip and stance do not matter under stress",
+        "Only moving drills matter for self-defense"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Trigger control means pressing the trigger without disturbing the sights."
+      "explanation": "The chapter teaches that advanced performance grows from solid basics."
     },
     {
-      "q": "True or False: Trigger control means pressing the trigger without disturbing the sights.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Follow-through and recoil management help with follow-up shots.",
+      "q": "What does accountable shooting mean?",
       "choices": [
-        "Follow-through and recoil management help with follow-up shots.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Every shot should be deliberate and justified, not just fast",
+        "Any hit on the berm counts as success",
+        "Shots only matter if they impress others",
+        "A fast miss is better than a careful hit"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Follow-through and recoil management help with follow-up shots."
+      "explanation": "Accountable hits are central to defensive shooting."
     },
     {
-      "q": "True or False: Follow-through and recoil management help with follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Fundamentals come before speed.",
+      "q": "Which habit supports better recoil management?",
       "choices": [
-        "Fundamentals come before speed.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "A consistent grip and body position",
+        "Closing your eyes before the shot",
+        "Relaxing your hands after each trigger press",
+        "Leaning backward to resist recoil"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Fundamentals come before speed."
+      "explanation": "Consistent grip and stance help control the gun during recoil."
     },
     {
-      "q": "True or False: Fundamentals come before speed.",
+      "q": "True or False: Defensive shooting still requires accuracy and responsibility, even under time pressure.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Fundamentals come before speed."
+      "explanation": "The lesson balances timeliness with safety and accuracy."
     },
     {
-      "q": "Which answer best matches this lesson point: Equipment does not replace practice and mechanics.",
+      "q": "Why is consistency more valuable than showing off?",
       "choices": [
-        "Equipment does not replace practice and mechanics.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Because repeatable mechanics hold up better under pressure",
+        "Because style is more important than safety",
+        "Because defensive shooters never need follow-up shots",
+        "Because one lucky drill proves long-term skill"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Equipment does not replace practice and mechanics."
+      "explanation": "Repeatable fundamentals are more reliable under realistic stress."
     },
     {
-      "q": "True or False: Equipment does not replace practice and mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A stable stance helps balance, recoil control, and consistency.",
+      "q": "What is the main takeaway from Lesson 3?",
       "choices": [
-        "A stable stance helps balance, recoil control, and consistency.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Build safe, accurate, repeatable shooting before chasing complexity",
+        "Buy upgrades before fixing technique",
+        "Fastest always means best",
+        "Only live fire matters; dry work is useless"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "True or False: A stable stance helps balance, recoil control, and consistency.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper grip helps keep the firearm stable during the shot.",
-      "choices": [
-        "A proper grip helps keep the firearm stable during the shot.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "True or False: A proper grip helps keep the firearm stable during the shot.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Sight alignment and sight picture support accountable hits.",
-      "choices": [
-        "Sight alignment and sight picture support accountable hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "True or False: Sight alignment and sight picture support accountable hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Trigger control means pressing the trigger without disturbing the sights.",
-      "choices": [
-        "Trigger control means pressing the trigger without disturbing the sights.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "True or False: Trigger control means pressing the trigger without disturbing the sights.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Follow-through and recoil management help with follow-up shots.",
-      "choices": [
-        "Follow-through and recoil management help with follow-up shots.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "True or False: Follow-through and recoil management help with follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Fundamentals come before speed.",
-      "choices": [
-        "Fundamentals come before speed.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Fundamentals come before speed."
-    },
-    {
-      "q": "True or False: Fundamentals come before speed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Fundamentals come before speed."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Equipment does not replace practice and mechanics.",
-      "choices": [
-        "Equipment does not replace practice and mechanics.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "True or False: Equipment does not replace practice and mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A stable stance helps balance, recoil control, and consistency.",
-      "choices": [
-        "A stable stance helps balance, recoil control, and consistency.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "True or False: A stable stance helps balance, recoil control, and consistency.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper grip helps keep the firearm stable during the shot.",
-      "choices": [
-        "A proper grip helps keep the firearm stable during the shot.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "True or False: A proper grip helps keep the firearm stable during the shot.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Sight alignment and sight picture support accountable hits.",
-      "choices": [
-        "Sight alignment and sight picture support accountable hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "True or False: Sight alignment and sight picture support accountable hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Trigger control means pressing the trigger without disturbing the sights.",
-      "choices": [
-        "Trigger control means pressing the trigger without disturbing the sights.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "True or False: Trigger control means pressing the trigger without disturbing the sights.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Follow-through and recoil management help with follow-up shots.",
-      "choices": [
-        "Follow-through and recoil management help with follow-up shots.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "True or False: Follow-through and recoil management help with follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Fundamentals come before speed.",
-      "choices": [
-        "Fundamentals come before speed.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Fundamentals come before speed."
-    },
-    {
-      "q": "True or False: Fundamentals come before speed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Fundamentals come before speed."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Equipment does not replace practice and mechanics.",
-      "choices": [
-        "Equipment does not replace practice and mechanics.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "True or False: Equipment does not replace practice and mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A stable stance helps balance, recoil control, and consistency.",
-      "choices": [
-        "A stable stance helps balance, recoil control, and consistency.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "True or False: A stable stance helps balance, recoil control, and consistency.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper grip helps keep the firearm stable during the shot.",
-      "choices": [
-        "A proper grip helps keep the firearm stable during the shot.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "True or False: A proper grip helps keep the firearm stable during the shot.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Sight alignment and sight picture support accountable hits.",
-      "choices": [
-        "Sight alignment and sight picture support accountable hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "True or False: Sight alignment and sight picture support accountable hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Trigger control means pressing the trigger without disturbing the sights.",
-      "choices": [
-        "Trigger control means pressing the trigger without disturbing the sights.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "True or False: Trigger control means pressing the trigger without disturbing the sights.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Follow-through and recoil management help with follow-up shots.",
-      "choices": [
-        "Follow-through and recoil management help with follow-up shots.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "True or False: Follow-through and recoil management help with follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Fundamentals come before speed.",
-      "choices": [
-        "Fundamentals come before speed.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Fundamentals come before speed."
-    },
-    {
-      "q": "True or False: Fundamentals come before speed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Fundamentals come before speed."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Equipment does not replace practice and mechanics.",
-      "choices": [
-        "Equipment does not replace practice and mechanics.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "True or False: Equipment does not replace practice and mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Equipment does not replace practice and mechanics."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A stable stance helps balance, recoil control, and consistency.",
-      "choices": [
-        "A stable stance helps balance, recoil control, and consistency.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "True or False: A stable stance helps balance, recoil control, and consistency.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A stable stance helps balance, recoil control, and consistency."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper grip helps keep the firearm stable during the shot.",
-      "choices": [
-        "A proper grip helps keep the firearm stable during the shot.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "True or False: A proper grip helps keep the firearm stable during the shot.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper grip helps keep the firearm stable during the shot."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Sight alignment and sight picture support accountable hits.",
-      "choices": [
-        "Sight alignment and sight picture support accountable hits.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "True or False: Sight alignment and sight picture support accountable hits.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Sight alignment and sight picture support accountable hits."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Trigger control means pressing the trigger without disturbing the sights.",
-      "choices": [
-        "Trigger control means pressing the trigger without disturbing the sights.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "True or False: Trigger control means pressing the trigger without disturbing the sights.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trigger control means pressing the trigger without disturbing the sights."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Follow-through and recoil management help with follow-up shots.",
-      "choices": [
-        "Follow-through and recoil management help with follow-up shots.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Follow-through and recoil management help with follow-up shots."
-    },
-    {
-      "q": "True or False: Follow-through and recoil management help with follow-up shots.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Follow-through and recoil management help with follow-up shots."
+      "explanation": "The chapter focuses on safe, repeatable fundamentals leading to accountable performance."
     }
   ],
   "4": [
     {
-      "q": "Does Broussard Shooting Academy provide legal advice in the Use of Force lesson?",
+      "q": "What does 'reasonableness' generally ask in a use-of-force analysis?",
       "choices": [
-        "Yes, binding legal advice",
-        "No, it provides educational rule-of-thumb guidance",
-        "Only for Louisiana permit holders",
-        "Only for New Orleans residents"
-      ],
-      "answer": 1,
-      "explanation": "The lesson begins with a disclaimer that BSA is not a law firm and does not provide legal advice."
-    },
-    {
-      "q": "In the lesson, why are New Orleans, Metairie, and Kenner specifically discussed?",
-      "choices": [
-        "Because state law only applies there",
-        "Because local incidents often involve crowds, cameras, traffic, and many witnesses",
-        "Because use-of-force law is suspended there",
-        "Because juries never matter there"
-      ],
-      "answer": 1,
-      "explanation": "The chapter includes local environmental realities such as witnesses, bars, festivals, cameras, and dense urban settings."
-    },
-    {
-      "q": "Which statement best reflects the lesson’s approach to Louisiana law?",
-      "choices": [
-        "Internet slogans replace case-by-case analysis",
-        "Students should use general rule-of-thumb guidance and remember that facts and changing law matter",
-        "Louisiana law is simple enough to memorize from one chart",
-        "Only lawyers need to think about reasonableness"
-      ],
-      "answer": 1,
-      "explanation": "The lesson frames Louisiana law as educational guidance with fact-specific review, not simplistic slogans."
-    },
-    {
-      "q": "What does 'imminent threat' mean in general rule-of-thumb terms?",
-      "choices": [
-        "A threat that might happen months later",
-        "A threat that is immediate and not merely speculative or already over",
-        "Any rude behavior",
-        "Only a verbal insult"
-      ],
-      "answer": 1,
-      "explanation": "The lesson explains imminence as immediate threat, not speculation or a threat that has ended."
-    },
-    {
-      "q": "Which principle is most closely tied to using only the force reasonably necessary to stop the threat?",
-      "choices": [
-        "Proportionality",
-        "Convenience",
-        "Possession",
-        "Popularity"
+        "What a reasonable person would have believed under those circumstances",
+        "Whether the person owned a permit",
+        "Whether the firearm was expensive",
+        "Whether the event happened in public"
       ],
       "answer": 0,
-      "explanation": "Proportionality asks whether the force matched the seriousness of the threat."
+      "explanation": "Lesson 4 presents reasonableness as a fact-based standard."
     },
     {
-      "q": "Why does the lesson warn students against relying on property theft alone to justify deadly force?",
-      "choices": [
-        "Because defense of life and defense of property are treated differently",
-        "Because property crimes are never reported",
-        "Because property is legally worthless",
-        "Because witnesses do not matter"
-      ],
-      "answer": 0,
-      "explanation": "The lesson distinguishes defense of life from property alone."
-    },
-    {
-      "q": "How does Lesson 4 describe the legal information in the course?",
-      "choices": [
-        "Binding legal advice",
-        "Educational rule-of-thumb guidance, not legal advice",
-        "Only internet opinion",
-        "Only range policy"
-      ],
-      "answer": 1,
-      "explanation": "The lesson begins with a legal disclaimer."
-    },
-    {
-      "q": "True or False: Lesson 4 says BSA is not a law firm and does not provide legal advice.",
+      "q": "True or False: Imminence focuses on whether the threat is immediate rather than speculative or already over.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is stated directly."
+      "explanation": "Imminence asks whether the threat is happening now, not someday or after the fact."
     },
     {
-      "q": "What does reasonableness ask in Lesson 4?",
-      "choices": [
-        "Whether the defender owned expensive gear",
-        "What a reasonable person would believe under the circumstances",
-        "What social media believes",
-        "Whether the event happened at night"
-      ],
-      "answer": 1,
-      "explanation": "Reasonableness is defined in the lesson."
-    },
-    {
-      "q": "True or False: Reasonableness is one of the core principles used to evaluate self-defense claims.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The gist lists reasonableness directly."
-    },
-    {
-      "q": "Imminence is best described as:",
-      "choices": [
-        "A threat that is immediate",
-        "A threat from last year",
-        "A rude comment",
-        "A future possibility only"
-      ],
-      "answer": 0,
-      "explanation": "Imminence means immediate threat."
-    },
-    {
-      "q": "True or False: A threat that has already ended is not the same thing as an imminent threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson distinguishes immediate from already-over threats."
-    },
-    {
-      "q": "What does proportionality focus on?",
+      "q": "What does proportionality deal with?",
       "choices": [
         "Whether the response matched the seriousness of the threat",
-        "Whether the gun was legal",
-        "Whether there were cameras",
-        "Whether the threat happened indoors"
+        "Whether the defender had enough training hours",
+        "Whether the person called 911 first",
+        "Whether the encounter happened indoors"
       ],
       "answer": 0,
-      "explanation": "Proportionality asks whether force matched the danger."
+      "explanation": "Proportionality compares the force used to the threat presented."
     },
     {
-      "q": "True or False: Lesson 4 teaches that force should not exceed what is reasonably necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is proportionality and necessity."
-    },
-    {
-      "q": "Necessity in the lesson is most closely connected to:",
+      "q": "Which action most clearly harms an innocence claim?",
       "choices": [
-        "Using only the force reasonably believed necessary to stop the immediate threat",
-        "Using maximum force in every confrontation",
-        "Protecting property at any cost",
-        "Winning arguments"
+        "Trying to disengage from an argument",
+        "Unlawfully starting or escalating the confrontation",
+        "Calling 911 after the event",
+        "Moving to cover while avoiding bystanders"
+      ],
+      "answer": 1,
+      "explanation": "The lesson warns students not to unlawfully start or escalate conflict."
+    },
+    {
+      "q": "True or False: The chapter teaches legal advice tailored to every student's exact facts.",
+      "type": "tf",
+      "answer": false,
+      "explanation": "The lesson specifically says BSA is not a law firm and the material is educational only."
+    },
+    {
+      "q": "Why does articulation matter after a defensive incident?",
+      "choices": [
+        "You may need to explain what you saw, what the threat did, and why you believed serious harm was immediate",
+        "It matters only if no cameras were nearby",
+        "It replaces evidence and witness statements",
+        "It guarantees no charges will follow"
       ],
       "answer": 0,
-      "explanation": "Necessity is a core legal principle in the lesson."
+      "explanation": "Students are taught to think in terms of clear, factual articulation."
     },
     {
-      "q": "True or False: Necessity means force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is taught directly."
-    },
-    {
-      "q": "Why does innocence matter in self-defense analysis?",
+      "q": "Which statement best fits the chapter on property disputes?",
       "choices": [
-        "Because the defender should not unlawfully start or escalate the confrontation",
-        "Because only first-time offenders can claim self-defense",
-        "Because witnesses decide innocence on the spot",
-        "Because innocence replaces reasonableness"
+        "Deadly force questions are different when the issue is property alone and no immediate deadly threat exists",
+        "Property arguments always justify drawing a gun",
+        "Cameras eliminate legal uncertainty",
+        "Road-rage disputes are safer if you win the argument"
       ],
       "answer": 0,
-      "explanation": "The lesson says innocence and unlawful escalation matter."
+      "explanation": "The chapter cautions students about myths involving property disputes and escalation."
     },
     {
-      "q": "True or False: Starting or unlawfully escalating a confrontation can complicate a self-defense claim.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Innocence is one of the core principles."
-    },
-    {
-      "q": "Why does Lesson 4 emphasize articulation?",
+      "q": "In a crowded New Orleans festival area, what lesson-based concern should be especially on your mind?",
       "choices": [
-        "Because students may need to explain what they saw and why they believed the threat was immediate",
-        "Because talking more always improves a case",
-        "Because articulation changes the facts",
-        "Because only witnesses need it"
+        "Crowds, cameras, bystanders, and witness issues complicate everything",
+        "The law stops applying in crowded places",
+        "Only traffic matters in the city",
+        "Your permit lets you ignore bystanders"
       ],
       "answer": 0,
-      "explanation": "The lesson says articulation matters in review."
+      "explanation": "Local realities include crowds, traffic, cameras, witnesses, and chaotic scenes."
     },
     {
-      "q": "True or False: Articulation matters after a defensive event because facts and perceptions may be reviewed later.",
+      "q": "True or False: Calling 911, preserving the scene, and avoiding careless statements are practical post-incident steps discussed in the lesson.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is specifically taught."
+      "explanation": "These are part of the practical local guidance in Lesson 4."
     },
     {
-      "q": "Which statement best matches Lesson 4?",
+      "q": "What does necessity generally ask?",
       "choices": [
-        "Defense of life and defense of property alone are the same",
-        "Defense of life is treated differently from property alone",
-        "Property theft automatically justifies deadly force",
-        "Only home invasions are ever crimes"
-      ],
-      "answer": 1,
-      "explanation": "The chapter repeatedly distinguishes life from property."
-    },
-    {
-      "q": "True or False: The lesson warns students not to assume property theft alone justifies deadly force.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is in the local/practical discussion."
-    },
-    {
-      "q": "How should students treat Louisiana legal slogans and internet quotes?",
-      "choices": [
-        "As complete substitutes for analysis",
-        "As unreliable shortcuts that cannot replace facts and legal review",
-        "As more important than reasonableness",
-        "As official state jury instructions"
-      ],
-      "answer": 1,
-      "explanation": "The lesson warns students not to rely on slogans or internet myths."
-    },
-    {
-      "q": "True or False: Lesson 4 says Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly in the summary."
-    },
-    {
-      "q": "Why does Lesson 4 discuss New Orleans, Metairie, and Kenner specifically?",
-      "choices": [
-        "Because local incidents often involve crowds, traffic, cameras, and many witnesses",
-        "Because state law does not apply elsewhere",
-        "Because those cities have no property crime",
-        "Because local environments simplify legal analysis"
+        "Whether force was needed under the circumstances rather than avoidable",
+        "Whether the firearm had a mounted light",
+        "Whether the defender had prior military training",
+        "Whether the bystanders agreed with the defender"
       ],
       "answer": 0,
-      "explanation": "The lesson highlights local realities."
+      "explanation": "Necessity deals with whether force was actually needed under the circumstances."
     },
     {
-      "q": "True or False: Urban density can increase bystander and evidence concerns after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is part of the local-environment discussion."
-    },
-    {
-      "q": "What local warning appears in Lesson 4?",
+      "q": "Which response best fits a heated road-rage exchange when no immediate deadly threat exists?",
       "choices": [
-        "Escalate road-rage incidents early",
-        "Avoid escalating ordinary disputes when no immediate deadly threat exists",
-        "Display a gun to win arguments",
-        "Crowded events eliminate legal problems"
+        "Disengage and avoid escalating the dispute",
+        "Win the argument before leaving",
+        "Follow the other driver to get answers",
+        "Display the firearm to control the conversation"
       ],
-      "answer": 1,
-      "explanation": "The chapter specifically warns against escalating road-rage, bar, and festival disputes."
+      "answer": 0,
+      "explanation": "The chapter repeatedly warns against escalating road-rage incidents."
     },
     {
-      "q": "True or False: The lesson advises students to avoid escalating ordinary arguments in crowded local environments.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which post-incident actions are stressed in Lesson 4’s local discussion?",
+      "q": "Why does the lesson repeatedly say outcomes depend on specific facts?",
       "choices": [
-        "Chasing the suspect and posting online",
-        "Calling 911 and preserving evidence",
-        "Deleting camera footage",
-        "Cleaning the scene before officers arrive"
+        "Because use-of-force cases turn on details, evidence, witnesses, and changing law",
+        "Because all self-defense cases come out the same",
+        "Because the city where it happens never matters",
+        "Because internet comments are enough to know the law"
       ],
-      "answer": 1,
-      "explanation": "Calling 911 and preserving evidence are stressed as practical local lessons."
+      "answer": 0,
+      "explanation": "Lesson 4 emphasizes fact-specific legal outcomes."
     },
     {
-      "q": "True or False: Calling 911 and preserving evidence are practical lessons tied to local defensive realities.",
+      "q": "True or False: A justified use-of-force claim is strengthened by careful avoidance of unnecessary escalation before the event.",
       "type": "tf",
       "answer": true,
-      "explanation": "This appears directly in the summary."
+      "explanation": "Innocence, necessity, and reasonableness are helped when the defender did not escalate the conflict."
     },
     {
-      "q": "Which lesson principle is most directly connected to this statement: The lesson is educational and not legal advice.",
+      "q": "Which statement best captures the goal of Lesson 4?",
       "choices": [
-        "A minor detail with no test value",
-        "The lesson is educational and not legal advice.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
+        "Use a practical framework to think about force carefully, lawfully, and factually",
+        "Memorize one-line internet slogans and rely on them later",
+        "Assume every threatening word automatically justifies deadly force",
+        "Treat carrying as a shield against legal scrutiny"
       ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: The lesson is educational and not legal advice."
+      "answer": 0,
+      "explanation": "The chapter offers a practical educational framework, not myths or slogans."
     },
     {
-      "q": "True or False: The lesson is educational and not legal advice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Reasonableness asks what a reasonable person would believe under the circumstances.",
+      "q": "After a defensive incident, which attitude best fits the lesson?",
       "choices": [
-        "A minor detail with no test value",
-        "Reasonableness asks what a reasonable person would believe under the circumstances.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
+        "Be factual, preserve evidence, and avoid reckless statements",
+        "Tell everyone your full story immediately on social media",
+        "Argue with witnesses before police arrive",
+        "Assume the cameras prove everything without context"
       ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "True or False: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Imminence means the threat is immediate, not speculative or already over.",
-      "choices": [
-        "A minor detail with no test value",
-        "Imminence means the threat is immediate, not speculative or already over.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "True or False: Imminence means the threat is immediate, not speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Proportionality asks whether the force used matched the seriousness of the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "True or False: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "True or False: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "choices": [
-        "A minor detail with no test value",
-        "Innocence matters; students should not unlawfully start or escalate the confrontation.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "True or False: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Articulation matters after a defensive event.",
-      "choices": [
-        "A minor detail with no test value",
-        "Articulation matters after a defensive event.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "True or False: Articulation matters after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Defense of life is treated differently from property alone.",
-      "choices": [
-        "A minor detail with no test value",
-        "Defense of life is treated differently from property alone.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "True or False: Defense of life is treated differently from property alone.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "choices": [
-        "A minor detail with no test value",
-        "Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "True or False: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "choices": [
-        "A minor detail with no test value",
-        "Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "True or False: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "choices": [
-        "A minor detail with no test value",
-        "Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "True or False: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Calling 911 and preserving evidence are practical local lessons.",
-      "choices": [
-        "A minor detail with no test value",
-        "Calling 911 and preserving evidence are practical local lessons.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "True or False: Calling 911 and preserving evidence are practical local lessons.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: The lesson is educational and not legal advice.",
-      "choices": [
-        "A minor detail with no test value",
-        "The lesson is educational and not legal advice.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "True or False: The lesson is educational and not legal advice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "choices": [
-        "A minor detail with no test value",
-        "Reasonableness asks what a reasonable person would believe under the circumstances.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "True or False: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Imminence means the threat is immediate, not speculative or already over.",
-      "choices": [
-        "A minor detail with no test value",
-        "Imminence means the threat is immediate, not speculative or already over.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "True or False: Imminence means the threat is immediate, not speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Proportionality asks whether the force used matched the seriousness of the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "True or False: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "True or False: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "choices": [
-        "A minor detail with no test value",
-        "Innocence matters; students should not unlawfully start or escalate the confrontation.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "True or False: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Articulation matters after a defensive event.",
-      "choices": [
-        "A minor detail with no test value",
-        "Articulation matters after a defensive event.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "True or False: Articulation matters after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Defense of life is treated differently from property alone.",
-      "choices": [
-        "A minor detail with no test value",
-        "Defense of life is treated differently from property alone.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "True or False: Defense of life is treated differently from property alone.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "choices": [
-        "A minor detail with no test value",
-        "Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "True or False: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "choices": [
-        "A minor detail with no test value",
-        "Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "True or False: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "choices": [
-        "A minor detail with no test value",
-        "Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "True or False: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Calling 911 and preserving evidence are practical local lessons.",
-      "choices": [
-        "A minor detail with no test value",
-        "Calling 911 and preserving evidence are practical local lessons.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "True or False: Calling 911 and preserving evidence are practical local lessons.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: The lesson is educational and not legal advice.",
-      "choices": [
-        "A minor detail with no test value",
-        "The lesson is educational and not legal advice.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "True or False: The lesson is educational and not legal advice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "choices": [
-        "A minor detail with no test value",
-        "Reasonableness asks what a reasonable person would believe under the circumstances.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "True or False: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Imminence means the threat is immediate, not speculative or already over.",
-      "choices": [
-        "A minor detail with no test value",
-        "Imminence means the threat is immediate, not speculative or already over.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "True or False: Imminence means the threat is immediate, not speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Proportionality asks whether the force used matched the seriousness of the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "True or False: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "True or False: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "choices": [
-        "A minor detail with no test value",
-        "Innocence matters; students should not unlawfully start or escalate the confrontation.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "True or False: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Articulation matters after a defensive event.",
-      "choices": [
-        "A minor detail with no test value",
-        "Articulation matters after a defensive event.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "True or False: Articulation matters after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Defense of life is treated differently from property alone.",
-      "choices": [
-        "A minor detail with no test value",
-        "Defense of life is treated differently from property alone.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "True or False: Defense of life is treated differently from property alone.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "choices": [
-        "A minor detail with no test value",
-        "Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "True or False: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "choices": [
-        "A minor detail with no test value",
-        "Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "True or False: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "choices": [
-        "A minor detail with no test value",
-        "Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "True or False: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Calling 911 and preserving evidence are practical local lessons.",
-      "choices": [
-        "A minor detail with no test value",
-        "Calling 911 and preserving evidence are practical local lessons.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "True or False: Calling 911 and preserving evidence are practical local lessons.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: The lesson is educational and not legal advice.",
-      "choices": [
-        "A minor detail with no test value",
-        "The lesson is educational and not legal advice.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "True or False: The lesson is educational and not legal advice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "choices": [
-        "A minor detail with no test value",
-        "Reasonableness asks what a reasonable person would believe under the circumstances.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "True or False: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Imminence means the threat is immediate, not speculative or already over.",
-      "choices": [
-        "A minor detail with no test value",
-        "Imminence means the threat is immediate, not speculative or already over.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "True or False: Imminence means the threat is immediate, not speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Proportionality asks whether the force used matched the seriousness of the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "True or False: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "True or False: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "choices": [
-        "A minor detail with no test value",
-        "Innocence matters; students should not unlawfully start or escalate the confrontation.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "True or False: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Articulation matters after a defensive event.",
-      "choices": [
-        "A minor detail with no test value",
-        "Articulation matters after a defensive event.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "True or False: Articulation matters after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Defense of life is treated differently from property alone.",
-      "choices": [
-        "A minor detail with no test value",
-        "Defense of life is treated differently from property alone.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "True or False: Defense of life is treated differently from property alone.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Defense of life is treated differently from property alone."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "choices": [
-        "A minor detail with no test value",
-        "Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "True or False: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Louisiana guidance is taught as a rule of thumb, not a shortcut to certainty."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "choices": [
-        "A minor detail with no test value",
-        "Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "True or False: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Local environments like New Orleans, Metairie, and Kenner often involve crowds, witnesses, and cameras."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "choices": [
-        "A minor detail with no test value",
-        "Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "True or False: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Avoid escalating road-rage, bar, or festival disputes when no immediate deadly threat exists."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Calling 911 and preserving evidence are practical local lessons.",
-      "choices": [
-        "A minor detail with no test value",
-        "Calling 911 and preserving evidence are practical local lessons.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "True or False: Calling 911 and preserving evidence are practical local lessons.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Calling 911 and preserving evidence are practical local lessons."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: The lesson is educational and not legal advice.",
-      "choices": [
-        "A minor detail with no test value",
-        "The lesson is educational and not legal advice.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "True or False: The lesson is educational and not legal advice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The lesson is educational and not legal advice."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "choices": [
-        "A minor detail with no test value",
-        "Reasonableness asks what a reasonable person would believe under the circumstances.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "True or False: Reasonableness asks what a reasonable person would believe under the circumstances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Reasonableness asks what a reasonable person would believe under the circumstances."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Imminence means the threat is immediate, not speculative or already over.",
-      "choices": [
-        "A minor detail with no test value",
-        "Imminence means the threat is immediate, not speculative or already over.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "True or False: Imminence means the threat is immediate, not speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Imminence means the threat is immediate, not speculative or already over."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Proportionality asks whether the force used matched the seriousness of the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "True or False: Proportionality asks whether the force used matched the seriousness of the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Proportionality asks whether the force used matched the seriousness of the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "choices": [
-        "A minor detail with no test value",
-        "Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "True or False: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Necessity matters; force should not exceed what is reasonably believed necessary to stop the threat."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "choices": [
-        "A minor detail with no test value",
-        "Innocence matters; students should not unlawfully start or escalate the confrontation.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "True or False: Innocence matters; students should not unlawfully start or escalate the confrontation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Innocence matters; students should not unlawfully start or escalate the confrontation."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Articulation matters after a defensive event.",
-      "choices": [
-        "A minor detail with no test value",
-        "Articulation matters after a defensive event.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Articulation matters after a defensive event."
-    },
-    {
-      "q": "True or False: Articulation matters after a defensive event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Articulation matters after a defensive event."
+      "answer": 0,
+      "explanation": "The lesson teaches care, factual articulation, and scene preservation."
     }
   ],
   "5": [
     {
-      "q": "According to the lesson, does talking about suicide cause someone to become suicidal?",
+      "q": "What body system is most associated with the fight, flight, or freeze response?",
       "choices": [
-        "Yes",
-        "No",
-        "Only if they own firearms",
-        "Only if they are young"
+        "The sympathetic nervous system",
+        "The digestive system",
+        "The skeletal system",
+        "The endocrine system only"
       ],
-      "answer": 1,
-      "explanation": "The mental wellness material teaches that talking about suicide does not cause suicide."
+      "answer": 0,
+      "explanation": "Lesson 5 explains how survival stress affects body and mind."
     },
     {
-      "q": "What should you generally use for immediate life-threatening emergencies such as a suicide attempt in progress?",
+      "q": "True or False: Under sudden threat, ordinary people may experience tunnel vision, auditory exclusion, or shaky hands.",
+      "type": "tf",
+      "answer": true,
+      "explanation": "These are common examples of stress effects discussed in the chapter."
+    },
+    {
+      "q": "What is one reason stress matters in a violent encounter?",
       "choices": [
-        "988 only",
-        "Social media",
+        "It can affect perception, memory, movement, and decision-making",
+        "It makes every decision legally justified",
+        "It removes the need for training",
+        "It only affects people with no experience"
+      ],
+      "answer": 0,
+      "explanation": "The lesson explains that stress can alter how people perceive and act."
+    },
+    {
+      "q": "Which reaction after a traumatic event can still be normal?",
+      "choices": [
+        "Nightmares, intrusive thoughts, or emotional swings",
+        "Instant perfect memory of every detail",
+        "No physical stress response at all",
+        "Total immunity to anxiety"
+      ],
+      "answer": 0,
+      "explanation": "The chapter lists many normal post-event stress responses."
+    },
+    {
+      "q": "True or False: Drawing a firearm eliminates the effects of adrenaline and stress.",
+      "type": "tf",
+      "answer": false,
+      "explanation": "Having a gun does not cancel physiological stress effects."
+    },
+    {
+      "q": "Which coping choice best fits the chapter?",
+      "choices": [
+        "Use support systems, counseling, journaling, exercise, or prayer as helpful outlets",
+        "Rely on alcohol to calm down after a crisis",
+        "Hide symptoms and isolate from everyone",
+        "Increase stimulant use and stop sleeping"
+      ],
+      "answer": 0,
+      "explanation": "The lesson recommends healthy support and coping tools, not harmful ones."
+    },
+    {
+      "q": "What does the lesson teach about asking someone directly about suicide?",
+      "choices": [
+        "It can be part of responsible intervention and does not cause suicide",
+        "It should never be done under any circumstance",
+        "It only matters for law enforcement officers",
+        "It always makes the situation worse"
+      ],
+      "answer": 0,
+      "explanation": "The chapter states that asking direct questions can be part of intervention."
+    },
+    {
+      "q": "When should 988 be considered according to the lesson?",
+      "choices": [
+        "For emotional crisis or suicidal distress support",
+        "For ordering replacement gear",
+        "For reporting a stolen vehicle only",
+        "Only after a criminal case is closed"
+      ],
+      "answer": 0,
+      "explanation": "Lesson 5 distinguishes 988 crisis support from 911 life-threatening emergencies."
+    },
+    {
+      "q": "True or False: Responsible firearm ownership includes taking warning signs, risk factors, and crisis resources seriously.",
+      "type": "tf",
+      "answer": true,
+      "explanation": "Mental wellness and crisis planning are presented as part of responsible ownership."
+    },
+    {
+      "q": "Which behavior may worsen recovery after a violent event?",
+      "choices": [
+        "Heavy alcohol or drug misuse",
+        "Talking with a trusted support person",
+        "Getting rest and exercise",
+        "Seeking counseling when needed"
+      ],
+      "answer": 0,
+      "explanation": "The chapter warns against harmful coping through substance misuse and poor self-care."
+    },
+    {
+      "q": "What is auditory exclusion?",
+      "choices": [
+        "A stress effect where sound may seem muted or altered during a crisis",
+        "A hearing condition caused by range noise only",
+        "A deliberate choice to ignore instructions",
+        "A legal term for witness confusion"
+      ],
+      "answer": 0,
+      "explanation": "Auditory exclusion is one example of stress distortion under threat."
+    },
+    {
+      "q": "Which statement best fits the lesson's mental-health approach?",
+      "choices": [
+        "Mental wellness is part of safe, responsible carry and storage decisions",
+        "Mental health issues matter only to professionals, not students",
+        "Talking about stress shows weakness",
+        "Ownership has nothing to do with crisis planning"
+      ],
+      "answer": 0,
+      "explanation": "The chapter treats mental wellness as part of responsible judgment."
+    },
+    {
+      "q": "True or False: A person may remember events imperfectly after severe stress without necessarily lying.",
+      "type": "tf",
+      "answer": true,
+      "explanation": "Stress can affect memory and perception, which the chapter explains directly."
+    },
+    {
+      "q": "Which emergency number is for immediate life-threatening danger?",
+      "choices": [
         "911",
-        "Email"
-      ],
-      "answer": 2,
-      "explanation": "The lesson distinguishes 911 for imminent life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "What is 988 in the lesson?",
-      "choices": [
-        "A permit code",
-        "A crisis hotline that provides free confidential support",
-        "A Louisiana statute",
-        "A training drill"
-      ],
-      "answer": 1,
-      "explanation": "The supplement states that 988 provides 24/7 free confidential support for emotional distress and suicidal crisis."
-    },
-    {
-      "q": "Which is listed as a warning sign of suicide risk?",
-      "choices": [
-        "Suddenly becoming better at shooting",
-        "Giving away important items and talking about being a burden",
-        "Owning a flashlight",
-        "Cleaning your car"
-      ],
-      "answer": 1,
-      "explanation": "The supplement lists giving away items and burden statements as warning signs."
-    },
-    {
-      "q": "Which response is most consistent with the lesson if someone appears to be in suicidal crisis?",
-      "choices": [
-        "Avoid the topic",
-        "Ask, listen, support, encourage professional help, and reduce access to lethal means",
-        "Make fun of them to change the mood",
-        "Tell them to keep it private"
-      ],
-      "answer": 1,
-      "explanation": "Intervention methods in the supplement include asking, listening, supporting, professional help, and separation from lethal means."
-    },
-    {
-      "q": "What can adrenaline and the sympathetic nervous system affect?",
-      "choices": [
-        "Only clothing choice",
-        "Hearing, vision, memory, and movement",
-        "Only trigger weight",
-        "Only legal outcomes"
-      ],
-      "answer": 1,
-      "explanation": "Lesson 5 teaches that stress can affect perception and motor performance."
-    },
-    {
-      "q": "True or False: Stress can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Tunnel vision and auditory exclusion are best understood as:",
-      "choices": [
-        "Signs that the student is weak",
-        "Possible stress effects under threat",
-        "Equipment problems",
-        "Only myths from movies"
-      ],
-      "answer": 1,
-      "explanation": "The lesson treats them as normal stress phenomena."
-    },
-    {
-      "q": "True or False: Tunnel vision and auditory exclusion can happen under stress.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This appears in the summary."
-    },
-    {
-      "q": "What does the chapter teach about drawing a firearm?",
-      "choices": [
-        "It removes the need for judgment",
-        "It does not erase judgment or changing conditions",
-        "It guarantees safety",
-        "It is always followed by firing"
-      ],
-      "answer": 1,
-      "explanation": "Drawing does not remove decision-making."
-    },
-    {
-      "q": "True or False: Lesson 5 teaches that drawing a firearm does not erase the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which could be a normal trauma response after a violent event?",
-      "choices": [
-        "Only improved sleep",
-        "Hypervigilance, intrusive thoughts, guilt, or sleep disruption",
-        "Nothing emotional at all",
-        "Perfect calm in every case"
-      ],
-      "answer": 1,
-      "explanation": "The chapter lists these as possible trauma responses."
-    },
-    {
-      "q": "True or False: Trauma responses vary and can include guilt, intrusive thoughts, and sleep disruption.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which response best fits healthy coping in the lesson?",
-      "choices": [
-        "Heavy drinking and isolation",
-        "Support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art",
-        "Ignoring symptoms until they disappear",
-        "Using stimulants to stay awake"
-      ],
-      "answer": 1,
-      "explanation": "The mental wellness content lists multiple constructive coping strategies."
-    },
-    {
-      "q": "True or False: The lesson includes support systems, talking, counseling, and journaling as possible coping strategies.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "These appear in the supplement material."
-    },
-    {
-      "q": "What can alcohol and drug use do according to the lesson?",
-      "choices": [
-        "Improve decision-making",
-        "Slow reaction time, impair judgment, and increase reckless behavior",
-        "Make memory clearer",
-        "Eliminate trauma"
-      ],
-      "answer": 1,
-      "explanation": "The supplement explicitly lists these adverse effects."
-    },
-    {
-      "q": "True or False: Alcohol and drugs can worsen judgment and behavior in a defensive context.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is taught directly."
-    },
-    {
-      "q": "Which statement is true according to the mental wellness lesson?",
-      "choices": [
-        "Talking about suicide causes suicide",
-        "Talking about suicide does not cause suicide",
-        "You should never ask direct questions",
-        "Only professionals may say the word"
-      ],
-      "answer": 1,
-      "explanation": "The lesson states that talking about suicide does not cause suicide."
-    },
-    {
-      "q": "True or False: Asking about suicide does not plant the idea in someone’s head.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly from the supplement."
-    },
-    {
-      "q": "Which statement best matches the lesson regarding lethal means?",
-      "choices": [
-        "Access to lethal means can increase suicide risk",
-        "Access to lethal means reduces emotional distress",
-        "Lethal means never matter in crisis planning",
-        "Only medications count as lethal means"
+        "988",
+        "411",
+        "311"
       ],
       "answer": 0,
-      "explanation": "The lesson teaches that access to lethal means increases risk."
+      "explanation": "Lesson 5 says 911 is for imminent life-threatening emergencies; 988 is for crisis support."
     },
     {
-      "q": "True or False: Access to lethal means increases suicide risk.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This appears directly in the supplement."
-    },
-    {
-      "q": "Which is a warning sign discussed in Lesson 5?",
+      "q": "What is the main lesson of Chapter 5?",
       "choices": [
-        "Giving away important items and talking about being a burden",
-        "Buying ear protection",
-        "Cleaning your truck",
-        "Changing holsters"
+        "Stress, trauma, and mental wellness all affect responsible defensive behavior before and after an event",
+        "Stress disappears with enough confidence",
+        "Only the law matters after a violent encounter",
+        "Post-event symptoms prove someone was unfit beforehand"
       ],
       "answer": 0,
-      "explanation": "The lesson includes burden statements and giving away items as warning signs."
-    },
-    {
-      "q": "True or False: Hopelessness, mood swings, and increased substance use can be warning signs.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "These are listed in the supplement."
-    },
-    {
-      "q": "Which response is most consistent with the intervention basics in Lesson 5?",
-      "choices": [
-        "Avoid the subject completely",
-        "Ask, listen, support, encourage help, and reduce access to lethal means",
-        "Argue until the person admits they are wrong",
-        "Promise secrecy no matter what"
-      ],
-      "answer": 1,
-      "explanation": "The lesson lists these actions as intervention basics."
-    },
-    {
-      "q": "True or False: Listening and support are part of crisis intervention basics in the lesson.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is stated in the supplement."
-    },
-    {
-      "q": "When does the lesson say to use 988?",
-      "choices": [
-        "For emotional crisis and suicidal distress support",
-        "For every traffic accident",
-        "For all armed robberies",
-        "For routine parking disputes"
-      ],
-      "answer": 0,
-      "explanation": "The lesson distinguishes 988 from 911."
-    },
-    {
-      "q": "True or False: The lesson says 911 is for imminent life-threatening emergencies, while 988 is for crisis support.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This distinction is taught directly."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "choices": [
-        "A minor detail with no test value",
-        "Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "True or False: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Tunnel vision and auditory exclusion can happen under stress.",
-      "choices": [
-        "A minor detail with no test value",
-        "Tunnel vision and auditory exclusion can happen under stress.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Drawing a firearm does not remove the need for judgment.",
-      "choices": [
-        "A minor detail with no test value",
-        "Drawing a firearm does not remove the need for judgment.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "True or False: Drawing a firearm does not remove the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "choices": [
-        "A minor detail with no test value",
-        "Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "True or False: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "choices": [
-        "A minor detail with no test value",
-        "Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "True or False: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "choices": [
-        "A minor detail with no test value",
-        "Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "True or False: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Talking about suicide does not cause suicide.",
-      "choices": [
-        "A minor detail with no test value",
-        "Talking about suicide does not cause suicide.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "True or False: Talking about suicide does not cause suicide.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Access to lethal means increases suicide risk.",
-      "choices": [
-        "A minor detail with no test value",
-        "Access to lethal means increases suicide risk.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "choices": [
-        "A minor detail with no test value",
-        "Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "True or False: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "choices": [
-        "A minor detail with no test value",
-        "Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "True or False: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "choices": [
-        "A minor detail with no test value",
-        "Use 911 for life-threatening emergencies and 988 for crisis support.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "True or False: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "choices": [
-        "A minor detail with no test value",
-        "Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "True or False: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Tunnel vision and auditory exclusion can happen under stress.",
-      "choices": [
-        "A minor detail with no test value",
-        "Tunnel vision and auditory exclusion can happen under stress.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "True or False: Tunnel vision and auditory exclusion can happen under stress.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Drawing a firearm does not remove the need for judgment.",
-      "choices": [
-        "A minor detail with no test value",
-        "Drawing a firearm does not remove the need for judgment.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "True or False: Drawing a firearm does not remove the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "choices": [
-        "A minor detail with no test value",
-        "Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "True or False: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "choices": [
-        "A minor detail with no test value",
-        "Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "True or False: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "choices": [
-        "A minor detail with no test value",
-        "Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "True or False: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Talking about suicide does not cause suicide.",
-      "choices": [
-        "A minor detail with no test value",
-        "Talking about suicide does not cause suicide.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "True or False: Talking about suicide does not cause suicide.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Access to lethal means increases suicide risk.",
-      "choices": [
-        "A minor detail with no test value",
-        "Access to lethal means increases suicide risk.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "True or False: Access to lethal means increases suicide risk.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "choices": [
-        "A minor detail with no test value",
-        "Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "True or False: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "choices": [
-        "A minor detail with no test value",
-        "Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "True or False: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "choices": [
-        "A minor detail with no test value",
-        "Use 911 for life-threatening emergencies and 988 for crisis support.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "True or False: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "choices": [
-        "A minor detail with no test value",
-        "Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "True or False: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Tunnel vision and auditory exclusion can happen under stress.",
-      "choices": [
-        "A minor detail with no test value",
-        "Tunnel vision and auditory exclusion can happen under stress.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "True or False: Tunnel vision and auditory exclusion can happen under stress.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Drawing a firearm does not remove the need for judgment.",
-      "choices": [
-        "A minor detail with no test value",
-        "Drawing a firearm does not remove the need for judgment.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "True or False: Drawing a firearm does not remove the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "choices": [
-        "A minor detail with no test value",
-        "Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "True or False: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "choices": [
-        "A minor detail with no test value",
-        "Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "True or False: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "choices": [
-        "A minor detail with no test value",
-        "Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "True or False: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Talking about suicide does not cause suicide.",
-      "choices": [
-        "A minor detail with no test value",
-        "Talking about suicide does not cause suicide.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "True or False: Talking about suicide does not cause suicide.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Access to lethal means increases suicide risk.",
-      "choices": [
-        "A minor detail with no test value",
-        "Access to lethal means increases suicide risk.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "True or False: Access to lethal means increases suicide risk.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "choices": [
-        "A minor detail with no test value",
-        "Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "True or False: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "choices": [
-        "A minor detail with no test value",
-        "Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "True or False: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "choices": [
-        "A minor detail with no test value",
-        "Use 911 for life-threatening emergencies and 988 for crisis support.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "True or False: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "choices": [
-        "A minor detail with no test value",
-        "Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "True or False: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Tunnel vision and auditory exclusion can happen under stress.",
-      "choices": [
-        "A minor detail with no test value",
-        "Tunnel vision and auditory exclusion can happen under stress.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "True or False: Tunnel vision and auditory exclusion can happen under stress.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Drawing a firearm does not remove the need for judgment.",
-      "choices": [
-        "A minor detail with no test value",
-        "Drawing a firearm does not remove the need for judgment.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "True or False: Drawing a firearm does not remove the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "choices": [
-        "A minor detail with no test value",
-        "Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "True or False: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "choices": [
-        "A minor detail with no test value",
-        "Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "True or False: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Healthy coping can include support systems, talking, counseling, journaling, prayer, meditation, stretching, yoga, music, or art."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "choices": [
-        "A minor detail with no test value",
-        "Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "True or False: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Alcohol and drugs can slow reaction time, impair judgment, and increase reckless behavior."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Talking about suicide does not cause suicide.",
-      "choices": [
-        "A minor detail with no test value",
-        "Talking about suicide does not cause suicide.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "True or False: Talking about suicide does not cause suicide.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Talking about suicide does not cause suicide."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Access to lethal means increases suicide risk.",
-      "choices": [
-        "A minor detail with no test value",
-        "Access to lethal means increases suicide risk.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "True or False: Access to lethal means increases suicide risk.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Access to lethal means increases suicide risk."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "choices": [
-        "A minor detail with no test value",
-        "Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "True or False: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Warning signs can include burden statements, hopelessness, giving away items, mood swings, and increased substance use."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "choices": [
-        "A minor detail with no test value",
-        "Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "True or False: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Intervention basics include asking, listening, supporting, encouraging help, and reducing access to lethal means."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "choices": [
-        "A minor detail with no test value",
-        "Use 911 for life-threatening emergencies and 988 for crisis support.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "True or False: Use 911 for life-threatening emergencies and 988 for crisis support.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Use 911 for life-threatening emergencies and 988 for crisis support."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "choices": [
-        "A minor detail with no test value",
-        "Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "True or False: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Adrenaline and the sympathetic nervous system can affect hearing, vision, memory, and movement."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Tunnel vision and auditory exclusion can happen under stress.",
-      "choices": [
-        "A minor detail with no test value",
-        "Tunnel vision and auditory exclusion can happen under stress.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "True or False: Tunnel vision and auditory exclusion can happen under stress.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Tunnel vision and auditory exclusion can happen under stress."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Drawing a firearm does not remove the need for judgment.",
-      "choices": [
-        "A minor detail with no test value",
-        "Drawing a firearm does not remove the need for judgment.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "True or False: Drawing a firearm does not remove the need for judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Drawing a firearm does not remove the need for judgment."
-    },
-    {
-      "q": "Which lesson principle is most directly connected to this statement: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-      "choices": [
-        "A minor detail with no test value",
-        "Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption.",
-        "A gear-only opinion",
-        "A rule about ignoring context"
-      ],
-      "answer": 1,
-      "explanation": "This question points back to the lesson material: Trauma responses vary and may include hypervigilance, intrusive thoughts, guilt, or sleep disruption."
+      "explanation": "The chapter combines stress response, trauma awareness, and crisis responsibility."
     }
   ],
   "6": [
     {
-      "q": "A proper defensive holster should:",
+      "q": "What should a quality holster do first and foremost?",
       "choices": [
-        "Leave the trigger uncovered",
-        "Cover the trigger guard and secure the firearm",
-        "Only match the gun color",
-        "Be chosen for appearance alone"
-      ],
-      "answer": 1,
-      "explanation": "The lesson states that holsters should cover the trigger guard and secure the firearm."
-    },
-    {
-      "q": "True or False: A holster should help protect the trigger area and secure the firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Carry positions involve trade-offs in:",
-      "choices": [
-        "Only state law",
-        "Speed, comfort, concealment, and access",
-        "Only caliber",
-        "Only price"
-      ],
-      "answer": 1,
-      "explanation": "The chapter discusses these trade-offs."
-    },
-    {
-      "q": "True or False: Carry position is not only about concealment; access and comfort matter too.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson covers these trade-offs."
-    },
-    {
-      "q": "Why does retention matter?",
-      "choices": [
-        "It increases bullet speed",
-        "It helps keep the firearm secure, especially in public and active environments",
-        "It removes the need for a belt",
-        "It changes the law"
-      ],
-      "answer": 1,
-      "explanation": "Retention is part of safe carry."
-    },
-    {
-      "q": "True or False: Retention matters more than appearance in defensive gear selection.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The chapter focuses on practical safety."
-    },
-    {
-      "q": "What is one major defensive value of a flashlight?",
-      "choices": [
-        "It changes the law",
-        "It helps identify what you are seeing",
-        "It replaces sights",
-        "It eliminates the need for awareness"
-      ],
-      "answer": 1,
-      "explanation": "The lesson highlights identification."
-    },
-    {
-      "q": "True or False: Flashlights help with identification in low light.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is a direct lesson point."
-    },
-    {
-      "q": "Which statement best fits the lesson on lasers?",
-      "choices": [
-        "Lasers replace fundamentals",
-        "Lasers may help in some positions but do not replace fundamentals",
-        "Lasers guarantee hits",
-        "Lasers are never useful"
-      ],
-      "answer": 1,
-      "explanation": "The lesson treats lasers as supplemental."
-    },
-    {
-      "q": "True or False: Lasers are treated as support tools, not substitutes for training.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Why might a sturdy belt matter in concealed carry?",
-      "choices": [
-        "It supports holster stability and access",
-        "It changes legal justification",
-        "It improves ammunition reliability",
-        "It removes recoil"
+        "Protect the trigger guard and secure the firearm",
+        "Make the gun look larger",
+        "Allow the trigger to stay exposed for speed",
+        "Replace the need for safe handling"
       ],
       "answer": 0,
-      "explanation": "Belts and clothing affect stability and access."
+      "explanation": "Lesson 6 emphasizes trigger coverage and secure retention."
     },
     {
-      "q": "True or False: Belts and clothing can affect access and carry stability.",
+      "q": "True or False: Carry position always involves trade-offs among concealment, comfort, speed, and access.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is taught in the gist."
+      "explanation": "The lesson teaches there is no perfect carry position for every person and context."
     },
     {
-      "q": "Why should students train with the gear they actually plan to use?",
+      "q": "Why does retention matter for carry gear?",
       "choices": [
-        "Because expensive gear is automatically easy",
-        "Because real carry equipment affects access and handling",
-        "Because practice only matters for police",
-        "Because lights require no familiarity"
-      ],
-      "answer": 1,
-      "explanation": "The chapter says to train with actual carry gear."
-    },
-    {
-      "q": "True or False: Lesson 6 tells students to train with the gear they actually intend to use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "How should gear be chosen under Lesson 6?",
-      "choices": [
-        "For appearance first",
-        "For practical reliability and realistic use",
-        "For the most attachments possible",
-        "For matching shoes"
-      ],
-      "answer": 1,
-      "explanation": "The chapter emphasizes practical gear over gimmicks."
-    },
-    {
-      "q": "True or False: Practical, reliable gear is preferred over gimmicks.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is in the gist."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper holster covers the trigger guard and secures the firearm.",
-      "choices": [
-        "A proper holster covers the trigger guard and secures the firearm.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "It helps keep the firearm secure during normal movement and public activity",
+        "It makes the gun easier for strangers to grab",
+        "It is only for uniformed duty carry, never concealed carry",
+        "It replaces the need for a good belt"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper holster covers the trigger guard and secures the firearm."
+      "explanation": "Retention supports security and control, especially in active environments."
     },
     {
-      "q": "True or False: A proper holster covers the trigger guard and secures the firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
+      "q": "Which support item most directly helps with identifying what you are looking at in poor light?",
       "choices": [
-        "Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "A flashlight",
+        "A spare magazine",
+        "A sticker on the holster",
+        "An optic cover"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
+      "explanation": "Flashlights aid identification; they do not replace judgment."
     },
     {
-      "q": "True or False: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
+      "q": "True or False: Lasers may help in some positions, but they do not replace fundamentals.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
+      "explanation": "The chapter treats lasers as a supplement, not a substitute for skill."
     },
     {
-      "q": "Which answer best matches this lesson point: Retention matters in public and active environments.",
+      "q": "What is the best reason to train with the gear you actually intend to carry?",
       "choices": [
-        "Retention matters in public and active environments.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Because access, concealment, and handling change with real equipment",
+        "Because range gear and carry gear always feel the same",
+        "Because gear practice only matters for police",
+        "Because any holster works the same once broken in"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Retention matters in public and active environments."
+      "explanation": "Realistic practice matters because equipment affects access and control."
     },
     {
-      "q": "True or False: Retention matters in public and active environments.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Retention matters in public and active environments."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Flashlights help with identification.",
+      "q": "Which setup best fits Lesson 6?",
       "choices": [
-        "Flashlights help with identification.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Reliable practical gear that has been tested before being trusted",
+        "Whatever looks most tactical online",
+        "A bargain holster that leaves the trigger exposed",
+        "Gear chosen mainly to impress others"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Flashlights help with identification."
+      "explanation": "The chapter favors practical, tested equipment over gimmicks."
     },
     {
-      "q": "True or False: Flashlights help with identification.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Flashlights help with identification."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Lasers may help in some positions but do not replace fundamentals.",
+      "q": "What role can a sturdy belt play?",
       "choices": [
-        "Lasers may help in some positions but do not replace fundamentals.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "It can support access, stability, and consistent carry position",
+        "It makes any bad holster safe",
+        "It replaces the need for retention",
+        "It matters only for open carry"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Lasers may help in some positions but do not replace fundamentals."
+      "explanation": "Belts affect control and consistency of the carried firearm."
     },
     {
-      "q": "True or False: Lasers may help in some positions but do not replace fundamentals.",
+      "q": "True or False: Good gear can support skill, but it cannot replace judgment or training.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Lasers may help in some positions but do not replace fundamentals."
+      "explanation": "Lesson 6 repeatedly makes this point."
     },
     {
-      "q": "Which answer best matches this lesson point: Belts and clothing affect carry stability and access.",
+      "q": "Which statement about gimmicks best matches the chapter?",
       "choices": [
-        "Belts and clothing affect carry stability and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Practical reliability matters more than novelty",
+        "More accessories always equal more safety",
+        "Unproven gear is fine if marketed well",
+        "Testing gear is unnecessary if reviews are positive"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Belts and clothing affect carry stability and access."
+      "explanation": "The lesson tells students to choose reliable, practical gear instead of gimmicks."
     },
     {
-      "q": "True or False: Belts and clothing affect carry stability and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Belts and clothing affect carry stability and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Train with the gear you actually plan to use.",
+      "q": "Why should a student test gear before carrying it daily?",
       "choices": [
-        "Train with the gear you actually plan to use.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "To see whether it actually works safely and consistently for their body and routine",
+        "Because the law requires weekly equipment inspections",
+        "Because all new holsters fail eventually",
+        "Because only expensive brands need testing"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Train with the gear you actually plan to use."
+      "explanation": "Trust should be earned through realistic testing, not assumed."
     },
     {
-      "q": "True or False: Train with the gear you actually plan to use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Train with the gear you actually plan to use."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Choose practical gear instead of gimmicks.",
+      "q": "What is one limitation of lasers that students should remember?",
       "choices": [
-        "Choose practical gear instead of gimmicks.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "They can supplement aiming in some cases but do not replace safe fundamentals or identification",
+        "They eliminate the need for practice",
+        "They make flashlights unnecessary",
+        "They guarantee accurate hits from any position"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Choose practical gear instead of gimmicks."
+      "explanation": "The lesson presents lasers as optional aids with limits."
     },
     {
-      "q": "True or False: Choose practical gear instead of gimmicks.",
+      "q": "True or False: Clothing choice can affect concealment and access to your defensive gear.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Choose practical gear instead of gimmicks."
+      "explanation": "Practical clothing is part of making daily carry work realistically."
     },
     {
-      "q": "Which answer best matches this lesson point: A proper holster covers the trigger guard and secures the firearm.",
+      "q": "Which holster feature is unacceptable for safe carry?",
       "choices": [
-        "A proper holster covers the trigger guard and secures the firearm.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "An exposed trigger area",
+        "Secure retention",
+        "Consistent access",
+        "A design matched to the firearm"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper holster covers the trigger guard and secures the firearm."
+      "explanation": "A holster should cover the trigger guard; exposed triggers are unsafe."
     },
     {
-      "q": "True or False: A proper holster covers the trigger guard and secures the firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
+      "q": "What is the main lesson of Chapter 6?",
       "choices": [
-        "Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Choose practical, safe, tested gear that supports realistic daily use",
+        "Use the most accessories possible",
+        "Gear matters more than training",
+        "Comfort is the only factor in daily carry"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "True or False: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Retention matters in public and active environments.",
-      "choices": [
-        "Retention matters in public and active environments.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Retention matters in public and active environments."
-    },
-    {
-      "q": "True or False: Retention matters in public and active environments.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Retention matters in public and active environments."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Flashlights help with identification.",
-      "choices": [
-        "Flashlights help with identification.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Flashlights help with identification."
-    },
-    {
-      "q": "True or False: Flashlights help with identification.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Flashlights help with identification."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Lasers may help in some positions but do not replace fundamentals.",
-      "choices": [
-        "Lasers may help in some positions but do not replace fundamentals.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Lasers may help in some positions but do not replace fundamentals."
-    },
-    {
-      "q": "True or False: Lasers may help in some positions but do not replace fundamentals.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Lasers may help in some positions but do not replace fundamentals."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Belts and clothing affect carry stability and access.",
-      "choices": [
-        "Belts and clothing affect carry stability and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Belts and clothing affect carry stability and access."
-    },
-    {
-      "q": "True or False: Belts and clothing affect carry stability and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Belts and clothing affect carry stability and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Train with the gear you actually plan to use.",
-      "choices": [
-        "Train with the gear you actually plan to use.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Train with the gear you actually plan to use."
-    },
-    {
-      "q": "True or False: Train with the gear you actually plan to use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Train with the gear you actually plan to use."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Choose practical gear instead of gimmicks.",
-      "choices": [
-        "Choose practical gear instead of gimmicks.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Choose practical gear instead of gimmicks."
-    },
-    {
-      "q": "True or False: Choose practical gear instead of gimmicks.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Choose practical gear instead of gimmicks."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper holster covers the trigger guard and secures the firearm.",
-      "choices": [
-        "A proper holster covers the trigger guard and secures the firearm.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "True or False: A proper holster covers the trigger guard and secures the firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-      "choices": [
-        "Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "True or False: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Retention matters in public and active environments.",
-      "choices": [
-        "Retention matters in public and active environments.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Retention matters in public and active environments."
-    },
-    {
-      "q": "True or False: Retention matters in public and active environments.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Retention matters in public and active environments."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Flashlights help with identification.",
-      "choices": [
-        "Flashlights help with identification.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Flashlights help with identification."
-    },
-    {
-      "q": "True or False: Flashlights help with identification.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Flashlights help with identification."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Lasers may help in some positions but do not replace fundamentals.",
-      "choices": [
-        "Lasers may help in some positions but do not replace fundamentals.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Lasers may help in some positions but do not replace fundamentals."
-    },
-    {
-      "q": "True or False: Lasers may help in some positions but do not replace fundamentals.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Lasers may help in some positions but do not replace fundamentals."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Belts and clothing affect carry stability and access.",
-      "choices": [
-        "Belts and clothing affect carry stability and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Belts and clothing affect carry stability and access."
-    },
-    {
-      "q": "True or False: Belts and clothing affect carry stability and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Belts and clothing affect carry stability and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Train with the gear you actually plan to use.",
-      "choices": [
-        "Train with the gear you actually plan to use.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Train with the gear you actually plan to use."
-    },
-    {
-      "q": "True or False: Train with the gear you actually plan to use.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Train with the gear you actually plan to use."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Choose practical gear instead of gimmicks.",
-      "choices": [
-        "Choose practical gear instead of gimmicks.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Choose practical gear instead of gimmicks."
-    },
-    {
-      "q": "True or False: Choose practical gear instead of gimmicks.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Choose practical gear instead of gimmicks."
-    },
-    {
-      "q": "Which answer best matches this lesson point: A proper holster covers the trigger guard and secures the firearm.",
-      "choices": [
-        "A proper holster covers the trigger guard and secures the firearm.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "True or False: A proper holster covers the trigger guard and secures the firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: A proper holster covers the trigger guard and secures the firearm."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-      "choices": [
-        "Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "True or False: Carry positions involve trade-offs in speed, comfort, concealment, and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Carry positions involve trade-offs in speed, comfort, concealment, and access."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Retention matters in public and active environments.",
-      "choices": [
-        "Retention matters in public and active environments.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Retention matters in public and active environments."
-    },
-    {
-      "q": "True or False: Retention matters in public and active environments.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Retention matters in public and active environments."
+      "explanation": "The chapter centers on gear that supports safety, access, and realistic use."
     }
   ],
   "7": [
     {
-      "q": "What does Lesson 7 teach about skill over time?",
+      "q": "Why does Lesson 7 emphasize ongoing practice?",
       "choices": [
-        "Skill never fades",
-        "Skills fade without practice",
-        "Only speed fades",
-        "Only competition skills fade"
+        "Because skill fades without maintenance",
+        "Because a permit replaces skill development",
+        "Because only beginners need refreshers",
+        "Because gear improves automatically over time"
       ],
-      "answer": 1,
-      "explanation": "The chapter says skill requires maintenance."
+      "answer": 0,
+      "explanation": "The chapter states that skill fades without practice."
     },
     {
-      "q": "True or False: Skills can fade if they are not maintained through practice.",
+      "q": "True or False: Dry practice should be structured and separated from live ammunition when appropriate.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "How should dry practice be approached?",
-      "choices": [
-        "Carelessly and with live ammo nearby",
-        "Safely, deliberately, and with structure",
-        "Only when angry",
-        "Only after drinking caffeine heavily"
-      ],
-      "answer": 1,
-      "explanation": "The lesson stresses safe, structured dry practice."
-    },
-    {
-      "q": "True or False: Dry practice should be safe, deliberate, and structured.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is stated directly."
+      "explanation": "Safety and structure are core dry-practice principles in Lesson 7."
     },
     {
       "q": "What should live-fire practice reinforce?",
       "choices": [
-        "Fundamentals and accountability",
-        "Only speed",
-        "Only competition reloads",
-        "Only group size on paper"
+        "Fundamentals and accountable performance",
+        "Only speed and entertainment",
+        "Mostly gear testing with no scoring",
+        "Random drills without goals"
       ],
       "answer": 0,
-      "explanation": "The lesson connects live fire with fundamentals."
+      "explanation": "The lesson ties live fire back to basics and accountability."
     },
     {
-      "q": "True or False: Live-fire practice should reinforce accountable shooting, not just speed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is taught in the summary."
-    },
-    {
-      "q": "Why identify weak areas honestly?",
+      "q": "Which training attitude best fits the chapter?",
       "choices": [
-        "To focus future practice where improvement is needed",
-        "To impress other students",
-        "To avoid training",
-        "To make drills easier"
+        "Work from basics upward instead of trying to look advanced",
+        "Skip fundamentals once you pass a class",
+        "Train mainly for ego and social-media clips",
+        "Measure success by how complicated the drill looks"
       ],
       "answer": 0,
-      "explanation": "The chapter encourages honest self-assessment."
+      "explanation": "Lesson 7 pushes purposeful development, not ego."
     },
     {
-      "q": "True or False: The chapter encourages students to train weak areas honestly rather than hide them.",
+      "q": "True or False: Owning quality gear is the same thing as maintaining skill.",
       "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
+      "answer": false,
+      "explanation": "The chapter says equipment ownership does not replace practice."
     },
     {
-      "q": "What does Lesson 7 say about further classes and coaching?",
+      "q": "What is the value of identifying weak areas honestly?",
       "choices": [
-        "They are unnecessary after one class",
-        "They are logical next steps in continued development",
-        "They only matter for competitors",
-        "They replace dry practice"
-      ],
-      "answer": 1,
-      "explanation": "The lesson encourages continued education."
-    },
-    {
-      "q": "True or False: Further classes and coaching are described as logical next steps.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This appears in the gist."
-    },
-    {
-      "q": "Training should be driven by:",
-      "choices": [
-        "Ego and appearance",
-        "Safety and competence",
-        "Social media approval",
-        "Speed above all else"
-      ],
-      "answer": 1,
-      "explanation": "The chapter warns against ego-driven training."
-    },
-    {
-      "q": "True or False: Lesson 7 warns against ego-driven training.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which statement best matches the chapter?",
-      "choices": [
-        "Owning gear is the same as maintaining skill",
-        "Owning gear is not the same as maintaining skill",
-        "Gear matters more than training",
-        "Skill is automatic after purchase"
-      ],
-      "answer": 1,
-      "explanation": "The chapter distinguishes ownership from maintained competence."
-    },
-    {
-      "q": "True or False: Owning defensive equipment does not prove maintained skill.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is in the summary."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Skills fade without practice.",
-      "choices": [
-        "Skills fade without practice.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "It lets you train those weaknesses deliberately",
+        "It proves you should stop practicing",
+        "It matters only for competitive shooters",
+        "It removes the need for coaching"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Skills fade without practice."
+      "explanation": "Students are encouraged to document and address weak points honestly."
     },
     {
-      "q": "True or False: Skills fade without practice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Skills fade without practice."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Dry practice should be safe, structured, and deliberate.",
+      "q": "Which is a logical next step after a first class?",
       "choices": [
-        "Dry practice should be safe, structured, and deliberate.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Further classes, coaching, and reputable training opportunities",
+        "Assuming no further learning is needed",
+        "Avoiding all feedback from instructors",
+        "Training only with internet videos and no live oversight"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Dry practice should be safe, structured, and deliberate."
+      "explanation": "The lesson encourages continued education through reputable sources."
     },
     {
-      "q": "True or False: Dry practice should be safe, structured, and deliberate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Live-fire practice should reinforce fundamentals and accountability.",
+      "q": "Why keep notes or measurable goals in training?",
       "choices": [
-        "Live-fire practice should reinforce fundamentals and accountability.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "They help track progress and maintain focus",
+        "They impress people at the range",
+        "They replace live-fire practice",
+        "They are only useful for law enforcement"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Live-fire practice should reinforce fundamentals and accountability."
+      "explanation": "Documentation and goals support consistent improvement."
     },
     {
-      "q": "True or False: Live-fire practice should reinforce fundamentals and accountability.",
+      "q": "True or False: Safe development means fundamentals first, then more complexity over time.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Live-fire practice should reinforce fundamentals and accountability."
+      "explanation": "The chapter repeatedly returns to this progression."
     },
     {
-      "q": "Which answer best matches this lesson point: Students should identify weak areas honestly and train them.",
+      "q": "A student says, 'I passed the portal, so I do not need more practice.' What is the best response?",
       "choices": [
-        "Students should identify weak areas honestly and train them.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Practice and development should continue after the first class",
+        "The portal permanently locks in skill",
+        "Only legal study matters after class",
+        "Dry practice becomes unsafe after certification"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should identify weak areas honestly and train them."
+      "explanation": "Lesson 7 frames learning as ongoing, not finished."
     },
     {
-      "q": "True or False: Students should identify weak areas honestly and train them.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Further classes and coaching are logical next steps.",
+      "q": "Which statement best reflects disciplined training?",
       "choices": [
-        "Further classes and coaching are logical next steps.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Train with purpose, safety, and competence rather than ego",
+        "Try to impress everyone with the hardest drills first",
+        "Ignore weak points so confidence stays high",
+        "Treat every range visit as unstructured entertainment"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Further classes and coaching are logical next steps."
+      "explanation": "The chapter prioritizes purpose and humility over ego-driven training."
     },
     {
-      "q": "True or False: Further classes and coaching are logical next steps.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Training should be driven by safety and competence, not ego.",
+      "q": "What is one benefit of coaching or reputable instruction?",
       "choices": [
-        "Training should be driven by safety and competence, not ego.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "It can help identify mistakes and build better habits",
+        "It makes personal practice unnecessary",
+        "It guarantees perfect performance under stress",
+        "It matters only for experts"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Training should be driven by safety and competence, not ego."
+      "explanation": "Good instruction can improve skill by correcting weak habits."
     },
     {
-      "q": "True or False: Training should be driven by safety and competence, not ego.",
+      "q": "True or False: Responsible owners maintain not only technical skill, but also judgment and safety habits over time.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Training should be driven by safety and competence, not ego."
+      "explanation": "Lesson 7 treats competence as a combination of skill, judgment, and habits."
     },
     {
-      "q": "Which answer best matches this lesson point: Owning gear is not the same as maintaining skill.",
+      "q": "Which dry-practice behavior would violate the lesson?",
       "choices": [
-        "Owning gear is not the same as maintaining skill.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Handling the firearm around live ammunition carelessly",
+        "Using a safe routine in a controlled area",
+        "Focusing on one skill at a time",
+        "Stopping when attention drops"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Owning gear is not the same as maintaining skill."
+      "explanation": "Dry practice must stay structured and separate from live ammo when appropriate."
     },
     {
-      "q": "True or False: Owning gear is not the same as maintaining skill.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Skills fade without practice.",
+      "q": "What is the main point of Lesson 7?",
       "choices": [
-        "Skills fade without practice.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Real skill requires safe, honest, ongoing training after the first class",
+        "Buying new gear is enough to stay sharp",
+        "Certificates end the need for fundamentals",
+        "Advanced drills matter more than consistency"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Skills fade without practice."
-    },
-    {
-      "q": "True or False: Skills fade without practice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Skills fade without practice."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Dry practice should be safe, structured, and deliberate.",
-      "choices": [
-        "Dry practice should be safe, structured, and deliberate.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "True or False: Dry practice should be safe, structured, and deliberate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Live-fire practice should reinforce fundamentals and accountability.",
-      "choices": [
-        "Live-fire practice should reinforce fundamentals and accountability.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "True or False: Live-fire practice should reinforce fundamentals and accountability.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should identify weak areas honestly and train them.",
-      "choices": [
-        "Students should identify weak areas honestly and train them.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "True or False: Students should identify weak areas honestly and train them.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Further classes and coaching are logical next steps.",
-      "choices": [
-        "Further classes and coaching are logical next steps.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "True or False: Further classes and coaching are logical next steps.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Training should be driven by safety and competence, not ego.",
-      "choices": [
-        "Training should be driven by safety and competence, not ego.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "True or False: Training should be driven by safety and competence, not ego.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Owning gear is not the same as maintaining skill.",
-      "choices": [
-        "Owning gear is not the same as maintaining skill.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "True or False: Owning gear is not the same as maintaining skill.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Skills fade without practice.",
-      "choices": [
-        "Skills fade without practice.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Skills fade without practice."
-    },
-    {
-      "q": "True or False: Skills fade without practice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Skills fade without practice."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Dry practice should be safe, structured, and deliberate.",
-      "choices": [
-        "Dry practice should be safe, structured, and deliberate.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "True or False: Dry practice should be safe, structured, and deliberate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Live-fire practice should reinforce fundamentals and accountability.",
-      "choices": [
-        "Live-fire practice should reinforce fundamentals and accountability.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "True or False: Live-fire practice should reinforce fundamentals and accountability.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should identify weak areas honestly and train them.",
-      "choices": [
-        "Students should identify weak areas honestly and train them.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "True or False: Students should identify weak areas honestly and train them.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Further classes and coaching are logical next steps.",
-      "choices": [
-        "Further classes and coaching are logical next steps.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "True or False: Further classes and coaching are logical next steps.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Training should be driven by safety and competence, not ego.",
-      "choices": [
-        "Training should be driven by safety and competence, not ego.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "True or False: Training should be driven by safety and competence, not ego.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Owning gear is not the same as maintaining skill.",
-      "choices": [
-        "Owning gear is not the same as maintaining skill.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "True or False: Owning gear is not the same as maintaining skill.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Skills fade without practice.",
-      "choices": [
-        "Skills fade without practice.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Skills fade without practice."
-    },
-    {
-      "q": "True or False: Skills fade without practice.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Skills fade without practice."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Dry practice should be safe, structured, and deliberate.",
-      "choices": [
-        "Dry practice should be safe, structured, and deliberate.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "True or False: Dry practice should be safe, structured, and deliberate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Dry practice should be safe, structured, and deliberate."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Live-fire practice should reinforce fundamentals and accountability.",
-      "choices": [
-        "Live-fire practice should reinforce fundamentals and accountability.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "True or False: Live-fire practice should reinforce fundamentals and accountability.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Live-fire practice should reinforce fundamentals and accountability."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should identify weak areas honestly and train them.",
-      "choices": [
-        "Students should identify weak areas honestly and train them.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "True or False: Students should identify weak areas honestly and train them.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should identify weak areas honestly and train them."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Further classes and coaching are logical next steps.",
-      "choices": [
-        "Further classes and coaching are logical next steps.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "True or False: Further classes and coaching are logical next steps.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Further classes and coaching are logical next steps."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Training should be driven by safety and competence, not ego.",
-      "choices": [
-        "Training should be driven by safety and competence, not ego.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "True or False: Training should be driven by safety and competence, not ego.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Training should be driven by safety and competence, not ego."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Owning gear is not the same as maintaining skill.",
-      "choices": [
-        "Owning gear is not the same as maintaining skill.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Owning gear is not the same as maintaining skill."
-    },
-    {
-      "q": "True or False: Owning gear is not the same as maintaining skill.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Owning gear is not the same as maintaining skill."
+      "explanation": "The chapter is about continued, disciplined skill development."
     }
   ],
   "8": [
     {
-      "q": "What does the online portal do according to Lesson 8?",
+      "q": "What is the main purpose of the online portal according to the final lesson?",
       "choices": [
-        "It fully replaces live instructor evaluation",
-        "It prepares students but does not replace live safety verification and performance",
-        "It issues the certificate automatically",
-        "It eliminates the need for range work"
-      ],
-      "answer": 1,
-      "explanation": "Lesson 8 makes this distinction directly."
-    },
-    {
-      "q": "True or False: The online portion prepares students but does not replace live instructor evaluation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "How should a student arrive for the live phase?",
-      "choices": [
-        "With required gear, documents, and reviewed material",
-        "Only with confidence",
-        "Without reviewing weak areas",
-        "Only with a screenshot of the dashboard"
+        "To prepare students for the live class, not replace it",
+        "To replace all instructor observation",
+        "To issue automatic certificates",
+        "To remove the need for safe gun handling in person"
       ],
       "answer": 0,
-      "explanation": "The chapter stresses arriving prepared."
+      "explanation": "Lesson 8 says the portal prepares students but does not replace live evaluation."
     },
     {
-      "q": "True or False: Students should review their weak areas before live class.",
+      "q": "True or False: Passing online quizzes alone is enough to prove safe live-class gun handling.",
       "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
+      "answer": false,
+      "explanation": "The final lesson says live safety and performance still matter."
     },
     {
-      "q": "What matters more in the final lesson than looking fast or experienced?",
+      "q": "Which student attitude best fits final readiness?",
       "choices": [
-        "Humility and safe conduct",
-        "Online quiz score alone",
-        "Owning more gear",
-        "Looking confident on video"
+        "Arrive teachable, reviewed, and honest about weak areas",
+        "Hide confusion so you look experienced",
+        "Rush through prep because the online part is done",
+        "Focus only on gear and ignore mindset"
       ],
       "answer": 0,
-      "explanation": "The chapter emphasizes humility and safety."
+      "explanation": "Humility and honest preparation are central themes of Lesson 8."
     },
     {
-      "q": "True or False: Lesson 8 favors humility and safe conduct over appearances.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which statement best fits Lesson 8?",
+      "q": "What should a student bring to live class?",
       "choices": [
-        "Responsible carry includes knowing when not to carry or handle firearms",
-        "Carrying while impaired proves confidence",
-        "Emotional crisis is unrelated to firearms responsibility",
-        "Fatigue never matters"
+        "Required documents, required safety gear, and reviewed course material",
+        "Only confidence and a firearm",
+        "Nothing except the access code",
+        "Whatever gear seems interesting that morning"
       ],
       "answer": 0,
-      "explanation": "The chapter includes when-not-to-carry guidance."
+      "explanation": "The lesson stresses showing up prepared with the required items."
     },
     {
-      "q": "True or False: Alcohol, drugs, emotional crisis, or extreme fatigue can be reasons not to carry or handle firearms.",
+      "q": "True or False: Responsible carry includes recognizing times when you should not carry or handle firearms.",
       "type": "tf",
       "answer": true,
-      "explanation": "This is directly taught."
+      "explanation": "The final lesson revisits judgment, impairment, and readiness."
     },
     {
-      "q": "What does successful completion mean in Lesson 8?",
+      "q": "Which condition is specifically given as a reason not to carry?",
       "choices": [
-        "Only passing a website",
-        "Safe, lawful, competent performance",
-        "Buying a holster",
-        "Owning a permit"
-      ],
-      "answer": 1,
-      "explanation": "The chapter ties completion to safe lawful competent performance."
-    },
-    {
-      "q": "True or False: Passing the online portal alone is not the same as final course completion.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is taught directly."
-    },
-    {
-      "q": "Why does Lesson 8 revisit mental readiness?",
-      "choices": [
-        "Because final completion should reinforce responsible judgment and crisis awareness",
-        "Because mental wellness only matters before class",
-        "Because legal issues disappear after the quiz",
-        "Because live training is purely mechanical"
+        "Impairment, emotional crisis, or extreme fatigue",
+        "Owning only one holster",
+        "Being new to the city",
+        "Wanting a smaller flashlight"
       ],
       "answer": 0,
-      "explanation": "The chapter revisits judgment and mental readiness as part of responsible completion."
+      "explanation": "The chapter says not to carry when judgment is impaired."
     },
     {
-      "q": "True or False: Final review includes responsible judgment and mental readiness, not just mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This is directly taught."
-    },
-    {
-      "q": "Which answer best matches this lesson point: The online portal prepares students but does not replace live instructor evaluation.",
+      "q": "Why does the course revisit humility at the end?",
       "choices": [
-        "The online portal prepares students but does not replace live instructor evaluation.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Because safe conduct matters more than looking fast or experienced",
+        "Because humility is legally required for a permit",
+        "Because confidence automatically creates skill",
+        "Because final review is only about appearance"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: The online portal prepares students but does not replace live instructor evaluation."
+      "explanation": "The final lesson values safe conduct and teachability over ego."
     },
     {
-      "q": "True or False: The online portal prepares students but does not replace live instructor evaluation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should arrive with required gear, documents, and reviewed material.",
+      "q": "What should a student do with weak areas before live class?",
       "choices": [
-        "Students should arrive with required gear, documents, and reviewed material.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Review them honestly and ask questions",
+        "Ignore them so confidence stays up",
+        "Hide them from the instructor",
+        "Assume the range will fix them automatically"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should arrive with required gear, documents, and reviewed material."
+      "explanation": "Students are told to review weak areas instead of pretending they do not exist."
     },
     {
-      "q": "True or False: Students should arrive with required gear, documents, and reviewed material.",
+      "q": "True or False: Completion means safe, lawful, competent performance, not just clicking through the website.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should arrive with required gear, documents, and reviewed material."
+      "explanation": "The final chapter makes this point directly."
     },
     {
-      "q": "Which answer best matches this lesson point: Humility and safe conduct matter more than looking fast or experienced.",
+      "q": "A student arrives exhausted and emotionally unstable but insists on carrying because they already know the rules. What is the best answer?",
       "choices": [
-        "Humility and safe conduct matter more than looking fast or experienced.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Responsible judgment means knowing when not to carry",
+        "Rules matter more than condition",
+        "Exhaustion affects speed but not judgment",
+        "Only alcohol counts as impairment"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Humility and safe conduct matter more than looking fast or experienced."
+      "explanation": "Lesson 8 links readiness to judgment, impairment, and mental condition."
     },
     {
-      "q": "True or False: Humility and safe conduct matter more than looking fast or experienced.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Humility and safe conduct matter more than looking fast or experienced."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
+      "q": "What does final mental readiness include?",
       "choices": [
-        "Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Safe conduct, lawful thinking, humility, and willingness to slow down",
+        "Acting confident even when confused",
+        "Finishing the portal with no further reflection",
+        "Owning enough accessories"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
+      "explanation": "The chapter defines mental readiness broadly, not as confidence alone."
     },
     {
-      "q": "True or False: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Completion means safe, lawful, competent performance, not merely passing a website.",
+      "q": "Why is instructor verification still necessary after online training?",
       "choices": [
-        "Completion means safe, lawful, competent performance, not merely passing a website.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Because safe handling and live performance must still be observed in person",
+        "Because online lessons have no value",
+        "Because students cannot learn anything online",
+        "Because range work is optional"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Completion means safe, lawful, competent performance, not merely passing a website."
+      "explanation": "Online preparation supports but does not replace live observation."
     },
     {
-      "q": "True or False: Completion means safe, lawful, competent performance, not merely passing a website.",
+      "q": "True or False: Certificates come after successful live completion, not simply after online access.",
       "type": "tf",
       "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Completion means safe, lawful, competent performance, not merely passing a website."
+      "explanation": "The lesson states certificates follow successful live completion."
     },
     {
-      "q": "Which answer best matches this lesson point: Final review reinforces mental readiness and responsible judgment.",
+      "q": "Which statement best matches the final lesson?",
       "choices": [
-        "Final review reinforces mental readiness and responsible judgment.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "The course ends by tying together safety, law, readiness, and honest preparation",
+        "The portal is the whole class and the live part is a formality",
+        "Students should avoid asking questions at the live phase",
+        "Final review is mainly about speed on the draw"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Final review reinforces mental readiness and responsible judgment."
+      "explanation": "Lesson 8 integrates the full course into responsible live-class readiness."
     },
     {
-      "q": "True or False: Final review reinforces mental readiness and responsible judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Final review reinforces mental readiness and responsible judgment."
-    },
-    {
-      "q": "Which answer best matches this lesson point: The online portal prepares students but does not replace live instructor evaluation.",
+      "q": "What is the main goal of the final chapter?",
       "choices": [
-        "The online portal prepares students but does not replace live instructor evaluation.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
+        "Send students into live class prepared, teachable, and safety-focused",
+        "Replace all future training with one final checklist",
+        "Make every student feel like an expert before class",
+        "Turn online scores into automatic permits"
       ],
       "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "True or False: The online portal prepares students but does not replace live instructor evaluation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should arrive with required gear, documents, and reviewed material.",
-      "choices": [
-        "Students should arrive with required gear, documents, and reviewed material.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should arrive with required gear, documents, and reviewed material."
-    },
-    {
-      "q": "True or False: Students should arrive with required gear, documents, and reviewed material.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should arrive with required gear, documents, and reviewed material."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Humility and safe conduct matter more than looking fast or experienced.",
-      "choices": [
-        "Humility and safe conduct matter more than looking fast or experienced.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Humility and safe conduct matter more than looking fast or experienced."
-    },
-    {
-      "q": "True or False: Humility and safe conduct matter more than looking fast or experienced.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Humility and safe conduct matter more than looking fast or experienced."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-      "choices": [
-        "Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
-    },
-    {
-      "q": "True or False: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Completion means safe, lawful, competent performance, not merely passing a website.",
-      "choices": [
-        "Completion means safe, lawful, competent performance, not merely passing a website.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Completion means safe, lawful, competent performance, not merely passing a website."
-    },
-    {
-      "q": "True or False: Completion means safe, lawful, competent performance, not merely passing a website.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Completion means safe, lawful, competent performance, not merely passing a website."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Final review reinforces mental readiness and responsible judgment.",
-      "choices": [
-        "Final review reinforces mental readiness and responsible judgment.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Final review reinforces mental readiness and responsible judgment."
-    },
-    {
-      "q": "True or False: Final review reinforces mental readiness and responsible judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Final review reinforces mental readiness and responsible judgment."
-    },
-    {
-      "q": "Which answer best matches this lesson point: The online portal prepares students but does not replace live instructor evaluation.",
-      "choices": [
-        "The online portal prepares students but does not replace live instructor evaluation.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "True or False: The online portal prepares students but does not replace live instructor evaluation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Students should arrive with required gear, documents, and reviewed material.",
-      "choices": [
-        "Students should arrive with required gear, documents, and reviewed material.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Students should arrive with required gear, documents, and reviewed material."
-    },
-    {
-      "q": "True or False: Students should arrive with required gear, documents, and reviewed material.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Students should arrive with required gear, documents, and reviewed material."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Humility and safe conduct matter more than looking fast or experienced.",
-      "choices": [
-        "Humility and safe conduct matter more than looking fast or experienced.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Humility and safe conduct matter more than looking fast or experienced."
-    },
-    {
-      "q": "True or False: Humility and safe conduct matter more than looking fast or experienced.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Humility and safe conduct matter more than looking fast or experienced."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-      "choices": [
-        "Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
-    },
-    {
-      "q": "True or False: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Do not carry or handle firearms while impaired by alcohol, drugs, emotional crisis, or extreme fatigue."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Completion means safe, lawful, competent performance, not merely passing a website.",
-      "choices": [
-        "Completion means safe, lawful, competent performance, not merely passing a website.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Completion means safe, lawful, competent performance, not merely passing a website."
-    },
-    {
-      "q": "True or False: Completion means safe, lawful, competent performance, not merely passing a website.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Completion means safe, lawful, competent performance, not merely passing a website."
-    },
-    {
-      "q": "Which answer best matches this lesson point: Final review reinforces mental readiness and responsible judgment.",
-      "choices": [
-        "Final review reinforces mental readiness and responsible judgment.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: Final review reinforces mental readiness and responsible judgment."
-    },
-    {
-      "q": "True or False: Final review reinforces mental readiness and responsible judgment.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: Final review reinforces mental readiness and responsible judgment."
-    },
-    {
-      "q": "Which answer best matches this lesson point: The online portal prepares students but does not replace live instructor evaluation.",
-      "choices": [
-        "The online portal prepares students but does not replace live instructor evaluation.",
-        "The opposite of the lesson point",
-        "An unrelated equipment claim",
-        "A statement not taught in the chapter"
-      ],
-      "answer": 0,
-      "explanation": "This item is taken directly from the lesson material: The online portal prepares students but does not replace live instructor evaluation."
-    },
-    {
-      "q": "True or False: The online portal prepares students but does not replace live instructor evaluation.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "This true/false item is supported directly by the chapter material: The online portal prepares students but does not replace live instructor evaluation."
+      "explanation": "The chapter prepares students for safe and honest live completion."
     }
   ]
 };
 
+
+export function shuffleArray(input) {
+  const array = Array.isArray(input) ? [...input] : [];
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+export function randomizeQuestion(question) {
+  if (!question || question.type === 'tf' || !Array.isArray(question.choices)) {
+    return { ...question };
+  }
+
+  const indexedChoices = question.choices.map((choice, index) => ({
+    choice,
+    isCorrect: index === question.answer
+  }));
+
+  const shuffled = shuffleArray(indexedChoices);
+
+  return {
+    ...question,
+    choices: shuffled.map((entry) => entry.choice),
+    answer: shuffled.findIndex((entry) => entry.isCorrect)
+  };
+}
+
+export function getQuizForLesson(lessonNumber, count = null) {
+  const key = String(lessonNumber);
+  const source = Array.isArray(QUIZ_BANK[key]) ? QUIZ_BANK[key] : [];
+  const randomized = shuffleArray(source).map((question) => randomizeQuestion(question));
+  const lesson = LESSONS.find((entry) => Number(entry.lessonNumber) === Number(lessonNumber));
+  const desiredCount = Number.isInteger(count) && count > 0
+    ? count
+    : (lesson?.quizQuestionCount || randomized.length);
+
+  return randomized.slice(0, Math.min(desiredCount, randomized.length));
+}
+
+export function isLessonComplete(progress = {}, lessonNumber) {
+  const key = String(lessonNumber);
+  return Boolean(
+    progress[`lesson${lessonNumber}`] ??
+    progress[key] ??
+    progress?.lessons?.[key]?.completed ??
+    progress?.lessons?.[key]?.passed ??
+    progress?.completedLessons?.includes?.(Number(lessonNumber)) ??
+    progress?.completedLessons?.includes?.(key)
+  );
+}
+
+export function isLessonUnlocked(progress = {}, lessonNumber) {
+  if (Number(lessonNumber) <= 1) return true;
+  return isLessonComplete(progress, Number(lessonNumber) - 1);
+}
+
+export function getOverallProgress(progress = {}, totalLessons = LESSONS.length) {
+  const completed = LESSONS.filter((lesson) => isLessonComplete(progress, lesson.lessonNumber)).length;
+  return {
+    completed,
+    total: totalLessons,
+    ratioText: `${completed}/${totalLessons}`,
+    percent: totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0
+  };
+}
+
 if (typeof window !== 'undefined') {
   window.LESSONS = LESSONS;
   window.QUIZ_BANK = QUIZ_BANK;
+  window.shuffleArray = shuffleArray;
+  window.randomizeQuestion = randomizeQuestion;
+  window.getQuizForLesson = getQuizForLesson;
+  window.isLessonComplete = isLessonComplete;
+  window.isLessonUnlocked = isLessonUnlocked;
+  window.getOverallProgress = getOverallProgress;
 }
