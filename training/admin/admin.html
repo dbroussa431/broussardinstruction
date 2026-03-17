@@ -7,37 +7,69 @@
   <style>
     * { box-sizing: border-box; }
 
+    :root {
+      --bg1: #071327;
+      --bg2: #0b1730;
+      --bg3: #09152a;
+      --panel: rgba(17, 24, 39, 0.82);
+      --panel-border: rgba(255,255,255,0.09);
+      --text: #ffffff;
+      --muted: #cbd5e1;
+      --line: rgba(255,255,255,0.08);
+      --gold: #f59e0b;
+      --darkbtn: #334155;
+      --red: #dc2626;
+      --green: #16a34a;
+      --blue: #2563eb;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
       background:
         radial-gradient(circle at top, rgba(245,158,11,0.20), transparent 32%),
-        linear-gradient(135deg, #071327 0%, #0b1730 45%, #09152a 100%);
-      color: #fff;
+        linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      color: var(--text);
       padding: 24px;
     }
 
     .hidden { display: none !important; }
 
     .shell {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
     .login-card,
-    .panel {
-      background: rgba(17, 24, 39, 0.82);
-      border: 1px solid rgba(255,255,255,0.09);
+    .panel,
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
       border-radius: 22px;
-      padding: 24px;
       box-shadow: 0 24px 60px rgba(0,0,0,0.35);
       backdrop-filter: blur(10px);
     }
 
     .login-wrap {
-      max-width: 460px;
+      max-width: 480px;
       margin: 70px auto;
+    }
+
+    .login-card {
+      padding: 28px;
+    }
+
+    .login-card h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
 
     .field {
@@ -54,22 +86,24 @@
     .field select,
     .field textarea {
       width: 100%;
-      padding: 12px;
-      border-radius: 12px;
+      padding: 13px 14px;
+      border-radius: 14px;
       border: 1px solid #475569;
       background: #0f172a;
       color: white;
       outline: none;
+      font-size: 0.98rem;
     }
 
     .field textarea {
-      min-height: 90px;
+      min-height: 96px;
       resize: vertical;
     }
 
     .field input:focus,
     .field select:focus,
-    .field textarea:focus {
+    .field textarea:focus,
+    .toolbar input:focus {
       border-color: #38bdf8;
       box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
     }
@@ -80,12 +114,19 @@
       padding: 11px 15px;
       font-weight: 800;
       cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
     }
 
-    .btn-primary { background: #f59e0b; color: #111827; }
-    .btn-dark { background: #334155; color: white; }
-    .btn-danger { background: #b91c1c; color: white; }
-    .btn-success { background: #15803d; color: white; }
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .btn-primary { background: var(--gold); color: #111827; }
+    .btn-dark { background: var(--darkbtn); color: white; }
+    .btn-danger { background: var(--red); color: white; }
+    .btn-success { background: var(--green); color: white; }
+    .btn-blue { background: var(--blue); color: white; }
 
     .message {
       margin-top: 12px;
@@ -105,16 +146,73 @@
       flex-wrap: wrap;
     }
 
-    .grid {
+    .topbar h1 {
+      margin: 0;
+      font-size: 3rem;
+      font-weight: 800;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 1250px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-card {
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .content-grid {
       display: grid;
       grid-template-columns: 380px 1fr;
       gap: 20px;
     }
 
-    @media (max-width: 1000px) {
-      .grid {
+    @media (max-width: 1100px) {
+      .content-grid {
         grid-template-columns: 1fr;
       }
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 1.05rem;
     }
 
     .toolbar {
@@ -129,11 +227,12 @@
     .toolbar input {
       width: 320px;
       max-width: 100%;
-      padding: 12px;
-      border-radius: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
       border: 1px solid #475569;
       background: #0f172a;
       color: white;
+      outline: none;
     }
 
     .table-wrap {
@@ -142,20 +241,25 @@
 
     table {
       width: 100%;
-      min-width: 1050px;
+      min-width: 1080px;
       border-collapse: collapse;
     }
 
     th, td {
       text-align: left;
       padding: 12px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid var(--line);
       vertical-align: top;
     }
 
     th {
-      color: #cbd5e1;
+      color: var(--muted);
       font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    td {
+      font-size: 0.96rem;
     }
 
     .code {
@@ -174,13 +278,13 @@
 
     .pill.active { background: rgba(21,128,61,0.25); color: #bbf7d0; }
     .pill.locked { background: rgba(180,83,9,0.24); color: #fde68a; }
-    .pill.expired { background: rgba(185,28,28,0.2); color: #fecaca; }
+    .pill.expired { background: rgba(185,28,28,0.20); color: #fecaca; }
 
     .row-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      margin-top: 4px;
     }
 
     .row-actions button {
@@ -192,10 +296,43 @@
       cursor: pointer;
     }
 
-    .small {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      line-height: 1.5;
+    .side-stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .activity-item {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .activity-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .empty-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .split-line {
+      height: 1px;
+      background: var(--line);
+      margin: 16px 0;
+    }
+
+    .inline-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
     }
   </style>
 </head>
@@ -219,59 +356,121 @@
     <div id="adminView" class="hidden">
       <div class="topbar">
         <h1>BSA Admin Dashboard</h1>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div class="topbar-actions">
           <button id="refreshBtn" class="btn btn-dark">Refresh</button>
           <button id="logoutBtn" class="btn btn-danger">Logout</button>
         </div>
       </div>
 
-      <div class="grid">
-        <div class="panel">
-          <h2>Create Student</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotalStudents">0</div>
+        </div>
 
-          <div class="field">
-            <label for="studentName">Student Name</label>
-            <input id="studentName" type="text" placeholder="John Smith" />
+        <div class="stat-card">
+          <div class="stat-label">Paid Students</div>
+          <div class="stat-value" id="statPaidStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Unpaid Students</div>
+          <div class="stat-value" id="statUnpaidStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Estimated Revenue</div>
+          <div class="stat-value" id="statRevenue">$0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">FULL Accounts</div>
+          <div class="stat-value" id="statFullAccounts">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">FREE Accounts</div>
+          <div class="stat-value" id="statFreeAccounts">0</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="side-stack">
+          <div class="panel">
+            <h2>Create Student</h2>
+
+            <div class="field">
+              <label for="studentName">Student Name</label>
+              <input id="studentName" type="text" placeholder="John Smith" />
+            </div>
+
+            <div class="field">
+              <label for="studentEmail">Student Email</label>
+              <input id="studentEmail" type="email" placeholder="john@email.com" />
+            </div>
+
+            <div class="field">
+              <label for="studentTier">Tier</label>
+              <select id="studentTier">
+                <option value="FULL">FULL</option>
+                <option value="FREE">FREE</option>
+                <option value="BASIC">BASIC</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="studentStatus">Status</label>
+              <select id="studentStatus">
+                <option value="active">active</option>
+                <option value="locked">locked</option>
+                <option value="expired">expired</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="studentPaid">Paid</label>
+              <select id="studentPaid">
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="studentNotes">Notes</label>
+              <textarea id="studentNotes" placeholder="Optional admin notes"></textarea>
+            </div>
+
+            <button id="createStudentBtn" class="btn btn-success">Create Student</button>
+            <div id="createMessage" class="message"></div>
           </div>
 
-          <div class="field">
-            <label for="studentEmail">Student Email</label>
-            <input id="studentEmail" type="email" placeholder="john@email.com" />
-          </div>
+          <div class="panel">
+            <h2>Quick Tracking</h2>
+            <div class="inline-note">This panel gives you a fast pulse on what is happening in the portal right now.</div>
+            <div class="split-line"></div>
 
-          <div class="field">
-            <label for="studentTier">Tier</label>
-            <select id="studentTier">
-              <option value="FULL">FULL</option>
-              <option value="FREE">FREE</option>
-              <option value="BASIC">BASIC</option>
-            </select>
-          </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <strong id="quickNewestStudent">Newest Student: —</strong>
+                <span class="inline-note">Most recently added student record.</span>
+              </div>
 
-          <div class="field">
-            <label for="studentStatus">Status</label>
-            <select id="studentStatus">
-              <option value="active">active</option>
-              <option value="locked">locked</option>
-              <option value="expired">expired</option>
-            </select>
-          </div>
+              <div class="activity-item">
+                <strong id="quickLatestCode">Latest Code: —</strong>
+                <span class="inline-note">Most recently generated visible access code.</span>
+              </div>
 
-          <div class="field">
-            <label for="studentPaid">Paid</label>
-            <select id="studentPaid">
-              <option value="true">true</option>
-              <option value="false">false</option>
-            </select>
-          </div>
+              <div class="activity-item">
+                <strong id="quickPaidRate">Paid Rate: 0%</strong>
+                <span class="inline-note">Percentage of current student records marked paid.</span>
+              </div>
 
-          <div class="field">
-            <label for="studentNotes">Notes</label>
-            <textarea id="studentNotes" placeholder="Optional admin notes"></textarea>
+              <div class="activity-item">
+                <strong id="quickRevenuePerStudent">Revenue / Student: $0</strong>
+                <span class="inline-note">Estimated average revenue per student record.</span>
+              </div>
+            </div>
           </div>
-
-          <button id="createStudentBtn" class="btn btn-success">Create Student</button>
-          <div id="createMessage" class="message"></div>
         </div>
 
         <div class="panel">
