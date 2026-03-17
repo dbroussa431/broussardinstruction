@@ -7,46 +7,88 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const form = document.getElementById("loginForm");
-const input = document.getElementById("accessCode");
-const message = document.getElementById("message");
+const loginForm = document.getElementById("loginForm");
+const accessCodeInput = document.getElementById("accessCode");
+const loginBtn = document.getElementById("loginBtn");
+const messageEl = document.getElementById("message");
 
-function normalize(v) {
-  return String(v || "").trim().toUpperCase();
+function normalizeCode(value) {
+  return String(value || "").trim().toUpperCase();
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+function showMessage(text, type = "") {
+  messageEl.textContent = text;
+  messageEl.className = `message ${type}`.trim();
+}
 
-  const code = normalize(input.value);
-
-  if (!code) {
-    message.textContent = "Enter code";
-    return;
-  }
-
+async function findStudentByCode(accessCode) {
   const q = query(
     collection(db, "portalStudents"),
-    where("accessCode", "==", code),
+    where("accessCode", "==", accessCode),
     limit(1)
   );
 
   const snap = await getDocs(q);
+  if (snap.empty) return null;
 
-  if (snap.empty) {
-    message.textContent = "Invalid code";
+  const docSnap = snap.docs[0];
+  return {
+    id: docSnap.id,
+    ...docSnap.data()
+  };
+}
+
+function saveSession(student) {
+  sessionStorage.setItem("bsaLoggedIn", "true");
+  sessionStorage.setItem("bsaStudentId", student.studentId || student.id || "");
+  sessionStorage.setItem("bsaAccessCode", student.accessCode || "");
+  sessionStorage.setItem("bsaTier", student.tier || "");
+  sessionStorage.setItem("bsaPortalStatus", student.status || "");
+  sessionStorage.setItem("bsaStudentName", student.name || "");
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  showMessage("");
+
+  const code = normalizeCode(accessCodeInput.value);
+
+  if (!code) {
+    showMessage("Please enter your access code.", "error");
     return;
   }
 
-  const student = snap.docs[0].data();
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Checking...";
 
-  if ((student.status || "").toLowerCase() !== "active") {
-    message.textContent = "Code not active";
-    return;
+  try {
+    const student = await findStudentByCode(code);
+
+    if (!student) {
+      showMessage("Invalid access code.", "error");
+      return;
+    }
+
+    const status = String(student.status || "").toLowerCase();
+    if (status !== "active") {
+      showMessage("This code is not active.", "error");
+      return;
+    }
+
+    saveSession(student);
+    showMessage("Login successful. Redirecting...", "success");
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Login failed:", error);
+    showMessage("Unable to log in right now. Please try again.", "error");
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Enter Portal";
   }
+}
 
-  sessionStorage.setItem("studentId", snap.docs[0].id);
-  sessionStorage.setItem("accessCode", code);
+loginForm.addEventListener("submit", handleLogin);
 
-  window.location.href = "dashboard.html";
+accessCodeInput.addEventListener("input", () => {
+  accessCodeInput.value = normalizeCode(accessCodeInput.value);
 });
