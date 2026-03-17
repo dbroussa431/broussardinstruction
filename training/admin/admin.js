@@ -1,477 +1,420 @@
-import { app, auth, db } from "../js/firebase-config.js";
-import {
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/portal.css" />
+  <style>
+    * { box-sizing: border-box; }
 
-import {
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  serverTimestamp,
-  writeBatch,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* =========================
-   DOM
-========================= */
-const loginView = document.getElementById("loginView");
-const adminApp = document.getElementById("adminApp");
-
-const adminEmail = document.getElementById("adminEmail");
-const adminPassword = document.getElementById("adminPassword");
-const adminLoginBtn = document.getElementById("adminLoginBtn");
-const loginMessage = document.getElementById("loginMessage");
-
-const refreshBtn = document.getElementById("refreshBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const studentName = document.getElementById("studentName");
-const studentEmail = document.getElementById("studentEmail");
-const studentTier = document.getElementById("studentTier");
-const studentStatus = document.getElementById("studentStatus");
-const studentPaid = document.getElementById("studentPaid");
-const studentNotes = document.getElementById("studentNotes");
-const createStudentBtn = document.getElementById("createStudentBtn");
-const clearFormBtn = document.getElementById("clearFormBtn");
-const createMessage = document.getElementById("createMessage");
-
-const searchInput = document.getElementById("searchInput");
-const studentsTableBody = document.getElementById("studentsTableBody");
-const tableMessage = document.getElementById("tableMessage");
-
-/* =========================
-   State
-========================= */
-let allStudents = [];
-
-/* =========================
-   Helpers
-========================= */
-function showMessage(el, text, type = "") {
-  el.textContent = text;
-  el.className = `message ${type}`.trim();
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function slugifyName(name) {
-  return String(name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 30);
-}
-
-function makeStudentId(name) {
-  const base = slugifyName(name) || "student";
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `${base}-${Date.now()}-${rand}`;
-}
-
-function normalizeTier(tier) {
-  return String(tier || "FULL").trim().toUpperCase();
-}
-
-function normalizeStatus(status) {
-  const value = String(status || "active").trim().toLowerCase();
-  if (["active", "locked", "expired"].includes(value)) return value;
-  return "active";
-}
-
-function generateAccessCode(tier = "FULL") {
-  const cleanTier = normalizeTier(tier);
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `BSA-${cleanTier}-${rand}`;
-}
-
-function formatDate(value) {
-  try {
-    if (!value) return "—";
-
-    if (typeof value?.toDate === "function") {
-      return value.toDate().toLocaleString();
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1220;
+      color: #fff;
     }
 
-    if (value instanceof Date) {
-      return value.toLocaleString();
+    .hidden { display: none !important; }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    return new Date(value).toLocaleString();
-  } catch {
-    return "—";
-  }
-}
+    .card {
+      width: 100%;
+      max-width: 540px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.26);
+    }
 
-function clearCreateForm() {
-  studentName.value = "";
-  studentEmail.value = "";
-  studentTier.value = "FULL";
-  studentStatus.value = "active";
-  studentPaid.value = "true";
-  studentNotes.value = "";
-  showMessage(createMessage, "");
-}
+    .card h2 {
+      margin-top: 0;
+    }
 
-function getPaidValue() {
-  return studentPaid.value === "true";
-}
+    .field {
+      margin-bottom: 14px;
+    }
 
-function statusPillClass(status) {
-  const s = normalizeStatus(status);
-  return s;
-}
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
 
-function buildSearchBlob(student) {
-  return [
-    student.name,
-    student.email,
-    student.accessCode,
-    student.tier,
-    student.status,
-    student.studentId
-  ].join(" ").toLowerCase();
-}
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #475569;
+      background: #111827;
+      color: white;
+      outline: none;
+    }
 
-/* =========================
-   Auth
-========================= */
-async function handleAdminLogin() {
-  showMessage(loginMessage, "");
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
-  const email = adminEmail.value.trim();
-  const password = adminPassword.value;
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
+    }
 
-  if (!email || !password) {
-    showMessage(loginMessage, "Enter email and password.", "error");
-    return;
-  }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
 
-  adminLoginBtn.disabled = true;
-  adminLoginBtn.textContent = "Signing In...";
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    showMessage(loginMessage, "Signed in.", "success");
-  } catch (error) {
-    console.error("Admin login failed:", error);
-    showMessage(loginMessage, error.message || "Login failed.", "error");
-  } finally {
-    adminLoginBtn.disabled = false;
-    adminLoginBtn.textContent = "Sign In";
-  }
-}
+    .btn-primary { background: #f59e0b; color: #111827; }
+    .btn-dark { background: #334155; color: white; }
+    .btn-danger { background: #b91c1c; color: white; }
+    .btn-success { background: #15803d; color: white; }
 
-async function handleLogout() {
-  await signOut(auth);
-}
+    .message {
+      margin-top: 12px;
+      min-height: 22px;
+      font-size: 0.94rem;
+    }
 
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    loginView.style.display = "none";
-    adminApp.style.display = "block";
-    await loadStudents();
-  } else {
-    loginView.style.display = "block";
-    adminApp.style.display = "none";
-    studentsTableBody.innerHTML = `<tr><td colspan="8">Please sign in.</td></tr>`;
-  }
-});
+    .message.error { color: #fecaca; }
+    .message.success { color: #bbf7d0; }
 
-/* =========================
-   Firestore CRUD
-========================= */
-async function createStudent() {
-  showMessage(createMessage, "");
-  const name = studentName.value.trim();
-  const email = studentEmail.value.trim();
-  const tier = normalizeTier(studentTier.value);
-  const status = normalizeStatus(studentStatus.value);
-  const paid = getPaidValue();
-  const notes = studentNotes.value.trim();
+    .app-shell {
+      min-height: 100vh;
+    }
 
-  if (!name) {
-    showMessage(createMessage, "Student name is required.", "error");
-    return;
-  }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: #111827;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-  const studentId = makeStudentId(name);
-  const accessCode = generateAccessCode(tier);
+    .topbar h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
 
-  createStudentBtn.disabled = true;
-  createStudentBtn.textContent = "Creating...";
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-  try {
-    const batch = writeBatch(db);
+    .wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px;
+    }
 
-    const portalStudentRef = doc(db, "portalStudents", studentId);
-    const portalAccessRef = doc(db, "portalAccess", studentId);
+    .grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 20px;
+    }
 
-    batch.set(portalStudentRef, {
-      studentId,
-      name,
-      email,
-      paid,
-      status,
-      tier,
-      accessCode,
-      notes,
-      completedLessons: [],
-      progress: {},
-      progressLabel: "Not Started",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+    @media (max-width: 1020px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-    batch.set(portalAccessRef, {
-      studentId,
-      accessCode,
-      status,
-      tier,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+    .panel {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+    }
 
-    await batch.commit();
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+    }
 
-    showMessage(
-      createMessage,
-      `Student created successfully. Access code: ${accessCode}`,
-      "success"
-    );
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
 
-    clearCreateForm();
-    await loadStudents();
-  } catch (error) {
-    console.error("Create student failed:", error);
-    showMessage(createMessage, error.message || "Failed to create student.", "error");
-  } finally {
-    createStudentBtn.disabled = false;
-    createStudentBtn.textContent = "Create Student";
-  }
-}
+    .toolbar input {
+      width: 360px;
+      max-width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #475569;
+      background: #111827;
+      color: white;
+    }
 
-async function loadStudents() {
-  showMessage(tableMessage, "");
-  studentsTableBody.innerHTML = `<tr><td colspan="8">Loading students...</td></tr>`;
+    .table-wrap {
+      overflow-x: auto;
+    }
 
-  try {
-    const q = query(collection(db, "portalStudents"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1280px;
+    }
 
-    allStudents = snap.docs.map((d) => ({
-      id: d.id,
-      ...d.data()
-    }));
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      vertical-align: top;
+    }
 
-    renderStudents();
-  } catch (error) {
-    console.error("Load students failed:", error);
-    studentsTableBody.innerHTML = `<tr><td colspan="8">Failed to load students.</td></tr>`;
-    showMessage(tableMessage, error.message || "Unable to load students.", "error");
-  }
-}
+    th {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
 
-function renderStudents() {
-  const term = searchInput.value.trim().toLowerCase();
+    td {
+      font-size: 0.94rem;
+    }
 
-  const filtered = !term
-    ? allStudents
-    : allStudents.filter((student) => buildSearchBlob(student).includes(term));
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
 
-  if (!filtered.length) {
-    studentsTableBody.innerHTML = `<tr><td colspan="8">No students found.</td></tr>`;
-    return;
-  }
+    .pill.active { background: rgba(21,128,61,0.25); color: #bbf7d0; }
+    .pill.locked { background: rgba(180,83,9,0.24); color: #fde68a; }
+    .pill.expired { background: rgba(185,28,28,0.2); color: #fecaca; }
 
-  studentsTableBody.innerHTML = filtered.map((student) => {
-    const status = normalizeStatus(student.status);
-    const tier = normalizeTier(student.tier);
-    const paid = student.paid ? "true" : "false";
+    .code {
+      font-family: Consolas, monospace;
+      color: #fde68a;
+      font-weight: 800;
+      word-break: break-word;
+    }
 
-    return `
-      <tr>
-        <td>
-          <div><strong>${escapeHtml(student.name || "—")}</strong></div>
-          <div>${escapeHtml(student.email || "—")}</div>
-        </td>
-        <td>
-          <div class="code">${escapeHtml(student.accessCode || "—")}</div>
-        </td>
-        <td>
-          <span class="pill ${statusPillClass(status)}">${escapeHtml(status)}</span>
-        </td>
-        <td>${escapeHtml(tier)}</td>
-        <td>${escapeHtml(paid)}</td>
-        <td>${escapeHtml(student.studentId || student.id)}</td>
-        <td>${escapeHtml(formatDate(student.createdAt))}</td>
-        <td>
-          <div class="row-actions">
-            <button class="btn-success" data-action="save" data-id="${escapeHtml(student.id)}">Save</button>
-            <button class="btn-dark" data-action="regen" data-id="${escapeHtml(student.id)}">New Code</button>
-            <button class="btn-danger" data-action="delete" data-id="${escapeHtml(student.id)}">Delete</button>
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mini-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(110px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mini-grid select,
+    .mini-grid input,
+    .mini-grid-2 input {
+      width: 100%;
+      padding: 9px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+      background: #111827;
+      color: white;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .row-actions button {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .muted {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loginScreen" class="screen">
+    <div class="card">
+      <h2>Admin Sign In</h2>
+
+      <div class="field">
+        <label for="adminEmail">Firebase Admin Email</label>
+        <input type="email" id="adminEmail" autocomplete="username" />
+      </div>
+
+      <div class="field">
+        <label for="adminPassword">Firebase Admin Password</label>
+        <input type="password" id="adminPassword" autocomplete="current-password" />
+      </div>
+
+      <div class="field">
+        <label for="bossCode">Boss Code</label>
+        <input type="password" id="bossCode" placeholder="Enter admin code" autocomplete="off" />
+      </div>
+
+      <div class="actions">
+        <button id="signInBtn" class="btn btn-primary">Sign In</button>
+      </div>
+
+      <div id="loginMessage" class="message"></div>
+
+      <p class="muted">
+        This dashboard requires both your Firebase admin sign-in and the BSA boss code.
+      </p>
+    </div>
+  </div>
+
+  <div id="adminApp" class="app-shell hidden">
+    <div class="topbar">
+      <h1>Broussard Shooting Academy Admin Dashboard</h1>
+      <div class="topbar-actions">
+        <button id="refreshBtn" class="btn btn-dark">Refresh</button>
+        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="grid">
+        <div class="panel">
+          <h2>Create Student</h2>
+
+          <div class="field">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" placeholder="John Smith" />
           </div>
 
-          <div class="mini-edit">
-            <select data-field="status" data-id="${escapeHtml(student.id)}">
-              <option value="active" ${status === "active" ? "selected" : ""}>active</option>
-              <option value="locked" ${status === "locked" ? "selected" : ""}>locked</option>
-              <option value="expired" ${status === "expired" ? "selected" : ""}>expired</option>
-            </select>
+          <div class="field">
+            <label for="studentEmail">Student Email</label>
+            <input type="email" id="studentEmail" placeholder="john@email.com" />
+          </div>
 
-            <select data-field="tier" data-id="${escapeHtml(student.id)}">
-              <option value="FULL" ${tier === "FULL" ? "selected" : ""}>FULL</option>
-              <option value="FREE" ${tier === "FREE" ? "selected" : ""}>FREE</option>
-              <option value="BASIC" ${tier === "BASIC" ? "selected" : ""}>BASIC</option>
-            </select>
-
-            <select data-field="paid" data-id="${escapeHtml(student.id)}">
-              <option value="true" ${paid === "true" ? "selected" : ""}>true</option>
-              <option value="false" ${paid === "false" ? "selected" : ""}>false</option>
+          <div class="field">
+            <label for="studentTier">Tier</label>
+            <select id="studentTier">
+              <option value="FULL">FULL</option>
+              <option value="FREE">FREE</option>
+              <option value="BASIC">BASIC</option>
             </select>
           </div>
-        </td>
-      </tr>
-    `;
-  }).join("");
-}
 
-async function saveStudent(studentId) {
-  const statusSelect = document.querySelector(`select[data-field="status"][data-id="${CSS.escape(studentId)}"]`);
-  const tierSelect = document.querySelector(`select[data-field="tier"][data-id="${CSS.escape(studentId)}"]`);
-  const paidSelect = document.querySelector(`select[data-field="paid"][data-id="${CSS.escape(studentId)}"]`);
+          <div class="field">
+            <label for="studentStatus">Portal Status</label>
+            <select id="studentStatus">
+              <option value="active">active</option>
+              <option value="locked">locked</option>
+              <option value="expired">expired</option>
+            </select>
+          </div>
 
-  if (!statusSelect || !tierSelect || !paidSelect) return;
+          <div class="field">
+            <label for="studentPaid">Paid</label>
+            <select id="studentPaid">
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+          </div>
 
-  const status = normalizeStatus(statusSelect.value);
-  const tier = normalizeTier(tierSelect.value);
-  const paid = paidSelect.value === "true";
+          <div class="field">
+            <label for="studentProgressLabel">Progress Label</label>
+            <input type="text" id="studentProgressLabel" placeholder="Not Started" />
+          </div>
 
-  try {
-    const batch = writeBatch(db);
+          <div class="field">
+            <label for="studentNotes">Admin Notes</label>
+            <textarea id="studentNotes" placeholder="Notes, comments, payment details, etc."></textarea>
+          </div>
 
-    const privateRef = doc(db, "portalStudents", studentId);
-    const publicRef = doc(db, "portalAccess", studentId);
+          <div class="actions">
+            <button id="createStudentBtn" class="btn btn-success">Create Student</button>
+            <button id="clearFormBtn" class="btn btn-dark">Clear</button>
+          </div>
 
-    batch.update(privateRef, {
-      status,
-      tier,
-      paid,
-      updatedAt: serverTimestamp()
-    });
+          <div id="createMessage" class="message"></div>
+        </div>
 
-    batch.update(publicRef, {
-      status,
-      tier,
-      updatedAt: serverTimestamp()
-    });
+        <div class="panel">
+          <div class="toolbar">
+            <div>
+              <h2 style="margin:0;">Students</h2>
+              <div class="muted">Private records stay in <strong>portalStudents</strong>. Login-only fields sync to <strong>portalAccess</strong>.</div>
+            </div>
 
-    await batch.commit();
-    showMessage(tableMessage, "Student updated.", "success");
-    await loadStudents();
-  } catch (error) {
-    console.error("Save student failed:", error);
-    showMessage(tableMessage, error.message || "Failed to save student.", "error");
-  }
-}
+            <input type="text" id="searchInput" placeholder="Search name, email, code, status, tier..." />
+          </div>
 
-async function regenerateStudentCode(studentId) {
-  const student = allStudents.find((s) => s.id === studentId);
-  if (!student) return;
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name / Email</th>
+                  <th>Access Code</th>
+                  <th>Status</th>
+                  <th>Tier</th>
+                  <th>Paid</th>
+                  <th>Progress</th>
+                  <th>Completed Lessons</th>
+                  <th>Student ID</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <tr>
+                  <td colspan="9">Loading students...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-  const newCode = generateAccessCode(student.tier || "FULL");
+          <div id="tableMessage" class="message"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  try {
-    const batch = writeBatch(db);
-
-    const privateRef = doc(db, "portalStudents", studentId);
-    const publicRef = doc(db, "portalAccess", studentId);
-
-    batch.update(privateRef, {
-      accessCode: newCode,
-      updatedAt: serverTimestamp()
-    });
-
-    batch.update(publicRef, {
-      accessCode: newCode,
-      updatedAt: serverTimestamp()
-    });
-
-    await batch.commit();
-    showMessage(tableMessage, `New code generated: ${newCode}`, "success");
-    await loadStudents();
-  } catch (error) {
-    console.error("Regenerate code failed:", error);
-    showMessage(tableMessage, error.message || "Failed to generate new code.", "error");
-  }
-}
-
-async function deleteStudent(studentId) {
-  const student = allStudents.find((s) => s.id === studentId);
-  const label = student?.name || studentId;
-
-  const ok = window.confirm(`Delete student "${label}"?\n\nThis removes both private and access records.`);
-  if (!ok) return;
-
-  try {
-    const batch = writeBatch(db);
-    batch.delete(doc(db, "portalStudents", studentId));
-    batch.delete(doc(db, "portalAccess", studentId));
-    await batch.commit();
-
-    showMessage(tableMessage, "Student deleted.", "success");
-    await loadStudents();
-  } catch (error) {
-    console.error("Delete student failed:", error);
-    showMessage(tableMessage, error.message || "Failed to delete student.", "error");
-  }
-}
-
-/* =========================
-   Events
-========================= */
-adminLoginBtn.addEventListener("click", handleAdminLogin);
-
-adminPassword.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") handleAdminLogin();
-});
-
-logoutBtn.addEventListener("click", handleLogout);
-refreshBtn.addEventListener("click", loadStudents);
-
-createStudentBtn.addEventListener("click", createStudent);
-clearFormBtn.addEventListener("click", clearCreateForm);
-
-searchInput.addEventListener("input", renderStudents);
-
-studentsTableBody.addEventListener("click", async (e) => {
-  const button = e.target.closest("button[data-action]");
-  if (!button) return;
-
-  const action = button.dataset.action;
-  const studentId = button.dataset.id;
-
-  if (!studentId) return;
-
-  if (action === "save") {
-    await saveStudent(studentId);
-  } else if (action === "regen") {
-    await regenerateStudentCode(studentId);
-  } else if (action === "delete") {
-    await deleteStudent(studentId);
-  }
-});
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
