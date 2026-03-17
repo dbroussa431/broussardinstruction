@@ -3,12 +3,12 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "PASTE_REAL_API_KEY_HERE",
+  authDomain: "bsa-training-admin.firebaseapp.com",
+  projectId: "bsa-training-admin",
+  storageBucket: "bsa-training-admin.firebasestorage.app",
+  messagingSenderId: "972595893407",
+  appId: "1:972595893407:web:f415a0f24602bd9603beaa"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -16,4 +16,3 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 export { app, auth, db };
-
