@@ -3,7 +3,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "PASTE_REAL_API_KEY_HERE",
+  apiKey: "AIzaSyCF3y6cr25Ls9MKM2YPJLHJEAgA3PzRp-o",
   authDomain: "bsa-training-admin.firebaseapp.com",
   projectId: "bsa-training-admin",
   storageBucket: "bsa-training-admin.firebasestorage.app",
