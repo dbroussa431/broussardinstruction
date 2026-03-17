@@ -8,12 +8,12 @@ const TOTAL_LESSONS = 8;
 
 const lessonCatalog = [
   { id: "lesson1", title: "Lesson 1 - Firearm Safety Foundations", description: "Core safety rules and safe handling.", href: "lessons/lesson1.html" },
-  { id: "lesson2", title: "Lesson 2 - Types of Handguns and Parts", description: "Revolvers, pistols, and the major parts.", href: "lessons/lesson2.html" },
+  { id: "lesson2", title: "Lesson 2 - Types of Handguns and Parts", description: "Revolvers, pistols, and major parts.", href: "lessons/lesson2.html" },
   { id: "lesson3", title: "Lesson 3 - Ammunition Knowledge", description: "Cartridge basics, caliber, and ammo safety.", href: "lessons/lesson3.html" },
-  { id: "lesson4", title: "Lesson 4 - Fundamentals of Marksmanship", description: "Grip, stance, sight picture, and trigger press.", href: "lessons/lesson4.html" },
+  { id: "lesson4", title: "Lesson 4 - Fundamentals of Marksmanship", description: "Grip, stance, sights, and trigger press.", href: "lessons/lesson4.html" },
   { id: "lesson5", title: "Lesson 5 - Loading, Unloading, and Malfunctions", description: "Safe loading and malfunction handling.", href: "lessons/lesson5.html" },
   { id: "lesson6", title: "Lesson 6 - Cleaning, Storage, and Responsibility", description: "Maintenance, storage, and safe ownership.", href: "lessons/lesson6.html" },
-  { id: "lesson7", title: "Lesson 7 - Law, Judgment, and Defensive Mindset", description: "Mindset, law, and decision-making.", href: "lessons/lesson7.html" },
+  { id: "lesson7", title: "Lesson 7 - Law, Judgment, and Defensive Mindset", description: "Mindset, law, and responsible decisions.", href: "lessons/lesson7.html" },
   { id: "lesson8", title: "Lesson 8 - Final Review and Readiness", description: "Course wrap-up and readiness review.", href: "lessons/lesson8.html" }
 ];
 
@@ -32,7 +32,7 @@ const progressLabelText = document.getElementById("progressLabelText");
 const progressFill = document.getElementById("progressFill");
 const completedCountValue = document.getElementById("completedCountValue");
 const totalLessonsValue = document.getElementById("totalLessonsValue");
-const completionPercentValue = document.getElementById("completionPercentValue");
+const timeSpentValue = document.getElementById("timeSpentValue");
 const lessonsGrid = document.getElementById("lessonsGrid");
 
 const backToLoginBtn = document.getElementById("backToLoginBtn");
@@ -40,12 +40,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 
 function clearSession() {
-  sessionStorage.removeItem("bsaLoggedIn");
-  sessionStorage.removeItem("bsaStudentId");
-  sessionStorage.removeItem("bsaAccessCode");
-  sessionStorage.removeItem("bsaTier");
-  sessionStorage.removeItem("bsaPortalStatus");
-  sessionStorage.removeItem("bsaStudentName");
+  sessionStorage.clear();
 }
 
 function getSession() {
@@ -79,17 +74,38 @@ function normalizeStatus(value) {
 }
 
 function getCompletedLessons(student) {
-  if (Array.isArray(student.completedLessons)) {
-    return student.completedLessons.map(v => String(v).trim().toLowerCase());
+  if (Array.isArray(student.completedLessons) && student.completedLessons.length) {
+    return student.completedLessons
+      .map(v => String(v).trim().toLowerCase())
+      .filter(v => /^lesson[1-8]$/.test(v));
   }
 
   if (student.progress && typeof student.progress === "object") {
     return Object.keys(student.progress)
       .filter(key => student.progress[key] === true)
-      .map(key => String(key).trim().toLowerCase());
+      .map(key => String(key).trim().toLowerCase())
+      .filter(v => /^lesson[1-8]$/.test(v));
   }
 
   return [];
+}
+
+function getTimeSpentSeconds(student) {
+  if (typeof student.totalTimeSpentSeconds === "number") return student.totalTimeSpentSeconds;
+  if (typeof student.timeSpentSeconds === "number") return student.timeSpentSeconds;
+  if (typeof student.totalSecondsSpent === "number") return student.totalSecondsSpent;
+  if (typeof student.minutesSpent === "number") return student.minutesSpent * 60;
+  return 0;
+}
+
+function formatSeconds(seconds) {
+  const total = Math.max(0, Math.floor(seconds || 0));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+
+  if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`;
+  if (hours > 0) return `${hours}h`;
+  return `${minutes}m`;
 }
 
 function computeLessonStates(completedLessons, studentStatus) {
@@ -119,9 +135,7 @@ function computeLessonStates(completedLessons, studentStatus) {
   });
 }
 
-function renderLessons(lessonStates, studentStatus) {
-  const normalizedStatus = normalizeStatus(studentStatus);
-
+function renderLessons(lessonStates) {
   lessonsGrid.innerHTML = lessonStates.map((lesson) => {
     let pillClass = "locked";
     let pillText = "Locked";
@@ -129,17 +143,14 @@ function renderLessons(lessonStates, studentStatus) {
     if (lesson.completed) {
       pillClass = "completed";
       pillText = "Completed";
-    } else if (lesson.unlocked && normalizedStatus === "active") {
+    } else if (lesson.unlocked) {
       pillClass = "active";
       pillText = "Ready";
-    } else if (normalizedStatus === "expired") {
-      pillClass = "expired";
-      pillText = "Expired";
     }
 
     const actionHtml = lesson.completed
       ? `<a class="go-btn" href="${lesson.href}">Review Lesson</a>`
-      : lesson.unlocked && normalizedStatus === "active"
+      : lesson.unlocked
         ? `<a class="go-btn" href="${lesson.href}">Start Lesson</a>`
         : `<button class="disabled-btn" type="button" disabled>Locked</button>`;
 
@@ -187,25 +198,25 @@ async function loadDashboard() {
     const status = normalizeStatus(data.status || session.status);
     const completedLessons = getCompletedLessons(data);
     const completedCount = completedLessons.length;
-    const percent = Math.round((completedCount / TOTAL_LESSONS) * 100);
+    const timeSpent = getTimeSpentSeconds(data);
 
     welcomeTitle.textContent = `Welcome, ${studentName}`;
     studentNameValue.textContent = studentName;
-    accessCodeValue.textContent = storedCode || sessionCode;
+    accessCodeValue.textContent = storedCode;
     tierValue.textContent = tier || "—";
     statusValue.textContent = status;
-    progressLabelText.textContent = data.progressLabel || `Completed ${completedCount} of ${TOTAL_LESSONS} lessons`;
-    progressFill.style.width = `${percent}%`;
+    progressLabelText.textContent = `Completed ${completedCount} of ${TOTAL_LESSONS} lessons`;
+    progressFill.style.width = `${Math.round((completedCount / TOTAL_LESSONS) * 100)}%`;
     completedCountValue.textContent = String(completedCount);
     totalLessonsValue.textContent = String(TOTAL_LESSONS);
-    completionPercentValue.textContent = `${percent}%`;
+    timeSpentValue.textContent = formatSeconds(timeSpent);
 
     const lessonStates = computeLessonStates(completedLessons, status);
-    renderLessons(lessonStates, status);
+    renderLessons(lessonStates);
 
     showDashboard();
   } catch (error) {
-    console.error("Dashboard load error:", error);
+    console.error(error);
     showError("Unable to load dashboard", "There was a problem loading your training dashboard.");
   }
 }
