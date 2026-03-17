@@ -61,6 +61,33 @@
           <div id="metricRevenue" class="metric-big">$0</div>
           <div class="metric-bar metric-bar-gold"></div>
         </div>
+
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Ready for Live</span>
+            <span id="metricReadySmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricReady" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
+
+        <div class="metric-card metric-card-green">
+          <div class="metric-head">
+            <span>Live Complete</span>
+            <span id="metricLiveCompleteSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricLiveComplete" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-green"></div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Avg Online Time</span>
+            <span id="metricAvgTimeSmall" class="metric-mini">0m</span>
+          </div>
+          <div id="metricAvgTime" class="metric-big">0m</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
       </section>
 
       <section class="quick-actions">
@@ -68,12 +95,7 @@
         <button id="reloadBtn" class="btn btn-dark" type="button">Refresh Records</button>
 
         <div class="quick-filter-row">
-          <input
-            id="searchInput"
-            class="search-input"
-            type="text"
-            placeholder="Search by name, email, or code"
-          />
+          <input id="searchInput" class="search-input" type="text" placeholder="Search by name, email, or code" />
 
           <select id="paymentFilter" class="filter-select">
             <option value="">Payment Statuses</option>
@@ -101,12 +123,7 @@
         <div class="table-toolbar">
           <div class="toolbar-label">Search Records:</div>
 
-          <input
-            id="searchInput2"
-            class="toolbar-input"
-            type="text"
-            placeholder="Search by name, email, or code"
-          />
+          <input id="searchInput2" class="toolbar-input" type="text" placeholder="Search by name, email, or code" />
 
           <select id="paymentFilter2" class="toolbar-select">
             <option value="">All Payment Statuses</option>
@@ -154,7 +171,7 @@
                 <th>Progress</th>
                 <th>Dates</th>
                 <th>Time</th>
-                <th>Eligibility</th>
+                <th>Live Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -193,12 +210,12 @@
             <div id="readinessCompletionDate" style="font-weight:700;">—</div>
           </div>
           <div>
-            <div style="font-size:12px; opacity:.75;">CERTIFICATE STATUS</div>
-            <div id="readinessCertificateStatus" style="font-weight:700;">Not Issued</div>
-          </div>
-          <div>
             <div style="font-size:12px; opacity:.75;">LIVE CLASS STATUS</div>
             <div id="readinessLiveStatus" style="font-weight:700;">Not Ready</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">RANGE STATUS</div>
+            <div id="readinessRangeStatus" style="font-weight:700;">Not Qualified</div>
           </div>
         </div>
 
@@ -295,8 +312,16 @@
           </div>
 
           <div class="field">
-            <label for="certificateIssued">Certificate Issued</label>
-            <select id="certificateIssued">
+            <label for="liveCompleted">Live Class Completed</label>
+            <select id="liveCompleted">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="rangeQualified">Range Qualified</label>
+            <select id="rangeQualified">
               <option value="false">No</option>
               <option value="true">Yes</option>
             </select>
@@ -317,7 +342,7 @@
             <textarea
               id="notes"
               rows="5"
-              placeholder="Optional notes about payment, follow-up, waivers, live session status, etc."
+              placeholder="Optional notes about payment, follow-up, waivers, live session status, range notes, etc."
             ></textarea>
           </div>
         </div>
