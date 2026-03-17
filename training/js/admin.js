@@ -52,6 +52,16 @@ const FIELD_ALIASES = {
   studentForm: ["studentForm"],
   modalTitle: ["modalTitle"],
 
+  studentReadinessPanel: ["studentReadinessPanel"],
+  studentReadinessStatus: ["studentReadinessStatus"],
+  readinessLessonCount: ["readinessLessonCount"],
+  readinessOnlineTime: ["readinessOnlineTime"],
+  readinessStartDate: ["readinessStartDate"],
+  readinessCompletionDate: ["readinessCompletionDate"],
+  readinessCertificateStatus: ["readinessCertificateStatus"],
+  readinessLiveStatus: ["readinessLiveStatus"],
+  studentReadinessNote: ["studentReadinessNote"],
+
   studentName: ["studentName"],
   studentEmail: ["studentEmail"],
   priceTier: ["priceTier"],
@@ -161,8 +171,7 @@ function formatDateForInput(value) {
 
 function formatDateForDisplay(value) {
   const input = formatDateForInput(value);
-  if (!input) return "—";
-  return input;
+  return input || "—";
 }
 
 function dateSortValue(value) {
@@ -228,6 +237,24 @@ function getEligibility(student) {
     text: "Not Eligible",
     className: "eligible-not-ready"
   };
+}
+
+function getReadinessNote(student) {
+  const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
+
+  if (student.certificateIssued) {
+    return "Certificate has already been marked issued for this student.";
+  }
+
+  if (completedLessons >= 8) {
+    return "This student has completed the online prerequisite and is ready for live review / range completion.";
+  }
+
+  if (completedLessons > 0) {
+    return "This student has started the online prerequisite but is not yet ready for live completion.";
+  }
+
+  return "This student has not yet completed the full online prerequisite.";
 }
 
 function normalizeStudent(id, raw = {}) {
@@ -465,8 +492,46 @@ function setSelectValue(selectEl, preferredValue, fallbacks = []) {
   if (options.length) selectEl.value = options[0];
 }
 
+function updateReadinessPanel(student = null) {
+  if (!student) {
+    if (els.studentReadinessStatus) {
+      els.studentReadinessStatus.textContent = "Not Eligible";
+      els.studentReadinessStatus.className = "status-pill eligible-not-ready";
+    }
+    if (els.readinessLessonCount) els.readinessLessonCount.textContent = "0 / 8";
+    if (els.readinessOnlineTime) els.readinessOnlineTime.textContent = "0 min";
+    if (els.readinessStartDate) els.readinessStartDate.textContent = "—";
+    if (els.readinessCompletionDate) els.readinessCompletionDate.textContent = "—";
+    if (els.readinessCertificateStatus) els.readinessCertificateStatus.textContent = "Not Issued";
+    if (els.readinessLiveStatus) els.readinessLiveStatus.textContent = "Not Ready";
+    if (els.studentReadinessNote) els.studentReadinessNote.textContent = "This student has not yet completed the full online prerequisite.";
+    return;
+  }
+
+  const eligibility = getEligibility(student);
+
+  if (els.studentReadinessStatus) {
+    els.studentReadinessStatus.textContent = eligibility.text;
+    els.studentReadinessStatus.className = `status-pill ${eligibility.className}`;
+  }
+
+  if (els.readinessLessonCount) els.readinessLessonCount.textContent = `${student.completedLessons.length} / 8`;
+  if (els.readinessOnlineTime) els.readinessOnlineTime.textContent = minutesToHoursMinutes(student.totalOnlineMinutes);
+  if (els.readinessStartDate) els.readinessStartDate.textContent = formatDateForDisplay(student.startDate);
+  if (els.readinessCompletionDate) els.readinessCompletionDate.textContent = formatDateForDisplay(student.completionDate);
+  if (els.readinessCertificateStatus) els.readinessCertificateStatus.textContent = student.certificateIssued ? "Issued" : "Not Issued";
+  if (els.readinessLiveStatus) {
+    els.readinessLiveStatus.textContent =
+      student.completedLessons.length >= 8
+        ? "Ready for Live Completion"
+        : "Not Ready";
+  }
+  if (els.studentReadinessNote) els.studentReadinessNote.textContent = getReadinessNote(student);
+}
+
 function openModal(student = null) {
   state.editingId = student?.id || null;
+  updateReadinessPanel(student);
 
   if (els.modalTitle) els.modalTitle.textContent = student ? "Edit Student" : "Add Student";
   if (els.studentName) els.studentName.value = student?.name || "";
@@ -518,6 +583,8 @@ function openModal(student = null) {
 
 function closeModal() {
   state.editingId = null;
+  updateReadinessPanel(null);
+
   if (els.studentModalBackdrop) els.studentModalBackdrop.classList.add("hidden");
   if (els.studentForm) els.studentForm.reset();
   if (els.price) els.price.value = tierPrice("FULL");
@@ -771,6 +838,7 @@ async function init() {
   state.initialized = true;
   cacheEls();
   bindEvents();
+  updateReadinessPanel(null);
   await loadStudents();
 }
 
