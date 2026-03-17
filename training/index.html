@@ -23,7 +23,7 @@
 
     .card {
       width: 100%;
-      max-width: 460px;
+      max-width: 470px;
       background: rgba(17, 24, 39, 0.82);
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: 24px;
@@ -32,52 +32,43 @@
       backdrop-filter: blur(10px);
     }
 
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .logo-wrap h1 {
+    h1 {
       margin: 0 0 8px;
       font-size: 1.9rem;
     }
 
-    .logo-wrap p {
-      margin: 0;
+    p {
+      margin: 0 0 18px;
       color: #cbd5e1;
       line-height: 1.5;
-      font-size: 0.96rem;
     }
 
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field label {
+    label {
       display: block;
       margin-bottom: 8px;
       font-weight: 700;
     }
 
-    .field input {
+    input {
       width: 100%;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 14px;
       border: 1px solid #475569;
       background: #0f172a;
-      color: white;
+      color: #fff;
       outline: none;
       font-size: 1rem;
       text-transform: uppercase;
     }
 
-    .field input:focus {
+    input:focus {
       border-color: #38bdf8;
       box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
     }
 
-    .submit-btn {
+    button {
       width: 100%;
+      margin-top: 16px;
       border: none;
       border-radius: 14px;
       padding: 14px;
@@ -86,12 +77,6 @@
       cursor: pointer;
       background: #f59e0b;
       color: #111827;
-      transition: transform 0.15s ease, filter 0.15s ease;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
     }
 
     .message {
@@ -102,36 +87,19 @@
 
     .message.error { color: #fecaca; }
     .message.success { color: #bbf7d0; }
-
-    .helper {
-      margin-top: 16px;
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="logo-wrap">
-      <h1>BSA Training Portal</h1>
-      <p>Enter the access code provided by Broussard Shooting Academy to continue your online training.</p>
-    </div>
+    <h1>BSA Training Portal</h1>
+    <p>Enter your student access code to begin training.</p>
 
     <form id="loginForm">
-      <div class="field">
-        <label for="accessCode">Access Code</label>
-        <input id="accessCode" type="text" placeholder="BSA-FULL-1234" autocomplete="off" required />
-      </div>
-
-      <button class="submit-btn" id="loginBtn" type="submit">Enter Portal</button>
+      <label for="accessCode">Access Code</label>
+      <input id="accessCode" type="text" placeholder="BSA-FULL-1234" autocomplete="off" required />
+      <button id="loginBtn" type="submit">Enter Portal</button>
       <div id="message" class="message"></div>
     </form>
-
-    <div class="helper">
-      If your code does not work, contact Broussard Shooting Academy.
-    </div>
   </div>
 
   <script type="module" src="js/login.js"></script>
