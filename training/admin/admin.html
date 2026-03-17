@@ -90,6 +90,7 @@
             <option value="amountHigh">Highest Amount</option>
             <option value="amountLow">Lowest Amount</option>
             <option value="progressHigh">Highest Progress</option>
+            <option value="minutesHigh">Most Time Logged</option>
           </select>
 
           <button id="filterBtn" class="btn btn-brown" type="button">Filter</button>
@@ -135,6 +136,7 @@
             <option value="amountHigh">Highest Amount</option>
             <option value="amountLow">Lowest Amount</option>
             <option value="progressHigh">Highest Progress</option>
+            <option value="minutesHigh">Most Time Logged</option>
           </select>
 
           <button id="clearFiltersBtn" class="btn btn-light" type="button">Clear</button>
@@ -147,12 +149,12 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Course</th>
-                <th>Price</th>
-                <th>Payment Method</th>
-                <th>Payment Status</th>
-                <th>Portal Status</th>
-                <th>Progress Label</th>
-                <th>Progress %</th>
+                <th>Payment</th>
+                <th>Portal</th>
+                <th>Progress</th>
+                <th>Dates</th>
+                <th>Time</th>
+                <th>Eligibility</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -237,7 +239,6 @@
               <option value="Lesson 6">Lesson 6</option>
               <option value="Lesson 7">Lesson 7</option>
               <option value="Lesson 8">Lesson 8</option>
-              <option value="Quiz Passed">Quiz Passed</option>
               <option value="Completed">Completed</option>
             </select>
           </div>
@@ -279,8 +280,8 @@
             <label for="notes">Notes</label>
             <textarea
               id="notes"
-              rows="4"
-              placeholder="Optional notes about payment, direct pay, waived reason, follow-up, etc."
+              rows="5"
+              placeholder="Optional notes about payment, follow-up, waivers, live session status, etc."
             ></textarea>
           </div>
         </div>
