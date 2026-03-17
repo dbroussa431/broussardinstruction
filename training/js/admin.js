@@ -48,21 +48,21 @@ const FIELD_ALIASES = {
   clearFiltersBtn: ["clearFiltersBtn"],
 
   studentTableBody: ["studentTableBody"],
-  studentModalBackdrop: ["studentModalBackdrop", "studentModal", "studentModalOverlay"],
-  studentForm: ["studentForm", "editStudentForm"],
-  modalTitle: ["modalTitle", "studentModalTitle"],
+  studentModalBackdrop: ["studentModalBackdrop"],
+  studentForm: ["studentForm"],
+  modalTitle: ["modalTitle"],
 
-  studentName: ["studentName", "editStudentName"],
-  studentEmail: ["studentEmail", "editStudentEmail"],
-  priceTier: ["priceTier", "courseTier", "course", "tier"],
-  price: ["price", "studentPrice"],
+  studentName: ["studentName"],
+  studentEmail: ["studentEmail"],
+  priceTier: ["priceTier"],
+  price: ["price"],
   paymentMethod: ["paymentMethod"],
-  paymentStatusSelect: ["paymentStatusSelect", "paymentStatus"],
+  paymentStatusSelect: ["paymentStatusSelect"],
   portalStatus: ["portalStatus"],
   progressLabel: ["progressLabel"],
   progressPercent: ["progressPercent"],
-  startDate: ["startDate", "startedAt"],
-  completionDate: ["completionDate", "completedAt"],
+  startDate: ["startDate"],
+  completionDate: ["completionDate"],
   certificateIssued: ["certificateIssued"],
   courseVersion: ["courseVersion"],
   accessCode: ["accessCode"],
@@ -91,6 +91,14 @@ function generateCode(tier = "FULL") {
   return `BSA-${String(tier).toUpperCase()}-${rand}`;
 }
 
+function normalizeTier(value = "") {
+  const v = String(value).trim().toUpperCase();
+  if (v.includes("FREE")) return "FREE";
+  if (v.includes("DISC")) return "DISC";
+  if (v.includes("FULL")) return "FULL";
+  return v || "FULL";
+}
+
 function tierPrice(tier) {
   switch (normalizeTier(tier)) {
     case "DISC":
@@ -101,14 +109,6 @@ function tierPrice(tier) {
     default:
       return 150;
   }
-}
-
-function normalizeTier(value = "") {
-  const v = String(value).trim().toUpperCase();
-  if (v.includes("FREE")) return "FREE";
-  if (v.includes("DISC")) return "DISC";
-  if (v.includes("FULL")) return "FULL";
-  return v || "FULL";
 }
 
 function normalizePortalStatus(value = "") {
@@ -159,6 +159,12 @@ function formatDateForInput(value) {
   return "";
 }
 
+function formatDateForDisplay(value) {
+  const input = formatDateForInput(value);
+  if (!input) return "—";
+  return input;
+}
+
 function dateSortValue(value) {
   if (!value) return 0;
   if (typeof value === "string") {
@@ -175,15 +181,53 @@ function dateSortValue(value) {
   return 0;
 }
 
-function deriveProgressPercent(completedLessons = []) {
-  if (!Array.isArray(completedLessons) || !completedLessons.length) return 0;
-  return Math.round((completedLessons.length / 8) * 100);
+function escapeHtml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-function deriveProgressLabel(completedLessons = []) {
-  if (!Array.isArray(completedLessons) || !completedLessons.length) return "Not Started";
-  if (completedLessons.length >= 8) return "Completed";
-  return `Lesson ${completedLessons.length} Complete`;
+function minutesToHoursMinutes(totalMinutes = 0) {
+  const mins = Number(totalMinutes || 0);
+  if (!mins || mins < 60) return `${mins || 0} min`;
+  const hours = Math.floor(mins / 60);
+  const rem = mins % 60;
+  return rem ? `${hours}h ${rem}m` : `${hours}h`;
+}
+
+function getEligibility(student) {
+  const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
+  const fullyComplete = completedLessons >= 8;
+  const certificateIssued = !!student.certificateIssued;
+
+  if (certificateIssued) {
+    return {
+      text: "Certificate Issued",
+      className: "eligible-complete"
+    };
+  }
+
+  if (fullyComplete) {
+    return {
+      text: "Ready for Live Completion",
+      className: "eligible-ready"
+    };
+  }
+
+  if (completedLessons > 0) {
+    return {
+      text: "In Progress",
+      className: "eligible-progress"
+    };
+  }
+
+  return {
+    text: "Not Eligible",
+    className: "eligible-not-ready"
+  };
 }
 
 function normalizeStudent(id, raw = {}) {
@@ -191,21 +235,6 @@ function normalizeStudent(id, raw = {}) {
   const tier = normalizeTier(raw.tier || raw.priceTier || "FULL");
   const paymentStatus = normalizePaymentStatus(raw.paymentStatus, !!raw.paid);
   const portalStatus = normalizePortalStatus(raw.status || raw.portalStatus || "active");
-
-  const progressPercent = Number(
-    raw.progressPercent ?? deriveProgressPercent(completedLessons)
-  );
-
-  let progressLabel = String(
-    raw.adminProgressLabel ||
-    raw.progressLabel ||
-    deriveProgressLabel(completedLessons)
-  ).trim();
-
-  if (!progressLabel) progressLabel = "Not Started";
-
-  const startDate = formatDateForInput(raw.startDate || raw.startedAt || "");
-  const completionDate = formatDateForInput(raw.completionDate || raw.completedAt || "");
 
   return {
     id,
@@ -223,10 +252,10 @@ function normalizeStudent(id, raw = {}) {
     paymentMethod: String(raw.paymentMethod || (tier === "FREE" ? "Waived" : "Direct")).trim(),
     paymentStatus,
     portalStatus,
-    progressLabel,
-    progressPercent,
-    startDate,
-    completionDate,
+    progressLabel: String(raw.adminProgressLabel || raw.progressLabel || "Not Started").trim(),
+    progressPercent: Number(raw.progressPercent || 0),
+    startDate: formatDateForInput(raw.startDate || raw.startedAt || ""),
+    completionDate: formatDateForInput(raw.completionDate || raw.completedAt || ""),
     certificateIssued: !!raw.certificateIssued,
     notes: String(raw.notes || "").trim(),
     courseVersion: String(raw.courseVersion || "2026-03").trim(),
@@ -236,30 +265,6 @@ function normalizeStudent(id, raw = {}) {
     completedLessons,
     totalOnlineMinutes: Number(raw.totalOnlineMinutes || 0)
   };
-}
-
-function paymentClass(status) {
-  const s = String(status).toLowerCase();
-  if (s === "paid") return "paid";
-  if (s === "waived") return "waived";
-  if (s === "unpaid") return "unpaid";
-  return "pending";
-}
-
-function portalClass(status) {
-  const s = normalizePortalStatus(status);
-  if (s === "locked") return "locked";
-  if (s === "expired") return "expired";
-  return "active";
-}
-
-function escapeHtml(value = "") {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
 async function loadStudents() {
@@ -292,6 +297,21 @@ function renderMetrics() {
   if (els.metricRevenueSmall) els.metricRevenueSmall.textContent = `$${revenue.toLocaleString()}`;
 }
 
+function paymentClass(status) {
+  const s = String(status).toLowerCase();
+  if (s === "paid") return "paid";
+  if (s === "waived") return "waived";
+  if (s === "unpaid") return "unpaid";
+  return "pending";
+}
+
+function portalClass(status) {
+  const s = normalizePortalStatus(status);
+  if (s === "locked") return "locked";
+  if (s === "expired") return "expired";
+  return "active";
+}
+
 function renderTable() {
   if (!els.studentTableBody) return;
 
@@ -305,24 +325,46 @@ function renderTable() {
   }
 
   els.studentTableBody.innerHTML = state.filtered.map((student) => {
-    const prettyStatus = displayPortalStatus(student.portalStatus);
+    const eligibility = getEligibility(student);
 
     return `
       <tr>
-        <td>${escapeHtml(student.name)}</td>
-        <td>${escapeHtml(student.email)}</td>
-        <td>${escapeHtml(student.course)}</td>
-        <td>$${Number(student.price).toLocaleString()}</td>
-        <td>${escapeHtml(student.paymentMethod)}</td>
-        <td><span class="payment-pill ${paymentClass(student.paymentStatus)}">${escapeHtml(student.paymentStatus)}</span></td>
-        <td><span class="status-pill ${portalClass(student.portalStatus)}">${escapeHtml(prettyStatus)}</span></td>
         <td>
-          <div>${escapeHtml(student.progressLabel)}</div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(student.progressPercent) || 0))}%"></div>
+          <div><strong>${escapeHtml(student.name)}</strong></div>
+          <div style="font-size:12px; opacity:.75;">${escapeHtml(student.accessCode || "No Code")}</div>
+        </td>
+        <td>${escapeHtml(student.email)}</td>
+        <td>
+          <div>${escapeHtml(student.course)}</div>
+          <div style="font-size:12px; opacity:.75;">Tier: ${escapeHtml(student.tier)}</div>
+        </td>
+        <td>
+          <div>$${Number(student.price).toLocaleString()}</div>
+          <div style="margin-top:6px;">
+            <span class="payment-pill ${paymentClass(student.paymentStatus)}">${escapeHtml(student.paymentStatus)}</span>
           </div>
         </td>
-        <td>${Number(student.progressPercent) || 0}%</td>
+        <td>
+          <span class="status-pill ${portalClass(student.portalStatus)}">${escapeHtml(displayPortalStatus(student.portalStatus))}</span>
+        </td>
+        <td>
+          <div>${escapeHtml(student.progressLabel || "Not Started")}</div>
+          <div class="progress-bar" style="margin-top:6px;">
+            <div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(student.progressPercent) || 0))}%"></div>
+          </div>
+          <div style="font-size:12px; margin-top:6px;">${Number(student.progressPercent) || 0}% • ${student.completedLessons.length}/8</div>
+        </td>
+        <td>
+          <div><strong>Start:</strong> ${escapeHtml(formatDateForDisplay(student.startDate))}</div>
+          <div><strong>End:</strong> ${escapeHtml(formatDateForDisplay(student.completionDate))}</div>
+        </td>
+        <td>
+          <div>${escapeHtml(minutesToHoursMinutes(student.totalOnlineMinutes))}</div>
+          <div style="font-size:12px; opacity:.75;">${student.totalOnlineMinutes || 0} min total</div>
+        </td>
+        <td>
+          <span class="status-pill ${eligibility.className}">${escapeHtml(eligibility.text)}</span>
+        </td>
         <td>
           <div class="action-group">
             <button class="btn btn-blue btn-sm" type="button" data-action="edit" data-id="${student.id}">View/Edit</button>
@@ -382,6 +424,9 @@ function applyFilters() {
     case "progressHigh":
       items.sort((a, b) => b.progressPercent - a.progressPercent);
       break;
+    case "minutesHigh":
+      items.sort((a, b) => b.totalOnlineMinutes - a.totalOnlineMinutes);
+      break;
     case "newest":
     default:
       items.sort((a, b) => {
@@ -428,10 +473,7 @@ function openModal(student = null) {
   if (els.studentEmail) els.studentEmail.value = student?.email || "";
 
   if (els.priceTier) {
-    setSelectValue(els.priceTier, student?.tier || "FULL", [
-      normalizeTier(student?.tier || "FULL"),
-      "FULL"
-    ]);
+    setSelectValue(els.priceTier, student?.tier || "FULL", ["FULL"]);
   }
 
   if (els.price) els.price.value = student?.price ?? tierPrice(student?.tier || "FULL");
@@ -462,9 +504,10 @@ function openModal(student = null) {
 
   if (els.courseVersion) els.courseVersion.value = student?.courseVersion || "2026-03";
   if (els.accessCode) els.accessCode.value = student?.accessCode || "";
+
   if (els.notes) {
-    const minutesNote = student?.totalOnlineMinutes ? `\nOnline Minutes: ${student.totalOnlineMinutes}` : "";
-    els.notes.value = `${student?.notes || ""}${minutesNote}`.trim();
+    const timeLine = student?.totalOnlineMinutes ? `Online Minutes: ${student.totalOnlineMinutes}` : "";
+    els.notes.value = [student?.notes || "", timeLine].filter(Boolean).join("\n");
   }
 
   if (els.studentModalBackdrop) {
@@ -584,7 +627,7 @@ function exportCSV() {
   const rows = [[
     "Name", "Email", "Course", "Tier", "Price", "Payment Method", "Payment Status",
     "Portal Status", "Progress Label", "Progress %", "Start Date", "Completion Date",
-    "Total Online Minutes", "Access Code", "Course Version", "Notes"
+    "Total Online Minutes", "Eligibility", "Access Code", "Course Version", "Notes"
   ]];
 
   state.filtered.forEach((student) => {
@@ -602,6 +645,7 @@ function exportCSV() {
       student.startDate,
       student.completionDate,
       student.totalOnlineMinutes || 0,
+      getEligibility(student).text,
       student.accessCode,
       student.courseVersion,
       student.notes
