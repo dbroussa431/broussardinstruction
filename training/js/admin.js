@@ -28,6 +28,12 @@ const FIELD_ALIASES = {
   metricPaidSmall: ["metricPaidSmall"],
   metricRevenue: ["metricRevenue"],
   metricRevenueSmall: ["metricRevenueSmall"],
+  metricReady: ["metricReady"],
+  metricReadySmall: ["metricReadySmall"],
+  metricLiveComplete: ["metricLiveComplete"],
+  metricLiveCompleteSmall: ["metricLiveCompleteSmall"],
+  metricAvgTime: ["metricAvgTime"],
+  metricAvgTimeSmall: ["metricAvgTimeSmall"],
 
   addStudentBtn: ["addStudentBtn"],
   quickAddBtn: ["quickAddBtn"],
@@ -52,14 +58,13 @@ const FIELD_ALIASES = {
   studentForm: ["studentForm"],
   modalTitle: ["modalTitle"],
 
-  studentReadinessPanel: ["studentReadinessPanel"],
   studentReadinessStatus: ["studentReadinessStatus"],
   readinessLessonCount: ["readinessLessonCount"],
   readinessOnlineTime: ["readinessOnlineTime"],
   readinessStartDate: ["readinessStartDate"],
   readinessCompletionDate: ["readinessCompletionDate"],
-  readinessCertificateStatus: ["readinessCertificateStatus"],
   readinessLiveStatus: ["readinessLiveStatus"],
+  readinessRangeStatus: ["readinessRangeStatus"],
   studentReadinessNote: ["studentReadinessNote"],
 
   studentName: ["studentName"],
@@ -73,7 +78,8 @@ const FIELD_ALIASES = {
   progressPercent: ["progressPercent"],
   startDate: ["startDate"],
   completionDate: ["completionDate"],
-  certificateIssued: ["certificateIssued"],
+  liveCompleted: ["liveCompleted"],
+  rangeQualified: ["rangeQualified"],
   courseVersion: ["courseVersion"],
   accessCode: ["accessCode"],
   notes: ["notes"],
@@ -207,34 +213,35 @@ function minutesToHoursMinutes(totalMinutes = 0) {
   return rem ? `${hours}h ${rem}m` : `${hours}h`;
 }
 
-function getEligibility(student) {
+function getLiveStatus(student) {
   const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  const fullyComplete = completedLessons >= 8;
-  const certificateIssued = !!student.certificateIssued;
+  const onlineReady = completedLessons >= 8;
+  const liveCompleted = !!student.liveCompleted;
+  const rangeQualified = !!student.rangeQualified;
 
-  if (certificateIssued) {
+  if (liveCompleted && rangeQualified) {
     return {
-      text: "Certificate Issued",
+      text: "Live + Range Complete",
       className: "eligible-complete"
     };
   }
 
-  if (fullyComplete) {
+  if (onlineReady) {
     return {
-      text: "Ready for Live Completion",
+      text: "Ready for Live Session",
       className: "eligible-ready"
     };
   }
 
   if (completedLessons > 0) {
     return {
-      text: "In Progress",
+      text: "Online In Progress",
       className: "eligible-progress"
     };
   }
 
   return {
-    text: "Not Eligible",
+    text: "Not Ready",
     className: "eligible-not-ready"
   };
 }
@@ -242,19 +249,19 @@ function getEligibility(student) {
 function getReadinessNote(student) {
   const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
 
-  if (student.certificateIssued) {
-    return "Certificate has already been marked issued for this student.";
+  if (student.liveCompleted && student.rangeQualified) {
+    return "This student has completed the online work, live session, and shooting qualification.";
   }
 
   if (completedLessons >= 8) {
-    return "This student has completed the online prerequisite and is ready for live review / range completion.";
+    return "This student has completed the online prerequisite and is ready for the live review and shooting section.";
   }
 
   if (completedLessons > 0) {
-    return "This student has started the online prerequisite but is not yet ready for live completion.";
+    return "This student has started the online prerequisite but is not yet ready for the live section.";
   }
 
-  return "This student has not yet completed the full online prerequisite.";
+  return "This student has not yet completed the online prerequisite.";
 }
 
 function normalizeStudent(id, raw = {}) {
@@ -283,7 +290,8 @@ function normalizeStudent(id, raw = {}) {
     progressPercent: Number(raw.progressPercent || 0),
     startDate: formatDateForInput(raw.startDate || raw.startedAt || ""),
     completionDate: formatDateForInput(raw.completionDate || raw.completedAt || ""),
-    certificateIssued: !!raw.certificateIssued,
+    liveCompleted: !!raw.liveCompleted,
+    rangeQualified: !!raw.rangeQualified,
     notes: String(raw.notes || "").trim(),
     courseVersion: String(raw.courseVersion || "2026-03").trim(),
     paid: paymentStatus === "Paid",
@@ -314,6 +322,12 @@ function renderMetrics() {
     .filter((s) => s.paymentStatus === "Paid")
     .reduce((sum, s) => sum + Number(s.price || 0), 0);
 
+  const readyForLive = state.students.filter((s) => s.completedLessons.length >= 8 && !s.liveCompleted).length;
+  const liveComplete = state.students.filter((s) => s.liveCompleted).length;
+  const avgMinutes = total
+    ? Math.round(state.students.reduce((sum, s) => sum + Number(s.totalOnlineMinutes || 0), 0) / total)
+    : 0;
+
   if (els.metricStudents) els.metricStudents.textContent = total;
   if (els.metricStudentsSmall) els.metricStudentsSmall.textContent = total;
   if (els.metricPaid) els.metricPaid.textContent = paidStudents;
@@ -322,6 +336,13 @@ function renderMetrics() {
   if (els.metricPendingSmall) els.metricPendingSmall.textContent = pendingPayments;
   if (els.metricRevenue) els.metricRevenue.textContent = `$${revenue.toLocaleString()}`;
   if (els.metricRevenueSmall) els.metricRevenueSmall.textContent = `$${revenue.toLocaleString()}`;
+
+  if (els.metricReady) els.metricReady.textContent = readyForLive;
+  if (els.metricReadySmall) els.metricReadySmall.textContent = readyForLive;
+  if (els.metricLiveComplete) els.metricLiveComplete.textContent = liveComplete;
+  if (els.metricLiveCompleteSmall) els.metricLiveCompleteSmall.textContent = liveComplete;
+  if (els.metricAvgTime) els.metricAvgTime.textContent = minutesToHoursMinutes(avgMinutes);
+  if (els.metricAvgTimeSmall) els.metricAvgTimeSmall.textContent = minutesToHoursMinutes(avgMinutes);
 }
 
 function paymentClass(status) {
@@ -352,7 +373,7 @@ function renderTable() {
   }
 
   els.studentTableBody.innerHTML = state.filtered.map((student) => {
-    const eligibility = getEligibility(student);
+    const liveStatus = getLiveStatus(student);
 
     return `
       <tr>
@@ -390,7 +411,8 @@ function renderTable() {
           <div style="font-size:12px; opacity:.75;">${student.totalOnlineMinutes || 0} min total</div>
         </td>
         <td>
-          <span class="status-pill ${eligibility.className}">${escapeHtml(eligibility.text)}</span>
+          <div><span class="status-pill ${liveStatus.className}">${escapeHtml(liveStatus.text)}</span></div>
+          <div style="font-size:12px; margin-top:6px;">Range: ${student.rangeQualified ? "Qualified" : "Not Qualified"}</div>
         </td>
         <td>
           <div class="action-group">
@@ -495,36 +517,38 @@ function setSelectValue(selectEl, preferredValue, fallbacks = []) {
 function updateReadinessPanel(student = null) {
   if (!student) {
     if (els.studentReadinessStatus) {
-      els.studentReadinessStatus.textContent = "Not Eligible";
+      els.studentReadinessStatus.textContent = "Not Ready";
       els.studentReadinessStatus.className = "status-pill eligible-not-ready";
     }
     if (els.readinessLessonCount) els.readinessLessonCount.textContent = "0 / 8";
     if (els.readinessOnlineTime) els.readinessOnlineTime.textContent = "0 min";
     if (els.readinessStartDate) els.readinessStartDate.textContent = "—";
     if (els.readinessCompletionDate) els.readinessCompletionDate.textContent = "—";
-    if (els.readinessCertificateStatus) els.readinessCertificateStatus.textContent = "Not Issued";
     if (els.readinessLiveStatus) els.readinessLiveStatus.textContent = "Not Ready";
-    if (els.studentReadinessNote) els.studentReadinessNote.textContent = "This student has not yet completed the full online prerequisite.";
+    if (els.readinessRangeStatus) els.readinessRangeStatus.textContent = "Not Qualified";
+    if (els.studentReadinessNote) els.studentReadinessNote.textContent = "This student has not yet completed the online prerequisite.";
     return;
   }
 
-  const eligibility = getEligibility(student);
+  const liveStatus = getLiveStatus(student);
 
   if (els.studentReadinessStatus) {
-    els.studentReadinessStatus.textContent = eligibility.text;
-    els.studentReadinessStatus.className = `status-pill ${eligibility.className}`;
+    els.studentReadinessStatus.textContent = liveStatus.text;
+    els.studentReadinessStatus.className = `status-pill ${liveStatus.className}`;
   }
 
   if (els.readinessLessonCount) els.readinessLessonCount.textContent = `${student.completedLessons.length} / 8`;
   if (els.readinessOnlineTime) els.readinessOnlineTime.textContent = minutesToHoursMinutes(student.totalOnlineMinutes);
   if (els.readinessStartDate) els.readinessStartDate.textContent = formatDateForDisplay(student.startDate);
   if (els.readinessCompletionDate) els.readinessCompletionDate.textContent = formatDateForDisplay(student.completionDate);
-  if (els.readinessCertificateStatus) els.readinessCertificateStatus.textContent = student.certificateIssued ? "Issued" : "Not Issued";
   if (els.readinessLiveStatus) {
     els.readinessLiveStatus.textContent =
       student.completedLessons.length >= 8
-        ? "Ready for Live Completion"
+        ? (student.liveCompleted ? "Completed" : "Ready for Live Session")
         : "Not Ready";
+  }
+  if (els.readinessRangeStatus) {
+    els.readinessRangeStatus.textContent = student.rangeQualified ? "Qualified" : "Not Qualified";
   }
   if (els.studentReadinessNote) els.studentReadinessNote.textContent = getReadinessNote(student);
 }
@@ -537,10 +561,7 @@ function openModal(student = null) {
   if (els.studentName) els.studentName.value = student?.name || "";
   if (els.studentEmail) els.studentEmail.value = student?.email || "";
 
-  if (els.priceTier) {
-    setSelectValue(els.priceTier, student?.tier || "FULL", ["FULL"]);
-  }
-
+  if (els.priceTier) setSelectValue(els.priceTier, student?.tier || "FULL", ["FULL"]);
   if (els.price) els.price.value = student?.price ?? tierPrice(student?.tier || "FULL");
 
   if (els.paymentMethod) {
@@ -563,8 +584,12 @@ function openModal(student = null) {
   if (els.startDate) els.startDate.value = student?.startDate || "";
   if (els.completionDate) els.completionDate.value = student?.completionDate || "";
 
-  if (els.certificateIssued) {
-    setSelectValue(els.certificateIssued, student?.certificateIssued ? "true" : "false", ["false"]);
+  if (els.liveCompleted) {
+    setSelectValue(els.liveCompleted, student?.liveCompleted ? "true" : "false", ["false"]);
+  }
+
+  if (els.rangeQualified) {
+    setSelectValue(els.rangeQualified, student?.rangeQualified ? "true" : "false", ["false"]);
   }
 
   if (els.courseVersion) els.courseVersion.value = student?.courseVersion || "2026-03";
@@ -623,7 +648,8 @@ function buildPayloadFromForm() {
     progressPercent: Math.max(0, Math.min(100, getNumberValue(els.progressPercent, 0))),
     startDate: getValue(els.startDate, ""),
     completionDate: getValue(els.completionDate, ""),
-    certificateIssued: getValue(els.certificateIssued, "false") === "true",
+    liveCompleted: getValue(els.liveCompleted, "false") === "true",
+    rangeQualified: getValue(els.rangeQualified, "false") === "true",
     courseVersion: getValue(els.courseVersion, "2026-03") || "2026-03",
     accessCode: (getValue(els.accessCode) || generateCode(tier)).toUpperCase(),
     notes: getValue(els.notes),
@@ -694,7 +720,8 @@ function exportCSV() {
   const rows = [[
     "Name", "Email", "Course", "Tier", "Price", "Payment Method", "Payment Status",
     "Portal Status", "Progress Label", "Progress %", "Start Date", "Completion Date",
-    "Total Online Minutes", "Eligibility", "Access Code", "Course Version", "Notes"
+    "Total Online Minutes", "Live Completed", "Range Qualified", "Live Status",
+    "Access Code", "Course Version", "Notes"
   ]];
 
   state.filtered.forEach((student) => {
@@ -712,7 +739,9 @@ function exportCSV() {
       student.startDate,
       student.completionDate,
       student.totalOnlineMinutes || 0,
-      getEligibility(student).text,
+      student.liveCompleted ? "Yes" : "No",
+      student.rangeQualified ? "Yes" : "No",
+      getLiveStatus(student).text,
       student.accessCode,
       student.courseVersion,
       student.notes
