@@ -1,420 +1,537 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Admin Dashboard</title>
-  <link rel="stylesheet" href="../css/portal.css" />
-  <style>
-    * { box-sizing: border-box; }
+import { auth, db } from "../js/firebase-config.js";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0b1220;
-      color: #fff;
-    }
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp,
+  writeBatch
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    .hidden { display: none !important; }
+const BOSS_CODE = "BSA-BOSS-67676";
+const TOTAL_LESSONS = 8;
 
-    .screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+const loginScreen = document.getElementById("loginScreen");
+const adminApp = document.getElementById("adminApp");
 
-    .card {
-      width: 100%;
-      max-width: 540px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.26);
-    }
+const adminEmail = document.getElementById("adminEmail");
+const adminPassword = document.getElementById("adminPassword");
+const bossCode = document.getElementById("bossCode");
+const signInBtn = document.getElementById("signInBtn");
+const loginMessage = document.getElementById("loginMessage");
 
-    .card h2 {
-      margin-top: 0;
-    }
+const refreshBtn = document.getElementById("refreshBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-    .field {
-      margin-bottom: 14px;
-    }
+const studentName = document.getElementById("studentName");
+const studentEmail = document.getElementById("studentEmail");
+const studentTier = document.getElementById("studentTier");
+const studentStatus = document.getElementById("studentStatus");
+const studentPaid = document.getElementById("studentPaid");
+const studentProgressLabel = document.getElementById("studentProgressLabel");
+const studentNotes = document.getElementById("studentNotes");
+const createStudentBtn = document.getElementById("createStudentBtn");
+const clearFormBtn = document.getElementById("clearFormBtn");
+const createMessage = document.getElementById("createMessage");
 
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 700;
-      color: #e2e8f0;
-    }
+const searchInput = document.getElementById("searchInput");
+const studentsTableBody = document.getElementById("studentsTableBody");
+const tableMessage = document.getElementById("tableMessage");
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #475569;
-      background: #111827;
-      color: white;
-      outline: none;
-    }
+let allStudents = [];
 
-    .field textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
+function showMessage(el, text, type = "") {
+  el.textContent = text;
+  el.className = `message ${type}`.trim();
+}
 
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
-    }
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
+function normalizeTier(value) {
+  const v = String(value || "FULL").trim().toUpperCase();
+  return ["FULL", "FREE", "BASIC"].includes(v) ? v : "FULL";
+}
 
-    .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 11px 15px;
-      font-weight: 800;
-      cursor: pointer;
-    }
+function normalizeStatus(value) {
+  const v = String(value || "active").trim().toLowerCase();
+  return ["active", "locked", "expired"].includes(v) ? v : "active";
+}
 
-    .btn-primary { background: #f59e0b; color: #111827; }
-    .btn-dark { background: #334155; color: white; }
-    .btn-danger { background: #b91c1c; color: white; }
-    .btn-success { background: #15803d; color: white; }
+function parsePaid(value) {
+  return String(value) === "true";
+}
 
-    .message {
-      margin-top: 12px;
-      min-height: 22px;
-      font-size: 0.94rem;
-    }
+function slugifyName(name) {
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 30);
+}
 
-    .message.error { color: #fecaca; }
-    .message.success { color: #bbf7d0; }
+function makeStudentId(name) {
+  const base = slugifyName(name) || "student";
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `${base}-${Date.now()}-${rand}`;
+}
 
-    .app-shell {
-      min-height: 100vh;
-    }
+function generateAccessCode(tier = "FULL") {
+  const cleanTier = normalizeTier(tier);
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `BSA-${cleanTier}-${rand}`;
+}
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 18px 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: #111827;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
+function makeEmptyProgress() {
+  return {
+    lesson1: false,
+    lesson2: false,
+    lesson3: false,
+    lesson4: false,
+    lesson5: false,
+    lesson6: false,
+    lesson7: false,
+    lesson8: false
+  };
+}
 
-    .topbar h1 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
+function normalizeLessonArray(rawValue) {
+  return String(rawValue || "")
+    .split(",")
+    .map(v => v.trim().toLowerCase())
+    .filter(Boolean)
+    .filter(v => /^lesson[1-8]$/.test(v));
+}
 
-    .topbar-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+function formatDate(value) {
+  try {
+    if (!value) return "—";
+    if (typeof value?.toDate === "function") return value.toDate().toLocaleString();
+    return new Date(value).toLocaleString();
+  } catch {
+    return "—";
+  }
+}
 
-    .wrap {
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+function buildSearchBlob(student) {
+  return [
+    student.name,
+    student.email,
+    student.accessCode,
+    student.status,
+    student.tier,
+    student.studentId,
+    student.progressLabel
+  ].join(" ").toLowerCase();
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 20px;
-    }
+function clearCreateForm() {
+  studentName.value = "";
+  studentEmail.value = "";
+  studentTier.value = "FULL";
+  studentStatus.value = "active";
+  studentPaid.value = "true";
+  studentProgressLabel.value = "Not Started";
+  studentNotes.value = "";
+  showMessage(createMessage, "");
+}
 
-    @media (max-width: 1020px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
+function statusPill(status) {
+  const s = normalizeStatus(status);
+  return `<span class="pill ${s}">${escapeHtml(s)}</span>`;
+}
 
-    .panel {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.22);
-    }
+function getCompletedLessons(student) {
+  if (Array.isArray(student.completedLessons)) {
+    return student.completedLessons.map(v => String(v).trim().toLowerCase());
+  }
+  return [];
+}
 
-    .panel h2 {
-      margin-top: 0;
-      margin-bottom: 16px;
-      font-size: 1.1rem;
-    }
+async function handleSignIn() {
+  showMessage(loginMessage, "");
 
-    .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
+  const email = adminEmail.value.trim();
+  const password = adminPassword.value;
+  const code = bossCode.value.trim();
 
-    .toolbar input {
-      width: 360px;
-      max-width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #475569;
-      background: #111827;
-      color: white;
-    }
+  if (!email || !password || !code) {
+    showMessage(loginMessage, "Enter admin email, password, and boss code.", "error");
+    return;
+  }
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+  if (code !== BOSS_CODE) {
+    showMessage(loginMessage, "Boss code is incorrect.", "error");
+    return;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1280px;
-    }
+  signInBtn.disabled = true;
+  signInBtn.textContent = "Signing In...";
 
-    th, td {
-      text-align: left;
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      vertical-align: top;
-    }
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    sessionStorage.setItem("bsaBossPassed", "true");
+  } catch (error) {
+    console.error(error);
+    showMessage(loginMessage, error.message || "Sign-in failed.", "error");
+  } finally {
+    signInBtn.disabled = false;
+    signInBtn.textContent = "Sign In";
+  }
+}
 
-    th {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-    }
+async function handleLogout() {
+  sessionStorage.removeItem("bsaBossPassed");
+  await signOut(auth);
+}
 
-    td {
-      font-size: 0.94rem;
-    }
+onAuthStateChanged(auth, async (user) => {
+  const bossPassed = sessionStorage.getItem("bsaBossPassed") === "true";
 
-    .pill {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
+  if (user && bossPassed) {
+    loginScreen.classList.add("hidden");
+    adminApp.classList.remove("hidden");
+    await loadStudents();
+  } else {
+    loginScreen.classList.remove("hidden");
+    adminApp.classList.add("hidden");
+  }
+});
 
-    .pill.active { background: rgba(21,128,61,0.25); color: #bbf7d0; }
-    .pill.locked { background: rgba(180,83,9,0.24); color: #fde68a; }
-    .pill.expired { background: rgba(185,28,28,0.2); color: #fecaca; }
+async function createStudent() {
+  showMessage(createMessage, "");
 
-    .code {
-      font-family: Consolas, monospace;
-      color: #fde68a;
-      font-weight: 800;
-      word-break: break-word;
-    }
+  const name = studentName.value.trim();
+  const email = studentEmail.value.trim();
+  const tier = normalizeTier(studentTier.value);
+  const status = normalizeStatus(studentStatus.value);
+  const paid = parsePaid(studentPaid.value);
+  const progressLabel = studentProgressLabel.value.trim() || "Not Started";
+  const notes = studentNotes.value.trim();
 
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(110px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
+  if (!name) {
+    showMessage(createMessage, "Student name is required.", "error");
+    return;
+  }
 
-    .mini-grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(110px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
+  createStudentBtn.disabled = true;
+  createStudentBtn.textContent = "Creating...";
 
-    .mini-grid select,
-    .mini-grid input,
-    .mini-grid-2 input {
-      width: 100%;
-      padding: 9px;
-      border-radius: 10px;
-      border: 1px solid #475569;
-      background: #111827;
-      color: white;
-    }
+  try {
+    const studentId = makeStudentId(name);
+    const accessCode = generateAccessCode(tier);
+    const progress = makeEmptyProgress();
+    const completedLessons = [];
 
-    .row-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
+    const batch = writeBatch(db);
 
-    .row-actions button {
-      border: none;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
+    batch.set(doc(db, "portalStudents", studentId), {
+      studentId,
+      name,
+      email,
+      accessCode,
+      tier,
+      status,
+      paid,
+      notes,
+      progress,
+      completedLessons,
+      progressLabel,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
 
-    .muted {
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-  </style>
-</head>
-<body>
+    batch.set(doc(db, "portalAccess", studentId), {
+      studentId,
+      accessCode,
+      tier,
+      status,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
 
-  <div id="loginScreen" class="screen">
-    <div class="card">
-      <h2>Admin Sign In</h2>
+    batch.set(doc(db, "portalStudentView", studentId), {
+      studentId,
+      name,
+      accessCode,
+      tier,
+      status,
+      progressLabel,
+      completedLessons,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
 
-      <div class="field">
-        <label for="adminEmail">Firebase Admin Email</label>
-        <input type="email" id="adminEmail" autocomplete="username" />
-      </div>
+    await batch.commit();
 
-      <div class="field">
-        <label for="adminPassword">Firebase Admin Password</label>
-        <input type="password" id="adminPassword" autocomplete="current-password" />
-      </div>
+    showMessage(createMessage, `Student created. Access code: ${accessCode}`, "success");
+    clearCreateForm();
+    await loadStudents();
+  } catch (error) {
+    console.error(error);
+    showMessage(createMessage, error.message || "Failed to create student.", "error");
+  } finally {
+    createStudentBtn.disabled = false;
+    createStudentBtn.textContent = "Create Student";
+  }
+}
 
-      <div class="field">
-        <label for="bossCode">Boss Code</label>
-        <input type="password" id="bossCode" placeholder="Enter admin code" autocomplete="off" />
-      </div>
+async function loadStudents() {
+  showMessage(tableMessage, "");
+  studentsTableBody.innerHTML = `<tr><td colspan="9">Loading students...</td></tr>`;
 
-      <div class="actions">
-        <button id="signInBtn" class="btn btn-primary">Sign In</button>
-      </div>
+  try {
+    const q = query(collection(db, "portalStudents"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
 
-      <div id="loginMessage" class="message"></div>
+    allStudents = snap.docs.map(d => ({
+      id: d.id,
+      ...d.data()
+    }));
 
-      <p class="muted">
-        This dashboard requires both your Firebase admin sign-in and the BSA boss code.
-      </p>
-    </div>
-  </div>
+    renderStudents();
+  } catch (error) {
+    console.error(error);
+    studentsTableBody.innerHTML = `<tr><td colspan="9">Failed to load students.</td></tr>`;
+    showMessage(tableMessage, error.message || "Unable to load students.", "error");
+  }
+}
 
-  <div id="adminApp" class="app-shell hidden">
-    <div class="topbar">
-      <h1>Broussard Shooting Academy Admin Dashboard</h1>
-      <div class="topbar-actions">
-        <button id="refreshBtn" class="btn btn-dark">Refresh</button>
-        <button id="logoutBtn" class="btn btn-danger">Logout</button>
-      </div>
-    </div>
+function renderStudents() {
+  const term = searchInput.value.trim().toLowerCase();
+  const filtered = !term
+    ? allStudents
+    : allStudents.filter(student => buildSearchBlob(student).includes(term));
 
-    <div class="wrap">
-      <div class="grid">
-        <div class="panel">
-          <h2>Create Student</h2>
+  if (!filtered.length) {
+    studentsTableBody.innerHTML = `<tr><td colspan="9">No students found.</td></tr>`;
+    return;
+  }
 
-          <div class="field">
-            <label for="studentName">Student Name</label>
-            <input type="text" id="studentName" placeholder="John Smith" />
+  studentsTableBody.innerHTML = filtered.map(student => {
+    const completedLessons = getCompletedLessons(student);
+
+    return `
+      <tr>
+        <td>
+          <div><strong>${escapeHtml(student.name || "—")}</strong></div>
+          <div>${escapeHtml(student.email || "—")}</div>
+          <div style="margin-top:6px;color:#cbd5e1;">Created: ${escapeHtml(formatDate(student.createdAt))}</div>
+        </td>
+
+        <td>
+          <div class="code">${escapeHtml(student.accessCode || "—")}</div>
+          <div class="mini-grid-2">
+            <input type="text" data-field="manualCode" data-id="${escapeHtml(student.id)}" placeholder="Manual code override" />
+            <input type="text" data-field="progressLabel" data-id="${escapeHtml(student.id)}" value="${escapeHtml(student.progressLabel || "")}" />
           </div>
+        </td>
 
-          <div class="field">
-            <label for="studentEmail">Student Email</label>
-            <input type="email" id="studentEmail" placeholder="john@email.com" />
-          </div>
+        <td>
+          ${statusPill(student.status)}
+          <div class="mini-grid">
+            <select data-field="status" data-id="${escapeHtml(student.id)}">
+              <option value="active" ${normalizeStatus(student.status) === "active" ? "selected" : ""}>active</option>
+              <option value="locked" ${normalizeStatus(student.status) === "locked" ? "selected" : ""}>locked</option>
+              <option value="expired" ${normalizeStatus(student.status) === "expired" ? "selected" : ""}>expired</option>
+            </select>
 
-          <div class="field">
-            <label for="studentTier">Tier</label>
-            <select id="studentTier">
-              <option value="FULL">FULL</option>
-              <option value="FREE">FREE</option>
-              <option value="BASIC">BASIC</option>
+            <select data-field="tier" data-id="${escapeHtml(student.id)}">
+              <option value="FULL" ${normalizeTier(student.tier) === "FULL" ? "selected" : ""}>FULL</option>
+              <option value="FREE" ${normalizeTier(student.tier) === "FREE" ? "selected" : ""}>FREE</option>
+              <option value="BASIC" ${normalizeTier(student.tier) === "BASIC" ? "selected" : ""}>BASIC</option>
+            </select>
+
+            <select data-field="paid" data-id="${escapeHtml(student.id)}">
+              <option value="true" ${student.paid === true ? "selected" : ""}>true</option>
+              <option value="false" ${student.paid === false ? "selected" : ""}>false</option>
             </select>
           </div>
+        </td>
 
-          <div class="field">
-            <label for="studentStatus">Portal Status</label>
-            <select id="studentStatus">
-              <option value="active">active</option>
-              <option value="locked">locked</option>
-              <option value="expired">expired</option>
-            </select>
+        <td>${escapeHtml(normalizeTier(student.tier))}</td>
+        <td>${escapeHtml(String(!!student.paid))}</td>
+        <td>${escapeHtml(student.progressLabel || "Not Started")}</td>
+        <td>
+          <input
+            type="text"
+            data-field="completedLessons"
+            data-id="${escapeHtml(student.id)}"
+            value="${escapeHtml(completedLessons.join(", "))}"
+            placeholder="lesson1, lesson2"
+          />
+        </td>
+        <td>${escapeHtml(student.studentId || student.id)}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn-success" data-action="save" data-id="${escapeHtml(student.id)}">Save</button>
+            <button class="btn-dark" data-action="regen" data-id="${escapeHtml(student.id)}">New Code</button>
+            <button class="btn-danger" data-action="delete" data-id="${escapeHtml(student.id)}">Delete</button>
           </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
 
-          <div class="field">
-            <label for="studentPaid">Paid</label>
-            <select id="studentPaid">
-              <option value="true">true</option>
-              <option value="false">false</option>
-            </select>
-          </div>
+async function saveStudent(studentId) {
+  const statusEl = document.querySelector(`select[data-field="status"][data-id="${CSS.escape(studentId)}"]`);
+  const tierEl = document.querySelector(`select[data-field="tier"][data-id="${CSS.escape(studentId)}"]`);
+  const paidEl = document.querySelector(`select[data-field="paid"][data-id="${CSS.escape(studentId)}"]`);
+  const progressLabelEl = document.querySelector(`input[data-field="progressLabel"][data-id="${CSS.escape(studentId)}"]`);
+  const completedLessonsEl = document.querySelector(`input[data-field="completedLessons"][data-id="${CSS.escape(studentId)}"]`);
+  const manualCodeEl = document.querySelector(`input[data-field="manualCode"][data-id="${CSS.escape(studentId)}"]`);
 
-          <div class="field">
-            <label for="studentProgressLabel">Progress Label</label>
-            <input type="text" id="studentProgressLabel" placeholder="Not Started" />
-          </div>
+  if (!statusEl || !tierEl || !paidEl || !progressLabelEl || !completedLessonsEl || !manualCodeEl) {
+    showMessage(tableMessage, "Could not find row fields.", "error");
+    return;
+  }
 
-          <div class="field">
-            <label for="studentNotes">Admin Notes</label>
-            <textarea id="studentNotes" placeholder="Notes, comments, payment details, etc."></textarea>
-          </div>
+  const status = normalizeStatus(statusEl.value);
+  const tier = normalizeTier(tierEl.value);
+  const paid = parsePaid(paidEl.value);
+  const progressLabel = progressLabelEl.value.trim() || "Not Started";
+  const completedLessons = normalizeLessonArray(completedLessonsEl.value);
+  const manualCode = manualCodeEl.value.trim().toUpperCase();
 
-          <div class="actions">
-            <button id="createStudentBtn" class="btn btn-success">Create Student</button>
-            <button id="clearFormBtn" class="btn btn-dark">Clear</button>
-          </div>
+  const progress = makeEmptyProgress();
+  completedLessons.forEach(id => {
+    progress[id] = true;
+  });
 
-          <div id="createMessage" class="message"></div>
-        </div>
+  const privatePayload = {
+    status,
+    tier,
+    paid,
+    progressLabel,
+    completedLessons,
+    progress,
+    updatedAt: serverTimestamp()
+  };
 
-        <div class="panel">
-          <div class="toolbar">
-            <div>
-              <h2 style="margin:0;">Students</h2>
-              <div class="muted">Private records stay in <strong>portalStudents</strong>. Login-only fields sync to <strong>portalAccess</strong>.</div>
-            </div>
+  const accessPayload = {
+    status,
+    tier,
+    updatedAt: serverTimestamp()
+  };
 
-            <input type="text" id="searchInput" placeholder="Search name, email, code, status, tier..." />
-          </div>
+  const studentViewPayload = {
+    status,
+    tier,
+    progressLabel,
+    completedLessons,
+    updatedAt: serverTimestamp()
+  };
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name / Email</th>
-                  <th>Access Code</th>
-                  <th>Status</th>
-                  <th>Tier</th>
-                  <th>Paid</th>
-                  <th>Progress</th>
-                  <th>Completed Lessons</th>
-                  <th>Student ID</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="studentsTableBody">
-                <tr>
-                  <td colspan="9">Loading students...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+  if (manualCode) {
+    privatePayload.accessCode = manualCode;
+    accessPayload.accessCode = manualCode;
+    studentViewPayload.accessCode = manualCode;
+  }
 
-          <div id="tableMessage" class="message"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  try {
+    const batch = writeBatch(db);
 
-  <script type="module" src="admin.js"></script>
-</body>
-</html>
+    batch.update(doc(db, "portalStudents", studentId), privatePayload);
+    batch.update(doc(db, "portalAccess", studentId), accessPayload);
+    batch.update(doc(db, "portalStudentView", studentId), studentViewPayload);
+
+    await batch.commit();
+
+    showMessage(tableMessage, "Student updated.", "success");
+    await loadStudents();
+  } catch (error) {
+    console.error(error);
+    showMessage(tableMessage, error.message || "Failed to save student.", "error");
+  }
+}
+
+async function regenerateCode(studentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  const newCode = generateAccessCode(student.tier || "FULL");
+
+  try {
+    const batch = writeBatch(db);
+    batch.update(doc(db, "portalStudents", studentId), {
+      accessCode: newCode,
+      updatedAt: serverTimestamp()
+    });
+    batch.update(doc(db, "portalAccess", studentId), {
+      accessCode: newCode,
+      updatedAt: serverTimestamp()
+    });
+    batch.update(doc(db, "portalStudentView", studentId), {
+      accessCode: newCode,
+      updatedAt: serverTimestamp()
+    });
+
+    await batch.commit();
+
+    showMessage(tableMessage, `New access code generated: ${newCode}`, "success");
+    await loadStudents();
+  } catch (error) {
+    console.error(error);
+    showMessage(tableMessage, error.message || "Failed to generate code.", "error");
+  }
+}
+
+async function deleteStudent(studentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  const label = student?.name || studentId;
+
+  const ok = window.confirm(`Delete student "${label}"?\n\nThis will remove portalStudents, portalAccess, and portalStudentView.`);
+  if (!ok) return;
+
+  try {
+    const batch = writeBatch(db);
+    batch.delete(doc(db, "portalStudents", studentId));
+    batch.delete(doc(db, "portalAccess", studentId));
+    batch.delete(doc(db, "portalStudentView", studentId));
+    await batch.commit();
+
+    showMessage(tableMessage, "Student deleted.", "success");
+    await loadStudents();
+  } catch (error) {
+    console.error(error);
+    showMessage(tableMessage, error.message || "Failed to delete student.", "error");
+  }
+}
+
+signInBtn.addEventListener("click", handleSignIn);
+adminPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") handleSignIn(); });
+bossCode.addEventListener("keydown", (e) => { if (e.key === "Enter") handleSignIn(); });
+
+logoutBtn.addEventListener("click", handleLogout);
+refreshBtn.addEventListener("click", loadStudents);
+createStudentBtn.addEventListener("click", createStudent);
+clearFormBtn.addEventListener("click", clearCreateForm);
+searchInput.addEventListener("input", renderStudents);
+
+studentsTableBody.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+
+  const action = btn.dataset.action;
+  const studentId = btn.dataset.id;
+  if (!studentId) return;
+
+  if (action === "save") await saveStudent(studentId);
+  if (action === "regen") await regenerateCode(studentId);
+  if (action === "delete") await deleteStudent(studentId);
+});
