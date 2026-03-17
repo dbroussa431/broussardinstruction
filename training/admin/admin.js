@@ -11,6 +11,13 @@ import {
 
 const BOSS_CODE = "BSA-BOSS-67676";
 
+// Adjust these to your real pricing
+const TIER_PRICING = {
+  FULL: 100,
+  BASIC: 50,
+  FREE: 0
+};
+
 const loginView = document.getElementById("loginView");
 const adminView = document.getElementById("adminView");
 const bossCodeInput = document.getElementById("bossCode");
@@ -32,6 +39,18 @@ const createMessage = document.getElementById("createMessage");
 const searchInput = document.getElementById("searchInput");
 const studentsTableBody = document.getElementById("studentsTableBody");
 const tableMessage = document.getElementById("tableMessage");
+
+const statTotalStudents = document.getElementById("statTotalStudents");
+const statPaidStudents = document.getElementById("statPaidStudents");
+const statUnpaidStudents = document.getElementById("statUnpaidStudents");
+const statRevenue = document.getElementById("statRevenue");
+const statFullAccounts = document.getElementById("statFullAccounts");
+const statFreeAccounts = document.getElementById("statFreeAccounts");
+
+const quickNewestStudent = document.getElementById("quickNewestStudent");
+const quickLatestCode = document.getElementById("quickLatestCode");
+const quickPaidRate = document.getElementById("quickPaidRate");
+const quickRevenuePerStudent = document.getElementById("quickRevenuePerStudent");
 
 let allStudents = [];
 
@@ -97,8 +116,65 @@ function showLogin() {
   adminView.classList.add("hidden");
 }
 
+function getCreatedSortValue(student) {
+  const raw = student.createdAt;
+  if (!raw) return 0;
+
+  if (typeof raw?.toDate === "function") {
+    return raw.toDate().getTime();
+  }
+
+  const parsed = new Date(raw).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function getEstimatedRevenue(student) {
+  if (!student.paid) return 0;
+  const tier = normalizeTier(student.tier);
+  return TIER_PRICING[tier] ?? 0;
+}
+
+function updateStats() {
+  const totalStudents = allStudents.length;
+  const paidStudents = allStudents.filter(s => s.paid === true).length;
+  const unpaidStudents = totalStudents - paidStudents;
+  const fullAccounts = allStudents.filter(s => normalizeTier(s.tier) === "FULL").length;
+  const freeAccounts = allStudents.filter(s => normalizeTier(s.tier) === "FREE").length;
+
+  const estimatedRevenue = allStudents.reduce((sum, student) => {
+    return sum + getEstimatedRevenue(student);
+  }, 0);
+
+  statTotalStudents.textContent = totalStudents;
+  statPaidStudents.textContent = paidStudents;
+  statUnpaidStudents.textContent = unpaidStudents;
+  statRevenue.textContent = `$${estimatedRevenue.toLocaleString()}`;
+  statFullAccounts.textContent = fullAccounts;
+  statFreeAccounts.textContent = freeAccounts;
+
+  if (totalStudents > 0) {
+    const sorted = [...allStudents].sort((a, b) => getCreatedSortValue(b) - getCreatedSortValue(a));
+    const newest = sorted[0];
+
+    quickNewestStudent.textContent = `Newest Student: ${newest?.name || "—"}`;
+    quickLatestCode.textContent = `Latest Code: ${newest?.accessCode || "—"}`;
+
+    const paidRate = Math.round((paidStudents / totalStudents) * 100);
+    quickPaidRate.textContent = `Paid Rate: ${paidRate}%`;
+
+    const revenuePerStudent = estimatedRevenue / totalStudents;
+    quickRevenuePerStudent.textContent = `Revenue / Student: $${revenuePerStudent.toFixed(2)}`;
+  } else {
+    quickNewestStudent.textContent = "Newest Student: —";
+    quickLatestCode.textContent = "Latest Code: —";
+    quickPaidRate.textContent = "Paid Rate: 0%";
+    quickRevenuePerStudent.textContent = "Revenue / Student: $0";
+  }
+}
+
 bossLoginBtn.addEventListener("click", () => {
   const entered = String(bossCodeInput.value || "").trim();
+
   if (entered !== BOSS_CODE) {
     showMessage(loginMessage, "Boss code is incorrect.", "error");
     return;
@@ -108,6 +184,10 @@ bossLoginBtn.addEventListener("click", () => {
   showMessage(loginMessage, "Access granted.", "success");
   showAdmin();
   loadStudents();
+});
+
+bossCodeInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") bossLoginBtn.click();
 });
 
 logoutBtn?.addEventListener("click", () => {
@@ -143,6 +223,7 @@ async function createStudent() {
   try {
     const studentId = makeStudentId(name);
     const accessCode = genCode(tier);
+    const nowIso = new Date().toISOString();
 
     await setDoc(doc(db, "portalStudents", studentId), {
       studentId,
@@ -165,8 +246,8 @@ async function createStudent() {
         lesson7: false,
         lesson8: false
       },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: nowIso,
+      updatedAt: nowIso
     });
 
     showMessage(createMessage, `Student created. Code: ${accessCode}`, "success");
@@ -204,6 +285,7 @@ async function loadStudents() {
       ...docSnap.data()
     }));
 
+    updateStats();
     renderStudents();
   } catch (error) {
     console.error("Load students failed:", error);
