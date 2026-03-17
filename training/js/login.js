@@ -47,12 +47,11 @@ function saveSession(student) {
   sessionStorage.setItem("bsaStudentName", student.name || "");
 }
 
-async function handleLogin(event) {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   showMessage("");
 
   const code = normalizeCode(accessCodeInput.value);
-
   if (!code) {
     showMessage("Please enter your access code.", "error");
     return;
@@ -69,8 +68,7 @@ async function handleLogin(event) {
       return;
     }
 
-    const status = String(student.status || "").toLowerCase();
-    if (status !== "active") {
+    if (String(student.status || "").toLowerCase() !== "active") {
       showMessage("This code is not active.", "error");
       return;
     }
@@ -79,15 +77,13 @@ async function handleLogin(event) {
     showMessage("Login successful. Redirecting...", "success");
     window.location.href = "dashboard.html";
   } catch (error) {
-    console.error("Login failed:", error);
+    console.error(error);
     showMessage("Unable to log in right now. Please try again.", "error");
   } finally {
     loginBtn.disabled = false;
     loginBtn.textContent = "Enter Portal";
   }
-}
-
-loginForm.addEventListener("submit", handleLogin);
+});
 
 accessCodeInput.addEventListener("input", () => {
   accessCodeInput.value = normalizeCode(accessCodeInput.value);
