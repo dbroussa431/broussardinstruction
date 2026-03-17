@@ -1,102 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lesson 2</title>
-  <style>
-    * { box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 - Safety and Firearm Basics</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(245,158,11,0.18), transparent 34%),
-        linear-gradient(180deg, #071327 0%, #0b1730 45%, #09152a 100%);
-      color: #fff;
-      min-height: 100vh;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #0b1220;
+  color: white;
+  margin: 0;
+}
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 28px;
-    }
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
 
-    .card {
-      background: rgba(17, 24, 39, 0.82);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 22px;
-      padding: 26px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.26);
-    }
+h1 { color: #f59e0b; }
+h2 { margin-top: 30px; }
 
-    h1 {
-      margin-top: 0;
-      font-size: 2rem;
-    }
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 
-    .status {
-      display: inline-block;
-      margin-bottom: 18px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(59,130,246,0.22);
-      color: #bfdbfe;
-      font-weight: 700;
-    }
-
-    .content {
-      color: #dbe4f0;
-      line-height: 1.7;
-      font-size: 1rem;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 24px;
-    }
-
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .primary {
-      background: #f59e0b;
-      color: #111827;
-    }
-
-    .secondary {
-      background: #334155;
-      color: white;
-    }
-  </style>
+button {
+  padding: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
 </head>
-<body data-lesson-id="lesson2">
-  <div class="wrap">
-    <div class="card">
-      <h1 id="lessonTitle">Lesson 1 - Firearm Safety Foundations</h1>
-      <div id="lessonStatus" class="status">In Progress</div>
 
-      <div id="lessonContent" class="content">
-        <p>The first lesson covers safe handling, muzzle discipline, trigger discipline, and the responsibility that comes with using any firearm.</p>
-        <p>Students should understand that every firearm must be treated as if it is loaded, that the muzzle should never point at anything they are not willing to destroy, and that their finger stays off the trigger until they are ready to fire.</p>
-        <p>This lesson also introduces range awareness, safe storage thinking, and the mindset needed before ever stepping onto a live firing line.</p>
-      </div>
+<body>
 
-      <div class="actions">
-        <button id="markCompleteBtn" class="primary">Mark Complete</button>
-        <button id="backBtn" class="secondary">Back to Dashboard</button>
-      </div>
-    </div>
-  </div>
+<div class="container">
 
-  <script type="module" src="../js/lesson-page.js"></script>
+<h1>Lesson 2: Safety & Firearm Fundamentals</h1>
+
+<div class="card">
+<h2>Universal Safety Rules</h2>
+<ul>
+<li>Treat every firearm as if it is loaded</li>
+<li>Never point at anything you are not willing to destroy</li>
+<li>Keep finger off trigger until ready</li>
+<li>Be sure of your target and what is beyond</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>What Happens When You Pull the Trigger</h2>
+<p>
+Trigger → firing pin → primer → powder ignites → bullet travels down barrel → casing ejects.
+</p>
+</div>
+
+<div class="card">
+<h2>Ammunition Basics</h2>
+<p>Bullet + casing + primer + powder</p>
+<p>Types: Hollow point, FMJ, birdshot, buckshot, slug</p>
+</div>
+
+<div class="card">
+<h2>Malfunctions</h2>
+<ul>
+<li>Failure to fire (click no bang)</li>
+<li>Failure to eject</li>
+<li>Failure to feed</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Scenario Training</h2>
+
+<p><b>Scenario 1:</b> Someone hands you a firearm and says it's unloaded.</p>
+<p>Correct response: Treat it as loaded and verify yourself.</p>
+
+<p><b>Scenario 2:</b> You hear a click instead of a bang.</p>
+<p>Correct response: Keep firearm pointed safely and assess malfunction.</p>
+
+</div>
+
+<div class="card">
+<h2>Quiz</h2>
+
+<form id="quiz">
+
+<p>1. First safety rule?</p>
+<input type="radio" name="q1" value="a"> Assume unloaded<br>
+<input type="radio" name="q1" value="b"> Treat as loaded<br>
+
+<p>2. Click but no bang means?</p>
+<input type="radio" name="q2" value="a"> Malfunction<br>
+<input type="radio" name="q2" value="b"> Normal<br>
+
+<br>
+<button type="submit">Submit Quiz</button>
+</form>
+
+<div id="result"></div>
+
+<button id="completeBtn">Mark Lesson Complete</button>
+
+</div>
+
+</div>
+
+<script type="module" src="../js/lesson2.js"></script>
+
 </body>
 </html>
