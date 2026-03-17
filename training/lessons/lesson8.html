@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 8</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(245,158,11,0.18), transparent 34%),
+        linear-gradient(180deg, #071327 0%, #0b1730 45%, #09152a 100%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.82);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.26);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2rem;
+    }
+
+    .status {
+      display: inline-block;
+      margin-bottom: 18px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.22);
+      color: #bfdbfe;
+      font-weight: 700;
+    }
+
+    .content {
+      color: #dbe4f0;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #f59e0b;
+      color: #111827;
+    }
+
+    .secondary {
+      background: #334155;
+      color: white;
+    }
+  </style>
+</head>
+<body data-lesson-id="lesson1">
+  <div class="wrap">
+    <div class="card">
+      <h1 id="lessonTitle">Lesson 8 - Firearm Safety Foundations</h1>
+      <div id="lessonStatus" class="status">In Progress</div>
+
+      <div id="lessonContent" class="content">
+        <p>The first lesson covers safe handling, muzzle discipline, trigger discipline, and the responsibility that comes with using any firearm.</p>
+        <p>Students should understand that every firearm must be treated as if it is loaded, that the muzzle should never point at anything they are not willing to destroy, and that their finger stays off the trigger until they are ready to fire.</p>
+        <p>This lesson also introduces range awareness, safe storage thinking, and the mindset needed before ever stepping onto a live firing line.</p>
+      </div>
+
+      <div class="actions">
+        <button id="markCompleteBtn" class="primary">Mark Complete</button>
+        <button id="backBtn" class="secondary">Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/lesson-page.js"></script>
+</body>
+</html>
