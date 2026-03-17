@@ -1,202 +1,384 @@
-* {
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Training Admin</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <div class="brand-wrap">
+        <div class="brand-dot"></div>
+        <div>
+          <h1>Admin Dashboard</h1>
+        </div>
+      </div>
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #e9ecef;
-  color: #111;
-}
+      <div class="topbar-actions">
+        <button id="addStudentBtn" class="btn btn-gold" type="button">Add Student</button>
+        <button id="refreshBtn" class="btn btn-dark" type="button">Refresh Records</button>
+        <button id="exportBtn" class="btn btn-dark" type="button">Export CSV</button>
+        <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
+      </div>
+    </header>
 
-body.portal-shell {
-  min-height: 100vh;
-}
+    <main class="admin-main">
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Total Students</span>
+            <span id="metricStudentsSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricStudents" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
 
-.portal-topbar,
-.portal-header {
-  background: linear-gradient(90deg, #000 0%, #0f1116 100%);
-  color: #fff;
-  border-bottom: 4px solid #c79a3b;
-  padding: 22px 28px;
-}
+        <div class="metric-card metric-card-gold">
+          <div class="metric-head">
+            <span>Pending Payments</span>
+            <span id="metricPendingSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricPending" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-gold"></div>
+        </div>
 
-.portal-brand h1,
-.portal-header-left h1 {
-  margin: 0 0 6px;
-  font-size: 2.2rem;
-  font-weight: 700;
-}
+        <div class="metric-card metric-card-green">
+          <div class="metric-head">
+            <span>Paid Students</span>
+            <span id="metricPaidSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricPaid" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-green"></div>
+        </div>
 
-.portal-brand p,
-.portal-header-left p {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #f2f2f2;
-}
+        <div class="metric-card metric-card-gold">
+          <div class="metric-head">
+            <span>Revenue Collected</span>
+            <span id="metricRevenueSmall" class="metric-mini">$0</span>
+          </div>
+          <div id="metricRevenue" class="metric-big">$0</div>
+          <div class="metric-bar metric-bar-gold"></div>
+        </div>
 
-.portal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Ready for Live</span>
+            <span id="metricReadySmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricReady" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
 
-.portal-login-page,
-.portal-main {
-  width: 100%;
-  max-width: 980px;
-  margin: 36px auto;
-  padding: 0 20px 40px;
-}
+        <div class="metric-card metric-card-green">
+          <div class="metric-head">
+            <span>Live Complete</span>
+            <span id="metricLiveCompleteSmall" class="metric-mini">0</span>
+          </div>
+          <div id="metricLiveComplete" class="metric-big">0</div>
+          <div class="metric-bar metric-bar-green"></div>
+        </div>
 
-.portal-card {
-  background: #f7f7f7;
-  border-radius: 20px;
-  padding: 30px 24px 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-  border: 1px solid #ddd;
-}
+        <div class="metric-card">
+          <div class="metric-head">
+            <span>Avg Online Time</span>
+            <span id="metricAvgTimeSmall" class="metric-mini">0m</span>
+          </div>
+          <div id="metricAvgTime" class="metric-big">0m</div>
+          <div class="metric-bar metric-bar-blue"></div>
+        </div>
+      </section>
 
-.login-card h2,
-.dashboard-card h2 {
-  margin-top: 0;
-  margin-bottom: 18px;
-  font-size: 2rem;
-  color: #12233d;
-}
+      <section class="table-card" style="margin-top: 18px;">
+        <div class="table-toolbar">
+          <div class="toolbar-label">Lesson Analytics</div>
+        </div>
 
-.login-help,
-.dashboard-subtext {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #5f6f83;
-  font-size: 1rem;
-}
+        <div class="table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>Lesson</th>
+                <th>Started</th>
+                <th>Scenario Complete</th>
+                <th>Quiz Passed</th>
+                <th>Lesson Complete</th>
+                <th>Avg Score</th>
+                <th>Avg Attempts</th>
+                <th>Avg Time</th>
+              </tr>
+            </thead>
+            <tbody id="lessonAnalyticsBody"></tbody>
+          </table>
+        </div>
+      </section>
 
-.field {
-  margin-bottom: 18px;
-}
+      <section class="quick-actions">
+        <button id="quickAddBtn" class="btn btn-gold" type="button">Add Student</button>
+        <button id="reloadBtn" class="btn btn-dark" type="button">Refresh Records</button>
 
-.field label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 700;
-  font-size: 1rem;
-}
+        <div class="quick-filter-row">
+          <input id="searchInput" class="search-input" type="text" placeholder="Search by name, email, or code" />
 
-.field input {
-  width: 100%;
-  padding: 16px 14px;
-  font-size: 1.1rem;
-  border: 1px solid #bfc7d1;
-  border-radius: 14px;
-  outline: none;
-  background: #eaf0fa;
-}
+          <select id="paymentFilter" class="filter-select">
+            <option value="">Payment Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Pending">Pending</option>
+            <option value="Waived">Waived</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
 
-.field input:focus {
-  border-color: #c79a3b;
-  box-shadow: 0 0 0 3px rgba(199, 154, 59, 0.18);
-}
+          <select id="sortInput" class="filter-select">
+            <option value="newest">Sort By</option>
+            <option value="newest">Newest</option>
+            <option value="name">Name</option>
+            <option value="amountHigh">Highest Amount</option>
+            <option value="amountLow">Lowest Amount</option>
+            <option value="progressHigh">Highest Progress</option>
+            <option value="minutesHigh">Most Time Logged</option>
+          </select>
 
-.btn-primary,
-.btn-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1rem;
-}
+          <button id="filterBtn" class="btn btn-brown" type="button">Filter</button>
+        </div>
+      </section>
 
-.btn-primary {
-  background: #0d0d0d;
-  color: #fff;
-}
+      <section class="table-card">
+        <div class="table-toolbar">
+          <div class="toolbar-label">Search Records:</div>
 
-.btn-dark {
-  background: #111;
-  color: #fff;
-}
+          <input id="searchInput2" class="toolbar-input" type="text" placeholder="Search by name, email, or code" />
 
-.btn-primary:hover,
-.btn-dark:hover {
-  opacity: 0.92;
-}
+          <select id="paymentFilter2" class="toolbar-select">
+            <option value="">All Payment Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Pending">Pending</option>
+            <option value="Waived">Waived</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
 
-.form-message {
-  min-height: 24px;
-  margin-top: 14px;
-  font-size: 0.98rem;
-  font-weight: 600;
-}
+          <select id="portalFilter" class="toolbar-select">
+            <option value="">All Portal Statuses</option>
+            <option value="active">Active</option>
+            <option value="locked">Locked</option>
+            <option value="expired">Expired</option>
+          </select>
 
-.form-message.error {
-  color: #b42318;
-}
+          <select id="tierFilter" class="toolbar-select">
+            <option value="">Sort By Tier</option>
+            <option value="FREE">FREE</option>
+            <option value="DISC">DISC</option>
+            <option value="FULL">FULL</option>
+          </select>
 
-.form-message.success {
-  color: #1f7a3f;
-}
+          <select id="sortInput2" class="toolbar-select">
+            <option value="newest">Newest</option>
+            <option value="name">Name</option>
+            <option value="amountHigh">Highest Amount</option>
+            <option value="amountLow">Lowest Amount</option>
+            <option value="progressHigh">Highest Progress</option>
+            <option value="minutesHigh">Most Time Logged</option>
+          </select>
 
-.portal-note {
-  margin-top: 28px;
-  padding: 14px 16px;
-  border: 1px solid #dfba61;
-  border-radius: 14px;
-  background: #faf4e3;
-  color: #5f4a1f;
-}
+          <button id="clearFiltersBtn" class="btn btn-light" type="button">Clear</button>
+        </div>
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 24px;
-}
+        <div class="table-wrap">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Payment</th>
+                <th>Portal</th>
+                <th>Progress</th>
+                <th>Dates</th>
+                <th>Time</th>
+                <th>Live Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
 
-.stat-card {
-  background: #fff;
-  border: 1px solid #d8dde5;
-  border-radius: 16px;
-  padding: 18px;
-}
+  <div id="studentModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Student</h2>
+      </div>
 
-.stat-label {
-  display: block;
-  font-size: 0.9rem;
-  color: #5b6b7a;
-  margin-bottom: 8px;
-}
+      <div id="studentReadinessPanel" class="content-card" style="margin-bottom:16px;">
+        <h3 class="section-heading" style="margin-bottom:12px;">Completion Readiness</h3>
+        <div id="studentReadinessStatus" class="status-pill eligible-not-ready" style="display:inline-block; margin-bottom:12px;">Not Ready</div>
 
-.stat-card strong {
-  font-size: 1.1rem;
-  color: #111;
-}
+        <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px;">
+          <div>
+            <div style="font-size:12px; opacity:.75;">ONLINE LESSONS COMPLETE</div>
+            <div id="readinessLessonCount" style="font-weight:700;">0 / 8</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">TOTAL ONLINE TIME</div>
+            <div id="readinessOnlineTime" style="font-weight:700;">0 min</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">START DATE</div>
+            <div id="readinessStartDate" style="font-weight:700;">—</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">ONLINE COMPLETE DATE</div>
+            <div id="readinessCompletionDate" style="font-weight:700;">—</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">LIVE CLASS STATUS</div>
+            <div id="readinessLiveStatus" style="font-weight:700;">Not Ready</div>
+          </div>
+          <div>
+            <div style="font-size:12px; opacity:.75;">RANGE STATUS</div>
+            <div id="readinessRangeStatus" style="font-weight:700;">Not Qualified</div>
+          </div>
+        </div>
 
-.dashboard-actions {
-  margin-top: 28px;
-}
+        <p id="studentReadinessNote" class="content-summary" style="margin-top:14px; margin-bottom:0;">
+          This student has not yet completed the online prerequisite.
+        </p>
+      </div>
 
-@media (max-width: 700px) {
-  .portal-brand h1,
-  .portal-header-left h1 {
-    font-size: 1.7rem;
-  }
+      <form id="studentForm" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" required />
+          </div>
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+          <div class="field">
+            <label for="studentEmail">Email</label>
+            <input type="email" id="studentEmail" required />
+          </div>
 
-  .portal-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
+          <div class="field">
+            <label for="priceTier">Course / Tier</label>
+            <select id="priceTier">
+              <option value="FULL">Louisiana Concealed Carry — FULL</option>
+              <option value="DISC">Discounted Class — DISC</option>
+              <option value="FREE">Free (Waived) — FREE</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="price">Price</label>
+            <input type="number" id="price" min="0" step="1" />
+          </div>
+
+          <div class="field">
+            <label for="paymentMethod">Payment Method</label>
+            <select id="paymentMethod">
+              <option value="Direct">Direct</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Cash">Cash</option>
+              <option value="Waived">Waived</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="paymentStatusSelect">Payment Status</label>
+            <select id="paymentStatusSelect">
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Waived">Waived</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="portalStatus">Portal Status</label>
+            <select id="portalStatus">
+              <option value="active">Active</option>
+              <option value="locked">Locked</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="progressLabel">Progress Label</label>
+            <select id="progressLabel">
+              <option value="Not Started">Not Started</option>
+              <option value="Lesson 1">Lesson 1</option>
+              <option value="Lesson 2">Lesson 2</option>
+              <option value="Lesson 3">Lesson 3</option>
+              <option value="Lesson 4">Lesson 4</option>
+              <option value="Lesson 5">Lesson 5</option>
+              <option value="Lesson 6">Lesson 6</option>
+              <option value="Lesson 7">Lesson 7</option>
+              <option value="Lesson 8">Lesson 8</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="progressPercent">Progress %</label>
+            <input type="number" id="progressPercent" min="0" max="100" step="1" value="0" />
+          </div>
+
+          <div class="field">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" />
+          </div>
+
+          <div class="field">
+            <label for="completionDate">Completion Date</label>
+            <input type="date" id="completionDate" />
+          </div>
+
+          <div class="field">
+            <label for="liveCompleted">Live Class Completed</label>
+            <select id="liveCompleted">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="rangeQualified">Range Qualified</label>
+            <select id="rangeQualified">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="courseVersion">Course Version</label>
+            <input type="text" id="courseVersion" value="2026-03" />
+          </div>
+
+          <div class="field full">
+            <label for="accessCode">Access Code</label>
+            <input type="text" id="accessCode" placeholder="Auto-generated if left blank" />
+          </div>
+
+          <div class="field full">
+            <label for="notes">Notes</label>
+            <textarea
+              id="notes"
+              rows="5"
+              placeholder="Optional notes about payment, follow-up, waivers, live session status, range notes, etc."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-light" id="cancelStudentBtn">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="../js/admin.js"></script>
+</body>
+</html>
