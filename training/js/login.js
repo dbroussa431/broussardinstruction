@@ -1,56 +1,104 @@
-import { loginStudent, getCurrentStudent } from "./app.js";
+import { db } from "./firebase-config.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const form = document.getElementById("loginForm");
+const loginForm = document.getElementById("loginForm");
 const accessCodeInput = document.getElementById("accessCode");
 const loginBtn = document.getElementById("loginBtn");
-const loginMessage = document.getElementById("loginMessage");
+const messageEl = document.getElementById("message");
 
-function showMessage(message, type = "") {
-  loginMessage.textContent = message;
-  loginMessage.className = "form-message";
-  if (type) {
-    loginMessage.classList.add(type);
+function showMessage(text, type = "") {
+  messageEl.textContent = text;
+  messageEl.className = `message ${type}`.trim();
+}
+
+function normalizeCode(value) {
+  return (value || "").trim().toUpperCase();
+}
+
+async function findAccessCode(accessCode) {
+  const q = query(
+    collection(db, "portalAccess"),
+    where("accessCode", "==", accessCode),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    return null;
   }
+
+  const docSnap = snap.docs[0];
+  return {
+    id: docSnap.id,
+    ...docSnap.data()
+  };
 }
 
-function setLoading(isLoading) {
-  loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading ? "Checking Code..." : "Login to Portal";
+function saveSession(accessRecord) {
+  sessionStorage.setItem("bsaAccessCode", accessRecord.accessCode || "");
+  sessionStorage.setItem("bsaStudentId", accessRecord.studentId || "");
+  sessionStorage.setItem("bsaTier", accessRecord.tier || "");
+  sessionStorage.setItem("bsaPortalStatus", accessRecord.status || "");
+  sessionStorage.setItem("bsaLoggedIn", "true");
 }
 
-const existingStudent = getCurrentStudent();
-if (existingStudent && existingStudent.accessCode && existingStudent.status === "active") {
-  window.location.href = "./dashboard.html";
-}
-
-form?.addEventListener("submit", async (event) => {
+async function handleLogin(event) {
   event.preventDefault();
 
-  const code = String(accessCodeInput?.value || "").trim();
+  const accessCode = normalizeCode(accessCodeInput.value);
 
-  if (!code) {
+  showMessage("");
+
+  if (!accessCode) {
     showMessage("Please enter your access code.", "error");
-    accessCodeInput?.focus();
+    accessCodeInput.focus();
     return;
   }
 
-  setLoading(true);
-  showMessage("");
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Checking...";
 
   try {
-    const student = await loginStudent(code);
+    const record = await findAccessCode(accessCode);
 
-    if (!student) {
-      showMessage("Invalid or inactive access code.", "error");
+    if (!record) {
+      showMessage("Invalid access code.", "error");
+      loginBtn.disabled = false;
+      loginBtn.textContent = "Log In";
       return;
     }
 
+    const status = String(record.status || "").toLowerCase();
+
+    if (status !== "active") {
+      showMessage("This access code is not active.", "error");
+      loginBtn.disabled = false;
+      loginBtn.textContent = "Log In";
+      return;
+    }
+
+    saveSession(record);
     showMessage("Login successful. Redirecting...", "success");
-    window.location.href = "./dashboard.html";
+
+    window.location.href = "dashboard.html";
   } catch (error) {
-    console.error("Login page error:", error);
+    console.error("Login error:", error);
     showMessage("Unable to log in right now. Please try again.", "error");
-  } finally {
-    setLoading(false);
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Log In";
   }
-});
+}
+
+function autoUppercaseInput() {
+  accessCodeInput.value = normalizeCode(accessCodeInput.value);
+}
+
+loginForm.addEventListener("submit", handleLogin);
+accessCodeInput.addEventListener("input", autoUppercaseInput);
