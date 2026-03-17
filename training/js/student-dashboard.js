@@ -45,6 +45,7 @@ function clearSession() {
   sessionStorage.removeItem("bsaAccessCode");
   sessionStorage.removeItem("bsaTier");
   sessionStorage.removeItem("bsaPortalStatus");
+  sessionStorage.removeItem("bsaStudentName");
 }
 
 function getSession() {
@@ -53,7 +54,8 @@ function getSession() {
     studentId: sessionStorage.getItem("bsaStudentId") || "",
     accessCode: sessionStorage.getItem("bsaAccessCode") || "",
     tier: sessionStorage.getItem("bsaTier") || "",
-    status: sessionStorage.getItem("bsaPortalStatus") || ""
+    status: sessionStorage.getItem("bsaPortalStatus") || "",
+    name: sessionStorage.getItem("bsaStudentName") || ""
   };
 }
 
@@ -76,10 +78,17 @@ function normalizeStatus(value) {
   return ["active", "locked", "expired"].includes(s) ? s : "active";
 }
 
-function getCompletedLessons(studentView) {
-  if (Array.isArray(studentView.completedLessons)) {
-    return studentView.completedLessons.map(v => String(v).trim().toLowerCase());
+function getCompletedLessons(student) {
+  if (Array.isArray(student.completedLessons)) {
+    return student.completedLessons.map(v => String(v).trim().toLowerCase());
   }
+
+  if (student.progress && typeof student.progress === "object") {
+    return Object.keys(student.progress)
+      .filter(key => student.progress[key] === true)
+      .map(key => String(key).trim().toLowerCase());
+  }
+
   return [];
 }
 
@@ -128,11 +137,11 @@ function renderLessons(lessonStates, studentStatus) {
       pillText = "Expired";
     }
 
-    const action = lesson.completed
+    const actionHtml = lesson.completed
       ? `<a class="go-btn" href="${lesson.href}">Review Lesson</a>`
       : lesson.unlocked && normalizedStatus === "active"
         ? `<a class="go-btn" href="${lesson.href}">Start Lesson</a>`
-        : `<button class="secondary-btn" type="button" disabled>Locked</button>`;
+        : `<button class="disabled-btn" type="button" disabled>Locked</button>`;
 
     return `
       <div class="lesson-card">
@@ -141,7 +150,7 @@ function renderLessons(lessonStates, studentStatus) {
           <span class="pill ${pillClass}">${pillText}</span>
         </div>
         <p class="lesson-desc">${lesson.description}</p>
-        <div class="lesson-actions">${action}</div>
+        <div class="lesson-action">${actionHtml}</div>
       </div>
     `;
   }).join("");
@@ -156,11 +165,11 @@ async function loadDashboard() {
   }
 
   try {
-    const ref = doc(db, "portalStudentView", session.studentId);
+    const ref = doc(db, "portalStudents", session.studentId);
     const snap = await getDoc(ref);
 
     if (!snap.exists()) {
-      showError("Student view not found", "Your student dashboard record could not be loaded.");
+      showError("Student record not found", "Your dashboard record could not be loaded.");
       return;
     }
 
@@ -169,11 +178,11 @@ async function loadDashboard() {
     const sessionCode = String(session.accessCode || "").trim().toUpperCase();
 
     if (storedCode !== sessionCode) {
-      showError("Access mismatch", "Your current access code does not match the dashboard record. Please log in again.");
+      showError("Access mismatch", "Your current access code does not match the student record. Please log in again.");
       return;
     }
 
-    const studentName = data.name || "Student";
+    const studentName = data.name || session.name || "Student";
     const tier = String(data.tier || session.tier || "").toUpperCase();
     const status = normalizeStatus(data.status || session.status);
     const completedLessons = getCompletedLessons(data);
@@ -196,7 +205,7 @@ async function loadDashboard() {
 
     showDashboard();
   } catch (error) {
-    console.error(error);
+    console.error("Dashboard load error:", error);
     showError("Unable to load dashboard", "There was a problem loading your training dashboard.");
   }
 }
