@@ -1,12 +1,16 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /portalStudents/{studentId} {
-      allow read, write: if true;
-    }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    match /students/{studentId} {
-      allow read, write: if true;
-    }
-  }
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyCF3y6cr25Ls9MKM2YPJLHJEAgA3PzRp-o",
+  authDomain: "bsa-training-admin.firebaseapp.com",
+  projectId: "bsa-training-admin",
+  storageBucket: "bsa-training-admin.firebasestorage.app",
+  messagingSenderId: "972595893407",
+  appId: "1:972595893407:web:f415a0f24602bd9603beaa"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export { app, db };
