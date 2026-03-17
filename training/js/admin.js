@@ -9,6 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const studentsRef = collection(db, "portalStudents");
+const TOTAL_LESSONS = 8;
 
 const state = {
   students: [],
@@ -34,6 +35,8 @@ const FIELD_ALIASES = {
   metricLiveCompleteSmall: ["metricLiveCompleteSmall"],
   metricAvgTime: ["metricAvgTime"],
   metricAvgTimeSmall: ["metricAvgTimeSmall"],
+
+  lessonAnalyticsBody: ["lessonAnalyticsBody"],
 
   addStudentBtn: ["addStudentBtn"],
   quickAddBtn: ["quickAddBtn"],
@@ -215,7 +218,7 @@ function minutesToHoursMinutes(totalMinutes = 0) {
 
 function getLiveStatus(student) {
   const completedLessons = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  const onlineReady = completedLessons >= 8;
+  const onlineReady = completedLessons >= TOTAL_LESSONS;
   const liveCompleted = !!student.liveCompleted;
   const rangeQualified = !!student.rangeQualified;
 
@@ -253,7 +256,7 @@ function getReadinessNote(student) {
     return "This student has completed the online work, live session, and shooting qualification.";
   }
 
-  if (completedLessons >= 8) {
+  if (completedLessons >= TOTAL_LESSONS) {
     return "This student has completed the online prerequisite and is ready for the live review and shooting section.";
   }
 
@@ -262,6 +265,27 @@ function getReadinessNote(student) {
   }
 
   return "This student has not yet completed the online prerequisite.";
+}
+
+function normalizeProgress(rawProgress = {}) {
+  const out = {};
+  if (!rawProgress || typeof rawProgress !== "object") return out;
+
+  Object.entries(rawProgress).forEach(([key, value]) => {
+    const lessonNumber = Number(key);
+    if (!Number.isFinite(lessonNumber)) return;
+
+    out[lessonNumber] = {
+      contentViewed: !!value?.contentViewed,
+      scenarioCompleted: !!value?.scenarioCompleted,
+      quizPassed: !!value?.quizPassed,
+      quizScore: Number(value?.quizScore || 0),
+      attempts: Number(value?.attempts || 0),
+      lessonTimeMinutes: Number(value?.lessonTimeMinutes || 0)
+    };
+  });
+
+  return out;
 }
 
 function normalizeStudent(id, raw = {}) {
@@ -298,8 +322,57 @@ function normalizeStudent(id, raw = {}) {
     createdAt: raw.createdAt || null,
     updatedAt: raw.updatedAt || null,
     completedLessons,
-    totalOnlineMinutes: Number(raw.totalOnlineMinutes || 0)
+    totalOnlineMinutes: Number(raw.totalOnlineMinutes || 0),
+    progress: normalizeProgress(raw.progress || {})
   };
+}
+
+function renderLessonAnalytics() {
+  if (!els.lessonAnalyticsBody) return;
+
+  const rows = [];
+
+  for (let lesson = 1; lesson <= TOTAL_LESSONS; lesson += 1) {
+    const started = state.students.filter((s) => {
+      const p = s.progress?.[lesson];
+      return p?.contentViewed || p?.scenarioCompleted || p?.quizPassed || p?.attempts > 0 || p?.lessonTimeMinutes > 0;
+    });
+
+    const scenarioComplete = state.students.filter((s) => s.progress?.[lesson]?.scenarioCompleted);
+    const quizPassed = state.students.filter((s) => s.progress?.[lesson]?.quizPassed);
+    const lessonComplete = state.students.filter((s) => Array.isArray(s.completedLessons) && s.completedLessons.includes(lesson));
+
+    const scored = state.students
+      .map((s) => Number(s.progress?.[lesson]?.quizScore || 0))
+      .filter((score) => score > 0);
+
+    const attempts = state.students
+      .map((s) => Number(s.progress?.[lesson]?.attempts || 0))
+      .filter((n) => n > 0);
+
+    const times = state.students
+      .map((s) => Number(s.progress?.[lesson]?.lessonTimeMinutes || 0))
+      .filter((n) => n > 0);
+
+    const avgScore = scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : 0;
+    const avgAttempts = attempts.length ? (attempts.reduce((a, b) => a + b, 0) / attempts.length).toFixed(1) : "0.0";
+    const avgTime = times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0;
+
+    rows.push(`
+      <tr>
+        <td><strong>Lesson ${lesson}</strong></td>
+        <td>${started.length}</td>
+        <td>${scenarioComplete.length}</td>
+        <td>${quizPassed.length}</td>
+        <td>${lessonComplete.length}</td>
+        <td>${avgScore ? `${avgScore}%` : "—"}</td>
+        <td>${avgAttempts}</td>
+        <td>${avgTime ? minutesToHoursMinutes(avgTime) : "—"}</td>
+      </tr>
+    `);
+  }
+
+  els.lessonAnalyticsBody.innerHTML = rows.join("");
 }
 
 async function loadStudents() {
@@ -308,6 +381,7 @@ async function loadStudents() {
     state.students = snap.docs.map((d) => normalizeStudent(d.id, d.data()));
     applyFilters();
     renderMetrics();
+    renderLessonAnalytics();
   } catch (err) {
     console.error("Failed to load students:", err);
     alert(`Failed to load students: ${err.message}`);
@@ -322,7 +396,7 @@ function renderMetrics() {
     .filter((s) => s.paymentStatus === "Paid")
     .reduce((sum, s) => sum + Number(s.price || 0), 0);
 
-  const readyForLive = state.students.filter((s) => s.completedLessons.length >= 8 && !s.liveCompleted).length;
+  const readyForLive = state.students.filter((s) => s.completedLessons.length >= TOTAL_LESSONS && !s.liveCompleted).length;
   const liveComplete = state.students.filter((s) => s.liveCompleted).length;
   const avgMinutes = total
     ? Math.round(state.students.reduce((sum, s) => sum + Number(s.totalOnlineMinutes || 0), 0) / total)
@@ -543,7 +617,7 @@ function updateReadinessPanel(student = null) {
   if (els.readinessCompletionDate) els.readinessCompletionDate.textContent = formatDateForDisplay(student.completionDate);
   if (els.readinessLiveStatus) {
     els.readinessLiveStatus.textContent =
-      student.completedLessons.length >= 8
+      student.completedLessons.length >= TOTAL_LESSONS
         ? (student.liveCompleted ? "Completed" : "Ready for Live Session")
         : "Not Ready";
   }
