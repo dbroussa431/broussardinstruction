@@ -18,10 +18,10 @@ function showMessage(text, type = "") {
 }
 
 function normalizeCode(value) {
-  return (value || "").trim().toUpperCase();
+  return String(value || "").trim().toUpperCase();
 }
 
-async function findAccessCode(accessCode) {
+async function findAccessRecord(accessCode) {
   const q = query(
     collection(db, "portalAccess"),
     where("accessCode", "==", accessCode),
@@ -30,9 +30,7 @@ async function findAccessCode(accessCode) {
 
   const snap = await getDocs(q);
 
-  if (snap.empty) {
-    return null;
-  }
+  if (snap.empty) return null;
 
   const docSnap = snap.docs[0];
   return {
@@ -41,24 +39,22 @@ async function findAccessCode(accessCode) {
   };
 }
 
-function saveSession(accessRecord) {
-  sessionStorage.setItem("bsaAccessCode", accessRecord.accessCode || "");
-  sessionStorage.setItem("bsaStudentId", accessRecord.studentId || "");
-  sessionStorage.setItem("bsaTier", accessRecord.tier || "");
-  sessionStorage.setItem("bsaPortalStatus", accessRecord.status || "");
+function saveSession(record) {
   sessionStorage.setItem("bsaLoggedIn", "true");
+  sessionStorage.setItem("bsaStudentId", record.studentId || record.id || "");
+  sessionStorage.setItem("bsaAccessCode", record.accessCode || "");
+  sessionStorage.setItem("bsaTier", record.tier || "");
+  sessionStorage.setItem("bsaPortalStatus", record.status || "");
 }
 
 async function handleLogin(event) {
   event.preventDefault();
 
-  const accessCode = normalizeCode(accessCodeInput.value);
-
   showMessage("");
+  const accessCode = normalizeCode(accessCodeInput.value);
 
   if (!accessCode) {
     showMessage("Please enter your access code.", "error");
-    accessCodeInput.focus();
     return;
   }
 
@@ -66,12 +62,10 @@ async function handleLogin(event) {
   loginBtn.textContent = "Checking...";
 
   try {
-    const record = await findAccessCode(accessCode);
+    const record = await findAccessRecord(accessCode);
 
     if (!record) {
       showMessage("Invalid access code.", "error");
-      loginBtn.disabled = false;
-      loginBtn.textContent = "Log In";
       return;
     }
 
@@ -79,26 +73,22 @@ async function handleLogin(event) {
 
     if (status !== "active") {
       showMessage("This access code is not active.", "error");
-      loginBtn.disabled = false;
-      loginBtn.textContent = "Log In";
       return;
     }
 
     saveSession(record);
     showMessage("Login successful. Redirecting...", "success");
-
     window.location.href = "dashboard.html";
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login failed:", error);
     showMessage("Unable to log in right now. Please try again.", "error");
+  } finally {
     loginBtn.disabled = false;
     loginBtn.textContent = "Log In";
   }
 }
 
-function autoUppercaseInput() {
-  accessCodeInput.value = normalizeCode(accessCodeInput.value);
-}
-
 loginForm.addEventListener("submit", handleLogin);
-accessCodeInput.addEventListener("input", autoUppercaseInput);
+accessCodeInput.addEventListener("input", () => {
+  accessCodeInput.value = normalizeCode(accessCodeInput.value);
+});
