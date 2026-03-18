@@ -6,7 +6,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const LESSON_ID = "lesson1";
-const LESSON_NUMBER = 1;
 const PASS_PERCENT = 80;
 
 const backBtn = document.getElementById("backBtn");
@@ -22,76 +21,99 @@ let passedQuiz = false;
 
 const questions = [
   {
-    prompt: "Which focus level is the most dangerous public mindset because you are mentally unaware and easy to surprise?",
+    prompt: "What is the main idea of Chapter 1?",
+    options: [
+      "A firearm alone solves most defensive problems",
+      "Personal defense begins with awareness, planning, and judgment",
+      "Home defense is mostly about alarms and locks",
+      "Speed matters more than preparation"
+    ],
+    answer: 1,
+    explanation: "The chapter teaches that awareness, planning, and judgment come before tools."
+  },
+  {
+    prompt: "Which focus level is the worst public mindset because you are mentally absent and easy to surprise?",
     options: ["Yellow", "Orange", "White", "Red"],
     answer: 2,
-    explanation: "Condition white is inattentive and mentally absent. The chapter strongly warns against living there in public."
+    explanation: "Condition white is inattentive and unsafe in public."
   },
   {
     prompt: "Which focus level should be your normal public baseline?",
     options: ["White", "Yellow", "Orange", "Red"],
     answer: 1,
-    explanation: "Relaxed alert awareness is the correct daily public mindset."
+    explanation: "Relaxed alert awareness is the proper public baseline."
   },
   {
-    prompt: "If a specific person or situation begins to concern you, which focus level are you moving into?",
+    prompt: "If one specific person or circumstance starts to concern you, which focus level best fits that moment?",
     options: ["White", "Yellow", "Orange", "Red"],
     answer: 2,
     explanation: "Orange means a specific concern has your attention."
   },
   {
-    prompt: "What is the main lesson behind the chapter’s discussion of reaction time?",
-    options: ["People always react faster than they act", "Awareness does not matter if you carry a gun", "The person already acting often has a time advantage", "The safest move is to ignore suspicious behavior"],
+    prompt: "Why does the chapter emphasize low-light and transition areas like garages and walkways?",
+    options: [
+      "Because they are ideal places to stop and check your phone",
+      "Because they increase visibility and simplify movement",
+      "Because they reduce visibility and create surprise opportunities",
+      "Because crime only happens there"
+    ],
     answer: 2,
-    explanation: "The chapter emphasizes that reacting is slower than already acting."
+    explanation: "Low-light and transitional spaces increase uncertainty and delay recognition."
   },
   {
-    prompt: "Why are parking lots, garages, and low-light transition areas emphasized in the chapter?",
-    options: ["They are good places to practice shooting", "They reduce visibility and increase surprise opportunities", "They are always safe when people are nearby", "They only matter during the daytime"],
+    prompt: "What is the lesson behind reaction time versus action time?",
+    options: [
+      "Reacting is usually faster than acting",
+      "If you wait too long to notice trouble, you lose valuable time",
+      "Training removes all delay",
+      "The first person to speak controls the situation"
+    ],
     answer: 1,
-    explanation: "Low-light and transitional spaces create blind spots, distance from help, and delayed recognition."
+    explanation: "Recognition delay is costly. Awareness buys time."
   },
   {
     prompt: "What does 'don’t look like a victim' mean in this lesson?",
-    options: ["Act aggressively toward strangers", "Walk distracted so no one notices you", "Project awareness, purpose, and confidence", "Show a weapon to discourage people"],
+    options: [
+      "Act hostile toward everyone",
+      "Display a weapon to look serious",
+      "Project awareness, purpose, and confidence",
+      "Avoid eye contact at all costs"
+    ],
     answer: 2,
-    explanation: "The chapter’s point is about posture, awareness, and avoiding the appearance of an easy target."
+    explanation: "The chapter stresses posture, awareness, and purposeful movement."
   },
   {
     prompt: "Which is the best example of situational awareness?",
-    options: ["Knowing your exits, noticing who is near you, and watching environmental changes", "Reading text messages while walking to your car", "Ignoring a bad feeling because you do not want to seem rude", "Assuming every familiar place is automatically safe"],
+    options: [
+      "Knowing exits, noticing people, and monitoring change around you",
+      "Texting while walking because you know the area",
+      "Ignoring a bad feeling unless something obvious happens",
+      "Assuming familiar places are automatically safe"
+    ],
     answer: 0,
-    explanation: "Situational awareness is active observation, not passive assumption."
+    explanation: "Situational awareness is active observation and understanding."
   },
   {
-    prompt: "What is one major home-security lesson in this chapter?",
-    options: ["Leave doors unlocked so you can move faster", "Think about your home the way a criminal might", "Do not use exterior lighting", "A home plan is unnecessary if you own a firearm"],
-    answer: 1,
-    explanation: "The chapter explicitly pushes the mindset of examining your home for weaknesses."
+    prompt: "What home-security mindset does the chapter encourage?",
+    options: [
+      "Think about your home the way a criminal might examine it",
+      "Leave lights off to avoid drawing attention",
+      "Trust that familiar neighborhoods do not need security planning",
+      "Rely only on luck if something happens"
+    ],
+    answer: 0,
+    explanation: "The chapter pushes you to identify vulnerabilities before someone else does."
   },
   {
     prompt: "Why does the chapter say seconds count?",
-    options: ["Because help may not arrive before the problem unfolds", "Because every threat waits politely", "Because training removes all delay", "Because only speed matters, not planning"],
+    options: [
+      "Because outside help may not arrive before the critical moment passes",
+      "Because all attacks last exactly one minute",
+      "Because panic is the fastest path to survival",
+      "Because equipment replaces planning"
+    ],
     answer: 0,
-    explanation: "Emergency events can happen very quickly. Awareness and preparation matter because time can be short."
-  },
-  {
-    prompt: "If you hear a suspicious noise outside your home at night, which response is most in line with the chapter?",
-    options: ["Rush outside immediately to challenge whoever is there", "Ignore it and hope it goes away", "Gather information and use a plan instead of acting impulsively", "Open the front door and stand in the doorway"],
-    answer: 2,
-    explanation: "The lesson favors awareness, planning, and safer information gathering over impulsive exposure."
-  },
-  {
-    prompt: "What is the main purpose of the color-code system in Chapter 1?",
-    options: ["To rank firearms by quality", "To describe mental alertness and response readiness", "To classify home alarms", "To identify ammunition types"],
-    answer: 1,
-    explanation: "The color code is a mindset and awareness model."
-  },
-  {
-    prompt: "Which statement best matches the chapter’s overall message?",
-    options: ["A firearm replaces the need for awareness", "Preparation begins after the danger starts", "Personal defense starts with awareness, judgment, and planning", "The safest person is the one who notices the least"],
-    answer: 2,
-    explanation: "That is the central theme of this chapter."
+    explanation: "Events can unfold fast, and preparedness matters because time may be short."
   }
 ];
 
@@ -142,23 +164,17 @@ function getTimeSpentSeconds(student) {
 }
 
 function renderQuiz() {
-  quizContainer.innerHTML = questions.map((q, index) => {
-    const optionsHtml = q.options.map((option, optionIndex) => {
-      return `
+  quizContainer.innerHTML = questions.map((q, index) => `
+    <div class="quiz-question">
+      <h4>${index + 1}. ${q.prompt}</h4>
+      ${q.options.map((option, optionIndex) => `
         <label class="quiz-option">
           <input type="radio" name="q${index}" value="${optionIndex}" />
           ${option}
         </label>
-      `;
-    }).join("");
-
-    return `
-      <div class="quiz-question">
-        <h4>${index + 1}. ${q.prompt}</h4>
-        ${optionsHtml}
-      </div>
-    `;
-  }).join("");
+      `).join("")}
+    </div>
+  `).join("");
 }
 
 function gradeQuiz() {
@@ -168,7 +184,6 @@ function gradeQuiz() {
   questions.forEach((q, index) => {
     const selected = document.querySelector(`input[name="q${index}"]:checked`);
     const selectedValue = selected ? Number(selected.value) : -1;
-
     const isCorrect = selectedValue === q.answer;
     if (isCorrect) correct += 1;
 
@@ -186,11 +201,9 @@ function gradeQuiz() {
 
   quizResult.style.display = "block";
   quizResult.innerHTML = `
-    <div style="margin-bottom:10px;">
-      <strong>Score:</strong> ${correct}/${questions.length} (${percent}%)
-    </div>
+    <div style="margin-bottom:10px;"><strong>Score:</strong> ${correct}/${questions.length} (${percent}%)</div>
     <div style="margin-bottom:14px;" class="${passedQuiz ? "pass" : "fail"}">
-      ${passedQuiz ? "Passed — you may complete Lesson 1." : "Not passed yet — review the lesson and try again."}
+      ${passedQuiz ? "Passed — you may complete Lesson 1." : "Not passed yet — review and try again."}
     </div>
     ${feedback}
   `;
@@ -200,7 +213,6 @@ function gradeQuiz() {
 
 async function loadStudent() {
   const session = getSession();
-
   if (!session.loggedIn || !session.studentId || !session.accessCode) {
     window.location.href = "../index.html";
     return;
@@ -208,7 +220,6 @@ async function loadStudent() {
 
   studentRef = doc(db, "portalStudents", session.studentId);
   const snap = await getDoc(studentRef);
-
   if (!snap.exists()) {
     window.location.href = "../index.html";
     return;
@@ -225,10 +236,7 @@ async function saveLessonCompletion() {
   const completedLessons = getCompletedLessons(studentData);
 
   progress[LESSON_ID] = true;
-
-  if (!completedLessons.includes(LESSON_ID)) {
-    completedLessons.push(LESSON_ID);
-  }
+  if (!completedLessons.includes(LESSON_ID)) completedLessons.push(LESSON_ID);
 
   await updateDoc(studentRef, {
     progress,
@@ -247,7 +255,6 @@ quizForm.addEventListener("submit", (event) => {
 markCompleteBtn.addEventListener("click", async () => {
   markCompleteBtn.disabled = true;
   markCompleteBtn.textContent = "Saving...";
-
   try {
     await saveLessonCompletion();
     window.location.href = "../dashboard.html";
