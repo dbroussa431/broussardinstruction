@@ -23,7 +23,7 @@
     <section class="panel content-card" id="quizPanel">
       <span class="eyebrow">20 randomized questions • pass at 80%</span>
       <h2 id="quizTitle"></h2>
-      <p class="muted">Questions are randomized from an expanded book-based bank. Missed-question review appears after submission so students can correct weak areas before the live class.</p>
+      <p class="muted">Students can review what they missed after finishing. If they fail, the quiz randomizes again from a larger question bank.</p>
       <div id="rereadNotice" class="notice warn hidden" style="margin-bottom:16px"></div>
       <div id="quizLockNotice" class="notice info hidden quiz-lock-note"></div>
       <div id="quizWrap" class="q-list"></div>
@@ -47,8 +47,7 @@
       getLessonProgress,
       getAttemptCount,
       recordQuizResult,
-      randomSample,
-      shuffleChoices
+      randomSample
     } from "./app.js";
 
     requireLogin();
@@ -77,16 +76,16 @@
     const attemptCount = getAttemptCount(lessonId, student);
     if (attemptCount >= 1 && !reviewMode) {
       document.getElementById("rereadNotice").textContent = attemptCount >= 2
-        ? "Please re-read the lesson summary before another attempt. The next quiz draw will randomize again."
-        : "If you score below 80%, the quiz randomizes again from the larger question bank.";
+        ? "Please re-read the lesson summary before another attempt."
+        : "If you score below 80%, you will need to retake the quiz.";
       document.getElementById("rereadNotice").classList.remove("hidden");
     }
 
     if (reviewMode && progress.quizDetails?.length) {
-      renderResults(progress.quizScore, progress.quizDetails, attemptCount);
+      renderResults(progress.quizScore, progress.quizDetails);
       document.getElementById("quizPanel").classList.add("hidden");
     } else {
-      const selectedQuestions = randomSample(pool, 20).map((q, idx) => ({ ...shuffleChoices(q), _id: idx }));
+      const selectedQuestions = randomSample(pool, 20).map((q, idx) => ({ ...q, _id: idx }));
       const quizWrap = document.getElementById("quizWrap");
 
       selectedQuestions.forEach((item, idx) => {
@@ -114,12 +113,6 @@
 
       document.getElementById("submitQuizBtn").addEventListener("click", async () => {
         if (!progress.scenarioCompleted) return;
-
-        const unanswered = selectedQuestions.some((_, idx) => !document.querySelector(`input[name="q_${idx}"]:checked`));
-        if (unanswered) {
-          alert("Please answer all 20 questions before submitting.");
-          return;
-        }
 
         let correct = 0;
         const details = [];
@@ -155,10 +148,11 @@
       });
     }
 
-    function renderResults(score, details, attemptsSeen = 0) {
+    function renderResults(score, details, attemptsOverride) {
       const passed = score >= PASSING_SCORE;
       const resultPanel = document.getElementById("resultPanel");
       const missed = details.filter((d) => !d.isCorrect);
+      const attemptsSeen = attemptsOverride || attemptCount;
 
       resultPanel.classList.remove("hidden");
       resultPanel.innerHTML = `
@@ -170,7 +164,7 @@
             </div>
             <div class="score-circle" style="--pct:${score}%"><span>${score}%</span></div>
           </div>
-          ${passed ? '<div class="notice ok">Lesson quiz passed. Your progress is saved and the next lesson is unlocked.</div>' : '<div class="notice bad">Anything below 80% requires a retake. The next quiz draw will be randomized again from the larger bank.</div>'}
+          ${passed ? '<div class="notice ok">Lesson quiz passed. Your progress is now saved to Firebase and the next lesson is unlocked.</div>' : '<div class="notice bad">Anything below 80% requires a retake. Questions and answers randomize again from the larger question bank.</div>'}
           ${!passed && attemptsSeen >= 2 ? '<div class="notice warn" style="margin-top:12px">Please re-read the lesson summary before your next attempt.</div>' : ""}
           <div class="lesson-actions" style="margin-top:16px;">
             ${passed ? `<a class="btn btn-blue" href="${lessonId === window.LESSONS.length ? "complete.html" : `lesson.html?lesson=${lessonId + 1}`}">${lessonId === window.LESSONS.length ? "Finish Online Portion" : "Proceed to Next Lesson"}</a>` : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`}
