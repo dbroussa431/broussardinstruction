@@ -1,17 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>BSA Training Login</title>
-</head>
-<body style="background:black;color:white;text-align:center;padding:50px">
+(async function () {
+  try {
+    const app = await import('../app.js');
+    const { login, getCurrentStudent } = app;
 
-<h1>BSA Training Portal</h1>
+    const current = getCurrentStudent();
+    if (current && current.accessCode && current.status === 'active') {
+      window.location.href = 'dashboard.html';
+      return;
+    }
 
-<input id="code" placeholder="Enter Access Code">
-<br><br>
-<button onclick="login()">Enter</button>
+    const form = document.getElementById('loginForm') || document.querySelector('form');
+    const accessCode = document.getElementById('accessCode') || document.querySelector('input[type="text"], input[type="password"], input[name="accessCode"]');
+    const loginBtn = document.getElementById('loginBtn') || document.querySelector('button[type="submit"], input[type="submit"]');
+    const loginMsg = document.getElementById('loginMsg') || document.getElementById('message');
 
-<script type="module" src="js/login.js"></script>
+    function showMessage(message) {
+      if (loginMsg) {
+        loginMsg.textContent = message;
+        loginMsg.style.display = 'block';
+      } else {
+        alert(message);
+      }
+    }
 
-</body>
-</html>
+    function setLoading(isLoading) {
+      if (!loginBtn) return;
+      loginBtn.disabled = isLoading;
+      if ('textContent' in loginBtn) {
+        loginBtn.textContent = isLoading ? 'Checking Code...' : 'Enter';
+      }
+    }
+
+    if (!form || !accessCode) return;
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      setLoading(true);
+      const result = await login(accessCode.value);
+      if (!result.ok) {
+        showMessage(result.message || 'Login failed.');
+        setLoading(false);
+        return;
+      }
+      window.location.href = 'dashboard.html';
+    });
+  } catch (error) {
+    console.error('Compatibility login bootstrap failed:', error);
+  }
+})();
