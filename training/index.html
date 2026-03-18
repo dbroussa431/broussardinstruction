@@ -1,107 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSA Training Portal Login</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(245,158,11,0.20), transparent 32%),
-        linear-gradient(135deg, #071327 0%, #0b1730 45%, #09152a 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 470px;
-      background: rgba(17, 24, 39, 0.82);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 1.9rem;
-    }
-
-    p {
-      margin: 0 0 18px;
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: #fff;
-      outline: none;
-      font-size: 1rem;
-      text-transform: uppercase;
-    }
-
-    input:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
-    }
-
-    button {
-      width: 100%;
-      margin-top: 16px;
-      border: none;
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      background: #f59e0b;
-      color: #111827;
-    }
-
-    .message {
-      margin-top: 14px;
-      min-height: 22px;
-      font-size: 0.95rem;
-    }
-
-    .message.error { color: #fecaca; }
-    .message.success { color: #bbf7d0; }
-  </style>
+<title>BSA Training Login</title>
 </head>
-<body>
-  <div class="card">
-    <h1>BSA Training Portal</h1>
-    <p>Enter your student access code to begin training.</p>
+<body style="background:black;color:white;text-align:center;padding:50px">
 
-    <form id="loginForm">
-      <label for="accessCode">Access Code</label>
-      <input id="accessCode" type="text" placeholder="BSA-FULL-1234" autocomplete="off" required />
-      <button id="loginBtn" type="submit">Enter Portal</button>
-      <div id="message" class="message"></div>
-    </form>
-  </div>
+<h1>BSA Training Portal</h1>
 
-  <script type="module" src="js/login.js"></script>
+<input id="code" placeholder="Enter Access Code">
+<br><br>
+<button onclick="login()">Enter</button>
+
+<script type="module" src="js/login.js"></script>
+
 </body>
 </html>
