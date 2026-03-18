@@ -1,118 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 2 - Safety and Firearm Basics</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 2 - Self-Defense Firearm Basics</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg1: #071327;
+      --bg2: #0b1730;
+      --bg3: #09152a;
+      --panel: rgba(17, 24, 39, 0.82);
+      --panel-border: rgba(255,255,255,0.09);
+      --text: #ffffff;
+      --muted: #cbd5e1;
+      --gold: #f59e0b;
+      --darkbtn: #334155;
+      --green: #16a34a;
+      --line: rgba(255,255,255,0.08);
+    }
 
-<style>
-body {
-  font-family: Arial;
-  background: #0b1220;
-  color: white;
-  margin: 0;
-}
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(245,158,11,0.16), transparent 30%),
+        linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 22px;
+      background: rgba(15,23,42,0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
 
-h1 { color: #f59e0b; }
-h2 { margin-top: 30px; }
+    .topbar h1 { margin: 0; font-size: 1.15rem; }
+    .topbar .meta { color: var(--muted); font-size: 0.92rem; }
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-.card {
-  background: #111827;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
 
-button {
-  padding: 10px;
-  margin-top: 10px;
-  font-weight: bold;
-  cursor: pointer;
-}
-</style>
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    .btn-primary { background: var(--gold); color: #111827; }
+    .btn-dark { background: var(--darkbtn); color: #fff; }
+    .btn-green { background: var(--green); color: #fff; }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero, .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 22px;
+      box-shadow: 0 22px 50px rgba(0,0,0,0.28);
+    }
+
+    .hero { padding: 28px; margin-bottom: 20px; }
+    .hero h2 { margin: 0 0 10px; font-size: 2rem; }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1rem; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    .mini-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mini-label { color: var(--muted); font-size: 0.82rem; margin-bottom: 6px; }
+    .mini-value { font-size: 1.15rem; font-weight: 800; }
+
+    .section { margin-bottom: 20px; }
+    .card { padding: 22px; }
+    .card h3 { margin-top: 0; margin-bottom: 12px; font-size: 1.2rem; }
+    .card p, .card li { color: #e5edf7; line-height: 1.65; font-size: 0.98rem; }
+    .card ul { margin-top: 10px; padding-left: 20px; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 850px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 850px) {
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+
+    .rule-box {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .scenario {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .scenario h4 { margin-top: 0; margin-bottom: 8px; font-size: 1rem; }
+    .scenario .prompt { color: #f8fafc; margin-bottom: 10px; }
+    .scenario .answer {
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+
+    .quiz-question {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 14px;
+    }
+
+    .quiz-question h4 { margin-top: 0; margin-bottom: 12px; font-size: 1rem; }
+    .quiz-option {
+      display: block;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+    }
+
+    .quiz-option input { margin-right: 8px; }
+    .result-box {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      display: none;
+    }
+
+    .lesson-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .muted { color: var(--muted); }
+    .pass { color: #bbf7d0; font-weight: 800; }
+    .fail { color: #fecaca; font-weight: 800; }
+  </style>
 </head>
-
 <body>
+  <div class="topbar">
+    <div>
+      <h1>Broussard Shooting Academy</h1>
+      <div class="meta">Lesson 2 • Self-Defense Firearm Basics</div>
+    </div>
+    <div class="top-actions">
+      <button id="backBtn" class="btn btn-dark">Back to Dashboard</button>
+    </div>
+  </div>
 
-<div class="container">
+  <div class="wrap">
+    <section class="hero">
+      <h2>Lesson 2</h2>
+      <p>
+        This lesson is built from Chapter 2 of the v2 textbook and covers firearm safety, revolvers, semi-autos,
+        ammunition, shotgun basics, magazines, malfunctions, storage, selection, and basic cleaning concepts.
+      </p>
+      <div class="hero-grid">
+        <div class="mini-box">
+          <div class="mini-label">Main Theme</div>
+          <div class="mini-value">Safe handling first. Mechanical understanding second.</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">Pass Requirement</div>
+          <div class="mini-value">80% or higher on the quiz.</div>
+        </div>
+      </div>
+    </section>
 
-<h1>Lesson 2: Safety & Firearm Fundamentals</h1>
+    <section class="section card">
+      <h3>1. Universal Safety Rules</h3>
+      <div class="rules-grid">
+        <div class="rule-box"><strong>Rule 1:</strong> Treat all guns as if they are loaded.</div>
+        <div class="rule-box"><strong>Rule 2:</strong> Never point your gun at anything you are not willing to destroy.</div>
+        <div class="rule-box"><strong>Rule 3:</strong> Keep your finger off the trigger until your sights are on target and you have made the decision to shoot.</div>
+        <div class="rule-box"><strong>Rule 4:</strong> Be sure of your target and what is beyond it.</div>
+      </div>
+      <p>
+        Chapter 2 makes clear that these rules are not decoration. They must operate together. A person can know them
+        and still violate them through carelessness, distraction, or assumption.
+      </p>
+    </section>
 
-<div class="card">
-<h2>Universal Safety Rules</h2>
-<ul>
-<li>Treat every firearm as if it is loaded</li>
-<li>Never point at anything you are not willing to destroy</li>
-<li>Keep finger off trigger until ready</li>
-<li>Be sure of your target and what is beyond</li>
-</ul>
-</div>
+    <section class="section grid-2">
+      <div class="card">
+        <h3>2. Revolvers</h3>
+        <p>
+          The chapter breaks down major revolver parts and handling concepts: cylinder, crane/yoke, ejector rod, hammer,
+          trigger, sights, barrel, and grip. Revolvers are simple in some ways, but they still require real discipline.
+        </p>
+        <ul>
+          <li>Open and inspect the cylinder properly.</li>
+          <li>Keep muzzle and trigger discipline while loading and unloading.</li>
+          <li>Do not assume “simple” means “safe without attention.”</li>
+        </ul>
+      </div>
 
-<div class="card">
-<h2>What Happens When You Pull the Trigger</h2>
-<p>
-Trigger → firing pin → primer → powder ignites → bullet travels down barrel → casing ejects.
-</p>
-</div>
+      <div class="card">
+        <h3>3. Semi-Autos</h3>
+        <p>
+          The chapter also explains major semi-auto parts and controls: slide, sights, trigger, magazine release,
+          takedown lever, and slide stop. Semi-autos require a clear understanding of loading, chamber status,
+          magazine function, and slide operation.
+        </p>
+        <ul>
+          <li>Magazine in does not automatically mean chamber loaded.</li>
+          <li>Magazine out does not automatically mean chamber empty.</li>
+          <li>You must verify, not guess.</li>
+        </ul>
+      </div>
+    </section>
 
-<div class="card">
-<h2>Ammunition Basics</h2>
-<p>Bullet + casing + primer + powder</p>
-<p>Types: Hollow point, FMJ, birdshot, buckshot, slug</p>
-</div>
+    <section class="section card">
+      <h3>4. Ammunition Basics</h3>
+      <p>
+        The chapter identifies the main ammunition components: projectile, casing, primer, and powder. It also compares
+        common cartridge types, calibers, and shell configurations.
+      </p>
+      <ul>
+        <li>Projectile = what leaves the barrel.</li>
+        <li>Casing = the container that holds the round together.</li>
+        <li>Primer = the ignition point.</li>
+        <li>Powder = the propellant.</li>
+      </ul>
+    </section>
 
-<div class="card">
-<h2>Malfunctions</h2>
-<ul>
-<li>Failure to fire (click no bang)</li>
-<li>Failure to eject</li>
-<li>Failure to feed</li>
-</ul>
-</div>
+    <section class="section grid-2">
+      <div class="card">
+        <h3>5. Shotgun Shells and Loads</h3>
+        <p>
+          Chapter 2 explains birdshot, buckshot, and slugs. These loads behave differently and are meant for different roles.
+          You should understand the difference instead of treating “shotgun ammo” like one universal thing.
+        </p>
+      </div>
 
-<div class="card">
-<h2>Scenario Training</h2>
+      <div class="card">
+        <h3>6. What Happens When the Trigger Is Pressed</h3>
+        <p>
+          The chapter explains the mechanical firing sequence. Understanding this helps students understand both safe function
+          and why malfunctions happen.
+        </p>
+        <ul>
+          <li>Trigger press initiates the firing sequence.</li>
+          <li>Primer ignites powder.</li>
+          <li>Projectile travels through the barrel.</li>
+          <li>Semi-autos cycle using recoil/energy to continue operation.</li>
+        </ul>
+      </div>
+    </section>
 
-<p><b>Scenario 1:</b> Someone hands you a firearm and says it's unloaded.</p>
-<p>Correct response: Treat it as loaded and verify yourself.</p>
+    <section class="section grid-2">
+      <div class="card">
+        <h3>7. Common Malfunctions</h3>
+        <p>
+          Chapter 2 addresses common stoppages and why students must recognize that “click instead of bang” is not a normal event.
+        </p>
+        <ul>
+          <li>Failure to fire</li>
+          <li>Failure to feed</li>
+          <li>Failure to eject</li>
+          <li>Magazine-related problems</li>
+        </ul>
+      </div>
 
-<p><b>Scenario 2:</b> You hear a click instead of a bang.</p>
-<p>Correct response: Keep firearm pointed safely and assess malfunction.</p>
+      <div class="card">
+        <h3>8. Cleaning and Maintenance</h3>
+        <p>
+          The book also covers the basics of maintenance. A defensive firearm must be reliable, and reliability depends in part
+          on inspection, cleaning, correct lubrication, and safe storage.
+        </p>
+      </div>
+    </section>
 
-</div>
+    <section class="section grid-2">
+      <div class="card">
+        <h3>9. Choosing the Right Gun</h3>
+        <p>
+          Chapter 2 compares platform types, sizes, controls, and practical considerations. A good defensive handgun is not chosen
+          by marketing alone. It must fit the user’s hand, skill level, purpose, recoil tolerance, and ability to operate safely.
+        </p>
+      </div>
 
-<div class="card">
-<h2>Quiz</h2>
+      <div class="card">
+        <h3>10. Self-Defense Ammunition and Accessories</h3>
+        <p>
+          The chapter discusses defensive ammunition choices, optics, magazines, storage, and accessories. The lesson is not “buy everything.”
+          The lesson is to understand what each item does and whether it actually helps the intended role.
+        </p>
+      </div>
+    </section>
 
-<form id="quiz">
+    <section class="section card">
+      <h3>11. Lesson 2 Scenarios</h3>
 
-<p>1. First safety rule?</p>
-<input type="radio" name="q1" value="a"> Assume unloaded<br>
-<input type="radio" name="q1" value="b"> Treat as loaded<br>
+      <div class="scenario">
+        <h4>Scenario 1 — “It’s Unloaded”</h4>
+        <div class="prompt">
+          Someone hands you a gun and says, “Don’t worry, it’s unloaded.” What is the correct first response?
+        </div>
+        <div class="answer">
+          <strong>Best answer:</strong> Treat it as loaded and verify its condition yourself while maintaining muzzle discipline.
+          The chapter’s safety rules do not make exceptions for reassurance from another person.
+        </div>
+      </div>
 
-<p>2. Click but no bang means?</p>
-<input type="radio" name="q2" value="a"> Malfunction<br>
-<input type="radio" name="q2" value="b"> Normal<br>
+      <div class="scenario">
+        <h4>Scenario 2 — Click, No Bang</h4>
+        <div class="prompt">
+          You press the trigger and hear a click but no shot fires. What should your mindset be?
+        </div>
+        <div class="answer">
+          <strong>Best answer:</strong> Recognize it as a malfunction or ammunition issue, keep the muzzle in a safe direction,
+          and do not casually turn the gun or break safety discipline because the gun “didn’t fire.”
+        </div>
+      </div>
 
-<br>
-<button type="submit">Submit Quiz</button>
-</form>
+      <div class="scenario">
+        <h4>Scenario 3 — Mixed Ammunition</h4>
+        <div class="prompt">
+          While organizing gear, you find different ammunition types and shell loads mixed together. Why is this a problem?
+        </div>
+        <div class="answer">
+          <strong>Best answer:</strong> Different calibers, loads, and purposes matter. Confusion here can create safety,
+          function, and judgment problems. Chapter 2 repeatedly stresses understanding what you are loading and why.
+        </div>
+      </div>
+    </section>
 
-<div id="result"></div>
+    <section class="section card">
+      <h3>12. Lesson 2 Quiz</h3>
+      <form id="quizForm">
+        <div id="quizContainer"></div>
 
-<button id="completeBtn">Mark Lesson Complete</button>
+        <div class="lesson-footer">
+          <button type="submit" class="btn btn-primary">Grade Quiz</button>
+          <button type="button" id="markCompleteBtn" class="btn btn-green" disabled>Mark Lesson Complete</button>
+        </div>
+      </form>
 
-</div>
+      <div id="quizResult" class="result-box"></div>
+    </section>
+  </div>
 
-</div>
-
-<script type="module" src="../js/lesson2.js"></script>
-
+  <script type="module" src="../js/lesson2.js"></script>
 </body>
 </html>
