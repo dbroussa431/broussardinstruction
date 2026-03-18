@@ -16,20 +16,20 @@
           <p class="muted">Private Student Portal • Online Prerequisite Access</p>
         </div>
       </div>
-      <span class="eyebrow">Weekend-ready student access</span>
+      <span class="eyebrow">Online classroom restored</span>
       <h2>Log in with your access code</h2>
-      <p>This portal is private. Students complete lesson summaries, scenario reviews, and quizzes in smaller phone-friendly chunks. Final certificate is handed in person after the live review and range portion.</p>
+      <p>This private student portal delivers the online prerequisite in short mobile-friendly sections. Students complete the lesson summary, scenario review, and 20-question quiz for each lesson before moving on to the next lesson.</p>
 
       <form id="loginForm">
         <div class="field">
           <label for="accessCode">Access code</label>
-          <input id="accessCode" type="text" placeholder="Example: BSA-FREE-7555" autocomplete="off" required>
+          <input id="accessCode" type="text" placeholder="Example: BSA-FULL-7555" autocomplete="off" required>
         </div>
         <button class="btn btn-gold" id="loginBtn" type="submit">Enter Student Portal</button>
       </form>
 
       <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
-      <div class="login-meta">Use the access code created in the admin dashboard. Progress saves to Firebase and follows the student across devices.</div>
+      <div class="login-meta">If your progress was already in Firebase, it will load back into your dashboard after login.</div>
     </div>
   </div>
 
@@ -38,7 +38,7 @@
     import { login, getCurrentStudent } from "./app.js";
 
     const current = getCurrentStudent();
-    if (current && current.accessCode && current.status === "active") {
+    if (current && current.accessCode && current.status !== "inactive") {
       window.location.href = "dashboard.html";
     }
 
@@ -54,7 +54,7 @@
 
     function setLoading(isLoading) {
       loginBtn.disabled = isLoading;
-      loginBtn.textContent = isLoading ? "Checking Code..." : "Enter Student Portal";
+      loginBtn.textContent = isLoading ? "Checking access code..." : "Enter Student Portal";
     }
 
     form.addEventListener("submit", async (event) => {

@@ -22,14 +22,14 @@
 
   <main class="container">
     <section class="panel content-card">
-      <span class="eyebrow">2 short scenarios before the quiz</span>
+      <span class="eyebrow">Scenario review before quiz</span>
       <h2 id="scenarioTitle"></h2>
-      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
+      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit, and the lesson quiz unlocks when the scenario review is completed.</p>
       <div id="scenarioWrap"></div>
       <div id="scenarioResults" class="hidden"></div>
       <div class="lesson-actions">
         <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
-        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
+        <a class="btn btn-outline hidden" id="quizLink" href="#">Continue to Quiz</a>
       </div>
     </section>
   </main>
@@ -76,6 +76,10 @@
         const label = document.createElement("label");
         label.className = "answer-option";
         label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65 + i)}. ${choice}`;
+        label.addEventListener("click", () => {
+          list.querySelectorAll(".answer-option").forEach((node) => node.classList.remove("selected"));
+          label.classList.add("selected");
+        });
         list.appendChild(label);
       });
       card.appendChild(list);
@@ -83,7 +87,13 @@
     });
 
     document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
-      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
+      const unanswered = lesson.scenarios.some((_, index) => !document.querySelector(`input[name="scenario_${index}"]:checked`));
+      if (unanswered) {
+        alert("Please answer both scenarios before submitting.");
+        return;
+      }
+
+      let html = '<div class="banner pass">Scenario review completed. Explanations are shown below and the quiz is now available.</div>';
       lesson.scenarios.forEach((sc, index) => {
         const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
         const pickedIndex = picked ? Number(picked.value) : -1;
@@ -92,6 +102,7 @@
 
       document.getElementById("scenarioResults").innerHTML = html;
       document.getElementById("scenarioResults").classList.remove("hidden");
+      document.getElementById("quizLink").classList.remove("hidden");
       await setScenarioCompleted(lesson.id);
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     });
