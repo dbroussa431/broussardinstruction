@@ -1,6 +1,8 @@
 import { db } from "./firebase-config.js";
 import {
   collection,
+  query,
+  where,
   getDocs,
   doc,
   getDoc,
@@ -10,6 +12,7 @@ import {
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
 const PASSING_SCORE = 80;
+const TOTAL_LESSONS = 8;
 
 function getLessons() {
   return Array.isArray(window.LESSONS) ? window.LESSONS : [];
@@ -91,15 +94,31 @@ function randomSample(items, count) {
   return copy.slice(0, Math.min(count, copy.length));
 }
 
-function isLessonAllowedByTier(_lessonId, _tier = "FULL") {
-  return true;
+function shuffleChoices(question) {
+  if (!question || question.type === "tf" || !Array.isArray(question.choices)) {
+    return question;
+  }
+  const indexed = question.choices.map((choice, index) => ({ choice, index }));
+  const shuffled = randomSample(indexed, indexed.length);
+  return {
+    ...question,
+    choices: shuffled.map((item) => item.choice),
+    answer: shuffled.findIndex((item) => item.index === question.answer)
+  };
+}
+
+function isLessonAllowedByTier(lessonId, tier = "FULL") {
+  if (String(tier || "FULL").trim().toUpperCase() === "FREE") {
+    return Number(lessonId) === 1;
+  }
+  return Number(lessonId) >= 1 && Number(lessonId) <= TOTAL_LESSONS;
 }
 
 function lessonSequenceUnlocked(lessonId, student = getCurrentStudent()) {
   if (!student) return false;
   if (!isLessonAllowedByTier(lessonId, student.tier)) return false;
   if (lessonId <= 1) return true;
-  return !!student.completedLessons.includes(lessonId - 1);
+  return !!student.completedLessons.includes(Number(lessonId) - 1);
 }
 
 function lessonStatus(lessonId, student = getCurrentStudent()) {
@@ -110,7 +129,7 @@ function lessonStatus(lessonId, student = getCurrentStudent()) {
   }
 
   if (!lessonSequenceUnlocked(lessonId, student)) {
-    return { locked: true, className: "locked", label: "Locked" };
+    return { locked: true, className: "locked", label: "Locked Until Previous Lesson Is Passed" };
   }
 
   if (progress.quizPassed) {
@@ -118,14 +137,14 @@ function lessonStatus(lessonId, student = getCurrentStudent()) {
   }
 
   if (progress.scenarioCompleted) {
-    return { locked: false, className: "ready", label: "Ready for Quiz" };
+    return { locked: false, className: "in-progress", label: "Scenario Complete • Quiz Ready" };
   }
 
   if (progress.contentViewed) {
-    return { locked: false, className: "active", label: "Scenario Review Next" };
+    return { locked: false, className: "in-progress", label: "Lesson Viewed • Scenario Next" };
   }
 
-  return { locked: false, className: "ready", label: "Start Lesson" };
+  return { locked: false, className: "not-started", label: "Start Lesson" };
 }
 
 function getLessonProgress(lessonId, student = getCurrentStudent()) {
@@ -134,7 +153,7 @@ function getLessonProgress(lessonId, student = getCurrentStudent()) {
 }
 
 function overallProgress(student = getCurrentStudent()) {
-  const total = getLessons().length || 8;
+  const total = getLessons().length || TOTAL_LESSONS;
   const passed = Array.isArray(student?.completedLessons) ? student.completedLessons.length : 0;
   return {
     total,
@@ -148,19 +167,23 @@ function allLessonsComplete(student = getCurrentStudent()) {
   return !!student && lessons.length > 0 && student.completedLessons.length >= lessons.length;
 }
 
-function isStudentActive(rawStudent = {}) {
-  const status = String(rawStudent.status || "active").trim().toLowerCase();
-  return status === "active";
-}
+async function findStudentByCode(cleanCode) {
+  const studentsRef = collection(db, "portalStudents");
+  const candidates = [];
 
-async function findStudentByAccessCode(code) {
-  const cleanCode = String(code || "").trim().toUpperCase();
-  const snapshot = await getDocs(collection(db, "portalStudents"));
-  return snapshot.docs.find((item) => {
-    const data = item.data() || {};
-    const accessCode = String(data.accessCode || "").trim().toUpperCase();
-    return accessCode === cleanCode && isStudentActive(data);
-  }) || null;
+  const q1 = query(studentsRef, where("accessCode", "==", cleanCode));
+  const snap1 = await getDocs(q1);
+  snap1.forEach((docSnap) => candidates.push({ id: docSnap.id, ...docSnap.data() }));
+
+  if (!candidates.length) {
+    const q2 = query(studentsRef, where("accessCode", "==", cleanCode.toLowerCase()));
+    const snap2 = await getDocs(q2);
+    snap2.forEach((docSnap) => candidates.push({ id: docSnap.id, ...docSnap.data() }));
+  }
+
+  if (!candidates.length) return null;
+
+  return candidates.find((student) => String(student.status || "active").toLowerCase() !== "inactive") || candidates[0];
 }
 
 async function login(code) {
@@ -170,27 +193,25 @@ async function login(code) {
   }
 
   try {
-    const docSnap = await findStudentByAccessCode(cleanCode);
-
-    if (!docSnap) {
-      return { ok: false, message: "Invalid or inactive access code." };
+    const found = await findStudentByCode(cleanCode);
+    if (!found) {
+      return { ok: false, message: "Invalid access code." };
     }
 
-    const student = cacheStudent({ id: docSnap.id, ...docSnap.data() });
-
+    const student = cacheStudent(found);
     try {
       await updateDoc(doc(db, "portalStudents", student.id), {
         lastLoginAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
     } catch (writeError) {
-      console.warn("Login timestamp update failed, but session was created:", writeError);
+      console.warn("Login timestamp update skipped:", writeError);
     }
 
     return { ok: true, student };
   } catch (error) {
     console.error("Login failed:", error);
-    return { ok: false, message: "Unable to log in right now. Check Firebase and try again." };
+    return { ok: false, message: "Unable to log in right now. Please try again." };
   }
 }
 
@@ -219,7 +240,7 @@ async function refreshCurrentStudentFromFirestore() {
     }
 
     const student = normalizeStudent({ id: snap.id, ...snap.data() });
-    if (!isStudentActive(student)) {
+    if (student.status === "inactive") {
       clearCurrentStudent();
       return null;
     }
@@ -251,7 +272,11 @@ async function updateStudentProgress(lessonId, patch = {}) {
     updatedAt: serverTimestamp()
   };
 
-  await updateDoc(doc(db, "portalStudents", refreshed.id), payload);
+  try {
+    await updateDoc(doc(db, "portalStudents", refreshed.id), payload);
+  } catch (error) {
+    console.warn("Progress write failed, keeping local state:", error);
+  }
 
   const updatedStudent = cacheStudent({
     ...refreshed,
@@ -285,7 +310,7 @@ async function recordQuizResult(lessonId, score, details) {
     quizScore: score,
     quizPassed: score >= PASSING_SCORE,
     quizDetails: details,
-    completedAt: new Date().toISOString()
+    completedAt: score >= PASSING_SCORE ? new Date().toISOString() : current.completedAt || null
   });
 }
 
@@ -316,6 +341,7 @@ const api = {
   isLessonAllowedByTier,
   qs,
   randomSample,
+  shuffleChoices,
   requestLiveSessionAllowed
 };
 
@@ -344,5 +370,6 @@ export {
   isLessonAllowedByTier,
   qs,
   randomSample,
+  shuffleChoices,
   requestLiveSessionAllowed
 };
