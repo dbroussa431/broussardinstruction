@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lesson 1 - Situational Awareness and Personal Defense Mindset</title>
+  <title>Lesson 1 - Personal Defense Mindset</title>
   <style>
     * { box-sizing: border-box; }
-
     :root {
       --bg1: #071327;
       --bg2: #0b1730;
@@ -18,7 +17,6 @@
       --gold: #f59e0b;
       --darkbtn: #334155;
       --green: #16a34a;
-      --red: #dc2626;
       --line: rgba(255,255,255,0.08);
     }
 
@@ -46,21 +44,10 @@
       backdrop-filter: blur(10px);
     }
 
-    .topbar h1 {
-      margin: 0;
-      font-size: 1.15rem;
-    }
+    .topbar h1 { margin: 0; font-size: 1.15rem; }
+    .topbar .meta { color: var(--muted); font-size: 0.92rem; }
 
-    .topbar .meta {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
     .btn {
       border: none;
@@ -71,15 +58,10 @@
       transition: transform 0.15s ease, filter 0.15s ease;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
-    }
-
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
     .btn-primary { background: var(--gold); color: #111827; }
     .btn-dark { background: var(--darkbtn); color: #fff; }
     .btn-green { background: var(--green); color: #fff; }
-    .btn-red { background: var(--red); color: #fff; }
 
     .wrap {
       max-width: 1100px;
@@ -87,30 +69,16 @@
       padding: 24px;
     }
 
-    .hero,
-    .card {
+    .hero, .card {
       background: var(--panel);
       border: 1px solid var(--panel-border);
       border-radius: 22px;
       box-shadow: 0 22px 50px rgba(0,0,0,0.28);
     }
 
-    .hero {
-      padding: 28px;
-      margin-bottom: 20px;
-    }
-
-    .hero h2 {
-      margin: 0 0 10px;
-      font-size: 2rem;
-    }
-
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 1rem;
-    }
+    .hero { padding: 28px; margin-bottom: 20px; }
+    .hero h2 { margin: 0 0 10px; font-size: 2rem; }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 1rem; }
 
     .hero-grid {
       display: grid;
@@ -120,9 +88,7 @@
     }
 
     @media (max-width: 900px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
+      .hero-grid { grid-template-columns: 1fr; }
     }
 
     .mini-box {
@@ -132,42 +98,14 @@
       padding: 16px;
     }
 
-    .mini-label {
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-bottom: 6px;
-    }
+    .mini-label { color: var(--muted); font-size: 0.82rem; margin-bottom: 6px; }
+    .mini-value { font-size: 1.15rem; font-weight: 800; }
 
-    .mini-value {
-      font-size: 1.15rem;
-      font-weight: 800;
-    }
-
-    .section {
-      margin-bottom: 20px;
-    }
-
-    .card {
-      padding: 22px;
-    }
-
-    .card h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      font-size: 1.2rem;
-    }
-
-    .card p,
-    .card li {
-      color: #e5edf7;
-      line-height: 1.65;
-      font-size: 0.98rem;
-    }
-
-    .card ul {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
+    .section { margin-bottom: 20px; }
+    .card { padding: 22px; }
+    .card h3 { margin-top: 0; margin-bottom: 12px; font-size: 1.2rem; }
+    .card p, .card li { color: #e5edf7; line-height: 1.65; font-size: 0.98rem; }
+    .card ul { margin-top: 10px; padding-left: 20px; }
 
     .grid-2 {
       display: grid;
@@ -176,9 +114,7 @@
     }
 
     @media (max-width: 850px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
+      .grid-2 { grid-template-columns: 1fr; }
     }
 
     .focus-grid {
@@ -188,9 +124,7 @@
     }
 
     @media (max-width: 950px) {
-      .focus-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .focus-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .focus-card {
@@ -205,11 +139,7 @@
     .focus-orange { background: rgba(249,115,22,0.18); }
     .focus-red { background: rgba(239,68,68,0.18); }
 
-    .focus-card h4 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
+    .focus-card h4 { margin-top: 0; margin-bottom: 8px; font-size: 1rem; }
 
     .scenario {
       background: rgba(255,255,255,0.04);
@@ -219,17 +149,8 @@
       margin-bottom: 14px;
     }
 
-    .scenario h4 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 1rem;
-    }
-
-    .scenario .prompt {
-      color: #f8fafc;
-      margin-bottom: 10px;
-    }
-
+    .scenario h4 { margin-top: 0; margin-bottom: 8px; font-size: 1rem; }
+    .scenario .prompt { color: #f8fafc; margin-bottom: 10px; }
     .scenario .answer {
       color: var(--muted);
       border-top: 1px solid var(--line);
@@ -258,12 +179,7 @@
       margin-bottom: 14px;
     }
 
-    .quiz-question h4 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-
+    .quiz-question h4 { margin-top: 0; margin-bottom: 12px; font-size: 1rem; }
     .quiz-option {
       display: block;
       margin-bottom: 8px;
@@ -273,10 +189,7 @@
       cursor: pointer;
     }
 
-    .quiz-option input {
-      margin-right: 8px;
-    }
-
+    .quiz-option input { margin-right: 8px; }
     .result-box {
       margin-top: 16px;
       padding: 16px;
@@ -294,26 +207,16 @@
       margin-top: 20px;
     }
 
-    .muted {
-      color: var(--muted);
-    }
-
-    .pass {
-      color: #bbf7d0;
-      font-weight: 800;
-    }
-
-    .fail {
-      color: #fecaca;
-      font-weight: 800;
-    }
+    .muted { color: var(--muted); }
+    .pass { color: #bbf7d0; font-weight: 800; }
+    .fail { color: #fecaca; font-weight: 800; }
   </style>
 </head>
 <body>
   <div class="topbar">
     <div>
       <h1>Broussard Shooting Academy</h1>
-      <div class="meta">Lesson 1 • Situational Awareness and Personal Defense Mindset</div>
+      <div class="meta">Lesson 1 • Personal Defense Mindset and Awareness</div>
     </div>
     <div class="top-actions">
       <button id="backBtn" class="btn btn-dark">Back to Dashboard</button>
@@ -324,48 +227,44 @@
     <section class="hero">
       <h2>Lesson 1</h2>
       <p>
-        This lesson is built from Chapter 1 of your v2 textbook and focuses on the mental side of personal defense:
-        awareness, preparation, home security thinking, low-light risk, reaction time, and the color-code mindset.
+        This lesson is built from Chapter 1 of the v2 textbook and focuses on the mental side of self-defense:
+        awareness, attention, planning, home security thinking, low-light danger areas, and the color-code mindset.
       </p>
-
       <div class="hero-grid">
         <div class="mini-box">
-          <div class="mini-label">Lesson Goal</div>
-          <div class="mini-value">Think earlier, notice more, react smarter.</div>
+          <div class="mini-label">Main Theme</div>
+          <div class="mini-value">Notice sooner. Think earlier. React smarter.</div>
         </div>
         <div class="mini-box">
-          <div class="mini-label">Completion Rule</div>
-          <div class="mini-value">Read the lesson and pass the quiz with 80% or higher.</div>
+          <div class="mini-label">Pass Requirement</div>
+          <div class="mini-value">80% or higher on the quiz.</div>
         </div>
       </div>
     </section>
 
     <section class="section card">
-      <h3>1. What This Chapter Is Really About</h3>
+      <h3>1. Defense Starts Before the Attack</h3>
       <p>
-        Chapter 1 is not about showing off a firearm. It is about the mindset that keeps you from being surprised,
-        from becoming an easy target, and from making bad decisions under stress. The book stresses that personal
-        protection starts long before a trigger press. It starts with awareness, judgment, planning, and preparation.
+        Chapter 1 teaches that self-defense begins long before a weapon is drawn. A prepared defender pays attention,
+        avoids obvious mistakes, notices danger early, and thinks through likely problems before they happen.
       </p>
       <p>
-        The chapter ties together concealed carry, personal safety, reaction time, environmental awareness, and
-        home security. The point is simple: a defensive tool matters, but a prepared mind matters first.
+        The book’s message is simple: if you are mentally asleep, physically late, or casually wandering into bad
+        positions, your defensive tool may not save you from your own delay.
       </p>
     </section>
 
     <section class="section card">
       <h3>2. Situational Awareness</h3>
       <p>
-        Situational awareness means you are aware of what is around you, what is changing, who is near you,
-        where your exits are, what cover exists, and whether something feels wrong. It also means you are not
-        so distracted by your phone, your thoughts, or your routine that danger gets inside your reaction window
-        before you notice it.
+        Situational awareness means understanding what is happening around you, who is nearby, where your exits are,
+        where concealment or cover may exist, and whether behavior in the area looks normal or abnormal.
       </p>
       <div class="checklist">
-        <div class="check-item"><strong>Ask yourself:</strong> Who is around me?</div>
-        <div class="check-item"><strong>Ask yourself:</strong> Where are my exits?</div>
-        <div class="check-item"><strong>Ask yourself:</strong> What would I do if this turned bad in the next 3 seconds?</div>
-        <div class="check-item"><strong>Ask yourself:</strong> Am I standing where I can be trapped, cornered, or isolated?</div>
+        <div class="check-item"><strong>Ask:</strong> Who is around me right now?</div>
+        <div class="check-item"><strong>Ask:</strong> What would I do if this went bad in the next few seconds?</div>
+        <div class="check-item"><strong>Ask:</strong> Am I distracted, isolated, or trapped?</div>
+        <div class="check-item"><strong>Ask:</strong> Is someone closing distance, watching me, or acting out of place?</div>
       </div>
     </section>
 
@@ -374,61 +273,49 @@
       <div class="focus-grid">
         <div class="focus-card focus-white">
           <h4>White</h4>
-          <p>
-            Unaware, distracted, mentally absent. You are behind the curve and easy to surprise.
-            This is the worst public mindset.
-          </p>
+          <p>Distracted, mentally absent, and easy to surprise. Unsafe in public.</p>
         </div>
         <div class="focus-card focus-yellow">
           <h4>Yellow</h4>
-          <p>
-            Relaxed alert. No identified threat, but you are paying attention to people, movement, space, and exits.
-            This is where you should live in public.
-          </p>
+          <p>Relaxed alert. Aware of people, movement, exits, and changes in the environment.</p>
         </div>
         <div class="focus-card focus-orange">
           <h4>Orange</h4>
-          <p>
-            Specific concern. Something or someone has your attention and you are preparing mentally for possible action.
-          </p>
+          <p>A specific person or situation has your attention. You are preparing mentally.</p>
         </div>
         <div class="focus-card focus-red">
           <h4>Red</h4>
-          <p>
-            Action phase. Your mental trigger has been met and you are acting according to the situation in front of you.
-          </p>
+          <p>Your mental trigger has been met and you are taking action.</p>
         </div>
       </div>
     </section>
 
     <section class="section grid-2">
       <div class="card">
-        <h3>4. Low-Light and Transitional Spaces</h3>
+        <h3>4. Low-Light and Transitional Areas</h3>
         <p>
-          Parking lots, garages, alleys, breezeways, stairwells, and dim walkways are problem areas because they reduce
-          visibility, create blind spots, and often separate you from quick help. These are places where people tend to
-          drift into autopilot when they should be more alert.
+          Parking lots, garages, alleys, breezeways, and shadowed walkways are emphasized in the chapter because
+          they reduce visibility and increase surprise opportunities.
         </p>
         <ul>
-          <li>Do not bury your attention in your phone while moving through these spaces.</li>
-          <li>Scan corners, vehicles, shadows, entrances, and groups.</li>
-          <li>Keep your hands free when possible.</li>
-          <li>Move with purpose instead of wandering or lingering.</li>
+          <li>Do not bury your attention in your phone.</li>
+          <li>Look into vehicles, corners, shadows, and movement lanes.</li>
+          <li>Keep your hands and movement purposeful.</li>
+          <li>Do not drift casually into dead space or blind areas.</li>
         </ul>
       </div>
 
       <div class="card">
         <h3>5. Don’t Look Like a Victim</h3>
         <p>
-          The chapter pushes the idea that criminals often prefer easy, distracted, hesitant, isolated targets.
-          Your appearance, posture, pace, and awareness can change how you are perceived.
+          The chapter teaches that criminals often prefer distracted, confused, isolated, and hesitant targets.
+          Your posture, pace, and awareness matter.
         </p>
         <ul>
-          <li>Stand up straight.</li>
           <li>Walk with purpose.</li>
-          <li>Look around before moving into a space.</li>
-          <li>Do not advertise confusion or fear.</li>
-          <li>Avoid unnecessary isolation when something feels wrong.</li>
+          <li>Keep your head up.</li>
+          <li>Do not advertise uncertainty.</li>
+          <li>Move early when something feels wrong.</li>
         </ul>
       </div>
     </section>
@@ -436,53 +323,45 @@
     <section class="section card">
       <h3>6. Reaction Time vs Action Time</h3>
       <p>
-        One of the biggest ideas in this chapter is that reacting is slower than acting. The person who has already
-        chosen to act usually has the time advantage. That means your goal is not to wait until the worst possible
-        instant to wake up. Your goal is to recognize danger sooner so you do not lose the time race before it begins.
+        One of the chapter’s biggest lessons is that reacting is slower than acting. If someone else has already
+        chosen a course of action, you are already behind unless you recognized the problem early.
       </p>
       <p>
-        If you are inattentive, your brain must first notice the threat, then understand it, then decide what it means,
-        then choose an action, and only then move. That delay matters.
+        Awareness gives you time. Delay steals it.
       </p>
     </section>
 
     <section class="section card">
       <h3>7. Seconds Count</h3>
       <p>
-        The chapter reinforces that emergency response may not arrive in the time window you imagine. In a violent encounter,
-        the event can unfold in seconds. That means your awareness, movement, planning, and early decisions matter.
-      </p>
-      <p>
-        This does not mean panic. It means take preparation seriously.
+        Violent events can unfold in seconds. Help may not arrive before the important decisions have already been made.
+        That is why the chapter emphasizes mindset, awareness, and planning rather than passive hope.
       </p>
     </section>
 
     <section class="section grid-2">
       <div class="card">
-        <h3>8. Home Security Mindset</h3>
+        <h3>8. Home Security Thinking</h3>
         <p>
-          Chapter 1 also moves into home security. The lesson is that your home should not be treated casually.
-          You should think about your property the way a criminal might: weak points, hiding places, lighting, entry doors,
-          windows, alarm habits, and escape options.
+          Chapter 1 also moves into home security. It pushes you to think like a criminal examining your own house:
+          where are the weak points, blind approaches, dark areas, easy windows, and vulnerable doors?
         </p>
         <ul>
-          <li>Improve lighting around the home.</li>
-          <li>Harden common entry points.</li>
-          <li>Know your weak sides and blind areas.</li>
-          <li>Lock doors and windows consistently.</li>
+          <li>Improve lighting.</li>
+          <li>Harden doors and locks.</li>
+          <li>Think about approach routes.</li>
           <li>Have a family response plan.</li>
         </ul>
       </div>
 
       <div class="card">
-        <h3>9. Home Security Inspection Checklist</h3>
+        <h3>9. Home Security Checklist</h3>
         <div class="checklist">
-          <div class="check-item">Can someone approach your home unseen?</div>
-          <div class="check-item">Are doors, locks, and strike areas strong enough?</div>
-          <div class="check-item">Are windows easy to break or access?</div>
-          <div class="check-item">Do you have exterior lighting where you need it?</div>
-          <div class="check-item">Would your family know what to do at 2 a.m. if something went wrong?</div>
-          <div class="check-item">Do you have a quick route to safety or cover inside the home?</div>
+          <div class="check-item">Can someone approach unseen?</div>
+          <div class="check-item">Are your entries actually hardened?</div>
+          <div class="check-item">Do you have exterior lighting?</div>
+          <div class="check-item">Do you know what family members should do if something happens?</div>
+          <div class="check-item">Would you have time to react if awakened suddenly?</div>
         </div>
       </div>
     </section>
@@ -491,39 +370,37 @@
       <h3>10. Lesson 1 Scenarios</h3>
 
       <div class="scenario">
-        <h4>Scenario 1 — Parking Garage</h4>
+        <h4>Scenario 1 — Garage Walk</h4>
         <div class="prompt">
-          You leave a store in the evening and walk into a parking garage while texting someone. You notice a person
-          leaning against a pillar near your row. What is the best mindset?
+          You are leaving a store at night and heading into a dim parking garage while looking at your phone.
+          You notice someone near your row who appears to be waiting rather than moving with purpose. What is the best mindset?
         </div>
         <div class="answer">
-          <strong>Best response:</strong> Move to alert awareness immediately, stop feeding attention into the phone,
-          scan the space, create distance if needed, and avoid walking blindly into that person’s orbit. Lesson point:
-          don’t drift through low-light transition areas in condition white.
+          <strong>Best answer:</strong> Move immediately out of condition white. Get your attention off the phone, scan,
+          create distance, adjust your route if needed, and avoid walking blindly toward uncertainty.
         </div>
       </div>
 
       <div class="scenario">
-        <h4>Scenario 2 — Home at Night</h4>
+        <h4>Scenario 2 — Noise Outside</h4>
         <div class="prompt">
-          You hear a bump outside your home late at night. What is the wrong instinctive response, and what is the smarter one?
+          Late at night, you hear a noise outside the house. What is the wrong reaction, and what is the smarter one?
         </div>
         <div class="answer">
-          <strong>Smarter response:</strong> Do not rush outside casually to “check.” Instead, gather information, use light,
-          use angles, think about cover, communicate if needed, and follow a plan. Lesson point: awareness and planning beat
-          impulsive movement.
+          <strong>Best answer:</strong> The wrong move is rushing outside impulsively. The smarter response is to gather
+          information, think through your angles, use light and distance, and follow a plan instead of exposing yourself casually.
         </div>
       </div>
 
       <div class="scenario">
-        <h4>Scenario 3 — Approached in Public</h4>
+        <h4>Scenario 3 — Public Approach</h4>
         <div class="prompt">
-          Someone changes direction and begins closing on you while you are walking to your vehicle. They are not attacking yet,
-          but something feels off. What focus level are you likely entering?
+          A stranger changes direction and begins closing distance while watching you in a public area. You do not have proof of
+          criminal intent yet, but something feels off. What focus level are you likely in now?
         </div>
         <div class="answer">
-          <strong>Best response:</strong> Orange. You now have a specific concern, not a general one. You should reposition,
-          create options, get your hands free, and prepare mentally in case the concern becomes a threat.
+          <strong>Best answer:</strong> Orange. You now have a specific concern and should prepare mentally, adjust position,
+          and think ahead.
         </div>
       </div>
     </section>
