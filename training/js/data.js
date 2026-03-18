@@ -1,2714 +1,702 @@
-// Broussard Shooting Academy - Full Firebase Portal Dataset
-// Reviewed and rebuilt across all lessons to remove giveaway wording,
-// reduce repetition, support randomized delivery, and scale quiz size by lesson density.
-// Educational content only; not legal advice.
 
-export const LESSONS = [
+window.LESSONS = [
   {
-    "lessonNumber": 1,
-    "title": "Developing a Personal Protection Plan",
-    "description": "Situational awareness, avoidance, route planning, environmental positioning, and defensive decision-making before force becomes necessary.",
-    "chapterSummary": "Personal protection starts before danger becomes immediate. Students are taught that awareness, route choice, distance management, lighting, barriers, habits, and mental rehearsal reduce the chances of being surprised or cornered. The safest defensive win is often avoiding the event entirely. Students should notice exits, keep their head up, avoid distraction, preserve personal space, and move toward light, people, and better positions when something feels wrong. Awareness is not paranoia; it is disciplined attention that creates time, options, and safer choices.",
-    "estimatedMinutes": 18,
-    "quizQuestionCount": 18,
-    "sections": [
+    id: 1,
+    slug: 'personal-protection-plan',
+    title: 'Developing a Personal Protection Plan',
+    estTime: '18 min',
+    summary: 'This lesson covers awareness levels, avoidance, route selection, environmental advantages, alarm habits, and mental rehearsal so students can recognize danger earlier and make safer choices before force becomes necessary.',
+    sections: [
       {
-        "heading": "Awareness and Positioning",
-        "body": [
-          "Condition White is distracted and unaware; Condition Yellow is calm, alert awareness in public.",
-          "Early recognition creates time to change direction, create distance, and use better positioning.",
-          "Good positioning means keeping exits, barriers, light, witnesses, and mobility in mind."
+        heading: 'Awareness Levels',
+        body: [
+          'Condition White is distracted and unaware; Condition Yellow is calm, alert awareness in public.',
+          'Condition Orange means you have identified a possible threat and are preparing a response.',
+          'Condition Red means the trigger has been met and you are taking action such as retreating, taking cover, or responding to a deadly threat.'
         ]
       },
       {
-        "heading": "Avoidance and Route Selection",
-        "body": [
-          "Avoidance is not weakness; it is often the smartest defensive decision.",
-          "Bad routes, isolated spots, and unnecessary shortcuts reduce your options and increase risk.",
-          "Moving toward people, light, cameras, and open space is usually safer than continuing into uncertainty."
+        heading: 'Avoidance and Route Choice',
+        body: [
+          'Avoid bad routes, isolated spots, and unnecessary shortcuts that reduce your options.',
+          'Awareness gives you time to change direction, move toward light and people, or leave before a problem becomes a crisis.',
+          'The best defensive decision is often the one that prevents the encounter from happening at all.'
         ]
       },
       {
-        "heading": "Habits and Mental Rehearsal",
-        "body": [
-          "Students should build habits such as locking doors, keeping alarms set, parking wisely, and limiting distraction.",
-          "Mental rehearsal helps students think through decisions before stress hits.",
-          "Preparedness means having a plan for what to do if conditions begin to change."
+        heading: 'Environmental Advantages',
+        body: [
+          'Cover, concealment, barriers, and escape routes can work in your favor if you identify them early.',
+          'Low-light isolated areas generally increase risk rather than helping you.',
+          'Simple planning—like parking in better areas and keeping your head up—can dramatically improve safety.'
+        ]
+      },
+      {
+        heading: 'Home and Daily Habits',
+        body: [
+          'The course ties awareness to real habits, including locking doors, setting alarms, and reducing routine mistakes.',
+          'Students should practice mental rehearsal away from the range so decisions become more available under stress.',
+          'Preparedness is not paranoia; it is disciplined attention that creates better options.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "You are walking to your vehicle after leaving a grocery store at night. A man near the carts begins matching your direction of travel and looking around the lot as he closes distance. What is the best first response?",
-        "choices": [
-          "Keep walking directly to your car and hope he passes by.",
-          "Move toward a better-lit area with witnesses, keep him in view, and be ready to re-enter the store.",
-          "Immediately draw your handgun to warn him away.",
-          "Stop to ask him what he wants."
+        prompt: 'You are walking to your car after dark and notice a man changing direction to mirror your path while glancing around the lot. What is the best first decision?',
+        choices: [
+          'Keep walking normally so you do not look nervous',
+          'Move toward light, other people, and a safer route while staying alert',
+          'Draw immediately because he might be dangerous',
+          'Stop in place and wait to see if he comes closer'
         ],
-        "answer": 1,
-        "explanation": "Lesson 1 teaches that awareness, movement, distance, and better positioning come before escalation. A safer route and more witnesses improve your options."
+        answer: 1,
+        explanation: 'The lesson emphasizes early movement, route choice, and avoidance instead of waiting passively or escalating too early.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "You park at the far end of a poorly lit lot because it is more convenient. As you get out, you notice several people lingering between vehicles. Which lesson principle best applies?",
-        "choices": [
-          "Convenience matters more than positioning if you are armed.",
-          "Route and parking choices can create or reduce risk before a problem begins.",
-          "You should immediately confront anyone in the area.",
-          "Once parked, the safest move is to ignore the environment."
+        prompt: 'Your car is parked at the end of a dark alley behind a building. Which response best matches the lesson?',
+        choices: [
+          'Proceed quickly and assume the alley is safe',
+          'Walk down the alley if a companion is with you',
+          'Take another route to your car even if it is less convenient',
+          'Unholster before entering the alley'
         ],
-        "answer": 1,
-        "explanation": "The lesson teaches that parking, route choice, lighting, and environmental awareness matter long before force would ever be considered."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A stranger steps too close while asking for directions outside a gas station. What is the best lesson-based response?",
-        "choices": [
-          "Maintain personal space, angle off, and answer briefly while keeping an exit route available.",
-          "Turn your back and look at your phone for the address.",
-          "Close distance so you can hear the question more clearly.",
-          "Grab the stranger before they can move closer."
-        ],
-        "answer": 0,
-        "explanation": "Distance, positioning, and route awareness are part of a personal protection plan. The lesson favors controlled spacing and an available exit."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "You are walking through a parking garage while texting. Why is that a problem under Lesson 1?",
-        "choices": [
-          "Texting improves reaction time.",
-          "Texting can put you into a distracted, unaware condition and delay your recognition of danger.",
-          "Phones make you look more confident.",
-          "Texting is safe as long as your vehicle is nearby."
-        ],
-        "answer": 1,
-        "explanation": "The lesson treats distraction as a major problem because it removes awareness and shortens your decision time."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "While entering your apartment building, you realize someone unknown is waiting just outside the locked door and trying to follow you in. What best fits the chapter?",
-        "choices": [
-          "Hold the door and let them in to avoid appearing rude.",
-          "Maintain the security barrier and do not let an unknown person tailgate through controlled access.",
-          "Prop the door open so you can move faster.",
-          "Ignore them because locks are never important."
-        ],
-        "answer": 1,
-        "explanation": "Home and habit security are part of personal protection. Preserving barriers and access control creates safer choices."
+        answer: 2,
+        explanation: 'The book-backed lesson teaches that route choice and avoidance create safer options before force is ever on the table.'
       }
     ]
   },
   {
-    "lessonNumber": 2,
-    "title": "Firearm Safety and Defensive Operation",
-    "description": "Safe handling, loading and unloading, platform knowledge, ammunition basics, storage, and defensive operation.",
-    "chapterSummary": "Students must understand that safe gun handling begins before a shot is fired. The four safety rules always apply. Students verify a firearm\u2019s condition personally, not by assumption or someone else\u2019s statement. They learn chambers, magazine wells, revolver and semi-automatic controls, compatible ammunition, loading and unloading procedures, secure storage, and why careless handling around others is unacceptable. A defensive firearm is a serious responsibility that demands deliberate, repeatable safety habits.",
-    "estimatedMinutes": 20,
-    "quizQuestionCount": 20,
-    "sections": [
+    id: 2,
+    slug: 'firearm-basics',
+    title: 'Self-Defense Firearm Basics',
+    estTime: '20 min',
+    summary: 'This lesson covers clearance checks, chambers, magazine wells, action types, revolver versus semi-automatic controls, ammunition basics, and foundational platform knowledge for safe defensive gun handling.',
+    sections: [
       {
-        "heading": "Core Safety Rules",
-        "body": [
-          "Treat every firearm as if it is loaded.",
-          "Keep the muzzle pointed in a safe direction.",
-          "Keep your finger off the trigger until your sights are on target and you have decided to fire.",
-          "Be sure of your target, its foreground, and its background."
+        heading: 'Clearing and Verification',
+        body: [
+          'A firearm is not “clear” just because someone says so or because the magazine was removed.',
+          'Students should visually and physically verify both the chamber and the feeding source area.',
+          'Safe handling begins with personally confirming the condition of the firearm.'
         ]
       },
       {
-        "heading": "Verification and Operation",
-        "body": [
-          "Students must visually and physically verify chamber and feeding source condition.",
-          "Removing a magazine alone does not guarantee a pistol is unloaded.",
-          "Platform knowledge matters: revolvers and semi-automatics use different controls and operating systems."
+        heading: 'Platform and Controls',
+        body: [
+          'Revolvers and semi-automatics use different controls, loading systems, and operating cycles.',
+          'Students should understand the role of the cylinder release, slide, chamber, and magazine before using a handgun defensively.',
+          'Action type affects trigger press, feel, and handling.'
         ]
       },
       {
-        "heading": "Ammunition, Storage, and Responsibility",
-        "body": [
-          "Only use correct, compatible, undamaged ammunition.",
-          "Safe storage depends on environment, access by others, and preventing unauthorized handling.",
-          "Slow down when unsure; guessing with firearms is unsafe."
+        heading: 'Ammunition Basics',
+        body: [
+          'A cartridge includes the projectile, case, primer, and powder charge.',
+          'Correct ammunition selection matters; wrong or damaged ammunition can create dangerous malfunctions.',
+          'Rimfire and centerfire are different ignition systems and should not be treated as interchangeable.'
+        ]
+      },
+      {
+        heading: 'Mindset for New Gun Owners',
+        body: [
+          'Students should not guess when handling an unfamiliar firearm or magazine.',
+          'Learning the platform before loading is part of safe defensive ownership.',
+          'Safe gun handling means slowing down when you are uncertain.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "A friend hands you a pistol and says, 'It's clear.' What is the best first action?",
-        "choices": [
-          "Accept the statement and put your finger on the trigger.",
-          "Point it in a safe direction and personally verify the chamber and magazine well.",
-          "Set it in your waistband until you need it.",
-          "Immediately rack the slide and dry fire it."
+        prompt: 'A friend hands you a pistol and says, “It’s unloaded.” What should you do first?',
+        choices: [
+          'Accept the statement and set your grip',
+          'Point it in a safe direction and perform a proper clearance check',
+          'Rack the slide and press the trigger',
+          'Hand it to another person to verify'
         ],
-        "answer": 1,
-        "explanation": "The lesson teaches personal verification. No one else's statement replaces your own safe check."
+        answer: 1,
+        explanation: 'The lesson is clear: you personally verify the firearm’s condition before doing anything else.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "You remove the magazine from a semi-automatic pistol. Which statement is correct?",
-        "choices": [
-          "The gun cannot still have a round chambered.",
-          "The gun may still have a round in the chamber and must still be checked.",
-          "The gun is safe as long as the safety is on.",
-          "The muzzle direction no longer matters."
+        prompt: 'You find a loose magazine in a range bag and are not certain it belongs to your pistol. What is the safest decision?',
+        choices: [
+          'Force it into the gun and test it',
+          'Load one round only and see if it works',
+          'Verify compatibility before attempting to use it',
+          'Use it if the caliber on the box is close'
         ],
-        "answer": 1,
-        "explanation": "Removing the magazine alone does not clear the chamber."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "You find loose ammunition in a range bag and are not sure it matches your firearm. What should you do?",
-        "choices": [
-          "Load it anyway if it looks close enough.",
-          "Verify the correct caliber and condition before using it.",
-          "Use only the first round and see what happens.",
-          "Mix it with other rounds and sort it later."
-        ],
-        "answer": 1,
-        "explanation": "Correct, compatible, undamaged ammunition is a basic safety requirement."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "A student keeps sweeping classmates with the muzzle while talking about their new handgun. Which rule is being violated most obviously?",
-        "choices": [
-          "Be sure of your target and what is beyond it.",
-          "Treat every firearm as loaded.",
-          "Keep the muzzle pointed in a safe direction.",
-          "Use only compatible ammunition."
-        ],
-        "answer": 2,
-        "explanation": "Muzzle discipline is a non-negotiable safety rule."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "You are unfamiliar with a revolver someone asks you to unload. What is the best lesson-based response?",
-        "choices": [
-          "Guess how it works and try to force it open.",
-          "Slow down, identify the controls, and handle it safely instead of guessing.",
-          "Point it at the ground and pull the trigger repeatedly.",
-          "Hand it to another beginner."
-        ],
-        "answer": 1,
-        "explanation": "The lesson emphasizes slowing down and learning the platform instead of guessing."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "A child sometimes visits your home. Which statement best fits Lesson 2?",
-        "choices": [
-          "Storage is only about protecting the firearm from rust.",
-          "Safe storage must account for unauthorized access, especially by children or prohibited persons.",
-          "A gun under a pillow is secure enough.",
-          "Storage does not matter if the gun is unloaded."
-        ],
-        "answer": 1,
-        "explanation": "Storage is part of responsible defensive ownership and must consider who could access the firearm."
+        answer: 2,
+        explanation: 'The firearm-basics lesson emphasizes compatibility, correct platform knowledge, and avoiding guesswork.'
       }
     ]
   },
   {
-    "lessonNumber": 3,
-    "title": "Defensive Shooting Fundamentals",
-    "description": "Grip, stance, sight picture, trigger control, recoil management, and accountable hits under realistic pressure.",
-    "chapterSummary": "Good defensive shooting starts with repeatable fundamentals. Students learn stable stance, a consistent grip, sight alignment, sight picture, controlled trigger press, follow-through, recoil management, and accountable hits. Defensive shooting is not reckless speed; it is safe, timely, accurate performance. The lesson stresses that equipment does not replace fundamentals and that students should build consistency before attempting more advanced speed or complexity.",
-    "estimatedMinutes": 20,
-    "quizQuestionCount": 18,
-    "sections": [
+    id: 3,
+    slug: 'shooting-fundamentals',
+    title: 'Self-Defense Shooting Fundamentals',
+    estTime: '20 min',
+    summary: 'This lesson covers the Isosceles stance, target focus, flash sight picture, grip, trigger control, and practical defensive accuracy under stress.',
+    sections: [
       {
-        "heading": "Body Position and Grip",
-        "body": [
-          "A stable stance supports recoil control, balance, and movement.",
-          "A proper grip helps keep the gun consistent during the shot.",
-          "Defensive shooting still requires accountable hits, not uncontrolled speed."
+        heading: 'Body Position and Stance',
+        body: [
+          'The Isosceles stance places both arms out toward the target and fits the body’s natural tendency to square up to a threat.',
+          'A stable stance improves recoil control, balance, and consistency.',
+          'Defensive shooting still depends on accountable hits, not speed alone.'
         ]
       },
       {
-        "heading": "Sights and Trigger",
-        "body": [
-          "Sight alignment and sight picture matter because the gun must be pointed where the shot is intended to go.",
-          "Trigger control means pressing the trigger without disturbing the sights.",
-          "Follow-through and recoil management support faster, more accountable follow-up shots."
+        heading: 'Visual Focus and Sights',
+        body: [
+          'Under threat, the eyes are often pulled toward the attacker or the weapon in the attacker’s hands.',
+          'A flash sight picture means seeing enough of the sights to make an acceptable hit quickly.',
+          'The goal is practical sight confirmation, not perfect bullseye precision in every moment.'
         ]
       },
       {
-        "heading": "Practice and Performance",
-        "body": [
-          "Students build the basics before trying to chase advanced speed.",
-          "Dry practice and disciplined repetition improve consistency.",
-          "The goal is practical, safe performance under pressure."
+        heading: 'Grip and Trigger',
+        body: [
+          'Grip supports recoil control and keeps the handgun stable during the shot.',
+          'The break point is the point where the firearm actually fires.',
+          'Trigger control should not disturb the alignment of the gun.'
+        ]
+      },
+      {
+        heading: 'Practice Development',
+        body: [
+          'Students should build consistent fundamentals before trying to chase advanced speed.',
+          'Dry practice and repetition help reinforce clean mechanics.',
+          'Good shooting starts with repeatable basics.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "A new shooter wants to skip grip, stance, and trigger work and move straight to speed drills. What is the best instruction?",
-        "choices": [
-          "Speed automatically builds fundamentals.",
-          "Start with repeatable basics, then build toward speed.",
-          "Only stance matters; grip and trigger can wait.",
-          "Practice speed first because it feels more realistic."
+        prompt: 'A threat appears suddenly at close range and your eyes are drawn to the attacker’s hands. What visual challenge from the lesson is happening?',
+        choices: [
+          'Perfect front-sight focus',
+          'Natural target fixation under stress',
+          'Loss of hearing only',
+          'A magazine-related malfunction'
         ],
-        "answer": 1,
-        "explanation": "Lesson 3 teaches that advanced speed should be built on solid fundamentals."
+        answer: 1,
+        explanation: 'The lesson teaches that the eyes often lock onto the attacker or weapon under stress.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "A student jerks the trigger and the front sight dips off target every shot. What concept is most directly involved?",
-        "choices": [
-          "Trigger control",
-          "Ammunition compatibility",
-          "Route selection",
-          "Castle doctrine"
+        prompt: 'A new student wants to skip stance, grip, and trigger work and go straight to speed drills. What is the better instruction?',
+        choices: [
+          'Speed will create fundamentals automatically',
+          'Advanced drills should come before basics',
+          'Build clean mechanics first, then add speed',
+          'Stance and grip only matter for competition'
         ],
-        "answer": 0,
-        "explanation": "Trigger control is about pressing the trigger without moving the sights off target."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "What is the best reason to maintain a stable stance during defensive shooting?",
-        "choices": [
-          "It makes the gun look more tactical.",
-          "It helps balance, recoil control, and consistent hits.",
-          "It guarantees you will never miss.",
-          "It replaces the need for sight picture."
-        ],
-        "answer": 1,
-        "explanation": "A stable stance supports balance and recoil management."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "A student keeps looking over the sights instead of actually aligning them. What principle is being neglected?",
-        "choices": [
-          "Safe storage",
-          "Sight alignment and sight picture",
-          "Magazine compatibility",
-          "Legal articulation"
-        ],
-        "answer": 1,
-        "explanation": "Sight alignment and sight picture are part of accountable shooting fundamentals."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "Why does follow-through matter after the shot breaks?",
-        "choices": [
-          "It helps maintain control and supports accurate follow-up shots.",
-          "It removes recoil completely.",
-          "It allows you to ignore your sights.",
-          "It only matters in competition, not self-defense."
-        ],
-        "answer": 0,
-        "explanation": "Follow-through helps keep the gun controlled and the shooter prepared for the next accountable shot."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "A shooter says, 'My expensive pistol makes fundamentals less important.' What is the best correction?",
-        "choices": [
-          "High-end gear replaces fundamentals.",
-          "Equipment does not replace grip, sights, trigger control, and practice.",
-          "Only stance matters with good gear.",
-          "The statement is correct if the sights are upgraded."
-        ],
-        "answer": 1,
-        "explanation": "Lesson 3 repeatedly teaches that equipment does not replace sound mechanics."
+        answer: 2,
+        explanation: 'The fundamentals lesson stresses building sound shooting mechanics before advanced speed work.'
       }
     ]
   },
   {
-    "lessonNumber": 4,
-    "title": "Legal Use of Force \u2014 General Principles to Louisiana Reality",
-    "description": "General self-defense principles, Gulf South practical realities, Louisiana rule-of-thumb guidance, and local New Orleans/Metairie/Kenner considerations.",
-    "chapterSummary": "Legal notice: Broussard Shooting Academy is not a law firm and does not provide legal advice. This lesson is educational only and is taught as a practical rule-of-thumb framework that moves from general self-defense principles, to Gulf South regional realities, to Louisiana guidance, and then to local New Orleans, Metairie, and Kenner considerations. Students learn that legal outcomes depend on specific facts, changing law, witnesses, evidence, and professional legal review. The safest defensive principle is to use only the force reasonably believed necessary to stop an immediate unlawful threat.\n\nGeneral principles: self-defense claims are usually judged through reasonableness, imminence, proportionality, innocence, and necessity. Students are taught to think in terms of ability, opportunity, and jeopardy, along with whether a threat is immediate and whether the person claiming self-defense was acting as an innocent party.\n\nGulf South realities: self-defense incidents are often reviewed closely by law enforcement, prosecutors, and juries. Articulation matters. Students should be able to explain what they saw, why they believed the threat was immediate, and why their response matched the danger instead of exceeding it.\n\nLouisiana rule of thumb: Louisiana generally recognizes self-defense, defense of others, and stronger protection for lawful defense in the home or habitation, but students should never assume a slogan or internet quote replaces legal analysis. Defense of life is treated more seriously than protection of property alone. Deadly force is a grave matter and may still be investigated even when the defender believes the action was justified.\n\nLocal environment: New Orleans, Metairie, and Kenner create additional practical issues: crowded parking lots, cameras, witnesses, bars, festivals, gas stations, apartment complexes, and late-night traffic patterns. Urban density means bystanders and evidence are everywhere. Students should avoid escalating ordinary disputes, avoid chasing fleeing property thieves, and understand that calling 911, preserving evidence, and articulating why the threat was immediate may matter greatly afterward.",
-    "estimatedMinutes": 26,
-    "quizQuestionCount": 20,
-    "sections": [
+    id: 4,
+    slug: 'legal-use-of-force',
+    title: 'The Legal Use of Force',
+    estTime: '24 min',
+    summary: 'This lesson introduces the reasonable person test, reasonable force, deadly force, the innocent party rule, prosecutor review, castle doctrine, and the important difference between defending life and defending property.',
+    sections: [
       {
-        "heading": "General Legal Principles",
-        "body": [
-          "Reasonableness asks what a reasonable person would believe under the circumstances.",
-          "Imminence focuses on whether the threat is immediate, not speculative or already over.",
-          "Proportionality asks whether the force used matched the seriousness of the threat.",
-          "Necessity and innocence matter; students should not unlawfully start or escalate the confrontation."
+        heading: 'Reasonableness',
+        body: [
+          'Use-of-force decisions are judged after the fact by legal standards, not by bravado or internet opinion.',
+          'Reasonable force is the minimum level of force required to stop the threat.',
+          'A prosecutor will consider whether a jury would likely see the force as reasonable under the facts.'
         ]
       },
       {
-        "heading": "Gulf South and Louisiana Guidance",
-        "body": [
-          "This class is not legal advice; it teaches general rule-of-thumb principles and local defensive realities.",
-          "Articulation matters: students may need to explain what they saw, what the threat was doing, and why they believed serious harm was immediate.",
-          "Defense of life is different from defense of property alone; students should be cautious about internet myths."
+        heading: 'Deadly Force and Innocence',
+        body: [
+          'Deadly force can be legally analyzed even if the attacker survives.',
+          'The innocent party concept generally means you did not start or unlawfully escalate the confrontation.',
+          'Every force decision can be scrutinized carefully after the event.'
         ]
       },
       {
-        "heading": "New Orleans, Metairie, and Kenner Practical Issues",
-        "body": [
-          "Crowds, cameras, traffic, bars, festivals, and witnesses are common in local defensive environments.",
-          "Avoid escalating arguments, road-rage incidents, and property disputes when no immediate deadly threat exists.",
-          "Calling 911, preserving the scene, and avoiding careless statements are practical local lessons."
+        heading: 'Investigation and Background',
+        body: [
+          'Statements, texts, social media, substance use, and prior behavior may become part of an investigation.',
+          'Students should understand that a self-defense claim is not automatically accepted without review.',
+          'The aftermath begins immediately.'
+        ]
+      },
+      {
+        heading: 'Home Versus Property',
+        body: [
+          'Castle doctrine is the general term for laws that lower the threshold in some home-defense settings.',
+          'Most states distinguish sharply between defense of person and defense of property.',
+          'Property alone does not usually justify deadly force.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "You are leaving a busy restaurant area in Metairie when two strangers begin fighting in a parking lot. One pushes the other, but you have no clear sign of a weapon or a deadly threat. What is the best course of action?",
-        "choices": [
-          "Immediately draw your firearm and order both people to the ground.",
-          "Move to safety, keep distance, and call 911 instead of stepping into a non-deadly fight with a gun.",
-          "Join the fight to help the weaker person physically.",
-          "Walk closer to get a better view before deciding."
+        prompt: 'Someone is stealing a package from your porch and running away. No one is under immediate threat of death or serious bodily harm. What best matches the lesson?',
+        choices: [
+          'Deadly force is justified because it is your property',
+          'Property and life are treated the same in most states',
+          'Deadly force is generally not justified for property alone',
+          'A firearm should always be displayed in a property crime'
         ],
-        "answer": 1,
-        "explanation": "The lesson stresses reasonableness, distance, and avoiding escalation. In a crowded local environment, moving to safety and calling police is usually safer than introducing a firearm into an unclear situation."
+        answer: 2,
+        explanation: 'The lesson repeatedly distinguishes defense of life from defense of property.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "Someone snatches a bag from a table in a busy New Orleans entertainment district and runs away. No one is facing immediate deadly harm. Which answer best fits the chapter?",
-        "choices": [
-          "Deadly force is generally not justified for property alone when there is no immediate deadly threat.",
-          "You should chase and shoot because theft is always violent.",
-          "Any felony automatically justifies deadly force.",
-          "Urban settings create fewer legal problems than rural ones."
+        prompt: 'After a defensive incident, a student says, “My friends think I was justified, so I’m legally fine.” What is the best correction?',
+        choices: [
+          'That is how the reasonable person test works',
+          'Friends and forums are not the legal standard; prosecutors and juries review the facts',
+          'Only caliber determines whether force was reasonable',
+          'If the attacker lived, deadly force rules do not apply'
         ],
-        "answer": 0,
-        "explanation": "The lesson distinguishes defense of life from protection of property alone and warns students not to rely on slogans or myths."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A man in a Kenner parking lot charges at you from close range while yelling he is going to kill you and reaching behind his back. Which legal concepts are most relevant?",
-        "choices": [
-          "Only property ownership.",
-          "Ability, opportunity, jeopardy, and immediate threat.",
-          "Only caliber choice.",
-          "Only whether you have witnesses."
-        ],
-        "answer": 1,
-        "explanation": "Lesson 4 teaches students to think through immediate threat, ability, opportunity, and jeopardy as part of reasonableness."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "After a defensive incident, a student says, 'My friends think I was justified, so I'm legally fine.' What is the best correction?",
-        "choices": [
-          "Friends decide the legal standard.",
-          "Law enforcement, prosecutors, and juries may still review the facts and reasonableness of the event.",
-          "If your intentions were good, no review occurs.",
-          "Social media support is more important than physical evidence."
-        ],
-        "answer": 1,
-        "explanation": "Gulf South and Louisiana realities include post-incident review. Private opinions do not decide legal outcomes."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "You hear someone trying to force entry into an occupied home at night. Which rule-of-thumb idea is most relevant in the lesson?",
-        "choices": [
-          "The law generally treats defense of habitation more seriously than defense of unattended property alone.",
-          "Home defense is always illegal in Louisiana.",
-          "The only legal issue is whether the intruder is armed.",
-          "Reasonableness never matters inside a home."
-        ],
-        "answer": 0,
-        "explanation": "The lesson explains that Louisiana gives stronger defensive weight to occupied-home situations than to property alone, while still warning students that facts matter."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "A driver curses at you during traffic in New Orleans and gets out of the vehicle while recording you on a phone. They remain at a distance and make no deadly move. Which is the best response?",
-        "choices": [
-          "Exit your car and challenge them.",
-          "Avoid escalating a road-rage encounter and maintain safety if no immediate deadly threat is present.",
-          "Display your gun to win the argument.",
-          "Approach them quickly before they can speak again."
-        ],
-        "answer": 1,
-        "explanation": "The lesson specifically warns students against escalating ordinary disputes in dense urban environments."
-      },
-      {
-        "label": "Scenario G",
-        "prompt": "A student asks whether this class is giving legal advice. What is the correct answer?",
-        "choices": [
-          "Yes, the class acts as legal counsel.",
-          "No, the class teaches practical educational guidance and general rule-of-thumb principles, not legal representation.",
-          "Yes, all scenario answers are binding legal opinions.",
-          "Only Louisiana residents receive legal advice."
-        ],
-        "answer": 1,
-        "explanation": "The lesson begins with a legal disclaimer that BSA is not a law firm and does not provide legal advice."
-      },
-      {
-        "label": "Scenario H",
-        "prompt": "Why does the lesson focus specifically on New Orleans, Metairie, and Kenner?",
-        "choices": [
-          "Because local defensive incidents often occur in crowded, camera-heavy, witness-rich urban environments.",
-          "Because state law only applies in those cities.",
-          "Because there are no rural defensive incidents in Louisiana.",
-          "Because local conditions remove the need for articulation."
-        ],
-        "answer": 0,
-        "explanation": "The lesson highlights dense local environments, witnesses, cameras, bars, festivals, and traffic patterns as practical realities."
-      },
-      {
-        "label": "Scenario I",
-        "prompt": "A person who threatened you a minute ago is now running away and no longer presents an immediate threat. What is the strongest lesson-based statement?",
-        "choices": [
-          "Imminence matters; force analysis changes when the threat is no longer immediate.",
-          "You may always use deadly force if you were angry enough.",
-          "Running away increases your right to shoot.",
-          "Once threatened, legal review no longer matters."
-        ],
-        "answer": 0,
-        "explanation": "Lesson 4 teaches imminence and necessity. An ended or fleeing threat is not the same as an immediate deadly threat."
-      },
-      {
-        "label": "Scenario J",
-        "prompt": "Why does articulation matter after a defensive event in the Gulf South?",
-        "choices": [
-          "Because students may need to explain what they observed and why they believed serious harm was immediate.",
-          "Because silence is always proof of guilt.",
-          "Because the law only cares about caliber size.",
-          "Because witnesses never matter."
-        ],
-        "answer": 0,
-        "explanation": "The chapter stresses articulation as part of surviving legal scrutiny after an event."
+        answer: 1,
+        explanation: 'The lesson teaches that legal reasonableness is not decided by friends or online opinion.'
       }
     ]
   },
   {
-    "lessonNumber": 5,
-    "title": "Violent Encounters, Stress Response, and Mental Wellness",
-    "description": "Stress physiology, fight-flight-freeze, trauma responses, coping, substance risks, crisis warning signs, and responsible intervention.",
-    "chapterSummary": "Violent encounters affect both body and mind. Students learn how the sympathetic nervous system, adrenaline, fear, and survival stress can influence perception, movement, hearing, vision, memory, and decision-making. Tunnel vision, auditory exclusion, shaky hands, and time distortion can happen to ordinary people under threat. After an event, people may experience shock, sleep disruption, intrusive thoughts, guilt, anger, hypervigilance, emotional swings, or physical stress responses.\n\nMental wellness is part of responsible armed citizenship. Students learn that trauma responses vary, that coping strategies can include support systems, talking with trusted people, prayer or meditation, music and art, stretching or yoga, journaling, counseling, and community connection. Students are also taught to avoid worsening stress through alcohol, drugs, nicotine overuse, sleep disruption, and poor habits. Alcohol and drugs can slow reaction time, impair judgment, increase aggression, worsen memory, and intensify mental health problems.\n\nThe lesson also addresses suicide prevention and crisis response in a responsible, non-stigmatizing way. Students are taught that talking about suicide does not plant the idea, that suicide is preventable, and that access to lethal means increases risk. Warning signs may include talking about wanting to die, guilt, shame, hopelessness, being a burden, emotional pain, mood swings, dangerous behavior, giving away important items, or increased substance use. Intervention basics include asking direct questions, listening, supporting, encouraging professional help, and separating the person from lethal means. If a suicide attempt seems imminent, call 911; for emotional crisis and suicidal distress, the 988 Suicide & Crisis Lifeline provides free, confidential support 24/7. Students also learn that firearm owners should treat crisis planning, secure storage, and temporary separation from lethal means as part of responsible life preservation.",
-    "estimatedMinutes": 24,
-    "quizQuestionCount": 18,
-    "sections": [
+    id: 5,
+    slug: 'violent-encounters-aftermath',
+    title: 'Violent Encounters and the Aftermath',
+    estTime: '18 min',
+    summary: 'This lesson covers fight-or-flight responses, the amygdala, thalamus filtering, adrenaline, reaction under stress, and proper behavior immediately after a defensive use-of-force event.',
+    sections: [
       {
-        "heading": "Stress and Survival Response",
-        "body": [
-          "Fight, flight, or freeze responses can affect perception, memory, and motor performance.",
-          "Auditory exclusion, tunnel vision, shaky hands, and time distortion can happen under adrenaline.",
-          "Drawing a firearm does not remove the need for judgment."
+        heading: 'Stress Physiology',
+        body: [
+          'The body’s fight-or-flight response can begin rapidly and affect perception, memory, and coordination.',
+          'The amygdala and adrenaline responses shape reactions under threat.',
+          'The thalamus can prioritize sensory information in ways that narrow what you notice.'
         ]
       },
       {
-        "heading": "Trauma and Coping",
-        "body": [
-          "Normal trauma responses may include shock, hypervigilance, emotional swings, nightmares, intrusive thoughts, sleep disruption, guilt, anger, and physical stress symptoms.",
-          "Helpful coping strategies may include support systems, talking, counseling, journaling, prayer, meditation, music, art, exercise, stretching, or yoga.",
-          "Students should avoid worsening stress through alcohol, drug misuse, nicotine overuse, stimulant abuse, and wrecking sleep or diet."
+        heading: 'Training and Decision Making',
+        body: [
+          'Training helps, but it does not eliminate the need for awareness and judgment.',
+          'Drawing a firearm does not automatically require firing it.',
+          'Students should understand both tactical and physiological realities.'
         ]
       },
       {
-        "heading": "Mental Health and Crisis Response",
-        "body": [
-          "Talking about suicide does not cause suicide; asking direct questions can be part of intervention.",
-          "Warning signs, risk factors, protective factors, and crisis resources matter for responsible firearm ownership.",
-          "Use 911 for imminent life-threatening emergencies and 988 for emotional crisis and suicidal distress support."
+        heading: 'Immediate Aftermath',
+        body: [
+          'If someone is injured, calling 911 is the first call.',
+          'Do not disturb evidence or the scene after a defensive incident.',
+          'Stress can affect memory and communication, so students should be cautious, calm, and deliberate.'
+        ]
+      },
+      {
+        heading: 'Responsible Conduct',
+        body: [
+          'Do not assume you should explain everything in detail immediately while flooded with stress.',
+          'Preserving the scene and summoning help are part of responsible action.',
+          'Post-incident conduct can matter just as much as pre-incident judgment.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "After a defensive incident, your hands are shaking, sounds seem muffled, and you feel like time is moving strangely. What is the best explanation?",
-        "choices": [
-          "A normal stress response can affect perception, hearing, and motor control.",
-          "You are automatically unfit to remember anything ever again.",
-          "Your firearm malfunction caused the symptoms.",
-          "Only police officers experience these effects."
+        prompt: 'After a defensive shooting, the threat is down and someone is injured. What is the first call the lesson says you should make?',
+        choices: [
+          'Your family',
+          'Your lawyer',
+          '911',
+          'Your friends so they can explain what happened'
         ],
-        "answer": 0,
-        "explanation": "The lesson teaches that adrenaline and survival stress can change hearing, time perception, and movement."
+        answer: 2,
+        explanation: 'The course specifically identifies 911 as the first call when someone is injured.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "A student says, 'If I draw my gun, I have no choice but to shoot.' Which answer best matches the chapter?",
-        "choices": [
-          "Correct, drawing removes judgment.",
-          "Drawing does not erase decision-making; judgment and changing conditions still matter.",
-          "Only caliber decides whether shooting is required.",
-          "The statement is always legally true."
+        prompt: 'At the scene after a defensive incident, what is the best course of action?',
+        choices: [
+          'Collect empty casings before police arrive',
+          'Move dropped equipment so the scene looks cleaner',
+          'Leave the scene and return later',
+          'Avoid disturbing the scene and wait for responding authorities'
         ],
-        "answer": 1,
-        "explanation": "Lesson 5 stresses that stress is real, but judgment still matters."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A friend who went through a traumatic event is sleeping poorly, isolating, and having intrusive thoughts. What is the best chapter-based response?",
-        "choices": [
-          "Tell them to get over it immediately.",
-          "Recognize these can be normal trauma responses and encourage support, coping strategies, or professional help.",
-          "Suggest heavy drinking to relax.",
-          "Tell them trauma only affects weak people."
-        ],
-        "answer": 1,
-        "explanation": "The lesson describes trauma responses and appropriate support and coping strategies."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "Why is alcohol use a major concern in defensive decision-making?",
-        "choices": [
-          "It can slow reaction time, impair judgment, worsen memory, and increase reckless behavior.",
-          "It improves threat recognition.",
-          "It makes legal outcomes easier.",
-          "It reduces aggression in every person."
-        ],
-        "answer": 0,
-        "explanation": "The lesson explicitly teaches the adverse effects of alcohol and drug use on judgment and behavior."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "A person says, 'Everyone would be better off without me,' has been giving away valuables, and has increased alcohol use. What best fits the lesson?",
-        "choices": [
-          "Those are warning signs that should be taken seriously.",
-          "Those signs are unrelated to crisis.",
-          "The safest response is to ignore it unless they mention a firearm.",
-          "Only professionals are allowed to ask direct questions."
-        ],
-        "answer": 0,
-        "explanation": "The lesson includes warning signs such as burden statements, giving away items, and increased substance use."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "What is the most appropriate distinction between 911 and 988 in the lesson?",
-        "choices": [
-          "Use 911 for immediate life-threatening emergencies; use 988 for emotional crisis and suicidal distress support.",
-          "Use 988 for traffic accidents and 911 for sadness.",
-          "Use only 911 for all emotional issues.",
-          "Use neither if the person owns guns."
-        ],
-        "answer": 0,
-        "explanation": "The lesson clearly distinguishes imminent emergencies from crisis support."
-      },
-      {
-        "label": "Scenario G",
-        "prompt": "A close family member is in severe emotional crisis and has access to firearms. Which action best matches the chapter?",
-        "choices": [
-          "Do nothing because access to weapons is a private issue.",
-          "Take the crisis seriously and work toward separation from lethal means while seeking help.",
-          "Argue with them until they calm down.",
-          "Assume mentioning suicide will make things worse."
-        ],
-        "answer": 1,
-        "explanation": "The lesson teaches that access to lethal means increases suicide risk and that separation from lethal means is a valid intervention step."
-      },
-      {
-        "label": "Scenario H",
-        "prompt": "A student responds to stress after an incident by isolating, drinking heavily, and sleeping very little. Why is that dangerous?",
-        "choices": [
-          "Those choices can worsen trauma, impair judgment, and deepen mental health problems.",
-          "Those are recommended coping tools.",
-          "Sleep loss improves resilience.",
-          "Alcohol and isolation reduce trauma symptoms for most people."
-        ],
-        "answer": 0,
-        "explanation": "The chapter warns against alcohol/drug misuse and sleep disruption as unhealthy coping methods."
-      },
-      {
-        "label": "Scenario I",
-        "prompt": "A shooting witness feels guilt and shame even though they were not physically harmed. Which answer best matches the chapter?",
-        "choices": [
-          "Trauma responses can affect witnesses too, not just the primary victim.",
-          "Only the injured person can have emotional fallout.",
-          "Guilt proves they caused the event.",
-          "Witnesses should never seek counseling."
-        ],
-        "answer": 0,
-        "explanation": "The supplement and lesson note that trauma responses can affect witnesses and those close to the event."
-      },
-      {
-        "label": "Scenario J",
-        "prompt": "You ask a struggling friend directly whether they are thinking about suicide. According to the lesson, what is true?",
-        "choices": [
-          "Talking about suicide causes suicide.",
-          "Asking directly does not create suicidality and can be part of intervention.",
-          "Only hospitals may use the word suicide.",
-          "Direct questions always make things worse."
-        ],
-        "answer": 1,
-        "explanation": "The lesson specifically teaches that asking about suicide does not put the idea into someone\u2019s head."
+        answer: 3,
+        explanation: 'The lesson stresses preserving the scene and not disturbing evidence.'
       }
     ]
   },
   {
-    "lessonNumber": 6,
-    "title": "Carry Gear and Defensive Equipment",
-    "description": "Holsters, carry methods, flashlights, lasers, belts, clothing, retention, and practical defensive setup choices.",
-    "chapterSummary": "Defensive gear should support safety, access, and realistic daily use. Students learn that holsters should cover the trigger guard, secure the firearm, support consistent access, and match the way the gun is actually carried. The lesson reviews carry positions, retention, quality belts, flashlights, lasers, spare magazines, and why equipment must be tested and practiced with. Good gear supports skill; it does not replace judgment, safety, or training.",
-    "estimatedMinutes": 18,
-    "quizQuestionCount": 16,
-    "sections": [
+    id: 6,
+    slug: 'gear-and-gadgets',
+    title: 'Gear and Gadgets',
+    estTime: '16 min',
+    summary: 'This lesson covers practical carry equipment such as holsters, retention levels, flashlights, and lasers, along with their advantages, limitations, and training implications.',
+    sections: [
       {
-        "heading": "Holsters and Carry",
-        "body": [
-          "A holster should protect the trigger guard, secure the firearm, and support consistent safe access.",
-          "Carry positions involve trade-offs in concealment, comfort, speed, and access.",
-          "Retention matters, especially in public and active environments."
+        heading: 'Holsters',
+        body: [
+          'Holsters must secure the firearm, protect the trigger guard, and support consistent access.',
+          'Different designs serve different carry positions and needs.',
+          'Retention levels matter, especially when carrying in public or in more dynamic environments.'
         ]
       },
       {
-        "heading": "Support Equipment",
-        "body": [
-          "Belts, lights, spare magazines, and practical clothing can affect access and control.",
-          "Flashlights help with identification; lasers may help in some positions but do not replace fundamentals.",
-          "Students should train with the gear they actually intend to use."
+        heading: 'Lights and Lasers',
+        body: [
+          'A quality flashlight is useful for identifying what you are seeing before making decisions.',
+          'Lasers can help in awkward positions and during target-focused shooting, but they are not a substitute for training.',
+          'No device removes the need for fundamentals.'
         ]
       },
       {
-        "heading": "Practical Mindset",
-        "body": [
-          "Choose reliable, practical gear instead of gimmicks.",
-          "Test gear before trusting it for carry.",
-          "A good setup supports safety and realistic daily function."
+        heading: 'Training Mindset',
+        body: [
+          'Students should train with the gear they actually plan to use.',
+          'Equipment should solve a real problem, not just look tactical.',
+          'The best gear is reliable, practical, and supported by practice.'
+        ]
+      },
+      {
+        heading: 'Limitations',
+        body: [
+          'Lights, lasers, and retention systems each have strengths and weaknesses.',
+          'Technology can assist performance, but it cannot replace judgment or marksmanship.',
+          'Confidence should come from skill, not gadgets alone.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "A student wants to carry with no holster and place a loaded pistol directly into a bag. What is the best correction?",
-        "choices": [
-          "That is fine if the bag stays zipped.",
-          "A proper holster should cover the trigger guard and secure the firearm.",
-          "Only revolvers need holsters.",
-          "Trigger coverage matters only at the range."
+        prompt: 'A student says, “I have a laser now, so I do not need to train with sights anymore.” What is the best correction?',
+        choices: [
+          'Correct, lasers replace all other alignment methods',
+          'Lasers help, but they do not eliminate the need for other aiming methods and training',
+          'Lasers are only decorative',
+          'A laser guarantees hits'
         ],
-        "answer": 1,
-        "explanation": "The lesson teaches that a holster must protect the trigger guard and secure the firearm."
+        answer: 1,
+        explanation: 'The lesson teaches that lasers are helpful tools, not total replacements for fundamentals.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "Why is a handheld flashlight useful in defensive carry?",
-        "choices": [
-          "It helps identify what you are seeing without pointing a firearm at everything.",
-          "It replaces sight alignment.",
-          "It guarantees legal justification.",
-          "It eliminates the need for awareness."
+        prompt: 'You want a holster for pocket carry. Which holster style from the lesson is specifically designed for that use?',
+        choices: [
+          'Paddle holster',
+          'Pocket holster',
+          'Belt slide only',
+          'Shoulder rig'
         ],
-        "answer": 0,
-        "explanation": "Identification is a major reason to carry a light."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A student buys a new holster and carries with it immediately without any practice. What is the concern?",
-        "choices": [
-          "Practice is unnecessary if the holster is expensive.",
-          "Students should test and practice with actual carry gear before relying on it.",
-          "Holster fit does not matter after purchase.",
-          "Only law enforcement needs retention practice."
-        ],
-        "answer": 1,
-        "explanation": "Gear should be tested and practiced with before trusting it for daily carry."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "What is the best summary of the lesson\u2019s view of lasers?",
-        "choices": [
-          "Lasers are useful in some contexts but do not replace fundamentals.",
-          "Lasers make sight training obsolete.",
-          "Lasers guarantee hits under stress.",
-          "Lasers are only decorative."
-        ],
-        "answer": 0,
-        "explanation": "The lesson treats lasers as a support tool, not a substitute for fundamentals."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "Why can a sturdy belt matter to concealed carry?",
-        "choices": [
-          "It supports the weight and stability of the holster and firearm.",
-          "It increases caliber.",
-          "It changes the law.",
-          "It makes retention unnecessary."
-        ],
-        "answer": 0,
-        "explanation": "Belts affect stability, comfort, and consistency."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "A student chooses gear only because it 'looks tactical' online. Which correction best fits the chapter?",
-        "choices": [
-          "Appearance is more important than reliability and function.",
-          "Practicality, safety, and realistic use matter more than appearance.",
-          "Any gear with extra attachments is automatically better.",
-          "Training matters less when the setup looks advanced."
-        ],
-        "answer": 1,
-        "explanation": "The lesson emphasizes practical, reliable gear over gimmicks or aesthetics."
+        answer: 1,
+        explanation: 'The source material specifically names the pocket holster for that role.'
       }
     ]
   },
   {
-    "lessonNumber": 7,
-    "title": "Skill Development and Continuing Training",
-    "description": "Dry practice, live fire, safe improvement, defensive drills, continued education, and maintaining proficiency over time.",
-    "chapterSummary": "Skill fades without practice. Students learn that safe, consistent dry practice and live-fire work help maintain handling, accuracy, and decision-making. The lesson encourages students to train with a purpose, document weaknesses, and continue learning after the first class. Safe development means working from fundamentals upward, avoiding ego-driven training, and understanding that education is ongoing. Students are reminded that owning gear is not the same as maintaining skill.",
-    "estimatedMinutes": 18,
-    "quizQuestionCount": 16,
-    "sections": [
+    id: 7,
+    slug: 'basic-and-advanced-skills',
+    title: 'Basic and Advanced Skills',
+    estTime: '16 min',
+    summary: 'This lesson covers how to keep improving after the fundamentals, including virtual training, flashlight techniques, cautious family introduction to the range, and logical next training steps.',
+    sections: [
       {
-        "heading": "Practice Fundamentals",
-        "body": [
-          "Dry practice should be safe, structured, and separated from live ammunition when appropriate.",
-          "Live-fire practice should reinforce fundamentals and accountable performance.",
-          "Students should work from basics upward rather than trying to look advanced."
+        heading: 'Build from the Basics',
+        body: [
+          'Students should not abandon fundamentals just because they train more often.',
+          'Advanced work should rest on a strong base of safe, repeatable performance.',
+          'Consistency matters more than ego.'
         ]
       },
       {
-        "heading": "Ongoing Development",
-        "body": [
-          "Identify weak areas honestly and train them deliberately.",
-          "Further classes, coaching, and reputable training opportunities are logical next steps.",
-          "Documentation, notes, and measurable goals help maintain progress."
+        heading: 'Virtual and Supplemental Training',
+        body: [
+          'Virtual training can reinforce response patterns without the cost of live ammunition.',
+          'Some systems can also expose students to dynamic threat decision-making.',
+          'Supplemental tools work best when they reinforce—not replace—sound fundamentals.'
         ]
       },
       {
-        "heading": "Mindset and Discipline",
-        "body": [
-          "Training should be driven by safety and competence, not ego.",
-          "A permit or class certificate does not make practice unnecessary.",
-          "Responsible owners maintain skill, judgment, and habits over time."
+        heading: 'Light Techniques and Family Considerations',
+        body: [
+          'Flashlight methods each create different trade-offs in control and exposure.',
+          'Introducing children or family to range training should be handled deliberately and individually.',
+          'The best next step depends on readiness, safety, and maturity.'
+        ]
+      },
+      {
+        heading: 'Continuing Growth',
+        body: [
+          'Advanced classes, leagues, and reputable organizations are logical next steps for continued development.',
+          'Students should think of training as an ongoing process.',
+          'Completion of one class is a beginning, not the end of learning.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "A student says, 'I passed one class, so I don't really need to practice anymore.' What is the best answer?",
-        "choices": [
-          "Initial training replaces the need for maintenance.",
-          "Skills fade without practice; responsible owners continue training.",
-          "Practice only matters for competition.",
-          "Only marksmanship matters after class."
+        prompt: 'A shooter trains often and wants to skip warm-up fundamentals every range session so they can jump straight into advanced drills. What is the best lesson-based response?',
+        choices: [
+          'That is fine if they shoot regularly',
+          'Advanced drills should replace basics entirely',
+          'Start with fundamentals, then build into advanced work',
+          'Basics are only for beginners'
         ],
-        "answer": 1,
-        "explanation": "Lesson 7 emphasizes continued skill development after the first class."
+        answer: 2,
+        explanation: 'The lesson says advanced work should be built on sound fundamentals, not treated as a substitute for them.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "Why should dry practice be structured and safety-focused?",
-        "choices": [
-          "Because careless repetition can reinforce unsafe habits.",
-          "Because dry practice is only for experts.",
-          "Because live ammo should always be nearby.",
-          "Because speed is the only purpose of dry practice."
+        prompt: 'A student asks what to do after finishing the class. Which answer best reflects the lesson?',
+        choices: [
+          'Nothing else is needed; training is complete',
+          'Take advanced classes, join leagues, or join reputable organizations',
+          'Only buy more gear',
+          'Stop practicing to avoid bad habits'
         ],
-        "answer": 0,
-        "explanation": "The lesson stresses safe, deliberate practice and habit formation."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A student hides weaknesses out of pride instead of training them honestly. Why is that a problem?",
-        "choices": [
-          "Honest assessment helps guide useful, safe improvement.",
-          "Weaknesses disappear if ignored.",
-          "Documentation is never useful.",
-          "Confidence matters more than competence."
-        ],
-        "answer": 0,
-        "explanation": "The chapter encourages honest evaluation and deliberate work on weak areas."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "Which statement best matches Lesson 7?",
-        "choices": [
-          "Good training is ongoing, practical, and built on fundamentals.",
-          "Advanced drills should always replace fundamentals.",
-          "A permit proves skill forever.",
-          "Buying more gear is the same as training."
-        ],
-        "answer": 0,
-        "explanation": "The lesson emphasizes progression from fundamentals and ongoing work."
-      },
-      {
-        "label": "Scenario E",
-        "prompt": "Why might a student keep notes after training?",
-        "choices": [
-          "To identify patterns, weaknesses, and goals for future practice.",
-          "Because notes replace live practice.",
-          "Because memory is always perfect.",
-          "To prove they train more than others."
-        ],
-        "answer": 0,
-        "explanation": "Documenting strengths and weaknesses helps guide future practice."
-      },
-      {
-        "label": "Scenario F",
-        "prompt": "A student wants to train only the fun parts and skip basic safety checks. Which answer best fits the chapter?",
-        "choices": [
-          "That is fine if the student has enthusiasm.",
-          "Training should remain disciplined and rooted in safe fundamentals.",
-          "Safety checks matter only in formal classes.",
-          "Basic habits slow improvement."
-        ],
-        "answer": 1,
-        "explanation": "Safe development begins with fundamentals and discipline."
+        answer: 1,
+        explanation: 'The source material frames continuing education as a logical next step.'
       }
     ]
   },
   {
-    "lessonNumber": 8,
-    "title": "BSA Final Review, Live-Class Prep, and Final Mental Readiness",
-    "description": "Course integration, local prep, live-range expectations, when not to carry, and final mental readiness for responsible completion.",
-    "chapterSummary": "The online portal prepares students for the live class; it does not replace instructor observation, safety verification, or range performance. Students should arrive for the live phase with their material reviewed, gear understood, and weak areas honestly identified. The final lesson also reinforces that responsible carry includes knowing when not to carry: when impaired, emotionally unstable, exhausted, reckless, or otherwise unfit to make good decisions. Final mental readiness means humility, safe conduct, lawful thinking, and willingness to slow down and ask for clarification. Certificates come after successful live completion, not from simply clicking through a website.",
-    "estimatedMinutes": 16,
-    "quizQuestionCount": 14,
-    "sections": [
+    id: 8,
+    slug: 'bsa-final-review',
+    title: 'BSA Final Review & Live-Class Prep',
+    estTime: '15 min',
+    summary: 'This custom Broussard Shooting Academy lesson pulls together the online prerequisite and prepares the student for classroom review, legal discussion, practical handling, and the live range qualification.',
+    sections: [
       {
-        "heading": "What the Online Portion Does",
-        "body": [
-          "The portal builds knowledge, vocabulary, and decision-making before the live class.",
-          "Online work does not replace safe live handling or instructor evaluation.",
-          "Students should arrive ready to review, ask questions, and perform safely."
+        heading: 'What the Online Portion Accomplishes',
+        body: [
+          'The online work prepares students with concepts, vocabulary, and decision-making principles before the live class.',
+          'It does not replace instructor observation, live-fire coaching, or safe range qualification.',
+          'Students should arrive ready to review, ask questions, and apply what they have studied.'
         ]
       },
       {
-        "heading": "Final Readiness",
-        "body": [
-          "Bring required documents, required safety gear, and the equipment specified by the academy.",
-          "Review weak areas honestly before live class instead of hiding uncertainty.",
-          "Humility and safe conduct matter more than looking fast or experienced."
+        heading: 'What to Bring to Live Class',
+        body: [
+          'Bring required identification, hearing and eye protection, and any equipment listed by the academy.',
+          'Arrive with a safe, teachable mindset and a willingness to slow down when unsure.',
+          'Students should know their own access code, email, and course record if follow-up is needed.'
         ]
       },
       {
-        "heading": "When Not to Carry",
-        "body": [
-          "Do not carry or handle firearms when impaired by alcohol, drugs, emotional crisis, extreme fatigue, or reckless judgment.",
-          "Responsible ownership includes crisis planning, support, and knowing when to pause access.",
-          "Completion means safe, lawful, competent performance\u2014not just passing a website."
+        heading: 'Live-Class Expectations',
+        body: [
+          'The instructor will review safety, legal concepts, handling, and performance standards.',
+          'The live session is where students demonstrate safe conduct, not just memory of quiz answers.',
+          'Successful completion depends on both knowledge and safe practical execution.'
+        ]
+      },
+      {
+        heading: 'Final Readiness Mindset',
+        body: [
+          'The goal is not to look fast or tactical; the goal is to be safe, lawful, and competent.',
+          'Students should review weak areas honestly before class.',
+          'Preparation supports confidence, but humility keeps students safe.'
         ]
       }
     ],
-    "scenarios": [
+    scenarios: [
       {
-        "label": "Scenario A",
-        "prompt": "A student passed the online quizzes but arrives at live class with unsafe gun handling. What best fits the chapter?",
-        "choices": [
-          "Online scores override live safety problems.",
-          "The live phase still requires safe conduct and instructor-verified performance.",
-          "Unsafe handling is acceptable if the student studied hard.",
-          "Certificates are automatic after online completion."
+        prompt: 'A student passed the online quizzes but says they do not need the live class anymore. What is the correct response?',
+        choices: [
+          'The online portal fully replaces the instructor-led session',
+          'The live class and range qualification are still required',
+          'Only the certificate matters now',
+          'The live portion is optional for good students'
         ],
-        "answer": 1,
-        "explanation": "Lesson 8 stresses that online work does not replace live safety evaluation."
+        answer: 1,
+        explanation: 'The BSA final review makes clear that the online prerequisite does not replace live classroom and range performance.'
       },
       {
-        "label": "Scenario B",
-        "prompt": "A student had very little sleep, has been drinking heavily, and still wants to carry because they 'know the law.' What is the best answer?",
-        "choices": [
-          "Legal knowledge cancels impairment.",
-          "Responsible carry includes knowing when not to carry because impairment and poor judgment make things more dangerous.",
-          "Carrying while exhausted is safer than leaving the gun home.",
-          "Only illegal drugs matter, not alcohol or exhaustion."
+        prompt: 'A student is nervous about the live range day and starts rushing through preparation. What is the best advice?',
+        choices: [
+          'Go faster so you can get it over with',
+          'Slow down, review weak areas, and arrive ready to learn safely',
+          'Ignore the online material',
+          'Focus only on equipment, not mindset'
         ],
-        "answer": 1,
-        "explanation": "The final chapter reinforces that responsible students know when not to carry."
-      },
-      {
-        "label": "Scenario C",
-        "prompt": "A student is nervous about the live range and wants to rush through preparation. What is the best advice?",
-        "choices": [
-          "Rush so you can get it over with.",
-          "Slow down, review weak areas, and arrive teachable and safety-focused.",
-          "Pretend to understand everything to avoid embarrassment.",
-          "Focus only on equipment and skip mindset."
-        ],
-        "answer": 1,
-        "explanation": "Lesson 8 emphasizes humility, review, and teachability before live class."
-      },
-      {
-        "label": "Scenario D",
-        "prompt": "Why does the final chapter revisit mental wellness and crisis planning?",
-        "choices": [
-          "Because final completion should reinforce responsible judgment, including when not to carry or handle firearms.",
-          "Because mental wellness is unrelated to firearms responsibility.",
-          "Because only law enforcement needs crisis planning.",
-          "Because online students are never affected by stress."
-        ],
-        "answer": 0,
-        "explanation": "The final review ties safety, judgment, and mental readiness together."
+        answer: 1,
+        explanation: 'The final BSA lesson stresses safe preparation, honesty about weak areas, and a teachable mindset.'
       }
     ]
   }
 ];
 
-export const QUIZ_BANK = {
-  "1": [
-    {
-      "q": "What is the safest mindset for moving through a public place?",
-      "choices": [
-        "Stay calmly alert and keep track of exits, people, and distance",
-        "Act suspicious so others avoid you",
-        "Focus only on your phone unless something obvious happens",
-        "Assume trouble cannot happen in familiar places"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 1 teaches calm awareness, not distraction or paranoia."
-    },
-    {
-      "q": "True or False: Avoidance can be a successful defensive outcome if it keeps a problem from escalating.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Avoiding the encounter entirely is often the smartest win."
-    },
-    {
-      "q": "Which route choice best matches the lesson?",
-      "choices": [
-        "Take the darkest shortcut because it saves time",
-        "Choose the path with better lighting, visibility, and people nearby",
-        "Walk between parked cars so fewer people notice you",
-        "Ignore the route because being armed solves the problem"
-      ],
-      "answer": 1,
-      "explanation": "Lighting, visibility, and witnesses usually improve safety and options."
-    },
-    {
-      "q": "You notice someone changing direction to match your movement in a parking lot. What is your best first action?",
-      "choices": [
-        "Close distance and demand an explanation",
-        "Move toward light, people, or the store while keeping the person in view",
-        "Keep walking to your car without changing anything",
-        "Turn your back so the person knows you are calm"
-      ],
-      "answer": 1,
-      "explanation": "Lesson 1 favors movement, awareness, and better positioning before escalation."
-    },
-    {
-      "q": "True or False: Looking down at your phone while moving through a garage can reduce your ability to notice danger early.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Distraction cuts into early recognition and decision time."
-    },
-    {
-      "q": "Why does Lesson 1 emphasize maintaining personal space?",
-      "choices": [
-        "Distance gives you more time and options to react",
-        "Distance always ends the encounter by itself",
-        "Distance matters only if you are unarmed",
-        "Distance is mainly about being polite"
-      ],
-      "answer": 0,
-      "explanation": "More space can improve reaction time, movement options, and awareness."
-    },
-    {
-      "q": "Which example best reflects condition yellow?",
-      "choices": [
-        "Calm alertness in public without acting fearful",
-        "Constant panic and scanning every second",
-        "Relaxing only when carrying a firearm",
-        "Ignoring surroundings unless someone speaks to you"
-      ],
-      "answer": 0,
-      "explanation": "Condition yellow is calm, alert awareness."
-    },
-    {
-      "q": "What is one useful purpose of mental rehearsal?",
-      "choices": [
-        "It replaces all live instruction",
-        "It helps you think through choices before stress hits",
-        "It guarantees the law will favor you",
-        "It removes the need to stay aware in public"
-      ],
-      "answer": 1,
-      "explanation": "Mental rehearsal helps prepare decisions in advance."
-    },
-    {
-      "q": "You are unlocking your apartment door and notice an unknown person trying to slip in behind you. What lesson principle applies most directly?",
-      "choices": [
-        "Let them in to avoid being rude",
-        "Preserve barriers and controlled access",
-        "Ignore them because locked doors are only for property",
-        "Turn your back and finish texting"
-      ],
-      "answer": 1,
-      "explanation": "Barriers and access control are part of a personal protection plan."
-    },
-    {
-      "q": "True or False: Preparedness and paranoia are the same thing.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The lesson specifically separates disciplined preparedness from paranoia."
-    },
-    {
-      "q": "Which statement best matches the lesson on parking choices?",
-      "choices": [
-        "Parking location can create or reduce risk before anything happens",
-        "Parking choice matters only after a confrontation begins",
-        "Convenience is always the safest option",
-        "Where you park does not affect your defensive choices"
-      ],
-      "answer": 0,
-      "explanation": "Route and parking decisions shape your options before trouble starts."
-    },
-    {
-      "q": "If something feels wrong near an exit of a store, what should you generally favor?",
-      "choices": [
-        "Drifting into a more isolated area to avoid embarrassment",
-        "Moving toward better visibility, witnesses, and escape routes",
-        "Standing still so you do not look suspicious",
-        "Ignoring the feeling unless you see a weapon"
-      ],
-      "answer": 1,
-      "explanation": "Lesson 1 favors better positions, exits, and witnesses."
-    },
-    {
-      "q": "True or False: Home security habits like locking doors and setting alarms are part of a broader personal protection plan.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson includes daily habits and barriers as part of preparedness."
-    },
-    {
-      "q": "Which person is acting most like condition white?",
-      "choices": [
-        "A shopper calmly watching entrances while walking to the car",
-        "A person texting with earbuds in and no awareness of nearby people",
-        "A student who notices lighting and keeps an exit path open",
-        "A driver who parks under lights near other occupied vehicles"
-      ],
-      "answer": 1,
-      "explanation": "Condition white is distracted and unaware."
-    },
-    {
-      "q": "What is the core message of Lesson 1?",
-      "choices": [
-        "Good awareness and positioning create time, options, and safer decisions",
-        "Carrying a gun removes most need for planning",
-        "The best route is whichever is fastest",
-        "If a place feels wrong, stay there so you do not look afraid"
-      ],
-      "answer": 0,
-      "explanation": "The chapter ties awareness, route choice, barriers, and decision-making together."
-    },
-    {
-      "q": "You exit a store and see two groups arguing loudly near the path to your car. What is the strongest Lesson 1 response?",
-      "choices": [
-        "Walk through the middle before the scene gets worse.",
-        "Pause, reassess, and choose a route that increases distance and options.",
-        "Step closer so you can determine who started it.",
-        "Film the argument while continuing toward your vehicle."
-      ],
-      "answer": 1,
-      "explanation": "Lesson 1 favors avoidance, distance, and route choices that reduce risk before you become part of the problem."
-    },
-    {
-      "q": "Which habit most improves early threat recognition in public?",
-      "choices": [
-        "Keeping your eyes up and scanning as you move.",
-        "Wearing headphones loudly so strangers leave you alone.",
-        "Checking messages whenever you stop walking.",
-        "Assuming trouble will be obvious if it appears."
-      ],
-      "answer": 0,
-      "explanation": "Awareness works best when you deliberately notice people, exits, barriers, and changes in behavior."
-    },
-    {
-      "q": "True or False: A good personal protection plan should include what you will do before you ever need to think about drawing a firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson teaches that safety planning starts with awareness, routes, barriers, habits, and movement decisions."
-    },
-    {
-      "q": "Which location choice usually gives you the most options if something starts to feel wrong?",
-      "choices": [
-        "A corner with one way out.",
-        "A darker path that is slightly shorter.",
-        "An area with light, witnesses, and more than one exit.",
-        "A narrow space where others must pass close to you."
-      ],
-      "answer": 2,
-      "explanation": "Better lighting, witnesses, and multiple exits usually improve safety and flexibility."
-    },
-    {
-      "q": "What is the value of noticing barriers such as cars, counters, or locked doors?",
-      "choices": [
-        "They can help create distance, delay access, or improve positioning.",
-        "They are only useful after force becomes unavoidable.",
-        "They matter only if police are already on scene.",
-        "They should be ignored because mobility is all that matters."
-      ],
-      "answer": 0,
-      "explanation": "Barriers can buy time and create safer movement options before a confrontation gets worse."
-    },
-    {
-      "q": "You feel uneasy about a person near an ATM but cannot identify a specific crime yet. What best fits the lesson?",
-      "choices": [
-        "Ignore the feeling unless a weapon is visible.",
-        "Reposition, leave, or delay using the ATM if the setting feels wrong.",
-        "Confront the person to prove you are confident.",
-        "Stay because leaving would look paranoid."
-      ],
-      "answer": 1,
-      "explanation": "Lesson 1 treats early repositioning and avoidance as smart, disciplined decisions."
-    },
-    {
-      "q": "Which statement best reflects disciplined awareness?",
-      "choices": [
-        "It is a calm habit of noticing problems early, not living in panic.",
-        "It means constantly assuming everyone is an attacker.",
-        "It only matters after you begin carrying.",
-        "It replaces the need for planning or safe habits."
-      ],
-      "answer": 0,
-      "explanation": "Awareness is taught as disciplined attention, not fear or obsession."
-    },
-    {
-      "q": "True or False: The more committed you are to convenience, the less important route choice becomes.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "Convenience can create risk. Lesson 1 says route and positioning choices matter before a confrontation starts."
-    }
+window.QUIZ_BANK = {
+  1: [
+    { q: 'You realize a situation may be turning dangerous and you are now in Condition Red. What are legitimate options?', choices: ['Retreating', 'Taking cover', 'Engaging the threat if necessary', 'Waiting it out without acting'], answer: 2, explanation: 'Condition Red is action based on a clear trigger. Retreat, cover, or engagement may all be options depending on the threat. Passive waiting is not the lesson takeaway.' },
+    { q: 'True or False: When in public, your normal awareness level should be at least Condition Yellow.', type: 'tf', answer: true, explanation: 'The course teaches that Condition Yellow is the normal alert state in public.' },
+    { q: 'Which example best represents Condition White?', choices: ['Watching the crowd and exits around you', 'Texting while unaware of your surroundings', 'Identifying a threat and preparing to leave', 'Giving clear verbal commands'], answer: 1, explanation: 'Condition White is unaware and distracted.' },
+    { q: 'Your car is parked at the end of a dark alley. What is the safest choice?', choices: ['Move quickly and assume nothing is wrong', 'Walk down the alley with your gun already in hand', 'Take another route to your car', 'Go anyway if a friend is nearby'], answer: 2, explanation: 'The lesson stresses avoidance and route selection over unnecessary exposure.' },
+    { q: 'What is the number one reason many people give for not setting a burglar alarm?', choices: ['Pets', 'Children', 'They forget', 'They trust the neighborhood'], answer: 2, explanation: 'The quiz source identifies forgetting as the most common answer.' },
+    { q: 'According to the source material, what is the most common entry point for burglars?', choices: ['Front door', 'Second-floor windows', 'Garage roof', 'Basement window wells'], answer: 0, explanation: 'The front door is the answer given in the source material.' },
+    { q: 'What environmental factors can work to your advantage if attacked in public?', choices: ['Low-light corners and isolated spots', 'Cover, concealment, barriers, and escape routes', 'Crowds that block your movement only', 'Waiting for someone else to act'], answer: 1, explanation: 'The course stresses using barriers, cover, concealment, and escape routes.' },
+    { q: 'True or False: Mental exercises can only be done at the range.', type: 'tf', answer: false, explanation: 'Mental rehearsal can be done away from the range and is part of preparation.' },
+    { q: 'A suspicious person begins adjusting their path to follow you in a parking lot. What is your best first move?', choices: ['Ignore it and continue normally', 'Move toward light, people, and safer routes', 'Draw immediately', 'Stop and argue'], answer: 1, explanation: 'This stays true to the book’s awareness and avoidance mindset.' },
+    { q: 'Which awareness condition means you have identified a possible threat and are now preparing a response?', choices: ['White', 'Yellow', 'Orange', 'Black'], answer: 2, explanation: 'Condition Orange means a possible threat has been identified and you are planning.' },
+    { q: 'True or False: Awareness is about paranoia and fear.', type: 'tf', answer: false, explanation: 'The lesson teaches alertness and planning, not panic.' },
+    { q: 'Which statement best fits the lesson’s personal protection mindset?', choices: ['Speed matters more than awareness', 'Seeing danger early gives you more choices', 'Good gear replaces awareness', 'If you are armed, route choice no longer matters'], answer: 1, explanation: 'The lesson is built around recognizing problems early enough to avoid worse outcomes.' },
+    { q: 'What is one practical reason to stay off your phone while moving through public spaces?', choices: ['It improves your hearing', 'It helps keep you out of Condition White', 'It makes you faster', 'It guarantees safety'], answer: 1, explanation: 'Phone distraction is a classic Condition White behavior.' },
+    { q: 'True or False: A companion automatically makes a bad route a good route.', type: 'tf', answer: false, explanation: 'A bad route can still be a bad route even if someone is with you.' },
+    { q: 'Which is the better lesson takeaway for personal protection?', choices: ['Assume everything is safe until proven otherwise', 'Use awareness, barriers, movement, and escape options early', 'Always confront suspicious people immediately', 'Wait for certainty before changing your route'], answer: 1, explanation: 'That best matches the book’s prevention-first approach.' },
+    { q: 'What is one reason mental rehearsal matters?', choices: ['It replaces live training completely', 'It helps prepare your decisions before stress hits', 'It is only for competitive shooters', 'It makes legal issues irrelevant'], answer: 1, explanation: 'Mental rehearsal helps build decision-making before a real event.' },
+    { q: 'If you spot a possible threat, which of these is most consistent with the lesson?', choices: ['Move toward safer areas and maintain awareness', 'Freeze until something definitely happens', 'Close distance to investigate', 'Assume it is nothing'], answer: 0, explanation: 'The lesson favors safer positioning and awareness.' },
+    { q: 'True or False: Condition Yellow means you are panicked and ready to fight.', type: 'tf', answer: false, explanation: 'Condition Yellow is calm, alert awareness.' },
+    { q: 'What is the best short summary of Lesson 1?', choices: ['Avoidance and awareness create options before force is necessary', 'Force solves uncertainty', 'Distance does not matter if you are armed', 'Preparedness begins only after the threat is obvious'], answer: 0, explanation: 'That best reflects the source material.' },
+    { q: 'Which action best reflects a student who is taking the personal protection plan seriously?', choices: ['Choosing safer routes, staying alert, and thinking ahead', 'Walking distracted because they train often', 'Ignoring environmental advantages', 'Waiting until they are surprised before reacting'], answer: 0, explanation: 'This combines awareness, route choice, and planning from the lesson.' }
   ],
-  "2": [
-    {
-      "q": "What is the safest way to treat any firearm you handle?",
-      "choices": [
-        "As unloaded until someone says otherwise",
-        "As loaded until you personally verify its condition",
-        "As safe if the magazine is removed",
-        "As harmless if the action is open"
-      ],
-      "answer": 1,
-      "explanation": "The first safety rule is to treat every firearm as if it is loaded."
-    },
-    {
-      "q": "True or False: Removing the magazine from a semi-automatic pistol automatically means the chamber is empty.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "A round can still remain in the chamber after the magazine is removed."
-    },
-    {
-      "q": "A friend says, 'It's clear.' What should you do first?",
-      "choices": [
-        "Accept the statement because it is their firearm",
-        "Point it safely and personally verify the chamber and feeding source",
-        "Dry fire it to prove it is empty",
-        "Put it away until later"
-      ],
-      "answer": 1,
-      "explanation": "Personal verification is required; do not rely on assumptions."
-    },
-    {
-      "q": "Which rule is most directly violated when someone sweeps others with the muzzle?",
-      "choices": [
-        "Use only factory ammunition",
-        "Keep the muzzle pointed in a safe direction",
-        "Store firearms unloaded only",
-        "Use eye and ear protection"
-      ],
-      "answer": 1,
-      "explanation": "Muzzle discipline is a core safety rule."
-    },
-    {
-      "q": "True or False: Your trigger finger should stay off the trigger until your sights are on target and you have decided to fire.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Trigger discipline is one of the core safety rules."
-    },
-    {
-      "q": "You find loose cartridges and are not sure whether they match your gun. What is the right move?",
-      "choices": [
-        "Load one and test it carefully",
-        "Use only ammunition you know is correct and undamaged for the firearm",
-        "Mix them with other ammo and sort later",
-        "Assume any round that looks close will work"
-      ],
-      "answer": 1,
-      "explanation": "Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "Why does Lesson 2 emphasize visual and physical checks?",
-      "choices": [
-        "Because safeties make checks unnecessary",
-        "Because you need to verify both chamber condition and feeding source yourself",
-        "Because only beginners need to check guns",
-        "Because range officers handle all verification for you"
-      ],
-      "answer": 1,
-      "explanation": "Visual and physical checks reduce dangerous assumptions."
-    },
-    {
-      "q": "Which storage choice best fits responsible ownership?",
-      "choices": [
-        "Leave the handgun where visitors can reach it if it is unloaded",
-        "Use a storage method that limits unauthorized access and fits the home environment",
-        "Hide the firearm under a pillow for fast access",
-        "Store ammo in the chamber so the gun stays ready"
-      ],
-      "answer": 1,
-      "explanation": "Secure storage must consider unauthorized access, especially by children or prohibited persons."
-    },
-    {
-      "q": "True or False: If you are unsure how a particular firearm operates, slowing down and learning the controls is safer than guessing.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson stresses slowing down rather than forcing unfamiliar controls."
-    },
-    {
-      "q": "What does being sure of your target include?",
-      "choices": [
-        "Only knowing what you want to shoot",
-        "Knowing the target, the foreground, and the background",
-        "Firing quickly before the target moves",
-        "Trusting that indoor walls will stop rounds"
-      ],
-      "answer": 1,
-      "explanation": "Safe shooting includes awareness of the target and what is around and beyond it."
-    },
-    {
-      "q": "Which statement about a defensive firearm is most accurate?",
-      "choices": [
-        "It is a serious responsibility that requires repeatable safety habits",
-        "It is safe once the owner gets comfortable handling it",
-        "It becomes less dangerous after the first range trip",
-        "It is mainly an equipment issue, not a behavior issue"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 2 frames ownership as a continuing responsibility."
-    },
-    {
-      "q": "You unload a semi-automatic pistol. Which sequence is safest in principle?",
-      "choices": [
-        "Point safely, remove source of ammunition, then verify chamber condition",
-        "Pull the trigger first, then check later",
-        "Look away from the muzzle while working the slide",
-        "Start by putting your finger on the trigger for control"
-      ],
-      "answer": 0,
-      "explanation": "The lesson centers on safe direction, removing the feeding source, and personal verification."
-    },
-    {
-      "q": "True or False: Good safety habits matter even when practicing with an unloaded firearm.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The rules always apply; unloaded practice is not an excuse for careless handling."
-    },
-    {
-      "q": "Why is platform knowledge important?",
-      "choices": [
-        "Because revolvers and semi-automatics use the same controls",
-        "Because each design has different controls, checks, and handling steps",
-        "Because once you know one firearm, you know them all",
-        "Because storage rules change but handling rules do not"
-      ],
-      "answer": 1,
-      "explanation": "Different platforms require different operating knowledge."
-    },
-    {
-      "q": "What is the main lesson of Chapter 2?",
-      "choices": [
-        "Safety is deliberate and repeatable, not casual or assumed",
-        "Defensive guns are safe if they stay expensive",
-        "Confidence matters more than verification",
-        "Most accidents come from bad ammunition only"
-      ],
-      "answer": 0,
-      "explanation": "The chapter focuses on deliberate safety, personal verification, and responsibility."
-    },
-    {
-      "q": "What should happen to muzzle direction while you verify whether a firearm is loaded?",
-      "choices": [
-        "It should remain in a safe direction the entire time.",
-        "It can point anywhere because you are not shooting.",
-        "It only matters if others are nearby.",
-        "It matters less if the firearm has a manual safety."
-      ],
-      "answer": 0,
-      "explanation": "Muzzle discipline applies during checks, loading, unloading, and handling."
-    },
-    {
-      "q": "True or False: You should rely on your memory of how a gun felt yesterday instead of checking it today.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "Every handling event should begin with safe personal verification, not assumption."
-    },
-    {
-      "q": "Which storage practice best reflects the lesson when unauthorized access is a concern?",
-      "choices": [
-        "Store the firearm so it is secured from unauthorized handling while remaining appropriate for your environment.",
-        "Leave it on a shelf but unload it.",
-        "Hide it under clothing in a closet.",
-        "Keep it in the same place whether children visit or not."
-      ],
-      "answer": 0,
-      "explanation": "Storage decisions should reflect access by others, environment, and responsibility."
-    },
-    {
-      "q": "A shooter says, 'The safety is on, so I can relax the other rules.' What is the best correction?",
-      "choices": [
-        "Mechanical safeties support safety habits but do not replace them.",
-        "That is correct if the gun stays holstered.",
-        "That is correct during dry practice.",
-        "The only rule that still matters is trigger finger placement."
-      ],
-      "answer": 0,
-      "explanation": "No mechanical feature replaces the safety rules."
-    },
-    {
-      "q": "Which action is safest before handing a firearm to another person?",
-      "choices": [
-        "Personally clear it, maintain safe direction, and present it responsibly.",
-        "Assume they will clear it themselves.",
-        "Close the action quickly so they know you checked it.",
-        "Point it toward the floor and pass it grip-first without explanation."
-      ],
-      "answer": 0,
-      "explanation": "Safe transfers still require verification and muzzle control."
-    },
-    {
-      "q": "True or False: A revolver and a semi-automatic pistol may require different unloading steps and controls.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Platform knowledge matters because not all handguns work the same way."
-    },
-    {
-      "q": "Why is damaged ammunition a concern?",
-      "choices": [
-        "It can create unsafe malfunctions or improper performance.",
-        "It only matters for long guns.",
-        "It is fine if the cartridge fits loosely.",
-        "It becomes safe once loaded into the magazine."
-      ],
-      "answer": 0,
-      "explanation": "Only correct, compatible, undamaged ammunition should be used."
-    },
-    {
-      "q": "What is the best mindset when you are uncertain during firearm handling?",
-      "choices": [
-        "Slow down and verify instead of guessing.",
-        "Continue quickly so you do not lose confidence.",
-        "Let another beginner decide what looks right.",
-        "Skip the check if the gun was stored safely."
-      ],
-      "answer": 0,
-      "explanation": "Lesson 2 repeatedly emphasizes deliberate, repeatable safety habits instead of assumption."
-    }
+  2: [
+    { q: 'On a cleared semi-automatic, what should you see through the magazine well?', choices: ['A loaded magazine', 'An empty magazine', 'Nothing but open space or your hand beneath', 'Nothing, because the slide should be closed'], answer: 2, explanation: 'A proper visual check should show that the magazine well is empty.' },
+    { q: 'When visually checking the chamber on a cleared semi-automatic, what should you see?', choices: ['An empty chamber', 'A live round', 'An empty casing', 'Nothing, because the slide should be closed'], answer: 0, explanation: 'The chamber should be visibly empty.' },
+    { q: 'On a handgun capable of double-action and single-action fire, what trigger position usually indicates single-action mode?', choices: ['Trigger set fully forward', 'Trigger set farther back near the break point', 'Trigger removed', 'Trigger locked in place'], answer: 1, explanation: 'Single-action generally leaves the trigger farther back and lighter to press.' },
+    { q: 'Which statement best explains the difference between single-action and double-action?', choices: ['Single-action fires one round; double-action fires full auto', 'Single-action means a single-row magazine; double-action means staggered rows', 'Single-action usually has a lighter, shorter trigger press than double-action', 'Double-action means two bullets fire per press'], answer: 2, explanation: 'That is the correct operational difference taught in the lesson.' },
+    { q: 'Which control is found on a revolver?', choices: ['Cylinder release', 'Magazine release', 'Slide', 'Takedown lever'], answer: 0, explanation: 'Revolvers use a cylinder release rather than a slide or detachable magazine.' },
+    { q: 'Which control is found on a semi-automatic pistol?', choices: ['Cylinder', 'Cylinder release', 'Slide', 'Ejector rod only'], answer: 2, explanation: 'A semi-automatic pistol has a slide.' },
+    { q: 'What best describes a double-stack magazine?', choices: ['Rounds in a single straight line', 'Rounds stored in two staggered rows', 'Two rounds fired per trigger press', 'A magazine with two floorplates'], answer: 1, explanation: 'Double-stack magazines store rounds in staggered rows.' },
+    { q: 'What malfunction is associated with a bullet stuck in the barrel?', choices: ['Misfire', 'Type III malfunction', 'Squib load', 'Out-of-battery ignition'], answer: 2, explanation: 'A squib load can leave a projectile lodged in the barrel.' },
+    { q: 'Why do many people prefer a shotgun over a handgun for close home-defense work?', choices: ['Because a shotgun cannot miss', 'Because it is more powerful, though precise aiming is still required', 'Because handguns are illegal indoors', 'Because shotguns remove the need for training'], answer: 1, explanation: 'The source stresses greater power but still requires aiming.' },
+    { q: 'Which statement about AR-15 pattern rifles is true?', choices: ['They are one of the most powerful rifles available', 'They are machine guns by default', 'They are semi-automatic rifles and are less powerful than many common deer rifles', 'Their black finish makes them more dangerous'], answer: 2, explanation: 'That is the correct statement from the source material.' },
+    { q: 'True or False: Removing the magazine alone proves the firearm cannot still be loaded.', type: 'tf', answer: false, explanation: 'A round may still be in the chamber.' },
+    { q: 'What is the safest response when learning a new handgun platform?', choices: ['Assume it works like every other handgun', 'Learn the controls and operation before loading it', 'Test-fire it immediately', 'Skip the chamber check if it looks clean'], answer: 1, explanation: 'Platform knowledge comes before loading or firing.' },
+    { q: 'Which part of a cartridge ignites the powder charge?', choices: ['Case mouth', 'Primer', 'Magazine spring', 'Follower'], answer: 1, explanation: 'The primer initiates ignition.' },
+    { q: 'True or False: A damaged round should still be acceptable for practice.', type: 'tf', answer: false, explanation: 'Questionable ammunition should not be used.' },
+    { q: 'What is the safest lesson takeaway about ammunition selection?', choices: ['If it fits loosely, it is probably fine', 'Use the correct ammunition for the firearm and inspect it before use', 'All 9mm-labeled ammunition is interchangeable in every gun', 'Bullet color matters more than caliber'], answer: 1, explanation: 'Use correct, compatible, undamaged ammunition only.' },
+    { q: 'What should you do if you are unsure whether a magazine belongs to your pistol?', choices: ['Force it into the magwell', 'Verify model and compatibility before use', 'Load it halfway and try it anyway', 'Tap it hard until it seats'], answer: 1, explanation: 'Compatibility should be verified before use.' },
+    { q: 'True or False: Rimfire and centerfire are different ignition systems.', type: 'tf', answer: true, explanation: 'They are not the same system.' },
+    { q: 'What does the chamber do?', choices: ['Holds the cartridge ready to fire', 'Stores spare ammunition', 'Controls recoil', 'Prevents extraction'], answer: 0, explanation: 'The chamber is where the round sits ready for firing.' },
+    { q: 'Which answer best matches the book’s firearm-basics lesson?', choices: ['Know your platform, verify clear, and understand how the gun and ammunition work', 'Memorize only caliber labels', 'Skip controls if the gun looks familiar', 'Magazine out means the gun is always safe'], answer: 0, explanation: 'That is the best summary of Lesson 2.' },
+    { q: 'A student says “cleared” just means the magazine is out. What is the correct correction?', choices: ['That is enough', 'Cleared means checking both the chamber and the magazine well', 'It means the slide is closed', 'It only applies to revolvers'], answer: 1, explanation: 'A proper clearance check includes both chamber and magazine well.' }
   ],
-  "3": [
-    {
-      "q": "What should come before trying to shoot faster?",
-      "choices": [
-        "A stronger flashlight",
-        "Repeatable fundamentals like grip, sights, and trigger control",
-        "A bigger magazine",
-        "More advanced drills on day one"
-      ],
-      "answer": 1,
-      "explanation": "Lesson 3 teaches students to build speed on top of fundamentals."
-    },
-    {
-      "q": "True or False: Defensive shooting means reckless speed as long as shots stay on paper.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The lesson stresses accountable hits, not reckless speed."
-    },
-    {
-      "q": "Why does a stable stance matter?",
-      "choices": [
-        "It helps with balance, recoil control, and movement",
-        "It makes the gun lighter",
-        "It guarantees perfect accuracy",
-        "It matters only for competition shooters"
-      ],
-      "answer": 0,
-      "explanation": "A stable stance supports recoil control and practical movement."
-    },
-    {
-      "q": "What is trigger control?",
-      "choices": [
-        "Pulling the trigger as fast as possible",
-        "Pressing the trigger without disturbing the sights",
-        "Using two fingers for more strength",
-        "Jerking through the break to beat recoil"
-      ],
-      "answer": 1,
-      "explanation": "Good trigger control keeps the sights stable through the shot."
-    },
-    {
-      "q": "True or False: Equipment can replace weak fundamentals if the sights are expensive enough.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The chapter makes clear that gear does not replace fundamentals."
-    },
-    {
-      "q": "A shooter dips the muzzle low every time the trigger breaks. What concept needs work most directly?",
-      "choices": [
-        "Trigger control",
-        "Holster retention",
-        "Caliber selection",
-        "Legal articulation"
-      ],
-      "answer": 0,
-      "explanation": "Moving the sights during the trigger press points to a trigger-control problem."
-    },
-    {
-      "q": "What is the value of follow-through after a shot?",
-      "choices": [
-        "It supports recoil management and faster accountable follow-up shots",
-        "It lets you relax your grip immediately",
-        "It is mainly for style points on the range",
-        "It matters only when shooting one-handed"
-      ],
-      "answer": 0,
-      "explanation": "Follow-through helps maintain control and readiness for additional accurate shots."
-    },
-    {
-      "q": "Which statement best reflects the lesson on sights?",
-      "choices": [
-        "Sight picture and alignment matter because the gun must be pointed where the shot should go",
-        "Looking over the top of the gun is usually enough at any distance",
-        "Only trigger speed matters once the gun is drawn",
-        "The rear sight matters, but the front sight does not"
-      ],
-      "answer": 0,
-      "explanation": "The chapter ties sighting and trigger control to accountable hits."
-    },
-    {
-      "q": "True or False: Dry practice can help improve consistency when it is done safely and deliberately.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson encourages disciplined dry practice to reinforce fundamentals."
-    },
-    {
-      "q": "A student wants to skip fundamentals because they want 'realistic' speed. What should the instructor say?",
-      "choices": [
-        "Start with controlled basics, then build toward realistic speed",
-        "Speed will automatically fix poor trigger control",
-        "Grip and stance do not matter under stress",
-        "Only moving drills matter for self-defense"
-      ],
-      "answer": 0,
-      "explanation": "The chapter teaches that advanced performance grows from solid basics."
-    },
-    {
-      "q": "What does accountable shooting mean?",
-      "choices": [
-        "Every shot should be deliberate and justified, not just fast",
-        "Any hit on the berm counts as success",
-        "Shots only matter if they impress others",
-        "A fast miss is better than a careful hit"
-      ],
-      "answer": 0,
-      "explanation": "Accountable hits are central to defensive shooting."
-    },
-    {
-      "q": "Which habit supports better recoil management?",
-      "choices": [
-        "A consistent grip and body position",
-        "Closing your eyes before the shot",
-        "Relaxing your hands after each trigger press",
-        "Leaning backward to resist recoil"
-      ],
-      "answer": 0,
-      "explanation": "Consistent grip and stance help control the gun during recoil."
-    },
-    {
-      "q": "True or False: Defensive shooting still requires accuracy and responsibility, even under time pressure.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson balances timeliness with safety and accuracy."
-    },
-    {
-      "q": "Why is consistency more valuable than showing off?",
-      "choices": [
-        "Because repeatable mechanics hold up better under pressure",
-        "Because style is more important than safety",
-        "Because defensive shooters never need follow-up shots",
-        "Because one lucky drill proves long-term skill"
-      ],
-      "answer": 0,
-      "explanation": "Repeatable fundamentals are more reliable under realistic stress."
-    },
-    {
-      "q": "What is the main takeaway from Lesson 3?",
-      "choices": [
-        "Build safe, accurate, repeatable shooting before chasing complexity",
-        "Buy upgrades before fixing technique",
-        "Fastest always means best",
-        "Only live fire matters; dry work is useless"
-      ],
-      "answer": 0,
-      "explanation": "The chapter focuses on safe, repeatable fundamentals leading to accountable performance."
-    },
-    {
-      "q": "What should the shooter try not to disturb while pressing the trigger?",
-      "choices": [
-        "The sight picture and alignment.",
-        "The support hand only.",
-        "The magazine spring tension.",
-        "The color of the front sight."
-      ],
-      "answer": 0,
-      "explanation": "Trigger control is pressing the trigger without moving the sights off the intended target."
-    },
-    {
-      "q": "True or False: A good grip helps the firearm return more consistently after recoil.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Grip supports control, consistency, and faster accountable follow-up shots."
-    },
-    {
-      "q": "Which practice goal best fits defensive fundamentals?",
-      "choices": [
-        "Consistent, accountable hits under realistic pressure.",
-        "Maximum speed even if accuracy suffers.",
-        "Fancy movement before basic control.",
-        "Relying on equipment to correct mistakes."
-      ],
-      "answer": 0,
-      "explanation": "The lesson emphasizes safe, timely, accurate performance rather than reckless speed."
-    },
-    {
-      "q": "Why is front-end consistency important in shooting fundamentals?",
-      "choices": [
-        "Because repeatable setup makes repeatable shots more likely.",
-        "Because every shot should feel different to build adaptability.",
-        "Because stance matters only for competition.",
-        "Because recoil management is mostly luck."
-      ],
-      "answer": 0,
-      "explanation": "Repeatable grip, stance, visual focus, and trigger press support dependable performance."
-    },
-    {
-      "q": "True or False: Follow-through includes staying visually and physically engaged with the shot instead of mentally quitting at the break.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Follow-through helps support recoil management and preparation for accurate follow-up shots."
-    },
-    {
-      "q": "A student blames misses entirely on the pistol but changes grip every string. What is the best teaching point?",
-      "choices": [
-        "Consistency in fundamentals matters before blaming equipment.",
-        "Any miss means the sights are defective.",
-        "Grip changes improve learning because they create variety.",
-        "Equipment matters more than trigger control."
-      ],
-      "answer": 0,
-      "explanation": "The chapter teaches that gear does not replace fundamentals."
-    },
-    {
-      "q": "Which statement best matches responsible speed?",
-      "choices": [
-        "Speed is useful only when built on control and accountability.",
-        "Speed should always come before precision in self-defense.",
-        "Speed drills make fundamentals unnecessary.",
-        "Speed is measured only by split times, not outcomes."
-      ],
-      "answer": 0,
-      "explanation": "Students are taught to build safe speed on top of reliable fundamentals."
-    }
+  3: [
+    { q: 'Which shooting stance is characterized by the arms pushed out at full extension?', choices: ['Weaver', 'Isosceles', 'High Ready', 'Retention Position'], answer: 1, explanation: 'The source material identifies the Isosceles stance as the full-extension stance.' },
+    { q: 'Where is “muscle memory” actually recorded according to the lesson?', choices: ['In the muscles themselves', 'In the amygdala', 'In the brain’s memory center, the cerebellum', 'In the trigger finger'], answer: 2, explanation: 'The quiz source ties repetition and muscle memory to the brain, specifically the cerebellum.' },
+    { q: 'Why do many self-defense instructors prefer the Isosceles stance?', choices: ['It holds the gun closer to the body', 'It matches a hunting-rifle stance', 'It matches the body’s natural reaction to face an attacker head on', 'It creates the narrowest profile possible'], answer: 2, explanation: 'The lesson teaches that the Isosceles stance aligns with the natural response to square up toward a threat.' },
+    { q: 'If an attacker suddenly points a gun at you, what is your vision most likely to lock onto?', choices: ['Your front sight', 'The attacker or the weapon in the attacker’s hands', 'Your support-hand thumb', 'The nearest wall'], answer: 1, explanation: 'The source emphasizes natural target fixation under stress.' },
+    { q: 'What best describes a flash sight picture?', choices: ['Perfectly aligned sights in perfect focus', 'A quick visual flash of the sights over the target', 'Shooting with eyes closed', 'Ignoring the front sight entirely'], answer: 1, explanation: 'A flash sight picture is a rapid but acceptable sight confirmation.' },
+    { q: 'True or False: The Isosceles stance enables simple point shooting because both arms point naturally at the target.', type: 'tf', answer: true, explanation: 'That is one of the reasons the course discusses the stance favorably.' },
+    { q: 'What is the break point of a firearm trigger?', choices: ['The trigger position when at rest', 'The point at which the gun fires', 'The point where the gun becomes unsafe', 'The point where the magazine drops free'], answer: 1, explanation: 'The break point is the point where the trigger press causes the gun to fire.' },
+    { q: 'True or False: With a proper grip, the tip of the trigger finger on the frame or slide should line up across from the support-hand thumb.', type: 'tf', answer: true, explanation: 'That alignment cue appears directly in the source quiz.' },
+    { q: 'What is the safest training priority for a newer defensive shooter?', choices: ['Perfect speed first', 'Fundamentals before advanced speed', 'One-handed shooting only', 'Shooting without sights'], answer: 1, explanation: 'The lesson builds from sound fundamentals toward more advanced work.' },
+    { q: 'Which statement best fits target fixation?', choices: ['It helps front-sight focus', 'It means the eyes may lock onto the threat instead of the sights', 'It eliminates recoil', 'It only affects competition shooters'], answer: 1, explanation: 'Target fixation is a stress-driven visual phenomenon covered in the lesson.' },
+    { q: 'True or False: Defensive accuracy means accountable hits, not just shooting quickly.', type: 'tf', answer: true, explanation: 'The lesson emphasizes practical, accountable accuracy.' },
+    { q: 'What usually happens if grip and trigger control break down under recoil?', choices: ['Accuracy improves', 'Shots can become inconsistent and less accountable', 'The magazine falls out', 'The sights become brighter'], answer: 1, explanation: 'Poor grip and trigger control degrade consistency.' },
+    { q: 'Which answer best describes why fundamentals matter under stress?', choices: ['They disappear and become useless', 'They create repeatable performance when time is limited', 'They only matter on paper targets', 'They replace the need for awareness'], answer: 1, explanation: 'Fundamentals provide the repeatable base that holds up under pressure.' },
+    { q: 'What is one practical reason to train grip and trigger press carefully?', choices: ['To make the gun louder', 'To disturb the sights as little as possible', 'To reduce magazine capacity', 'To eliminate the need for follow-through'], answer: 1, explanation: 'Sound trigger and grip technique preserve alignment and accountability.' },
+    { q: 'True or False: The lesson suggests students should prioritize a realistic fighting stance over a stylized competition pose.', type: 'tf', answer: true, explanation: 'The content is framed around defensive shooting, not a specialized game stance.' },
+    { q: 'If a student tries to shoot fast but never sees any sight confirmation, what is the better correction?', choices: ['Go even faster', 'Use an acceptable flash sight picture before firing', 'Close one eye harder', 'Move the target closer every time'], answer: 1, explanation: 'The lesson supports quick but usable sight confirmation.' },
+    { q: 'Which statement best reflects a defensive shooting mindset?', choices: ['Perfect marksmanship matters more than survival', 'Practical skill should work under stress and urgency', 'Only static range shooting matters', 'The first shot is all that matters'], answer: 1, explanation: 'The lesson is built around practical self-defense shooting.' },
+    { q: 'True or False: Good stance, grip, and sight use are optional if you already own quality gear.', type: 'tf', answer: false, explanation: 'Equipment does not replace fundamentals.' },
+    { q: 'What is the best short summary of Lesson 3?', choices: ['Build a natural stance, control the gun, and confirm the sights enough to make responsible hits', 'Shoot fast and trust the gun', 'Close one eye and point instinctively every time', 'Speed matters more than control'], answer: 0, explanation: 'That best captures the shooting-fundamentals lesson.' },
+    { q: 'Which training outcome best matches this chapter?', choices: ['Students understand how body position, visual focus, and trigger control work together', 'Students memorize caliber tables', 'Students avoid practicing sight usage', 'Students learn that stance does not matter'], answer: 0, explanation: 'The lesson ties stance, sights, and trigger work together.' }
   ],
-  "4": [
-    {
-      "q": "What does 'reasonableness' generally ask in a use-of-force analysis?",
-      "choices": [
-        "What a reasonable person would have believed under those circumstances",
-        "Whether the person owned a permit",
-        "Whether the firearm was expensive",
-        "Whether the event happened in public"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 4 presents reasonableness as a fact-based standard."
-    },
-    {
-      "q": "True or False: Imminence focuses on whether the threat is immediate rather than speculative or already over.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Imminence asks whether the threat is happening now, not someday or after the fact."
-    },
-    {
-      "q": "What does proportionality deal with?",
-      "choices": [
-        "Whether the response matched the seriousness of the threat",
-        "Whether the defender had enough training hours",
-        "Whether the person called 911 first",
-        "Whether the encounter happened indoors"
-      ],
-      "answer": 0,
-      "explanation": "Proportionality compares the force used to the threat presented."
-    },
-    {
-      "q": "Which action most clearly harms an innocence claim?",
-      "choices": [
-        "Trying to disengage from an argument",
-        "Unlawfully starting or escalating the confrontation",
-        "Calling 911 after the event",
-        "Moving to cover while avoiding bystanders"
-      ],
-      "answer": 1,
-      "explanation": "The lesson warns students not to unlawfully start or escalate conflict."
-    },
-    {
-      "q": "True or False: The chapter teaches legal advice tailored to every student's exact facts.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The lesson specifically says BSA is not a law firm and the material is educational only."
-    },
-    {
-      "q": "Why does articulation matter after a defensive incident?",
-      "choices": [
-        "You may need to explain what you saw, what the threat did, and why you believed serious harm was immediate",
-        "It matters only if no cameras were nearby",
-        "It replaces evidence and witness statements",
-        "It guarantees no charges will follow"
-      ],
-      "answer": 0,
-      "explanation": "Students are taught to think in terms of clear, factual articulation."
-    },
-    {
-      "q": "Which statement best fits the chapter on property disputes?",
-      "choices": [
-        "Deadly force questions are different when the issue is property alone and no immediate deadly threat exists",
-        "Property arguments always justify drawing a gun",
-        "Cameras eliminate legal uncertainty",
-        "Road-rage disputes are safer if you win the argument"
-      ],
-      "answer": 0,
-      "explanation": "The chapter cautions students about myths involving property disputes and escalation."
-    },
-    {
-      "q": "In a crowded New Orleans festival area, what lesson-based concern should be especially on your mind?",
-      "choices": [
-        "Crowds, cameras, bystanders, and witness issues complicate everything",
-        "The law stops applying in crowded places",
-        "Only traffic matters in the city",
-        "Your permit lets you ignore bystanders"
-      ],
-      "answer": 0,
-      "explanation": "Local realities include crowds, traffic, cameras, witnesses, and chaotic scenes."
-    },
-    {
-      "q": "True or False: Calling 911, preserving the scene, and avoiding careless statements are practical post-incident steps discussed in the lesson.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "These are part of the practical local guidance in Lesson 4."
-    },
-    {
-      "q": "What does necessity generally ask?",
-      "choices": [
-        "Whether force was needed under the circumstances rather than avoidable",
-        "Whether the firearm had a mounted light",
-        "Whether the defender had prior military training",
-        "Whether the bystanders agreed with the defender"
-      ],
-      "answer": 0,
-      "explanation": "Necessity deals with whether force was actually needed under the circumstances."
-    },
-    {
-      "q": "Which response best fits a heated road-rage exchange when no immediate deadly threat exists?",
-      "choices": [
-        "Disengage and avoid escalating the dispute",
-        "Win the argument before leaving",
-        "Follow the other driver to get answers",
-        "Display the firearm to control the conversation"
-      ],
-      "answer": 0,
-      "explanation": "The chapter repeatedly warns against escalating road-rage incidents."
-    },
-    {
-      "q": "Why does the lesson repeatedly say outcomes depend on specific facts?",
-      "choices": [
-        "Because use-of-force cases turn on details, evidence, witnesses, and changing law",
-        "Because all self-defense cases come out the same",
-        "Because the city where it happens never matters",
-        "Because internet comments are enough to know the law"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 4 emphasizes fact-specific legal outcomes."
-    },
-    {
-      "q": "True or False: A justified use-of-force claim is strengthened by careful avoidance of unnecessary escalation before the event.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Innocence, necessity, and reasonableness are helped when the defender did not escalate the conflict."
-    },
-    {
-      "q": "Which statement best captures the goal of Lesson 4?",
-      "choices": [
-        "Use a practical framework to think about force carefully, lawfully, and factually",
-        "Memorize one-line internet slogans and rely on them later",
-        "Assume every threatening word automatically justifies deadly force",
-        "Treat carrying as a shield against legal scrutiny"
-      ],
-      "answer": 0,
-      "explanation": "The chapter offers a practical educational framework, not myths or slogans."
-    },
-    {
-      "q": "After a defensive incident, which attitude best fits the lesson?",
-      "choices": [
-        "Be factual, preserve evidence, and avoid reckless statements",
-        "Tell everyone your full story immediately on social media",
-        "Argue with witnesses before police arrive",
-        "Assume the cameras prove everything without context"
-      ],
-      "answer": 0,
-      "explanation": "The lesson teaches care, factual articulation, and scene preservation."
-    },
-    {
-      "q": "Why is de-escalation relevant to a legal use-of-force discussion?",
-      "choices": [
-        "Because avoidable escalation can damage a claim of reasonableness or necessity.",
-        "Because the law ignores behavior before the final second.",
-        "Because insults create the same legal threat as deadly force.",
-        "Because backing away automatically proves innocence in every case."
-      ],
-      "answer": 0,
-      "explanation": "Pre-incident decisions can matter when later conduct is evaluated."
-    },
-    {
-      "q": "True or False: The fact that you felt angry is the same as the law recognizing an imminent deadly threat.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "Emotion alone does not establish imminence or legal justification."
-    },
-    {
-      "q": "Which statement best fits proportionality?",
-      "choices": [
-        "The defensive response should match the seriousness of the unlawful threat faced.",
-        "Any force is lawful if you are afraid.",
-        "Property disputes always justify deadly force.",
-        "A verbal insult can be treated like a deadly attack."
-      ],
-      "answer": 0,
-      "explanation": "Proportionality asks whether the response fits the threat."
-    },
-    {
-      "q": "What does articulation help show after an incident?",
-      "choices": [
-        "Why you recognized the threat, what you did, and why those actions made sense at the time.",
-        "That you memorized legal vocabulary from class.",
-        "That every detail of memory will be perfect.",
-        "That stress has no effect on recall."
-      ],
-      "answer": 0,
-      "explanation": "Clear articulation helps explain perception, decisions, and actions."
-    },
-    {
-      "q": "True or False: Specific facts such as distance, ability, behavior, and opportunity can matter in judging a defensive incident.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 4 repeatedly stresses that facts drive legal analysis."
-    },
-    {
-      "q": "A stranger shouts insults from across the street but makes no move toward you. Which lesson-based response is strongest?",
-      "choices": [
-        "Create distance and avoid escalating a non-imminent problem.",
-        "Advance to prove you are not afraid.",
-        "Display your firearm to end the argument.",
-        "Treat the insult alone as a deadly-force threat."
-      ],
-      "answer": 0,
-      "explanation": "The lesson distinguishes anger and verbal conflict from imminent deadly danger."
-    },
-    {
-      "q": "Which statement best reflects the course's legal boundary?",
-      "choices": [
-        "The lesson teaches general principles and encourages students to understand that real cases depend on specific facts and current law.",
-        "The lesson guarantees a legal defense for any action taken in fear.",
-        "The lesson replaces attorney advice.",
-        "The lesson removes the need for careful judgment."
-      ],
-      "answer": 0,
-      "explanation": "The course offers general educational principles, not case-specific legal advice."
-    },
-    {
-      "q": "After an incident, why should students avoid careless extra statements?",
-      "choices": [
-        "Because inaccurate or unnecessary details can create problems while facts are still being sorted out.",
-        "Because talking to 911 is never appropriate.",
-        "Because silence always proves innocence.",
-        "Because witnesses do not matter once police arrive."
-      ],
-      "answer": 0,
-      "explanation": "The lesson highlights practical post-incident caution and scene management."
-    }
+  4: [
+    { q: 'What best describes the “reasonable person” test in self-defense law?', choices: ['What online gun forums think', 'What friends and family think', 'Whether a prosecutor believes a jury would see the force as reasonable under the facts', 'Whether the defender used a small caliber'], answer: 2, explanation: 'The source explains reasonableness in terms of what a jury would likely think of the facts.' },
+    { q: 'True or False: Claiming self-defense against a knife attack means the prosecutor will automatically accept your story without investigation.', type: 'tf', answer: false, explanation: 'The lesson emphasizes that claims of self-defense are still investigated.' },
+    { q: 'What best describes “reasonable force”?', choices: ['Any force that uses a handgun', 'Force that leaves the attacker alive', 'The minimum level of force required to stop the threat', 'Force approved by your family'], answer: 2, explanation: 'Reasonable force is framed as force that does not exceed the threat.' },
+    { q: 'In most states, when can a prosecutor evaluate your actions under deadly-force rules?', choices: ['Only if the attacker died', 'If the force used could have caused death or serious bodily harm, even if the attacker lived', 'Only when a rifle is involved', 'Only if no witnesses exist'], answer: 1, explanation: 'Deadly force can be analyzed by capability, not just by the final outcome.' },
+    { q: 'What does the “innocent party” rule generally mean?', choices: ['You did not know the attacker', 'You did not start or unlawfully escalate the incident', 'You were carrying legally', 'You had no prior training'], answer: 1, explanation: 'The lesson ties innocence to not starting or escalating the conflict.' },
+    { q: 'Which of the following can matter to a prosecutor investigating a self-defense claim?', choices: ['Only the weapon used', 'Your background, statements, writings, and whether alcohol or drugs were involved', 'Only the attacker’s criminal record', 'Only whether your friends agree'], answer: 1, explanation: 'The source specifically warns that background, communications, and intoxication issues may be examined.' },
+    { q: 'What is the general name for state laws that can lower the threshold for force in defending a home?', choices: ['Castle Doctrine', 'Homestead Act', 'Stand Fast Rule', 'Home Priority Statute'], answer: 0, explanation: 'The lesson identifies Castle Doctrine as the general name.' },
+    { q: 'Which statement is generally correct about defending property?', choices: ['Most states allow deadly force for property theft alone', 'Most states distinguish property defense from defense of person and do not allow deadly force for property alone', 'Property defense is always treated the same as home invasion', 'There is no legal distinction between people and property'], answer: 1, explanation: 'The lesson clearly draws this distinction.' },
+    { q: 'True or False: Whether the attacker dies is the only thing that determines whether force was deadly force.', type: 'tf', answer: false, explanation: 'The nature of the force used matters, not just the final outcome.' },
+    { q: 'A student says, “If the caliber was small, the force must have been reasonable.” What is the right correction?', choices: ['That is correct', 'Caliber alone does not decide legal reasonableness', 'Only large calibers are reviewed', 'Reasonableness is based only on equipment'], answer: 1, explanation: 'The lesson rejects simplistic weapon-based rules of legality.' },
+    { q: 'True or False: A prosecutor may look at what you have posted online when deciding whether to file charges.', type: 'tf', answer: true, explanation: 'The source explicitly warns that online statements can be investigated.' },
+    { q: 'Which answer best fits the lesson’s legal mindset?', choices: ['Use only the force needed to stop the threat', 'Use the largest force available to be safe', 'If scared, anything is lawful', 'Property and pride justify deadly force'], answer: 0, explanation: 'The lesson consistently returns to necessity and proportionality.' },
+    { q: 'What is the best takeaway when you are unsure whether force is lawful?', choices: ['Escalate early', 'Create safety and distance if possible, and avoid exceeding the threat', 'Draw to gain compliance in every argument', 'Property concerns come first'], answer: 1, explanation: 'The chapter promotes restraint and proportionality.' },
+    { q: 'True or False: Friends or family deciding you were justified guarantees the prosecutor will agree.', type: 'tf', answer: false, explanation: 'Private opinions are not the legal standard.' },
+    { q: 'Which statement best reflects how self-defense law is taught here?', choices: ['The legal system rewards bravado', 'Every decision may be reviewed carefully after the fact', 'Deadly force rules apply only to law enforcement', 'Lawfulness depends mainly on social media support'], answer: 1, explanation: 'The lesson teaches students to expect scrutiny and think carefully.' },
+    { q: 'What is the safest short summary of Lesson 4?', choices: ['Force must be reasonable, necessary, and legally defensible under the circumstances', 'Any armed response is justified', 'Property loss and deadly threat are legally identical', 'Castle doctrine applies everywhere in all situations'], answer: 0, explanation: 'That best captures the legal-use-of-force chapter.' },
+    { q: 'Why does the lesson warn students about online posts and texts?', choices: ['Because they may be investigated after an incident', 'Because they improve your case automatically', 'Because prosecutors only care about old emails', 'Because online posts cannot be recovered'], answer: 0, explanation: 'Your writings and electronic communications may become evidence.' },
+    { q: 'True or False: The innocent-party rule means you must not be the one who unlawfully escalated the incident.', type: 'tf', answer: true, explanation: 'That is the core meaning used in the lesson.' },
+    { q: 'A person tries to steal a lawnmower from your shed and is running away. Which answer best matches the chapter?', choices: ['Deadly force is generally lawful for property alone', 'Property crimes alone usually do not justify deadly force', 'Castle doctrine always applies outdoors', 'Any felony automatically authorizes deadly force'], answer: 1, explanation: 'The chapter distinguishes property from immediate threats to persons.' },
+    { q: 'Which answer best reflects a student who understood Lesson 4?', choices: ['They know legality depends on facts, proportionality, and reasonableness', 'They believe any fear excuses any force', 'They think the prosecutor will ignore background information', 'They think caliber determines legality'], answer: 0, explanation: 'That is the strongest summary of the chapter.' }
   ],
-  "5": [
-    {
-      "q": "What body system is most associated with the fight, flight, or freeze response?",
-      "choices": [
-        "The sympathetic nervous system",
-        "The digestive system",
-        "The skeletal system",
-        "The endocrine system only"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 5 explains how survival stress affects body and mind."
-    },
-    {
-      "q": "True or False: Under sudden threat, ordinary people may experience tunnel vision, auditory exclusion, or shaky hands.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "These are common examples of stress effects discussed in the chapter."
-    },
-    {
-      "q": "What is one reason stress matters in a violent encounter?",
-      "choices": [
-        "It can affect perception, memory, movement, and decision-making",
-        "It makes every decision legally justified",
-        "It removes the need for training",
-        "It only affects people with no experience"
-      ],
-      "answer": 0,
-      "explanation": "The lesson explains that stress can alter how people perceive and act."
-    },
-    {
-      "q": "Which reaction after a traumatic event can still be normal?",
-      "choices": [
-        "Nightmares, intrusive thoughts, or emotional swings",
-        "Instant perfect memory of every detail",
-        "No physical stress response at all",
-        "Total immunity to anxiety"
-      ],
-      "answer": 0,
-      "explanation": "The chapter lists many normal post-event stress responses."
-    },
-    {
-      "q": "True or False: Drawing a firearm eliminates the effects of adrenaline and stress.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "Having a gun does not cancel physiological stress effects."
-    },
-    {
-      "q": "Which coping choice best fits the chapter?",
-      "choices": [
-        "Use support systems, counseling, journaling, exercise, or prayer as helpful outlets",
-        "Rely on alcohol to calm down after a crisis",
-        "Hide symptoms and isolate from everyone",
-        "Increase stimulant use and stop sleeping"
-      ],
-      "answer": 0,
-      "explanation": "The lesson recommends healthy support and coping tools, not harmful ones."
-    },
-    {
-      "q": "What does the lesson teach about asking someone directly about suicide?",
-      "choices": [
-        "It can be part of responsible intervention and does not cause suicide",
-        "It should never be done under any circumstance",
-        "It only matters for law enforcement officers",
-        "It always makes the situation worse"
-      ],
-      "answer": 0,
-      "explanation": "The chapter states that asking direct questions can be part of intervention."
-    },
-    {
-      "q": "When should 988 be considered according to the lesson?",
-      "choices": [
-        "For emotional crisis or suicidal distress support",
-        "For ordering replacement gear",
-        "For reporting a stolen vehicle only",
-        "Only after a criminal case is closed"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 5 distinguishes 988 crisis support from 911 life-threatening emergencies."
-    },
-    {
-      "q": "True or False: Responsible firearm ownership includes taking warning signs, risk factors, and crisis resources seriously.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Mental wellness and crisis planning are presented as part of responsible ownership."
-    },
-    {
-      "q": "Which behavior may worsen recovery after a violent event?",
-      "choices": [
-        "Heavy alcohol or drug misuse",
-        "Talking with a trusted support person",
-        "Getting rest and exercise",
-        "Seeking counseling when needed"
-      ],
-      "answer": 0,
-      "explanation": "The chapter warns against harmful coping through substance misuse and poor self-care."
-    },
-    {
-      "q": "What is auditory exclusion?",
-      "choices": [
-        "A stress effect where sound may seem muted or altered during a crisis",
-        "A hearing condition caused by range noise only",
-        "A deliberate choice to ignore instructions",
-        "A legal term for witness confusion"
-      ],
-      "answer": 0,
-      "explanation": "Auditory exclusion is one example of stress distortion under threat."
-    },
-    {
-      "q": "Which statement best fits the lesson's mental-health approach?",
-      "choices": [
-        "Mental wellness is part of safe, responsible carry and storage decisions",
-        "Mental health issues matter only to professionals, not students",
-        "Talking about stress shows weakness",
-        "Ownership has nothing to do with crisis planning"
-      ],
-      "answer": 0,
-      "explanation": "The chapter treats mental wellness as part of responsible judgment."
-    },
-    {
-      "q": "True or False: A person may remember events imperfectly after severe stress without necessarily lying.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Stress can affect memory and perception, which the chapter explains directly."
-    },
-    {
-      "q": "Which emergency number is for immediate life-threatening danger?",
-      "choices": [
-        "911",
-        "988",
-        "411",
-        "311"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 5 says 911 is for imminent life-threatening emergencies; 988 is for crisis support."
-    },
-    {
-      "q": "What is the main lesson of Chapter 5?",
-      "choices": [
-        "Stress, trauma, and mental wellness all affect responsible defensive behavior before and after an event",
-        "Stress disappears with enough confidence",
-        "Only the law matters after a violent encounter",
-        "Post-event symptoms prove someone was unfit beforehand"
-      ],
-      "answer": 0,
-      "explanation": "The chapter combines stress response, trauma awareness, and crisis responsibility."
-    },
-    {
-      "q": "What is one reason tunnel vision matters in a defensive incident?",
-      "choices": [
-        "It can narrow perception and cause you to miss other relevant information.",
-        "It proves someone acted unlawfully.",
-        "It only happens to untrained people.",
-        "It means the event was imagined."
-      ],
-      "answer": 0,
-      "explanation": "Stress effects can change how people perceive and remember events."
-    },
-    {
-      "q": "True or False: A responsible student should take crisis warning signs seriously even if asking for help feels uncomfortable.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson treats crisis intervention and mental wellness as part of responsible ownership."
-    },
-    {
-      "q": "Which statement best fits the use of 988?",
-      "choices": [
-        "It is a resource for mental-health crisis support and suicide prevention when that kind of help is needed.",
-        "It replaces 911 for active immediate violence.",
-        "It is only for veterans.",
-        "It should never be used if firearms are present in the home."
-      ],
-      "answer": 0,
-      "explanation": "The chapter distinguishes crisis support resources from immediate emergency response."
-    },
-    {
-      "q": "Why might memory gaps appear after extreme stress?",
-      "choices": [
-        "Because adrenaline and trauma can affect perception, sequencing, and recall.",
-        "Because people always invent details after scary events.",
-        "Because only guilty people forget details.",
-        "Because memory becomes perfect under threat."
-      ],
-      "answer": 0,
-      "explanation": "Stress can affect recall without proving dishonesty."
-    },
-    {
-      "q": "Which support step best fits post-incident recovery?",
-      "choices": [
-        "Seeking trusted support, professional help when needed, and healthy coping instead of isolation or self-destruction.",
-        "Pretending nothing happened and increasing alcohol use.",
-        "Avoiding all discussion forever.",
-        "Assuming help is weakness."
-      ],
-      "answer": 0,
-      "explanation": "The chapter encourages healthy support and recovery choices."
-    },
-    {
-      "q": "True or False: Emotional wellness and firearm responsibility can overlap in important ways.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The course links crisis awareness, support resources, and responsible firearm ownership."
-    }
+  5: [
+    { q: 'True or False: The body’s fight-or-flight response is initiated by the amygdala and sustained by adrenaline.', type: 'tf', answer: true, explanation: 'That is directly reflected in the source quiz.' },
+    { q: 'True or False: The thalamus can block sensory input it does not consider necessary to the situation.', type: 'tf', answer: true, explanation: 'The lesson explains the thalamus as a kind of sensory switchboard.' },
+    { q: 'True or False: If you train frequently, you no longer need to remain in Condition Yellow in public.', type: 'tf', answer: false, explanation: 'Training does not replace awareness.' },
+    { q: 'True or False: If you draw a handgun from the holster, you have no choice except to fire.', type: 'tf', answer: false, explanation: 'Drawing does not eliminate decision-making.' },
+    { q: 'True or False: Police are trained to shoot the gun out of an attacker’s hand.', type: 'tf', answer: false, explanation: 'That is a myth, not the lesson taught in responsible use-of-force education.' },
+    { q: 'If you have used deadly force and someone is injured, what is the first phone call you should make?', choices: ['911', 'Your friends', 'Your lawyer', 'Your family'], answer: 0, explanation: 'The chapter specifically identifies 911 as the first call when someone is injured.' },
+    { q: 'True or False: As long as you are not formally arrested yet, you should immediately tell responding officers your entire side of the story in detail.', type: 'tf', answer: false, explanation: 'The lesson warns students to be careful and deliberate in the aftermath.' },
+    { q: 'True or False: After a use of force, you should avoid disturbing the scene, including things like brass or magazines.', type: 'tf', answer: true, explanation: 'Preserving the scene is an important lesson takeaway.' },
+    { q: 'What does the lesson say about frequent firearms training and awareness in public?', choices: ['Training replaces awareness', 'Condition Yellow still matters even if you train often', 'Awareness is only for beginners', 'Practice makes surprise attacks irrelevant'], answer: 1, explanation: 'Training and awareness work together; one does not replace the other.' },
+    { q: 'What is one reason students should learn about the amygdala and adrenaline?', choices: ['To understand how stress changes perception and decision-making', 'To avoid ever feeling stress again', 'To improve magazine changes only', 'To justify reckless action'], answer: 0, explanation: 'The chapter is about realistic human reactions under threat.' },
+    { q: 'Which statement best reflects the lesson’s view of the aftermath?', choices: ['The danger ends when the shooting stops', 'What you do immediately after the event still matters legally and tactically', 'Only the range portion matters', 'Aftermath conduct is mostly irrelevant'], answer: 1, explanation: 'The chapter explicitly includes aftermath conduct as part of defensive responsibility.' },
+    { q: 'True or False: Adrenaline can affect memory, perception, and your sense of time.', type: 'tf', answer: true, explanation: 'That is a standard lesson thread in this chapter’s stress-and-aftermath instruction.' },
+    { q: 'What is the best correction to “If I draw, I have to shoot” ?', choices: ['That is true under stress', 'Drawing still leaves room for judgment and de-escalation if appropriate', 'It only depends on caliber', 'That rule applies only at home'], answer: 1, explanation: 'The chapter rejects the idea that drawing removes all choice.' },
+    { q: 'Why is disturbing the scene after a defensive event a bad idea?', choices: ['It can affect evidence and the integrity of the scene', 'It improves your credibility', 'It makes cleanup easier', 'It helps memory'], answer: 0, explanation: 'The lesson specifically warns against disturbing the scene.' },
+    { q: 'True or False: Good training is meant to support judgment under stress, not replace it.', type: 'tf', answer: true, explanation: 'Training helps, but students still need awareness and judgment.' },
+    { q: 'What is the best short summary of Lesson 5?', choices: ['Stress affects the body and mind, and the aftermath still requires disciplined decisions', 'Adrenaline makes everyone perform perfectly', 'Aftermath conduct does not matter', 'Training removes the need for awareness'], answer: 0, explanation: 'That best captures the chapter’s scope.' },
+    { q: 'Which answer best reflects responsible conduct after an event?', choices: ['Call 911, preserve the scene, and avoid careless statements', 'Call friends first', 'Collect brass before police arrive', 'Post online immediately'], answer: 0, explanation: 'That combines the chapter’s most important practical lessons.' },
+    { q: 'True or False: The lesson presents fight-or-flight as a normal human response, not a personal weakness.', type: 'tf', answer: true, explanation: 'The chapter frames these reactions as part of human physiology.' },
+    { q: 'If your sensory perception narrows under stress, what concept from the lesson helps explain it?', choices: ['Magazine retention', 'Thalamus filtering and stress physiology', 'Holster level', 'Sight radius only'], answer: 1, explanation: 'The lesson specifically references the thalamus and stress filtering.' },
+    { q: 'Which student best understood Lesson 5?', choices: ['The one who knows the incident and aftermath both matter', 'The one who thinks training removes all human stress', 'The one who would clean up the scene first', 'The one who would call friends before 911'], answer: 0, explanation: 'That best reflects the violent encounters and aftermath lesson.' }
   ],
-  "6": [
-    {
-      "q": "What should a quality holster do first and foremost?",
-      "choices": [
-        "Protect the trigger guard and secure the firearm",
-        "Make the gun look larger",
-        "Allow the trigger to stay exposed for speed",
-        "Replace the need for safe handling"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 6 emphasizes trigger coverage and secure retention."
-    },
-    {
-      "q": "True or False: Carry position always involves trade-offs among concealment, comfort, speed, and access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson teaches there is no perfect carry position for every person and context."
-    },
-    {
-      "q": "Why does retention matter for carry gear?",
-      "choices": [
-        "It helps keep the firearm secure during normal movement and public activity",
-        "It makes the gun easier for strangers to grab",
-        "It is only for uniformed duty carry, never concealed carry",
-        "It replaces the need for a good belt"
-      ],
-      "answer": 0,
-      "explanation": "Retention supports security and control, especially in active environments."
-    },
-    {
-      "q": "Which support item most directly helps with identifying what you are looking at in poor light?",
-      "choices": [
-        "A flashlight",
-        "A spare magazine",
-        "A sticker on the holster",
-        "An optic cover"
-      ],
-      "answer": 0,
-      "explanation": "Flashlights aid identification; they do not replace judgment."
-    },
-    {
-      "q": "True or False: Lasers may help in some positions, but they do not replace fundamentals.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The chapter treats lasers as a supplement, not a substitute for skill."
-    },
-    {
-      "q": "What is the best reason to train with the gear you actually intend to carry?",
-      "choices": [
-        "Because access, concealment, and handling change with real equipment",
-        "Because range gear and carry gear always feel the same",
-        "Because gear practice only matters for police",
-        "Because any holster works the same once broken in"
-      ],
-      "answer": 0,
-      "explanation": "Realistic practice matters because equipment affects access and control."
-    },
-    {
-      "q": "Which setup best fits Lesson 6?",
-      "choices": [
-        "Reliable practical gear that has been tested before being trusted",
-        "Whatever looks most tactical online",
-        "A bargain holster that leaves the trigger exposed",
-        "Gear chosen mainly to impress others"
-      ],
-      "answer": 0,
-      "explanation": "The chapter favors practical, tested equipment over gimmicks."
-    },
-    {
-      "q": "What role can a sturdy belt play?",
-      "choices": [
-        "It can support access, stability, and consistent carry position",
-        "It makes any bad holster safe",
-        "It replaces the need for retention",
-        "It matters only for open carry"
-      ],
-      "answer": 0,
-      "explanation": "Belts affect control and consistency of the carried firearm."
-    },
-    {
-      "q": "True or False: Good gear can support skill, but it cannot replace judgment or training.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 6 repeatedly makes this point."
-    },
-    {
-      "q": "Which statement about gimmicks best matches the chapter?",
-      "choices": [
-        "Practical reliability matters more than novelty",
-        "More accessories always equal more safety",
-        "Unproven gear is fine if marketed well",
-        "Testing gear is unnecessary if reviews are positive"
-      ],
-      "answer": 0,
-      "explanation": "The lesson tells students to choose reliable, practical gear instead of gimmicks."
-    },
-    {
-      "q": "Why should a student test gear before carrying it daily?",
-      "choices": [
-        "To see whether it actually works safely and consistently for their body and routine",
-        "Because the law requires weekly equipment inspections",
-        "Because all new holsters fail eventually",
-        "Because only expensive brands need testing"
-      ],
-      "answer": 0,
-      "explanation": "Trust should be earned through realistic testing, not assumed."
-    },
-    {
-      "q": "What is one limitation of lasers that students should remember?",
-      "choices": [
-        "They can supplement aiming in some cases but do not replace safe fundamentals or identification",
-        "They eliminate the need for practice",
-        "They make flashlights unnecessary",
-        "They guarantee accurate hits from any position"
-      ],
-      "answer": 0,
-      "explanation": "The lesson presents lasers as optional aids with limits."
-    },
-    {
-      "q": "True or False: Clothing choice can affect concealment and access to your defensive gear.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Practical clothing is part of making daily carry work realistically."
-    },
-    {
-      "q": "Which holster feature is unacceptable for safe carry?",
-      "choices": [
-        "An exposed trigger area",
-        "Secure retention",
-        "Consistent access",
-        "A design matched to the firearm"
-      ],
-      "answer": 0,
-      "explanation": "A holster should cover the trigger guard; exposed triggers are unsafe."
-    },
-    {
-      "q": "What is the main lesson of Chapter 6?",
-      "choices": [
-        "Choose practical, safe, tested gear that supports realistic daily use",
-        "Use the most accessories possible",
-        "Gear matters more than training",
-        "Comfort is the only factor in daily carry"
-      ],
-      "answer": 0,
-      "explanation": "The chapter centers on gear that supports safety, access, and realistic use."
-    },
-    {
-      "q": "Why is trigger coverage such an important holster feature?",
-      "choices": [
-        "Because the holster should help protect the trigger from unintended access while the gun is carried.",
-        "Because it makes the gun look more concealed.",
-        "Because it improves accuracy at distance.",
-        "Because it replaces safe draw technique."
-      ],
-      "answer": 0,
-      "explanation": "A proper holster should support safe carry by covering the trigger guard."
-    },
-    {
-      "q": "True or False: The most comfortable gear setup is automatically the best defensive setup.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "Lesson 6 teaches trade-offs among comfort, concealment, access, retention, and safety."
-    },
-    {
-      "q": "Which gear choice best matches the lesson?",
-      "choices": [
-        "Reliable, tested equipment you can safely access and actually train with.",
-        "The cheapest gear available as long as it is easy to hide.",
-        "Any holster that lets the trigger remain partly exposed.",
-        "A flashy setup chosen mainly for appearance."
-      ],
-      "answer": 0,
-      "explanation": "The chapter emphasizes tested, practical gear over gimmicks."
-    },
-    {
-      "q": "Why can clothing matter in concealed carry?",
-      "choices": [
-        "It affects concealment, access, comfort, and whether gear shifts during movement.",
-        "It only affects appearance.",
-        "It matters only in winter.",
-        "It replaces the need for a belt or holster."
-      ],
-      "answer": 0,
-      "explanation": "Garment choices can change how consistently and safely the gear works."
-    },
-    {
-      "q": "Which support item is most associated with positive identification in low light?",
-      "choices": [
-        "A light used responsibly.",
-        "An oversized magazine release.",
-        "A decorative patch.",
-        "A red-dot cover plate."
-      ],
-      "answer": 0,
-      "explanation": "A light can help you identify what you are seeing; it does not replace judgment."
-    },
-    {
-      "q": "True or False: Students should verify that their carry setup still works when seated, moving, and wearing normal daily clothing.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Real-world testing helps expose access and concealment problems before daily carry."
-    }
+  6: [
+    { q: 'Which type of holster is designed to fit in a pocket?', choices: ['Belt', 'Pocket', 'Pancake', 'Paddle'], answer: 1, explanation: 'The source material directly identifies the pocket holster.' },
+    { q: 'If a holster has a top strap and no other retention devices, what retention level is it?', choices: ['Level 0', 'Level I', 'Level II', 'Level III'], answer: 1, explanation: 'A top strap only is treated as Level I retention in the source quiz.' },
+    { q: 'True or False: A useful flashlight should have a minimum brightness of about 60 lumens.', type: 'tf', answer: true, explanation: 'That threshold appears in the source material.' },
+    { q: 'True or False: Because lasers allow target focus, it makes no sense to train using any other alignment method.', type: 'tf', answer: false, explanation: 'The chapter teaches that lasers are helpful but do not replace other aiming methods.' },
+    { q: 'Which are major benefits of using a laser according to the lesson?', choices: ['It helps index quickly and can reduce margin of error in awkward positions', 'It guarantees you cannot miss', 'It replaces all other practice', 'It eliminates recoil'], answer: 0, explanation: 'The source material gives those as laser benefits while rejecting the idea that lasers guarantee hits.' },
+    { q: 'What is one important purpose of a holster?', choices: ['To increase bullet velocity', 'To secure the firearm and help protect the trigger area', 'To make the gun lighter', 'To eliminate the need for concealment'], answer: 1, explanation: 'Good holsters support safe and consistent carry.' },
+    { q: 'True or False: Gear choices should still be supported by practice and familiarity.', type: 'tf', answer: true, explanation: 'The lesson is clear that equipment should be trained with, not merely owned.' },
+    { q: 'Why is a flashlight useful in a defensive context?', choices: ['It helps identify what you are actually seeing before making decisions', 'It automatically blinds everyone permanently', 'It replaces awareness', 'It makes sights unnecessary'], answer: 0, explanation: 'Positive identification is one of the biggest reasons to carry a light.' },
+    { q: 'Which statement best fits the lesson’s view of lasers?', choices: ['Lasers are pointless', 'Lasers are useful tools but not magic solutions', 'Lasers guarantee hits at any distance', 'Lasers replace a need for fundamentals'], answer: 1, explanation: 'That best matches the chapter’s balanced treatment of lasers.' },
+    { q: 'True or False: A retention device can matter more in public carry than in a drawer at home.', type: 'tf', answer: true, explanation: 'Retention matters in dynamic environments where the firearm is carried around others.' },
+    { q: 'Which answer best reflects the gear-and-gadgets mindset?', choices: ['Buy gadgets first and train later', 'Choose practical, reliable gear that supports your actual use', 'The most expensive gear is always best', 'A laser and light remove the need for skill'], answer: 1, explanation: 'The chapter is practical rather than gimmick-driven.' },
+    { q: 'What is the risk of depending on a laser without broader training?', choices: ['There is no risk', 'You can become overly dependent on one tool and neglect other alignment methods', 'It makes the holster fail', 'It lowers the quality of ammunition'], answer: 1, explanation: 'The lesson warns against overdependence on any single aid.' },
+    { q: 'True or False: Equipment should solve real carry or defensive problems rather than simply look tactical.', type: 'tf', answer: true, explanation: 'That is a core mindset of the chapter.' },
+    { q: 'A student says, “Any holster is fine as long as it holds the gun.” What is the best correction?', choices: ['Correct', 'Holsters should also support safety, secure retention, and consistent access', 'Only style matters', 'Retention never matters'], answer: 1, explanation: 'The chapter treats holster choice as a safety and performance issue.' },
+    { q: 'What is one advantage of a flashlight separate from the gun itself?', choices: ['It can help search and identify without pointing a firearm at everything', 'It eliminates stress', 'It replaces a holster', 'It makes legal concerns go away'], answer: 0, explanation: 'A light is useful because identification and muzzle discipline still matter.' },
+    { q: 'True or False: A laser can be especially helpful from awkward shooting positions.', type: 'tf', answer: true, explanation: 'That benefit appears directly in the source material.' },
+    { q: 'What is the best short summary of Lesson 6?', choices: ['Good gear supports skill, but it does not replace judgment and training', 'Gear is more important than skill', 'Lasers guarantee hits', 'Holsters are mainly about style'], answer: 0, explanation: 'That best reflects the gear-and-gadgets chapter.' },
+    { q: 'Which answer best describes Level I retention from the source quiz?', choices: ['A top strap with no other retention devices', 'No retention at all', 'Two separate retention devices', 'Electronic locking only'], answer: 0, explanation: 'That is how the source item frames the answer.' },
+    { q: 'If a student can only buy one support item first, which principle from the lesson still applies?', choices: ['Choose something practical and train with it', 'Choose what looks most tactical online', 'Buy the largest gadget available', 'Skip all fundamentals once gear is purchased'], answer: 0, explanation: 'The lesson is about practical support, not gimmicks.' },
+    { q: 'Which student best understood Lesson 6?', choices: ['The student who treats gear as support for skill', 'The student who believes lasers guarantee hits', 'The student who thinks retention is irrelevant', 'The student who never trains with carried gear'], answer: 0, explanation: 'That best fits the chapter’s message.' }
   ],
-  "7": [
-    {
-      "q": "Why does Lesson 7 emphasize ongoing practice?",
-      "choices": [
-        "Because skill fades without maintenance",
-        "Because a permit replaces skill development",
-        "Because only beginners need refreshers",
-        "Because gear improves automatically over time"
-      ],
-      "answer": 0,
-      "explanation": "The chapter states that skill fades without practice."
-    },
-    {
-      "q": "True or False: Dry practice should be structured and separated from live ammunition when appropriate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Safety and structure are core dry-practice principles in Lesson 7."
-    },
-    {
-      "q": "What should live-fire practice reinforce?",
-      "choices": [
-        "Fundamentals and accountable performance",
-        "Only speed and entertainment",
-        "Mostly gear testing with no scoring",
-        "Random drills without goals"
-      ],
-      "answer": 0,
-      "explanation": "The lesson ties live fire back to basics and accountability."
-    },
-    {
-      "q": "Which training attitude best fits the chapter?",
-      "choices": [
-        "Work from basics upward instead of trying to look advanced",
-        "Skip fundamentals once you pass a class",
-        "Train mainly for ego and social-media clips",
-        "Measure success by how complicated the drill looks"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 7 pushes purposeful development, not ego."
-    },
-    {
-      "q": "True or False: Owning quality gear is the same thing as maintaining skill.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The chapter says equipment ownership does not replace practice."
-    },
-    {
-      "q": "What is the value of identifying weak areas honestly?",
-      "choices": [
-        "It lets you train those weaknesses deliberately",
-        "It proves you should stop practicing",
-        "It matters only for competitive shooters",
-        "It removes the need for coaching"
-      ],
-      "answer": 0,
-      "explanation": "Students are encouraged to document and address weak points honestly."
-    },
-    {
-      "q": "Which is a logical next step after a first class?",
-      "choices": [
-        "Further classes, coaching, and reputable training opportunities",
-        "Assuming no further learning is needed",
-        "Avoiding all feedback from instructors",
-        "Training only with internet videos and no live oversight"
-      ],
-      "answer": 0,
-      "explanation": "The lesson encourages continued education through reputable sources."
-    },
-    {
-      "q": "Why keep notes or measurable goals in training?",
-      "choices": [
-        "They help track progress and maintain focus",
-        "They impress people at the range",
-        "They replace live-fire practice",
-        "They are only useful for law enforcement"
-      ],
-      "answer": 0,
-      "explanation": "Documentation and goals support consistent improvement."
-    },
-    {
-      "q": "True or False: Safe development means fundamentals first, then more complexity over time.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The chapter repeatedly returns to this progression."
-    },
-    {
-      "q": "A student says, 'I passed the portal, so I do not need more practice.' What is the best response?",
-      "choices": [
-        "Practice and development should continue after the first class",
-        "The portal permanently locks in skill",
-        "Only legal study matters after class",
-        "Dry practice becomes unsafe after certification"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 7 frames learning as ongoing, not finished."
-    },
-    {
-      "q": "Which statement best reflects disciplined training?",
-      "choices": [
-        "Train with purpose, safety, and competence rather than ego",
-        "Try to impress everyone with the hardest drills first",
-        "Ignore weak points so confidence stays high",
-        "Treat every range visit as unstructured entertainment"
-      ],
-      "answer": 0,
-      "explanation": "The chapter prioritizes purpose and humility over ego-driven training."
-    },
-    {
-      "q": "What is one benefit of coaching or reputable instruction?",
-      "choices": [
-        "It can help identify mistakes and build better habits",
-        "It makes personal practice unnecessary",
-        "It guarantees perfect performance under stress",
-        "It matters only for experts"
-      ],
-      "answer": 0,
-      "explanation": "Good instruction can improve skill by correcting weak habits."
-    },
-    {
-      "q": "True or False: Responsible owners maintain not only technical skill, but also judgment and safety habits over time.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Lesson 7 treats competence as a combination of skill, judgment, and habits."
-    },
-    {
-      "q": "Which dry-practice behavior would violate the lesson?",
-      "choices": [
-        "Handling the firearm around live ammunition carelessly",
-        "Using a safe routine in a controlled area",
-        "Focusing on one skill at a time",
-        "Stopping when attention drops"
-      ],
-      "answer": 0,
-      "explanation": "Dry practice must stay structured and separate from live ammo when appropriate."
-    },
-    {
-      "q": "What is the main point of Lesson 7?",
-      "choices": [
-        "Real skill requires safe, honest, ongoing training after the first class",
-        "Buying new gear is enough to stay sharp",
-        "Certificates end the need for fundamentals",
-        "Advanced drills matter more than consistency"
-      ],
-      "answer": 0,
-      "explanation": "The chapter is about continued, disciplined skill development."
-    },
-    {
-      "q": "Why should dry practice be deliberate rather than casual?",
-      "choices": [
-        "Because structured repetition builds useful habits and reduces sloppy behavior.",
-        "Because casual repetition is always more realistic.",
-        "Because dry practice is only about speed.",
-        "Because safety matters less without ammunition."
-      ],
-      "answer": 0,
-      "explanation": "Lesson 7 teaches disciplined, structured practice."
-    },
-    {
-      "q": "True or False: Improvement is easier to track when students use goals, notes, or measurable standards.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Tracking helps students identify strengths, weaknesses, and next steps."
-    },
-    {
-      "q": "What is the benefit of revisiting fundamentals over time?",
-      "choices": [
-        "They remain the base for more advanced performance and prevent skill erosion.",
-        "It avoids the need for any live fire.",
-        "It means advanced training is unnecessary.",
-        "It only matters for beginners."
-      ],
-      "answer": 0,
-      "explanation": "The chapter teaches that growth continues through disciplined refinement of the basics."
-    },
-    {
-      "q": "Which practice mindset best supports long-term development?",
-      "choices": [
-        "Honest assessment, patience, and consistency.",
-        "Trying to impress others instead of learning.",
-        "Avoiding feedback once you pass the first class.",
-        "Changing techniques every session without a reason."
-      ],
-      "answer": 0,
-      "explanation": "Long-term skill grows through consistency and honest evaluation."
-    },
-    {
-      "q": "Why can outside instruction help after your first class?",
-      "choices": [
-        "A reputable coach can correct blind spots and reinforce safer, more effective habits.",
-        "Because self-practice is always worthless.",
-        "Because instructors replace the need for personal effort.",
-        "Because more classes automatically make someone advanced."
-      ],
-      "answer": 0,
-      "explanation": "Good coaching can help students see and fix weaknesses they may miss on their own."
-    },
-    {
-      "q": "True or False: Continuing training includes judgment, safety habits, and decision-making, not just shooting mechanics.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson covers more than marksmanship alone."
-    }
+  7: [
+    { q: 'True or False: If you train frequently, you should immediately jump into advanced drills rather than starting with the basics.', type: 'tf', answer: false, explanation: 'The source material says advanced work should not replace basics.' },
+    { q: 'Which are major benefits of virtual training according to the source?', choices: ['It helps build response patterns without the cost of live ammo and can reduce self-inflicted tunnel vision in some systems', 'It removes the need for live-fire training forever', 'It guarantees legal judgment', 'It replaces all instructor feedback'], answer: 0, explanation: 'The source lists these as important benefits while not claiming virtual training replaces everything else.' },
+    { q: 'Which flashlight hold has the shooter firing one-handed while the light may be over the head, off to the side, or under the firearm?', choices: ['FBI Hold', 'Harries Hold', 'Weaver Hold', 'Surefire Hold'], answer: 0, explanation: 'The FBI hold is the one described this way in the source quiz.' },
+    { q: 'How will you know if your kids want to join you at the range?', choices: ['It depends on age, demographics, and market trends only', 'Ask them', 'Never let them decide', 'If they like video games they are ready'], answer: 1, explanation: 'The source’s direct answer is simply: ask them.' },
+    { q: 'Which are logical next steps after a fundamentals class?', choices: ['Take an advanced class, join a league, or join an organization', 'Nothing further is needed; you are fully trained', 'Only buy more accessories', 'Stop practicing to avoid mistakes'], answer: 0, explanation: 'The source materials explicitly list those next steps.' },
+    { q: 'Why does the lesson still emphasize the basics for experienced students?', choices: ['Because basics are boring but mandatory', 'Because fundamentals support all more advanced skill development', 'Because advanced students cannot improve', 'Because basics replace decision-making'], answer: 1, explanation: 'Advanced skill should rest on a strong base.' },
+    { q: 'True or False: Virtual training can expose students to dynamic decision-making they do not get from static paper alone.', type: 'tf', answer: true, explanation: 'That benefit appears in the source material.' },
+    { q: 'What is the best mindset toward “advanced” training?', choices: ['Advanced means abandoning fundamentals', 'Advanced training should build on strong basics', 'Advanced drills matter only for competition', 'Advanced means more gear, not more skill'], answer: 1, explanation: 'That is the lesson’s central message.' },
+    { q: 'Which statement best fits family introduction to the range?', choices: ['It should be thoughtful and individualized', 'Everyone should start the same way', 'Children should be pushed into it quickly', 'Age and maturity do not matter'], answer: 0, explanation: 'The lesson treats this as a careful, individualized decision.' },
+    { q: 'True or False: One reason wrap-around virtual systems are discussed is that they can help avoid self-inflicted tunnel vision.', type: 'tf', answer: true, explanation: 'That phrase appears directly in the source content.' },
+    { q: 'What is one practical value of leagues or organizations after the course?', choices: ['They can provide continued community, structure, and development', 'They eliminate the need for practice', 'They replace legal knowledge', 'They are only for professionals'], answer: 0, explanation: 'The chapter frames them as logical next steps for continued growth.' },
+    { q: 'Which answer best fits the lesson’s view of progress?', choices: ['Training is ongoing; one class is not the end', 'One class completes everything important', 'Only instructors need advanced training', 'Dry practice and virtual work are always useless'], answer: 0, explanation: 'The chapter stresses continuing development.' },
+    { q: 'True or False: Advanced students should still revisit the basics when training.', type: 'tf', answer: true, explanation: 'That is a direct lesson thread.' },
+    { q: 'What does the source suggest about virtual training and live-fire?', choices: ['Virtual training can support live-fire practice but does not make it unnecessary', 'Virtual training is always superior to live-fire', 'Live-fire is obsolete', 'Virtual training is only for police'], answer: 0, explanation: 'The lesson treats it as supplemental, not total replacement.' },
+    { q: 'Which flashlight hold from the source is specifically identified by the one-handed off-body light position description?', choices: ['FBI Hold', 'Harries Hold', 'Chapman Hold', 'Retention Hold'], answer: 0, explanation: 'That is the specific answer from the source quiz.' },
+    { q: 'What is the best short summary of Lesson 7?', choices: ['Keep building from basics, use supplemental tools wisely, and pursue logical next steps', 'Advanced gear is the real training', 'Fundamentals no longer matter after class', 'There is no reason to continue training'], answer: 0, explanation: 'That best fits the chapter.' },
+    { q: 'A student says “I shoot often, so I do not need warm-up basics anymore.” What is the right correction?', choices: ['Correct', 'Regular training still benefits from a basics-first approach', 'Only competitors need basics', 'Basics slow progress'], answer: 1, explanation: 'The lesson explicitly says not to jump past basics.' },
+    { q: 'True or False: Asking your kids whether they want to join you at the range is a better starting point than assuming.', type: 'tf', answer: true, explanation: 'The source gives that exact practical answer.' },
+    { q: 'Which answer best reflects maturity in post-class development?', choices: ['Seek more structured learning and community if appropriate', 'Assume completion means mastery', 'Stop practicing to protect confidence', 'Buy gear instead of training'], answer: 0, explanation: 'That is the strongest lesson-based answer.' },
+    { q: 'Which student best understood Lesson 7?', choices: ['The one who keeps improving from the fundamentals upward', 'The one who thinks advanced equals skipping basics', 'The one who thinks one class is enough forever', 'The one who believes only gear matters'], answer: 0, explanation: 'That best reflects the chapter.' }
   ],
-  "8": [
-    {
-      "q": "What is the main purpose of the online portal according to the final lesson?",
-      "choices": [
-        "To prepare students for the live class, not replace it",
-        "To replace all instructor observation",
-        "To issue automatic certificates",
-        "To remove the need for safe gun handling in person"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 8 says the portal prepares students but does not replace live evaluation."
-    },
-    {
-      "q": "True or False: Passing online quizzes alone is enough to prove safe live-class gun handling.",
-      "type": "tf",
-      "answer": false,
-      "explanation": "The final lesson says live safety and performance still matter."
-    },
-    {
-      "q": "Which student attitude best fits final readiness?",
-      "choices": [
-        "Arrive teachable, reviewed, and honest about weak areas",
-        "Hide confusion so you look experienced",
-        "Rush through prep because the online part is done",
-        "Focus only on gear and ignore mindset"
-      ],
-      "answer": 0,
-      "explanation": "Humility and honest preparation are central themes of Lesson 8."
-    },
-    {
-      "q": "What should a student bring to live class?",
-      "choices": [
-        "Required documents, required safety gear, and reviewed course material",
-        "Only confidence and a firearm",
-        "Nothing except the access code",
-        "Whatever gear seems interesting that morning"
-      ],
-      "answer": 0,
-      "explanation": "The lesson stresses showing up prepared with the required items."
-    },
-    {
-      "q": "True or False: Responsible carry includes recognizing times when you should not carry or handle firearms.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The final lesson revisits judgment, impairment, and readiness."
-    },
-    {
-      "q": "Which condition is specifically given as a reason not to carry?",
-      "choices": [
-        "Impairment, emotional crisis, or extreme fatigue",
-        "Owning only one holster",
-        "Being new to the city",
-        "Wanting a smaller flashlight"
-      ],
-      "answer": 0,
-      "explanation": "The chapter says not to carry when judgment is impaired."
-    },
-    {
-      "q": "Why does the course revisit humility at the end?",
-      "choices": [
-        "Because safe conduct matters more than looking fast or experienced",
-        "Because humility is legally required for a permit",
-        "Because confidence automatically creates skill",
-        "Because final review is only about appearance"
-      ],
-      "answer": 0,
-      "explanation": "The final lesson values safe conduct and teachability over ego."
-    },
-    {
-      "q": "What should a student do with weak areas before live class?",
-      "choices": [
-        "Review them honestly and ask questions",
-        "Ignore them so confidence stays up",
-        "Hide them from the instructor",
-        "Assume the range will fix them automatically"
-      ],
-      "answer": 0,
-      "explanation": "Students are told to review weak areas instead of pretending they do not exist."
-    },
-    {
-      "q": "True or False: Completion means safe, lawful, competent performance, not just clicking through the website.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The final chapter makes this point directly."
-    },
-    {
-      "q": "A student arrives exhausted and emotionally unstable but insists on carrying because they already know the rules. What is the best answer?",
-      "choices": [
-        "Responsible judgment means knowing when not to carry",
-        "Rules matter more than condition",
-        "Exhaustion affects speed but not judgment",
-        "Only alcohol counts as impairment"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 8 links readiness to judgment, impairment, and mental condition."
-    },
-    {
-      "q": "What does final mental readiness include?",
-      "choices": [
-        "Safe conduct, lawful thinking, humility, and willingness to slow down",
-        "Acting confident even when confused",
-        "Finishing the portal with no further reflection",
-        "Owning enough accessories"
-      ],
-      "answer": 0,
-      "explanation": "The chapter defines mental readiness broadly, not as confidence alone."
-    },
-    {
-      "q": "Why is instructor verification still necessary after online training?",
-      "choices": [
-        "Because safe handling and live performance must still be observed in person",
-        "Because online lessons have no value",
-        "Because students cannot learn anything online",
-        "Because range work is optional"
-      ],
-      "answer": 0,
-      "explanation": "Online preparation supports but does not replace live observation."
-    },
-    {
-      "q": "True or False: Certificates come after successful live completion, not simply after online access.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson states certificates follow successful live completion."
-    },
-    {
-      "q": "Which statement best matches the final lesson?",
-      "choices": [
-        "The course ends by tying together safety, law, readiness, and honest preparation",
-        "The portal is the whole class and the live part is a formality",
-        "Students should avoid asking questions at the live phase",
-        "Final review is mainly about speed on the draw"
-      ],
-      "answer": 0,
-      "explanation": "Lesson 8 integrates the full course into responsible live-class readiness."
-    },
-    {
-      "q": "What is the main goal of the final chapter?",
-      "choices": [
-        "Send students into live class prepared, teachable, and safety-focused",
-        "Replace all future training with one final checklist",
-        "Make every student feel like an expert before class",
-        "Turn online scores into automatic permits"
-      ],
-      "answer": 0,
-      "explanation": "The chapter prepares students for safe and honest live completion."
-    },
-    {
-      "q": "Why does the portal not replace live instructor evaluation?",
-      "choices": [
-        "Because safe handling, live performance, and judgment still need to be observed in person.",
-        "Because online learning has no value.",
-        "Because certificates should be issued before any live check.",
-        "Because written questions measure everything that matters."
-      ],
-      "answer": 0,
-      "explanation": "The final lesson treats the online portal as preparation, not total replacement for live evaluation."
-    },
-    {
-      "q": "True or False: Final readiness includes showing up physically and mentally prepared, not just technically informed.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "The lesson emphasizes overall readiness for safe participation."
-    },
-    {
-      "q": "Which pre-class attitude best fits the course finish line?",
-      "choices": [
-        "Humble, prepared, and ready to demonstrate safe conduct under supervision.",
-        "Certain that online success means no one needs to correct you.",
-        "Focused only on speed and equipment.",
-        "Willing to ignore weak areas because class will fix everything instantly."
-      ],
-      "answer": 0,
-      "explanation": "Humility and readiness are part of safe live-class participation."
-    },
-    {
-      "q": "What should a student do if they know they are weak in one area before class day?",
-      "choices": [
-        "Review, practice safely if appropriate, and arrive ready to learn rather than hide the weakness.",
-        "Ignore it and hope it does not show.",
-        "Cancel all future training permanently.",
-        "Argue that the online portal should excuse the weakness."
-      ],
-      "answer": 0,
-      "explanation": "The final lesson encourages honest preparation before live instruction."
-    },
-    {
-      "q": "True or False: The course ends by reminding students that responsibility includes recognizing times when carrying or handling firearms is not appropriate.",
-      "type": "tf",
-      "answer": true,
-      "explanation": "Final readiness includes judgment about when not to carry or handle firearms."
-    }
+  8: [
+    { q: 'What does the online portion of the BSA course mainly accomplish?', choices: ['It prepares students with concepts and vocabulary before the live class', 'It completely replaces live instruction and range work', 'It exists only for recordkeeping', 'It automatically issues the permit'], answer: 0, explanation: 'The BSA final review treats the online portion as preparation, not replacement.' },
+    { q: 'True or False: Passing the online quizzes means the live classroom and range qualification are no longer required.', type: 'tf', answer: false, explanation: 'Live review and range qualification still matter.' },
+    { q: 'What should a student bring to live class in addition to any required documents?', choices: ['Only confidence', 'The safe, teachable mindset and required equipment listed by the academy', 'Nothing if they scored high online', 'Only a screenshot of the dashboard'], answer: 1, explanation: 'The final BSA prep lesson emphasizes mindset and required equipment.' },
+    { q: 'What is the best attitude heading into the live range session?', choices: ['Try to look fast and tactical', 'Slow down, stay teachable, and focus on safe performance', 'Hide weak areas from the instructor', 'Assume equipment matters more than conduct'], answer: 1, explanation: 'The lesson emphasizes humility, honesty, and safe execution.' },
+    { q: 'True or False: The live portion is where students demonstrate safe conduct, not just memory of quiz answers.', type: 'tf', answer: true, explanation: 'That is central to the BSA final review lesson.' },
+    { q: 'If a student feels weak on one chapter, what should they do before live class?', choices: ['Ignore it and hope for the best', 'Review weak areas honestly before class', 'Skip the live class', 'Only focus on gear'], answer: 1, explanation: 'The final-prep lesson stresses reviewing weak areas before class.' },
+    { q: 'What is the best summary of “online prerequisite complete” ?', choices: ['The student is ready for the next required step, not fully finished', 'The student is fully certified', 'The range is optional now', 'Nothing further is required'], answer: 0, explanation: 'The online portion is a prerequisite, not the whole course.' },
+    { q: 'True or False: Students should know their own email and access code in case the instructor needs to verify records.', type: 'tf', answer: true, explanation: 'The lesson includes practical readiness and record awareness.' },
+    { q: 'Which statement best fits BSA’s live-class expectation?', choices: ['The instructor will review safety, legal issues, handling, and qualification standards', 'Only the online portal matters', 'Students will not handle firearms in the live class', 'The live class is just a formality'], answer: 0, explanation: 'The final review ties live completion to instruction and performance standards.' },
+    { q: 'What should matter more than ego at the live session?', choices: ['Looking experienced', 'Being safe, lawful, and competent', 'Finishing first', 'Using the most expensive equipment'], answer: 1, explanation: 'The lesson makes safety, legality, and competence the priority.' },
+    { q: 'True or False: The online prerequisite can help students arrive more prepared and confident for the live session.', type: 'tf', answer: true, explanation: 'That is one of its main goals.' },
+    { q: 'What is one sign a student understood the BSA final-prep lesson?', choices: ['They know the live portion still matters and they arrive ready to learn', 'They think the quizzes replaced the instructor', 'They focus only on gear', 'They assume the certificate is automatic'], answer: 0, explanation: 'That is the best reflection of the final lesson.' },
+    { q: 'If a student passed every quiz but shows unsafe conduct in live class, what principle from the lesson applies?', choices: ['Quiz scores override unsafe behavior', 'Safe practical conduct still matters for successful completion', 'Only paperwork matters', 'Unsafe conduct is acceptable if the student is confident'], answer: 1, explanation: 'The BSA final review makes safe practical conduct essential.' },
+    { q: 'True or False: Students should arrive ready to ask questions if something remains unclear.', type: 'tf', answer: true, explanation: 'A teachable mindset is part of preparation.' },
+    { q: 'What is the best short summary of Lesson 8?', choices: ['Online study prepares you for the live class, but final completion still requires safe instructor-verified performance', 'The online dashboard is the entire course', 'Live class is optional after passing quizzes', 'Only range speed matters now'], answer: 0, explanation: 'That best captures the custom BSA final lesson.' },
+    { q: 'What should the student do if they are unsure about a procedure during live class?', choices: ['Guess quickly so they do not look inexperienced', 'Slow down and ask for clarification', 'Copy the nearest shooter', 'Ignore the issue'], answer: 1, explanation: 'The lesson values humility and teachability over appearances.' },
+    { q: 'True or False: The final goal is to become safe, lawful, and competent rather than simply to “pass a website.”', type: 'tf', answer: true, explanation: 'That is the guiding mindset of the final lesson.' },
+    { q: 'Which answer best describes what the instructor is verifying in the live phase?', choices: ['Only attendance', 'Safe conduct, understanding, and practical performance', 'Only the email address', 'Only whether the student owns a firearm'], answer: 1, explanation: 'The live portion verifies more than memory.' },
+    { q: 'What is the best final-prep decision if a student is nervous?', choices: ['Rush through everything before class', 'Review, breathe, prepare carefully, and arrive ready to learn', 'Avoid asking questions', 'Skip the range'], answer: 1, explanation: 'Preparation and humility are the correct response.' },
+    { q: 'Which student best understood Lesson 8?', choices: ['The student who knows the online work is preparation for live instructor-led completion', 'The student who thinks the certificate is automatic', 'The student who thinks safety is secondary to speed', 'The student who believes equipment is the whole course'], answer: 0, explanation: 'That best reflects the final BSA lesson.' }
   ]
 };
-
-
-export function shuffleArray(input) {
-  const array = Array.isArray(input) ? [...input] : [];
-  for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-export function randomizeQuestion(question) {
-  if (!question || !Array.isArray(question.choices)) return question;
-  if (question.type === "tf") {
-    const tfChoices = shuffleArray([
-      { value: true, label: "True" },
-      { value: false, label: "False" }
-    ]);
-    return {
-      ...question,
-      choices: tfChoices.map((entry) => entry.label),
-      answer: tfChoices.findIndex((entry) => entry.value === question.answer)
-    };
-  }
-
-  const indexedChoices = question.choices.map((choice, index) => ({
-    choice,
-    isCorrect: index === question.answer
-  }));
-
-  const shuffled = shuffleArray(indexedChoices);
-
-  return {
-    ...question,
-    choices: shuffled.map((entry) => entry.choice),
-    answer: shuffled.findIndex((entry) => entry.isCorrect)
-  };
-}
-
-export function getQuizForLesson(lessonNumber, count = null) {
-  const key = String(lessonNumber);
-  const source = Array.isArray(QUIZ_BANK[key]) ? QUIZ_BANK[key] : [];
-  const randomized = shuffleArray(source).map((question) => randomizeQuestion(question));
-  const lesson = LESSONS.find((entry) => Number(entry.lessonNumber) === Number(lessonNumber));
-  const desiredCount = Number.isInteger(count) && count > 0
-    ? count
-    : (lesson?.quizQuestionCount || randomized.length);
-
-  return randomized.slice(0, Math.min(desiredCount, randomized.length));
-}
-
-export function isLessonComplete(progress = {}, lessonNumber) {
-  const key = String(lessonNumber);
-  return Boolean(
-    progress[`lesson${lessonNumber}`] ??
-    progress[key] ??
-    progress?.lessons?.[key]?.completed ??
-    progress?.lessons?.[key]?.passed ??
-    progress?.completedLessons?.includes?.(Number(lessonNumber)) ??
-    progress?.completedLessons?.includes?.(key)
-  );
-}
-
-export function isLessonUnlocked(progress = {}, lessonNumber) {
-  if (Number(lessonNumber) <= 1) return true;
-  return isLessonComplete(progress, Number(lessonNumber) - 1);
-}
-
-export function getOverallProgress(progress = {}, totalLessons = LESSONS.length) {
-  const completed = LESSONS.filter((lesson) => isLessonComplete(progress, lesson.lessonNumber)).length;
-  return {
-    completed,
-    total: totalLessons,
-    ratioText: `${completed}/${totalLessons}`,
-    percent: totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0
-  };
-}
-
-if (typeof window !== "undefined") {
-  window.LESSONS = LESSONS;
-  window.QUIZ_BANK = QUIZ_BANK;
-  window.shuffleArray = shuffleArray;
-  window.randomizeQuestion = randomizeQuestion;
-  window.getQuizForLesson = getQuizForLesson;
-  window.isLessonComplete = isLessonComplete;
-  window.isLessonUnlocked = isLessonUnlocked;
-  window.getOverallProgress = getOverallProgress;
-}
