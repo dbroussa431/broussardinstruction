@@ -6,6 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const LESSON_ID = "lesson1";
+const LESSON_NUMBER = 1;
 const PASS_PERCENT = 80;
 
 const backBtn = document.getElementById("backBtn");
@@ -163,6 +164,12 @@ function getTimeSpentSeconds(student) {
   return 0;
 }
 
+function isLessonUnlocked(lessonNumber, student) {
+  const completed = getCompletedLessons(student);
+  if (lessonNumber <= 1) return true;
+  return completed.includes(`lesson${lessonNumber - 1}`);
+}
+
 function renderQuiz() {
   quizContainer.innerHTML = questions.map((q, index) => `
     <div class="quiz-question">
@@ -226,6 +233,11 @@ async function loadStudent() {
   }
 
   studentData = snap.data() || {};
+
+  if (!isLessonUnlocked(LESSON_NUMBER, studentData)) {
+    alert("This lesson is still locked. Complete the previous lesson first.");
+    window.location.href = "../dashboard.html";
+  }
 }
 
 async function saveLessonCompletion() {
