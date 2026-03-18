@@ -1,292 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Lesson</title>
-  <link rel="stylesheet" href="./css/portal.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="portal-shell">
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="site-brand" href="./dashboard.html">
-        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy" class="site-logo" />
-        <div class="site-brand-copy">
-          <h1>Broussard Shooting Academy</h1>
-          <p>Private Student Portal • Online Prerequisite Training</p>
-        </div>
-      </a>
-
-      <nav class="site-nav" aria-label="Student portal navigation">
-        <a class="nav-link" href="./dashboard.html">Dashboard</a>
-        <a class="nav-link active" href="./lesson.html">Lesson</a>
-        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
-      </nav>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Lesson Summary</p></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-gold" id="toScenarioTop" href="#">Continue to Scenarios</a>
+      </div>
     </div>
   </header>
 
-  <main class="content-page">
-    <div class="content-stack">
-      <section class="content-card hero">
-        <a class="back-link" href="./dashboard.html">← Back to Dashboard</a>
-        <div class="content-kicker">LESSON CONTENT</div>
-        <h1 id="lessonTitle" class="content-title">Loading lesson...</h1>
-        <p id="lessonSummary" class="content-summary"></p>
-
-        <div class="content-pills">
-          <span id="lessonTime" class="pill">Estimated Time</span>
-          <span id="lessonScenarios" class="pill">Scenarios</span>
-          <span id="lessonQuizCount" class="pill">Quiz</span>
-          <span class="pill">Pass quiz at 80% or higher</span>
-        </div>
-      </section>
-
-      <section class="status-strip">
-        <div class="status-item">
-          <div class="status-item-label">CONTENT VIEWED</div>
-          <div id="contentViewedStatus" class="status-item-value">Not Yet</div>
-        </div>
-        <div class="status-item">
-          <div class="status-item-label">SCENARIOS</div>
-          <div id="scenarioStatus" class="status-item-value">Pending</div>
-        </div>
-        <div class="status-item">
-          <div class="status-item-label">QUIZ STATUS</div>
-          <div id="quizStatus" class="status-item-value">Not Passed</div>
-        </div>
-        <div class="status-item">
-          <div class="status-item-label">TIME LOGGED</div>
-          <div id="timeTrackedStatus" class="status-item-value">0 min</div>
-        </div>
-      </section>
-
-      <section id="lessonGistCard" class="content-card"></section>
-
-      <section class="content-card">
-        <h2 class="section-heading">Lesson Review Confirmation</h2>
-        <p class="content-summary">
-          When you finish reading this lesson, confirm the review and continue to the scenario portion.
-        </p>
-
-        <div class="content-actions" style="margin-top:12px;">
-          <button id="confirmViewedBtn" class="btn-primary" type="button">I Have Reviewed This Lesson</button>
-        </div>
-      </section>
-
-      <section class="content-card">
-        <h2 class="section-heading">Next Step</h2>
-        <p class="content-summary">
-          Finish the reading, then complete your randomized scenario review and take the lesson quiz.
-        </p>
-
-        <div class="content-actions">
-          <a id="scenarioLink" class="lesson-btn primary" href="./scenario.html">Open Scenarios</a>
-          <button id="quizLockedBtn" class="lesson-btn disabled" type="button" disabled>Finish Scenarios First</button>
-          <a id="quizLink" class="lesson-btn" href="./quiz.html" hidden>Take Quiz</a>
-          <a class="lesson-btn" href="./dashboard.html">Back to Dashboard</a>
-        </div>
-      </section>
-    </div>
+  <main class="container lesson-layout">
+    <aside class="panel sidebar">
+      <h3 id="sideTitle">Lesson</h3>
+      <div id="sideSections"></div>
+      <div class="notice warn small">Read the lesson gist before starting scenarios and quiz.</div>
+    </aside>
+    <section class="panel content-card">
+      <span class="eyebrow">Self-contained lesson gist</span>
+      <h2 id="lessonTitle"></h2>
+      <p id="lessonSummary" class="muted"></p>
+      <div id="lessonContent"></div>
+      <div class="callout"><strong>Important:</strong> Score at least 80% to pass. After one or two failed attempts, the portal will direct the student to re-read the chapter summary before trying again.</div>
+      <div class="lesson-actions">
+        <a class="btn btn-blue" id="toScenarioBottom" href="#">Continue to Scenarios</a>
+        <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
+      </div>
+    </section>
   </main>
 
+  <script src="data.js"></script>
   <script type="module">
     import {
-      getCurrentStudent,
-      clearCurrentStudent,
+      requireLogin,
       refreshCurrentStudentFromFirestore,
-      getLessonProgress,
-      markLessonContentViewed,
-      recordLessonTime
-    } from "./js/app.js";
+      getCurrentStudent,
+      lessonSequenceUnlocked,
+      isLessonAllowedByTier,
+      setLessonContentViewed
+    } from "./app.js";
 
-    import { LESSONS } from "./js/data.js";
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    const lessonTitle = document.getElementById("lessonTitle");
-    const lessonSummary = document.getElementById("lessonSummary");
-    const lessonTime = document.getElementById("lessonTime");
-    const lessonScenarios = document.getElementById("lessonScenarios");
-    const lessonQuizCount = document.getElementById("lessonQuizCount");
-    const lessonGistCard = document.getElementById("lessonGistCard");
-    const contentViewedStatus = document.getElementById("contentViewedStatus");
-    const scenarioStatus = document.getElementById("scenarioStatus");
-    const quizStatus = document.getElementById("quizStatus");
-    const timeTrackedStatus = document.getElementById("timeTrackedStatus");
-    const scenarioLink = document.getElementById("scenarioLink");
-    const quizLink = document.getElementById("quizLink");
-    const quizLockedBtn = document.getElementById("quizLockedBtn");
-    const confirmViewedBtn = document.getElementById("confirmViewedBtn");
-
-    let timeInterval = null;
-    let studentActive = true;
-    let lastTickAt = Date.now();
-
-    function redirectLogin() {
-      window.location.href = "./index.html";
+    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
+      window.location.href = "dashboard.html";
     }
 
-    function getLessonNumber() {
-      const params = new URLSearchParams(window.location.search);
-      return Number(params.get("lesson") || 1);
-    }
+    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
+    await setLessonContentViewed(lesson.id);
 
-    function escapeHtml(value = "") {
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+    document.getElementById("lessonTitle").textContent = `${lesson.id}. ${lesson.title}`;
+    document.getElementById("lessonSummary").textContent = lesson.summary;
+    document.getElementById("sideTitle").textContent = lesson.title;
 
-    function renderGist(lesson) {
-      const gist = String(
-        lesson.chapterSummary ||
-        lesson.gist ||
-        lesson.summary ||
-        lesson.description ||
-        "Lesson material is being loaded."
-      );
+    const side = document.getElementById("sideSections");
+    const content = document.getElementById("lessonContent");
 
-      const paragraphs = gist
-        .split(/\n\s*\n|\n/)
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .map((line) => `<p class="content-summary" style="margin-top:0; margin-bottom:16px;">${escapeHtml(line)}</p>`)
-        .join("");
+    lesson.sections.forEach((section, idx) => {
+      const anchor = `sec${idx + 1}`;
+      const link = document.createElement("a");
+      link.href = `#${anchor}`;
+      link.textContent = section.heading;
+      if (idx === 0) link.classList.add("active");
+      side.appendChild(link);
 
-      lessonGistCard.innerHTML = `
-        <h2 class="section-heading">Chapter Gist</h2>
-        ${paragraphs}
-      `;
-    }
-
-    function updateStatuses(progress) {
-      contentViewedStatus.textContent = progress.contentViewed ? "Viewed" : "Not Yet";
-      scenarioStatus.textContent = progress.scenarioCompleted ? "Completed" : "Pending";
-      quizStatus.textContent = progress.quizPassed
-        ? `Passed • ${progress.quizScore}%`
-        : "Not Passed";
-      timeTrackedStatus.textContent = `${Number(progress.lessonTimeMinutes || 0)} min`;
-
-      if (progress.scenarioCompleted) {
-        quizLockedBtn.hidden = true;
-        quizLink.hidden = false;
-      } else {
-        quizLockedBtn.hidden = false;
-        quizLink.hidden = true;
-      }
-    }
-
-    async function logOneMinute(lessonNumber) {
-      if (document.hidden || !studentActive) return null;
-
-      const now = Date.now();
-      if (now - lastTickAt < 55000) return null;
-      lastTickAt = now;
-
-      return recordLessonTime(lessonNumber, 1);
-    }
-
-    function bindActivityWatchers() {
-      const markActive = () => {
-        studentActive = true;
-      };
-
-      const markInactive = () => {
-        studentActive = false;
-      };
-
-      ["mousemove", "keydown", "scroll", "click", "touchstart"].forEach((eventName) => {
-        window.addEventListener(eventName, markActive, { passive: true });
+      const wrap = document.createElement("section");
+      wrap.id = anchor;
+      wrap.innerHTML = `<h3>${section.heading}</h3>`;
+      const ul = document.createElement("ul");
+      section.body.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
       });
-
-      document.addEventListener("visibilitychange", () => {
-        studentActive = !document.hidden;
-      });
-
-      window.addEventListener("blur", markInactive);
-      window.addEventListener("focus", markActive);
-    }
-
-    async function init() {
-      let student = getCurrentStudent();
-      if (!student) {
-        redirectLogin();
-        return;
-      }
-
-      student = await refreshCurrentStudentFromFirestore();
-      if (!student) {
-        redirectLogin();
-        return;
-      }
-
-      const lessonNumber = getLessonNumber();
-      const lesson = LESSONS.find((l) => Number(l.lessonNumber) === lessonNumber);
-
-      if (!lesson) {
-        lessonTitle.textContent = "Lesson not found";
-        lessonSummary.textContent = "The requested lesson could not be found in the course dataset.";
-        lessonGistCard.innerHTML = `
-          <h2 class="section-heading">Lesson Missing</h2>
-          <p class="content-summary">Check that your lesson links and lesson numbers match the dataset.</p>
-        `;
-        return;
-      }
-
-      const scenarioPoolCount = Array.isArray(lesson.scenarios) ? lesson.scenarios.length : 0;
-      const quizCount = Number(lesson.quizDrawCount || lesson.quizQuestionCount || lesson.quizCount || 20);
-
-      lessonTitle.textContent = lesson.title || `Lesson ${lessonNumber}`;
-      lessonSummary.textContent = String(
-        lesson.description ||
-        lesson.chapterSummary ||
-        "Review this lesson carefully before moving on."
-      );
-
-      lessonTime.textContent = `Estimated Time: ${Number(lesson.estimatedMinutes || 20)} min`;
-      lessonScenarios.textContent = `2 Random Scenarios from ${scenarioPoolCount || 2}`;
-      lessonQuizCount.textContent = `${quizCount}-Question Quiz Draw`;
-
-      scenarioLink.href = `./scenario.html?lesson=${lessonNumber}`;
-      quizLink.href = `./quiz.html?lesson=${lessonNumber}`;
-
-      renderGist(lesson);
-
-      let updatedStudent = await markLessonContentViewed(lessonNumber);
-      let progress = getLessonProgress(updatedStudent || student, lessonNumber);
-      updateStatuses(progress);
-
-      bindActivityWatchers();
-
-      timeInterval = setInterval(async () => {
-        const refreshed = await logOneMinute(lessonNumber);
-        if (refreshed) {
-          progress = getLessonProgress(refreshed, lessonNumber);
-          updateStatuses(progress);
-        }
-      }, 15000);
-
-      confirmViewedBtn?.addEventListener("click", async () => {
-        updatedStudent = await markLessonContentViewed(lessonNumber);
-        progress = getLessonProgress(updatedStudent || student, lessonNumber);
-        updateStatuses(progress);
-        alert("Lesson review recorded. Continue to the scenario portion next.");
-      });
-
-      window.addEventListener("beforeunload", () => {
-        if (timeInterval) clearInterval(timeInterval);
-      });
-    }
-
-    logoutBtn?.addEventListener("click", () => {
-      if (timeInterval) clearInterval(timeInterval);
-      clearCurrentStudent();
-      redirectLogin();
+      wrap.appendChild(ul);
+      content.appendChild(wrap);
     });
 
-    init();
+    document.getElementById("toScenarioTop").href = `scenario.html?lesson=${lesson.id}`;
+    document.getElementById("toScenarioBottom").href = `scenario.html?lesson=${lesson.id}`;
   </script>
 </body>
 </html>
