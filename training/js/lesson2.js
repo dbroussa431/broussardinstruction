@@ -6,6 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const LESSON_ID = "lesson2";
+const LESSON_NUMBER = 2;
 const PASS_PERCENT = 80;
 
 const backBtn = document.getElementById("backBtn");
@@ -21,104 +22,109 @@ let passedQuiz = false;
 
 const questions = [
   {
-    prompt: "Which of the following best states Rule 1 of the universal safety rules?",
+    prompt: "Which statement correctly states Rule 1?",
     options: [
-      "Only treat range guns as loaded",
       "Treat every firearm as if it is loaded",
-      "Treat all revolvers as loaded but not semi-autos",
-      "Assume a gun is unloaded until you hear otherwise"
+      "Assume range guns are unloaded",
+      "Treat only handguns as loaded",
+      "Treat guns as safe after the magazine is removed"
     ],
-    answer: 1,
-    explanation: "Rule 1 is to treat every firearm as if it is loaded."
+    answer: 0,
+    explanation: "Rule 1 applies to all firearms."
   },
   {
-    prompt: "Why is it unsafe to rely only on someone else saying a gun is unloaded?",
+    prompt: "Why must you verify a firearm yourself even if someone says it is unloaded?",
     options: [
-      "Because revolvers are always loaded",
-      "Because the rules require you to verify condition yourself",
-      "Because unloaded guns cannot malfunction",
-      "Because it only matters on a range"
+      "Because only revolvers can be trusted",
+      "Because the rules require personal verification",
+      "Because unloaded guns cannot hurt anyone",
+      "Because that rule applies only in a gun store"
     ],
     answer: 1,
-    explanation: "The chapter makes clear that reassurance does not replace verification."
+    explanation: "The chapter does not allow casual trust to replace safe verification."
   },
   {
-    prompt: "Which statement about semi-autos is correct?",
+    prompt: "Which statement about semi-autos is true?",
     options: [
       "Magazine removed always means chamber empty",
-      "If the slide is forward, the gun must be unloaded",
-      "A semi-auto can still have a round chambered after the magazine is removed",
-      "Semi-autos do not need inspection before handling"
+      "Slide forward always means unloaded",
+      "A semi-auto may still have a chambered round after magazine removal",
+      "Semi-autos never need visual inspection"
     ],
     answer: 2,
-    explanation: "Removing the magazine does not guarantee the chamber is empty."
+    explanation: "A removed magazine does not guarantee the chamber is empty."
   },
   {
-    prompt: "Which ammunition component is responsible for ignition when struck?",
-    options: ["Casing", "Primer", "Projectile", "Magazine"],
+    prompt: "What is the primer’s job?",
+    options: [
+      "To hold the magazine in place",
+      "To ignite the powder when struck",
+      "To act as the projectile",
+      "To reduce recoil"
+    ],
     answer: 1,
     explanation: "The primer is the ignition component."
   },
   {
-    prompt: "What leaves the barrel when a round is fired?",
-    options: ["The casing", "The primer", "The projectile", "The magazine spring"],
+    prompt: "What leaves the barrel when the firearm is fired?",
+    options: ["Magazine", "Casing", "Projectile", "Slide"],
     answer: 2,
-    explanation: "The projectile exits the barrel."
+    explanation: "The projectile leaves the barrel."
   },
   {
-    prompt: "Why does Chapter 2 discuss revolver and semi-auto parts in detail?",
+    prompt: "Why does the chapter explain revolver and semi-auto parts?",
     options: [
-      "Because naming parts is the entire purpose of self-defense training",
-      "Because students need mechanical understanding to handle firearms safely and correctly",
+      "Because part names are more important than safety",
+      "Because mechanical understanding supports safe handling",
       "Because all guns operate exactly the same",
-      "Because firearm parts matter only to gunsmiths"
+      "Because only collectors need to know"
     ],
     answer: 1,
-    explanation: "Mechanical understanding supports safe handling and correct operation."
+    explanation: "You handle firearms more safely when you understand how they function."
   },
   {
-    prompt: "A click with no shot fired should be treated as:",
+    prompt: "A click instead of a bang should be treated as:",
     options: [
-      "Proof that the gun is unloaded",
-      "A normal event that needs no attention",
-      "A potential malfunction or ammunition problem",
-      "Evidence that the trigger was not pressed"
+      "Proof the gun is unloaded",
+      "A potential malfunction or ammunition issue",
+      "A sign the firearm is ready to holster immediately",
+      "A harmless sound"
     ],
-    answer: 2,
-    explanation: "A click instead of a bang indicates a stoppage or ammunition issue."
+    answer: 1,
+    explanation: "The chapter treats this as a stoppage or ammunition problem."
   },
   {
-    prompt: "What is one main lesson about choosing a defensive firearm?",
+    prompt: "What is one key principle when choosing a defensive firearm?",
     options: [
-      "The biggest handgun is always the best choice",
-      "Brand reputation is the only thing that matters",
+      "The largest firearm is always best",
       "Fit, control, purpose, and user ability matter",
-      "A gun is suitable if it looks impressive"
-    ],
-    answer: 2,
-    explanation: "The chapter stresses practical fit and intended use."
-  },
-  {
-    prompt: "Why is mixing ammunition types carelessly a bad idea?",
-    options: [
-      "Because all ammunition performs the same way",
-      "Because different loads and calibers can create confusion and safety problems",
-      "Because magazines automatically sort ammunition",
-      "Because only birdshot is safe indoors"
+      "Brand alone determines suitability",
+      "Weight never matters"
     ],
     answer: 1,
-    explanation: "Students must understand what they are loading and using."
+    explanation: "The book emphasizes practical use, fit, and control."
   },
   {
-    prompt: "What is the chapter’s overall message about maintenance?",
+    prompt: "Why is mixing ammunition types carelessly dangerous?",
     options: [
-      "A defensive firearm should be ignored until it stops working",
-      "Reliability depends in part on proper inspection, cleaning, and maintenance",
-      "Only new guns need maintenance",
-      "Cleaning is mostly cosmetic"
+      "Because all ammunition behaves exactly the same",
+      "Because confusion over caliber or load can create safety and judgment problems",
+      "Because shells automatically sort themselves",
+      "Because only slugs are safe for storage"
     ],
     answer: 1,
-    explanation: "Reliability requires more than ownership."
+    explanation: "Students must know what they are loading and why."
+  },
+  {
+    prompt: "What is the chapter’s message about maintenance and storage?",
+    options: [
+      "Defensive firearms should be ignored unless they fail",
+      "Reliability depends in part on proper maintenance, inspection, and storage",
+      "Cleaning is cosmetic only",
+      "New guns never need checking"
+    ],
+    answer: 1,
+    explanation: "Reliability and readiness depend on proper care."
   }
 ];
 
@@ -166,6 +172,12 @@ function getTimeSpentSeconds(student) {
   if (typeof student.totalSecondsSpent === "number") return student.totalSecondsSpent;
   if (typeof student.minutesSpent === "number") return student.minutesSpent * 60;
   return 0;
+}
+
+function isLessonUnlocked(lessonNumber, student) {
+  const completed = getCompletedLessons(student);
+  if (lessonNumber <= 1) return true;
+  return completed.includes(`lesson${lessonNumber - 1}`);
 }
 
 function renderQuiz() {
@@ -231,6 +243,11 @@ async function loadStudent() {
   }
 
   studentData = snap.data() || {};
+
+  if (!isLessonUnlocked(LESSON_NUMBER, studentData)) {
+    alert("Lesson 2 is locked. Complete Lesson 1 first.");
+    window.location.href = "../dashboard.html";
+  }
 }
 
 async function saveLessonCompletion() {
