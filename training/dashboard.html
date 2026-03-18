@@ -30,6 +30,7 @@
       position: sticky;
       top: 0;
       z-index: 40;
+      backdrop-filter: blur(10px);
     }
 
     .topbar h1 {
@@ -144,8 +145,14 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .stat {
@@ -184,6 +191,9 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
       padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .lesson-top {
@@ -191,7 +201,7 @@
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
     }
 
     .lesson-title {
@@ -200,10 +210,18 @@
     }
 
     .lesson-desc {
-      margin: 0 0 14px;
+      margin: 0 0 6px;
       color: #dbe4f0;
       line-height: 1.5;
       font-size: 0.93rem;
+    }
+
+    .lesson-meta {
+      color: #cbd5e1;
+      font-size: 0.88rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .pill {
@@ -218,6 +236,10 @@
     .pill.active { background: rgba(21,128,61,0.25); color: #bbf7d0; }
     .pill.locked { background: rgba(148,163,184,0.18); color: #e2e8f0; }
     .pill.completed { background: rgba(59,130,246,0.22); color: #bfdbfe; }
+
+    .lesson-action {
+      margin-top: auto;
+    }
 
     .lesson-action a,
     .lesson-action button {
@@ -243,6 +265,12 @@
       max-width: 720px;
       margin: 70px auto;
       padding: 24px;
+    }
+
+    .notice {
+      margin-top: 16px;
+      color: #cbd5e1;
+      line-height: 1.55;
     }
   </style>
 </head>
@@ -275,7 +303,7 @@
       <div class="hero">
         <div class="card">
           <h2 id="welcomeTitle">Welcome</h2>
-          <p id="welcomeText">Continue your training below.</p>
+          <p id="welcomeText">Complete your lessons in order and pass each quiz to move forward.</p>
 
           <div class="meta-grid">
             <div class="meta-box">
@@ -294,6 +322,10 @@
               <div class="meta-label">Portal Status</div>
               <div class="meta-value" id="statusValue">—</div>
             </div>
+          </div>
+
+          <div class="notice">
+            Lessons unlock in order. A lesson counts as complete only after you pass its quiz and save completion.
           </div>
         </div>
 
@@ -317,6 +349,10 @@
             <div class="stat">
               <div class="stat-label">Time Spent</div>
               <div id="timeSpentValue" class="stat-value">0m</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Current Step</div>
+              <div id="currentStepValue" class="stat-value">Lesson 1</div>
             </div>
           </div>
         </div>
