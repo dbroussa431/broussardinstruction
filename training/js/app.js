@@ -1,8 +1,6 @@
-import { db } from "../firebase-config.js";
+import { db } from "./firebase-config.js";
 import {
   collection,
-  query,
-  where,
   getDocs,
   doc,
   getDoc,
@@ -11,126 +9,55 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
-const STUDENTS_COLLECTION = "portalStudents";
-const TOTAL_LESSONS = 8;
+const PASSING_SCORE = 80;
 
-function todayString() {
-  return new Date().toISOString().slice(0, 10);
+function getLessons() {
+  return Array.isArray(window.LESSONS) ? window.LESSONS : [];
 }
 
-function nowIso() {
-  return new Date().toISOString();
-}
-
-function uniqueSortedLessonNumbers(values = []) {
-  return [...new Set(values.map(Number).filter((n) => Number.isFinite(n) && n > 0))].sort((a, b) => a - b);
-}
-
-function clampMinutes(value) {
-  const num = Number(value || 0);
-  if (!Number.isFinite(num) || num < 0) return 0;
-  return Math.round(num);
-}
-
-function normalizeProgress(progress) {
-  const normalized = {};
-
-  if (progress && typeof progress === "object") {
-    for (const [key, value] of Object.entries(progress)) {
-      const lessonNumber = Number(key);
-      if (!Number.isFinite(lessonNumber) || lessonNumber < 1) continue;
-
-      const scenarioPassedCount = Number(
-        value?.scenarioPassedCount ??
-        value?.scenariosPassedCount ??
-        (value?.scenarioCompleted ? 2 : 0)
-      );
-
-      normalized[lessonNumber] = {
-        contentViewed: !!value?.contentViewed,
-        scenarioCompleted: !!value?.scenarioCompleted,
-        scenarioPassedCount: Math.max(0, scenarioPassedCount),
-        quizPassed: !!value?.quizPassed,
-        quizScore: Number(value?.quizScore || 0),
-        attempts: Number(value?.attempts || 0),
-        missedQuestions: Array.isArray(value?.missedQuestions) ? value.missedQuestions : [],
-        startedAt: value?.startedAt || "",
-        completedAt: value?.completedAt || "",
-        lessonTimeMinutes: clampMinutes(value?.lessonTimeMinutes),
-        lessonStartedAt: value?.lessonStartedAt || "",
-        lessonLastSeenAt: value?.lessonLastSeenAt || "",
-        quizStartedAt: value?.quizStartedAt || "",
-        quizCompletedAt: value?.quizCompletedAt || "",
-        scenarioStartedAt: value?.scenarioStartedAt || "",
-        scenarioCompletedAt: value?.scenarioCompletedAt || ""
-      };
-    }
-  }
-
-  return normalized;
-}
-
-function deriveCompletedLessons(progress = {}) {
-  return Object.entries(progress)
-    .filter(([, value]) => value?.quizPassed && value?.scenarioCompleted)
-    .map(([lessonNumber]) => Number(lessonNumber))
-    .filter(Boolean)
-    .sort((a, b) => a - b);
-}
-
-function deriveProgressPercent(completedLessons = []) {
-  return Math.round((completedLessons.length / TOTAL_LESSONS) * 100);
-}
-
-function deriveProgressLabel(completedLessons = []) {
-  const count = completedLessons.length;
-  if (count <= 0) return "Not Started";
-  if (count >= TOTAL_LESSONS) return "Completed";
-  return `Lesson ${count}`;
-}
-
-function deriveTotalOnlineMinutes(progress = {}) {
-  return Object.values(progress).reduce((sum, lesson) => {
-    return sum + clampMinutes(lesson?.lessonTimeMinutes);
-  }, 0);
-}
-
-function formatAdminStatus(completedLessons = []) {
-  const count = completedLessons.length;
-  if (count <= 0) return "Not Started";
-  if (count >= TOTAL_LESSONS) return "Completed";
-  return `Lesson ${count} Complete`;
-}
-
-function normalizeStudent(rawStudent) {
-  const student = { ...(rawStudent || {}) };
-  const progress = normalizeProgress(student.progress);
-  const completedLessons = Array.isArray(student.completedLessons) && student.completedLessons.length
-    ? uniqueSortedLessonNumbers(student.completedLessons)
-    : deriveCompletedLessons(progress);
-
+function freshProgressForLesson(existing = {}) {
   return {
-    id: String(student.id || "").trim(),
-    name: String(student.name || "").trim(),
-    email: String(student.email || "").trim().toLowerCase(),
-    accessCode: String(student.accessCode || "").trim().toUpperCase(),
-    tier: String(student.tier || "FREE").trim().toUpperCase(),
-    paid: !!student.paid,
-    status: String(student.status || student.portalStatus || "active").trim().toLowerCase(),
-    portalStatus: String(student.portalStatus || student.status || "active").trim().toLowerCase(),
-    courseVersion: String(student.courseVersion || "2026-03").trim(),
-    progress,
-    completedLessons,
-    progressPercent: Number(student.progressPercent ?? deriveProgressPercent(completedLessons)),
-    progressLabel: String(student.progressLabel || deriveProgressLabel(completedLessons)).trim(),
-    adminProgressLabel: String(student.adminProgressLabel || formatAdminStatus(completedLessons)).trim(),
-    startDate: String(student.startDate || "").trim(),
-    completionDate: String(student.completionDate || "").trim(),
-    totalOnlineMinutes: clampMinutes(student.totalOnlineMinutes ?? deriveTotalOnlineMinutes(progress))
+    contentViewed: !!existing.contentViewed,
+    scenarioCompleted: !!existing.scenarioCompleted,
+    quizPassed: !!existing.quizPassed,
+    quizScore: Number(existing.quizScore || 0),
+    attempts: Number(existing.attempts || 0),
+    quizDetails: Array.isArray(existing.quizDetails) ? existing.quizDetails : [],
+    completedAt: existing.completedAt || null
   };
 }
 
-function setCurrentStudent(student) {
+function normalizeStudent(rawStudent = {}) {
+  const progress = {};
+  if (rawStudent.progress && typeof rawStudent.progress === "object") {
+    for (const [key, value] of Object.entries(rawStudent.progress)) {
+      progress[Number(key)] = freshProgressForLesson(value || {});
+    }
+  }
+
+  const completedLessons = Array.isArray(rawStudent.completedLessons)
+    ? [...new Set(rawStudent.completedLessons.map(Number).filter(Boolean))].sort((a, b) => a - b)
+    : Object.entries(progress)
+        .filter(([, value]) => value && value.quizPassed)
+        .map(([key]) => Number(key))
+        .sort((a, b) => a - b);
+
+  return {
+    id: String(rawStudent.id || "").trim(),
+    name: String(rawStudent.name || "").trim() || "Student",
+    email: String(rawStudent.email || "").trim().toLowerCase(),
+    accessCode: String(rawStudent.accessCode || "").trim().toUpperCase(),
+    tier: String(rawStudent.tier || "FULL").trim().toUpperCase(),
+    paid: !!rawStudent.paid,
+    status: String(rawStudent.status || "active").trim().toLowerCase(),
+    progress,
+    completedLessons,
+    lastLoginAt: rawStudent.lastLoginAt || null,
+    updatedAt: rawStudent.updatedAt || null
+  };
+}
+
+function cacheStudent(student) {
   const normalized = normalizeStudent(student);
   localStorage.setItem(CURRENT_STUDENT_KEY, JSON.stringify(normalized));
   return normalized;
@@ -142,7 +69,7 @@ function getCurrentStudent() {
     if (!raw) return null;
     return normalizeStudent(JSON.parse(raw));
   } catch (error) {
-    console.error("Failed to read current student from localStorage:", error);
+    console.error("Failed to parse student session:", error);
     return null;
   }
 }
@@ -151,298 +78,271 @@ function clearCurrentStudent() {
   localStorage.removeItem(CURRENT_STUDENT_KEY);
 }
 
-async function loginStudent(code) {
+function qs(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function randomSample(items, count) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, Math.min(count, copy.length));
+}
+
+function isLessonAllowedByTier(_lessonId, _tier = "FULL") {
+  return true;
+}
+
+function lessonSequenceUnlocked(lessonId, student = getCurrentStudent()) {
+  if (!student) return false;
+  if (!isLessonAllowedByTier(lessonId, student.tier)) return false;
+  if (lessonId <= 1) return true;
+  return !!student.completedLessons.includes(lessonId - 1);
+}
+
+function lessonStatus(lessonId, student = getCurrentStudent()) {
+  const progress = getLessonProgress(lessonId, student);
+
+  if (!isLessonAllowedByTier(lessonId, student?.tier || "FULL")) {
+    return { locked: true, className: "locked", label: "Upgrade Required" };
+  }
+
+  if (!lessonSequenceUnlocked(lessonId, student)) {
+    return { locked: true, className: "locked", label: "Locked" };
+  }
+
+  if (progress.quizPassed) {
+    return { locked: false, className: "passed", label: `Passed • ${progress.quizScore || PASSING_SCORE}%` };
+  }
+
+  if (progress.scenarioCompleted) {
+    return { locked: false, className: "ready", label: "Ready for Quiz" };
+  }
+
+  if (progress.contentViewed) {
+    return { locked: false, className: "active", label: "Scenario Review Next" };
+  }
+
+  return { locked: false, className: "ready", label: "Start Lesson" };
+}
+
+function getLessonProgress(lessonId, student = getCurrentStudent()) {
+  if (!student) return freshProgressForLesson();
+  return freshProgressForLesson(student.progress?.[lessonId] || {});
+}
+
+function overallProgress(student = getCurrentStudent()) {
+  const total = getLessons().length || 8;
+  const passed = Array.isArray(student?.completedLessons) ? student.completedLessons.length : 0;
+  return {
+    total,
+    passed,
+    percent: total ? Math.round((passed / total) * 100) : 0
+  };
+}
+
+function allLessonsComplete(student = getCurrentStudent()) {
+  const lessons = getLessons();
+  return !!student && lessons.length > 0 && student.completedLessons.length >= lessons.length;
+}
+
+function isStudentActive(rawStudent = {}) {
+  const status = String(rawStudent.status || "active").trim().toLowerCase();
+  return status === "active";
+}
+
+async function findStudentByAccessCode(code) {
   const cleanCode = String(code || "").trim().toUpperCase();
-  if (!cleanCode) return null;
+  const snapshot = await getDocs(collection(db, "portalStudents"));
+  return snapshot.docs.find((item) => {
+    const data = item.data() || {};
+    const accessCode = String(data.accessCode || "").trim().toUpperCase();
+    return accessCode === cleanCode && isStudentActive(data);
+  }) || null;
+}
+
+async function login(code) {
+  const cleanCode = String(code || "").trim().toUpperCase();
+  if (!cleanCode) {
+    return { ok: false, message: "Please enter your access code." };
+  }
 
   try {
-    const q = query(
-      collection(db, STUDENTS_COLLECTION),
-      where("accessCode", "==", cleanCode),
-      where("status", "==", "active")
-    );
+    const docSnap = await findStudentByAccessCode(cleanCode);
 
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
+    if (!docSnap) {
+      return { ok: false, message: "Invalid or inactive access code." };
+    }
 
-    const docSnap = snapshot.docs[0];
-    return setCurrentStudent({
-      id: docSnap.id,
-      ...docSnap.data()
-    });
+    const student = cacheStudent({ id: docSnap.id, ...docSnap.data() });
+
+    try {
+      await updateDoc(doc(db, "portalStudents", student.id), {
+        lastLoginAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    } catch (writeError) {
+      console.warn("Login timestamp update failed, but session was created:", writeError);
+    }
+
+    return { ok: true, student };
   } catch (error) {
-    console.error("Error during student login:", error);
+    console.error("Login failed:", error);
+    return { ok: false, message: "Unable to log in right now. Check Firebase and try again." };
+  }
+}
+
+function logout() {
+  clearCurrentStudent();
+}
+
+function requireLogin() {
+  const student = getCurrentStudent();
+  if (!student || !student.id || !student.accessCode) {
+    window.location.href = "login.html";
     return null;
   }
+  return student;
 }
 
 async function refreshCurrentStudentFromFirestore() {
   const current = getCurrentStudent();
-  if (!current || !current.id) return null;
+  if (!current?.id) return null;
 
   try {
-    const ref = doc(db, STUDENTS_COLLECTION, current.id);
-    const snap = await getDoc(ref);
-
+    const snap = await getDoc(doc(db, "portalStudents", current.id));
     if (!snap.exists()) {
       clearCurrentStudent();
       return null;
     }
 
-    const freshStudent = normalizeStudent({
-      id: snap.id,
-      ...snap.data()
-    });
-
-    if (freshStudent.status !== "active") {
+    const student = normalizeStudent({ id: snap.id, ...snap.data() });
+    if (!isStudentActive(student)) {
       clearCurrentStudent();
       return null;
     }
-
-    setCurrentStudent(freshStudent);
-    return freshStudent;
+    return cacheStudent(student);
   } catch (error) {
-    console.error("Failed to refresh current student:", error);
+    console.error("Refresh failed:", error);
     return current;
   }
 }
 
-function getLessonProgress(student, lessonNumber) {
-  const key = Number(lessonNumber);
-  const progress = student?.progress?.[key] || {};
+async function updateStudentProgress(lessonId, patch = {}) {
+  const student = getCurrentStudent();
+  if (!student?.id) throw new Error("No active student session.");
 
-  return {
-    contentViewed: !!progress.contentViewed,
-    scenarioCompleted: !!progress.scenarioCompleted,
-    scenarioPassedCount: Number(progress.scenarioPassedCount || 0),
-    quizPassed: !!progress.quizPassed,
-    quizScore: Number(progress.quizScore || 0),
-    attempts: Number(progress.attempts || 0),
-    missedQuestions: Array.isArray(progress.missedQuestions) ? progress.missedQuestions : [],
-    startedAt: progress.startedAt || "",
-    completedAt: progress.completedAt || "",
-    lessonTimeMinutes: clampMinutes(progress.lessonTimeMinutes),
-    lessonStartedAt: progress.lessonStartedAt || "",
-    lessonLastSeenAt: progress.lessonLastSeenAt || "",
-    quizStartedAt: progress.quizStartedAt || "",
-    quizCompletedAt: progress.quizCompletedAt || "",
-    scenarioStartedAt: progress.scenarioStartedAt || "",
-    scenarioCompletedAt: progress.scenarioCompletedAt || ""
-  };
-}
+  const refreshed = (await refreshCurrentStudentFromFirestore()) || student;
+  const existing = freshProgressForLesson(refreshed.progress?.[lessonId] || {});
+  const merged = { ...existing, ...patch };
 
-function getOverallCompletionCount(student) {
-  return Array.isArray(student?.completedLessons) ? student.completedLessons.length : 0;
-}
+  const progress = { ...refreshed.progress, [lessonId]: merged };
+  const completedSet = new Set(refreshed.completedLessons || []);
+  if (merged.quizPassed) completedSet.add(Number(lessonId));
+  else completedSet.delete(Number(lessonId));
 
-function isLessonUnlocked(student, lessonNumber) {
-  const num = Number(lessonNumber);
-  if (num <= 1) return true;
-  return Array.isArray(student?.completedLessons) && student.completedLessons.includes(num - 1);
-}
-
-function getStudentLessonState(student, lessonNumber) {
-  const progress = getLessonProgress(student, lessonNumber);
-  const completed = Array.isArray(student?.completedLessons) && student.completedLessons.includes(Number(lessonNumber));
-
-  return {
-    ...progress,
-    completed,
-    unlocked: isLessonUnlocked(student, lessonNumber)
-  };
-}
-
-function buildDerivedStudent(current, nextProgress) {
-  const completedLessons = deriveCompletedLessons(nextProgress);
-  const progressPercent = deriveProgressPercent(completedLessons);
-  const progressLabel = deriveProgressLabel(completedLessons);
-  const adminProgressLabel = formatAdminStatus(completedLessons);
-  const totalOnlineMinutes = deriveTotalOnlineMinutes(nextProgress);
-
-  let startDate = current.startDate || "";
-  const anyQuizPassed = Object.values(nextProgress).some((lesson) => lesson?.quizPassed);
-
-  if (!startDate && anyQuizPassed) {
-    startDate = todayString();
-  }
-
-  let completionDate = current.completionDate || "";
-  if (completedLessons.length >= TOTAL_LESSONS && !completionDate) {
-    completionDate = todayString();
-  }
-
-  return {
-    completedLessons,
-    progressPercent,
-    progressLabel,
-    adminProgressLabel,
-    startDate,
-    completionDate,
-    totalOnlineMinutes
-  };
-}
-
-async function saveStudentProgress(lessonNumber, updates = {}) {
-  const current = getCurrentStudent();
-  if (!current || !current.id) return null;
-
-  const key = Number(lessonNumber);
-  const existing = getLessonProgress(current, key);
-
-  const mergedLesson = {
-    ...existing,
-    ...updates
-  };
-
-  mergedLesson.quizPassed = !!mergedLesson.quizPassed;
-  mergedLesson.scenarioCompleted = !!mergedLesson.scenarioCompleted;
-  mergedLesson.quizScore = Number(mergedLesson.quizScore || 0);
-  mergedLesson.attempts = Number(mergedLesson.attempts || 0);
-  mergedLesson.scenarioPassedCount = Number(
-    mergedLesson.scenarioPassedCount ??
-    (mergedLesson.scenarioCompleted ? 2 : 0)
-  );
-
-  mergedLesson.lessonTimeMinutes = clampMinutes(mergedLesson.lessonTimeMinutes);
-
-  if (mergedLesson.quizPassed && !mergedLesson.startedAt) {
-    mergedLesson.startedAt = todayString();
-  }
-
-  if (mergedLesson.quizPassed && mergedLesson.scenarioCompleted && !mergedLesson.completedAt) {
-    mergedLesson.completedAt = todayString();
-  }
-
-  const nextProgress = {
-    ...current.progress,
-    [key]: mergedLesson
-  };
-
-  const derived = buildDerivedStudent(current, nextProgress);
+  const completedLessons = [...completedSet].sort((a, b) => a - b);
 
   const payload = {
-    progress: nextProgress,
-    completedLessons: derived.completedLessons,
-    progressPercent: derived.progressPercent,
-    progressLabel: derived.progressLabel,
-    adminProgressLabel: derived.adminProgressLabel,
-    startDate: derived.startDate,
-    completionDate: derived.completionDate,
-    totalOnlineMinutes: derived.totalOnlineMinutes,
+    progress,
+    completedLessons,
     updatedAt: serverTimestamp()
   };
 
-  try {
-    const ref = doc(db, STUDENTS_COLLECTION, current.id);
-    await updateDoc(ref, payload);
+  await updateDoc(doc(db, "portalStudents", refreshed.id), payload);
 
-    return setCurrentStudent({
-      ...current,
-      progress: nextProgress,
-      completedLessons: derived.completedLessons,
-      progressPercent: derived.progressPercent,
-      progressLabel: derived.progressLabel,
-      adminProgressLabel: derived.adminProgressLabel,
-      startDate: derived.startDate,
-      completionDate: derived.completionDate,
-      totalOnlineMinutes: derived.totalOnlineMinutes
-    });
-  } catch (error) {
-    console.error("Failed to save student progress:", error);
-    return current;
-  }
-}
-
-async function markLessonContentViewed(lessonNumber) {
-  const current = getCurrentStudent();
-  const existing = getLessonProgress(current, lessonNumber);
-
-  return saveStudentProgress(lessonNumber, {
-    contentViewed: true,
-    lessonStartedAt: existing.lessonStartedAt || nowIso(),
-    lessonLastSeenAt: nowIso()
+  const updatedStudent = cacheStudent({
+    ...refreshed,
+    progress,
+    completedLessons
   });
+
+  return updatedStudent;
 }
 
-async function recordLessonTime(lessonNumber, minutesToAdd = 1) {
-  const current = getCurrentStudent();
-  const existing = getLessonProgress(current, lessonNumber);
-
-  return saveStudentProgress(lessonNumber, {
-    lessonTimeMinutes: clampMinutes(existing.lessonTimeMinutes + minutesToAdd),
-    lessonStartedAt: existing.lessonStartedAt || nowIso(),
-    lessonLastSeenAt: nowIso()
-  });
+async function setLessonContentViewed(lessonId) {
+  const progress = getLessonProgress(lessonId);
+  if (progress.contentViewed) return getCurrentStudent();
+  return updateStudentProgress(lessonId, { contentViewed: true });
 }
 
-async function markLessonScenariosComplete(lessonNumber, scenarioPassedCount = 2) {
-  const current = getCurrentStudent();
-  const existing = getLessonProgress(current, lessonNumber);
-
-  return saveStudentProgress(lessonNumber, {
-    scenarioCompleted: true,
-    scenarioPassedCount: Math.max(2, Number(scenarioPassedCount || 2)),
-    scenarioStartedAt: existing.scenarioStartedAt || nowIso(),
-    scenarioCompletedAt: nowIso()
-  });
+async function setScenarioCompleted(lessonId) {
+  return updateStudentProgress(lessonId, { scenarioCompleted: true });
 }
 
-async function markLessonQuizStarted(lessonNumber) {
-  const current = getCurrentStudent();
-  const existing = getLessonProgress(current, lessonNumber);
-
-  return saveStudentProgress(lessonNumber, {
-    quizStartedAt: existing.quizStartedAt || nowIso()
-  });
+function getAttemptCount(lessonId, student = getCurrentStudent()) {
+  return Number(getLessonProgress(lessonId, student).attempts || 0);
 }
 
-async function markLessonQuizResult(lessonNumber, quizScore, attempts = null, missedQuestions = []) {
-  const score = Number(quizScore || 0);
-  const passed = score >= 80;
+async function recordQuizResult(lessonId, score, details) {
+  const current = getLessonProgress(lessonId);
+  const attempts = Number(current.attempts || 0) + 1;
 
-  const current = getCurrentStudent();
-  const existing = getLessonProgress(current, lessonNumber);
-
-  return saveStudentProgress(lessonNumber, {
-    quizPassed: passed,
+  return updateStudentProgress(lessonId, {
+    attempts,
     quizScore: score,
-    attempts: attempts == null ? Number(existing.attempts || 0) + 1 : Number(attempts || 0),
-    missedQuestions: Array.isArray(missedQuestions) ? missedQuestions : [],
-    quizStartedAt: existing.quizStartedAt || nowIso(),
-    quizCompletedAt: nowIso()
+    quizPassed: score >= PASSING_SCORE,
+    quizDetails: details,
+    completedAt: new Date().toISOString()
   });
 }
 
-window.BSA = {
-  loginStudent,
+function requestLiveSessionAllowed(student = getCurrentStudent()) {
+  return allLessonsComplete(student);
+}
+
+const api = {
+  CURRENT_STUDENT_KEY,
+  PASSING_SCORE,
+  login,
+  logout,
+  requireLogin,
   getCurrentStudent,
   clearCurrentStudent,
   refreshCurrentStudentFromFirestore,
+  normalizeStudent,
+  cacheStudent,
+  setLessonContentViewed,
+  setScenarioCompleted,
+  recordQuizResult,
+  getAttemptCount,
   getLessonProgress,
-  getStudentLessonState,
-  getOverallCompletionCount,
-  saveStudentProgress,
-  markLessonContentViewed,
-  recordLessonTime,
-  markLessonScenariosComplete,
-  markLessonQuizStarted,
-  markLessonQuizResult
+  lessonStatus,
+  overallProgress,
+  allLessonsComplete,
+  lessonSequenceUnlocked,
+  isLessonAllowedByTier,
+  qs,
+  randomSample,
+  requestLiveSessionAllowed
 };
 
+window.BSA = api;
+
 export {
-  normalizeStudent,
-  setCurrentStudent,
+  CURRENT_STUDENT_KEY,
+  PASSING_SCORE,
+  login,
+  logout,
+  requireLogin,
   getCurrentStudent,
   clearCurrentStudent,
-  loginStudent,
   refreshCurrentStudentFromFirestore,
+  normalizeStudent,
+  cacheStudent,
+  setLessonContentViewed,
+  setScenarioCompleted,
+  recordQuizResult,
+  getAttemptCount,
   getLessonProgress,
-  getStudentLessonState,
-  getOverallCompletionCount,
-  saveStudentProgress,
-  markLessonContentViewed,
-  recordLessonTime,
-  markLessonScenariosComplete,
-  markLessonQuizStarted,
-  markLessonQuizResult
+  lessonStatus,
+  overallProgress,
+  allLessonsComplete,
+  lessonSequenceUnlocked,
+  isLessonAllowedByTier,
+  qs,
+  randomSample,
+  requestLiveSessionAllowed
 };
