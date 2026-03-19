@@ -5,130 +5,513 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Admin Dashboard</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
         <div>
-          <h1>BSA Admin Dashboard</h1>
-          <p>Student progress, timing, and portal status</p>
+          <h1>Admin Dashboard</h1>
+          <p>Students, payments, codes, progress, and timing</p>
         </div>
       </div>
       <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Student Portal</a>
-        <button class="btn btn-light" id="refreshAdmin">Refresh Records</button>
+        <button class="btn btn-gold" id="addStudentBtn">Add Student</button>
+        <button class="btn btn-light" id="refreshBtn">Refresh Records</button>
+        <button class="btn btn-light" id="exportBtn">Export CSV</button>
+        <a class="btn btn-outline btn-white-outline" href="dashboard.html">Student Portal</a>
       </div>
     </div>
   </header>
 
-  <main class="container admin-shell">
-    <section class="admin-cards">
-      <article class="panel admin-card">
+  <main class="container admin-page">
+    <section class="admin-stats-grid">
+      <article class="panel admin-stat-card">
         <small>Total Students</small>
-        <strong id="totalStudents">0</strong>
+        <strong id="statTotalStudents">0</strong>
       </article>
-      <article class="panel admin-card">
-        <small>Active Students</small>
-        <strong id="activeStudents">0</strong>
+      <article class="panel admin-stat-card warning">
+        <small>Pending Payments</small>
+        <strong id="statPendingPayments">0</strong>
       </article>
-      <article class="panel admin-card">
-        <small>Completed Online</small>
-        <strong id="completedOnline">0</strong>
+      <article class="panel admin-stat-card success">
+        <small>Paid Students</small>
+        <strong id="statPaidStudents">0</strong>
       </article>
-      <article class="panel admin-card">
-        <small>Total Quiz Time</small>
-        <strong id="totalQuizTime">0m 0s</strong>
+      <article class="panel admin-stat-card gold">
+        <small>Revenue Collected</small>
+        <strong id="statRevenue">$0</strong>
       </article>
     </section>
 
-    <section class="panel admin-panel">
-      <div class="section-head">
-        <div>
-          <h3>Student Progress Snapshot</h3>
-          <p>Shows stage, lesson location, attempts, total quiz time, and last activity.</p>
+    <section class="panel admin-toolbar-wrap">
+      <div class="admin-toolbar-row">
+        <div class="search-block">
+          <label for="searchInput">Search Records</label>
+          <input id="searchInput" type="text" placeholder="Search by name, email, or code">
+        </div>
+        <div class="filter-block compact">
+          <label for="paymentFilter">Payment Status</label>
+          <select id="paymentFilter">
+            <option value="all">All Payment Statuses</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="waived">Waived</option>
+          </select>
+        </div>
+        <div class="filter-block compact">
+          <label for="portalFilter">Portal Status</label>
+          <select id="portalFilter">
+            <option value="all">All Portal Statuses</option>
+            <option value="active">Active</option>
+            <option value="locked">Locked</option>
+          </select>
+        </div>
+        <div class="filter-block compact">
+          <label for="sortBy">Sort By</label>
+          <select id="sortBy">
+            <option value="newest">Newest</option>
+            <option value="name">Name</option>
+            <option value="progress">Progress</option>
+            <option value="quiztime">Quiz Time</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-blue" id="applyFiltersBtn">Filter</button>
+          <button class="btn btn-outline" id="clearFiltersBtn">Clear</button>
         </div>
       </div>
-      <div class="table-wrap">
+    </section>
+
+    <section class="panel admin-table-panel">
+      <div class="admin-table-head">
+        <div>
+          <h2>Student Records</h2>
+          <p>Edit records, regenerate codes, mark payment status, and lock or unlock portal access.</p>
+        </div>
+      </div>
+      <div class="table-scroll">
         <table class="admin-table">
           <thead>
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Completed</th>
+              <th>Course</th>
+              <th>Price</th>
+              <th>Payment Method</th>
+              <th>Payment Status</th>
+              <th>Portal Status</th>
+              <th>Access Code</th>
               <th>Current Lesson</th>
               <th>Current Stage</th>
               <th>Total Attempts</th>
               <th>Total Quiz Time</th>
+              <th>Progress</th>
               <th>Last Activity</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="adminRows">
-            <tr><td colspan="8">Loading student records...</td></tr>
-          </tbody>
+          <tbody id="studentTableBody"></tbody>
         </table>
       </div>
     </section>
   </main>
 
+  <dialog id="studentModal" class="admin-modal">
+    <form method="dialog" class="admin-modal-card" id="studentFormWrap">
+      <div class="admin-modal-head">
+        <h3 id="modalTitle">Add Student</h3>
+        <button value="cancel" class="icon-close" type="button" id="closeModalBtn">×</button>
+      </div>
+      <div class="admin-form-grid">
+        <div class="field"><label for="studentName">Name</label><input id="studentName" required></div>
+        <div class="field"><label for="studentEmail">Email</label><input id="studentEmail" type="email"></div>
+        <div class="field"><label for="studentCourse">Course</label><input id="studentCourse" value="Louisiana Concealed Carry"></div>
+        <div class="field"><label for="studentPrice">Price</label><input id="studentPrice" type="number" min="0" step="1" value="150"></div>
+        <div class="field"><label for="studentPaymentMethod">Payment Method</label>
+          <select id="studentPaymentMethod">
+            <option value="PayPal">PayPal</option>
+            <option value="Direct">Direct</option>
+            <option value="Waived">Waived</option>
+          </select>
+        </div>
+        <div class="field"><label for="studentPaymentStatus">Payment Status</label>
+          <select id="studentPaymentStatus">
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="waived">Waived</option>
+          </select>
+        </div>
+        <div class="field"><label for="studentPortalStatus">Portal Status</label>
+          <select id="studentPortalStatus">
+            <option value="active">Active</option>
+            <option value="locked">Locked</option>
+          </select>
+        </div>
+        <div class="field"><label for="studentTier">Tier</label>
+          <select id="studentTier">
+            <option value="FULL">FULL</option>
+            <option value="FREE">FREE / Waived</option>
+          </select>
+        </div>
+        <div class="field field-span-2"><label for="generatedCode">Access Code</label>
+          <div class="code-inline">
+            <input id="generatedCode" readonly>
+            <button type="button" class="btn btn-outline" id="regenCodeBtn">Generate Code</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-message hidden" id="modalMessage"></div>
+      <div class="lesson-actions" style="margin-top:18px;">
+        <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
+        <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="data.js"></script>
   <script type="module">
     import { db } from "./firebase-config.js";
-    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { normalizeStudent, getLessonProgress, getLessonStageLabel, formatSeconds } from "./app.js";
+    import {
+      collection,
+      getDocs,
+      doc,
+      updateDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { normalizeStudent, formatSeconds, generateAccessCode, createStudentRecord } from "./app.js";
 
-    async function loadAdmin() {
-      const body = document.getElementById("adminRows");
-      body.innerHTML = '<tr><td colspan="8">Loading student records...</td></tr>';
-      const snap = await getDocs(collection(db, "portalStudents"));
-      const students = snap.docs.map((doc) => normalizeStudent({ id: doc.id, ...doc.data() }));
+    let studentRows = [];
+    let editingId = null;
 
-      document.getElementById("totalStudents").textContent = students.length;
-      document.getElementById("activeStudents").textContent = students.filter((s) => s.status === "active").length;
-      document.getElementById("completedOnline").textContent = students.filter((s) => (s.completedLessons || []).length >= 8).length;
+    const body = document.getElementById("studentTableBody");
+    const addStudentBtn = document.getElementById("addStudentBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const modal = document.getElementById("studentModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const regenCodeBtn = document.getElementById("regenCodeBtn");
+    const formWrap = document.getElementById("studentFormWrap");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const searchInput = document.getElementById("searchInput");
+    const paymentFilter = document.getElementById("paymentFilter");
+    const portalFilter = document.getElementById("portalFilter");
+    const sortBy = document.getElementById("sortBy");
 
-      let totalQuizSeconds = 0;
-      const rows = students.map((student) => {
-        const lessonProgressEntries = Object.entries(student.progress || {}).map(([lessonId, value]) => ({ lessonId: Number(lessonId), value }));
-        const latestLesson = lessonProgressEntries.sort((a, b) => {
-          const aTime = new Date(a.value.lastActivityAt || 0).getTime();
-          const bTime = new Date(b.value.lastActivityAt || 0).getTime();
-          return bTime - aTime || b.lessonId - a.lessonId;
-        })[0];
-        const currentLesson = latestLesson?.lessonId || ((student.completedLessons?.length || 0) + 1);
-        const progress = getLessonProgress(currentLesson, student);
-        const stage = latestLesson ? getLessonStageLabel(progress) : "Not Started";
-        const attempts = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.attempts || 0), 0);
-        const quizTime = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.totalQuizTimeSeconds || 0), 0);
-        totalQuizSeconds += quizTime;
-        const lastActivity = lessonProgressEntries
-          .map((entry) => entry.value.lastActivityAt)
-          .filter(Boolean)
-          .sort()
-          .pop() || "—";
+    const fields = {
+      name: document.getElementById("studentName"),
+      email: document.getElementById("studentEmail"),
+      course: document.getElementById("studentCourse"),
+      price: document.getElementById("studentPrice"),
+      paymentMethod: document.getElementById("studentPaymentMethod"),
+      paymentStatus: document.getElementById("studentPaymentStatus"),
+      portalStatus: document.getElementById("studentPortalStatus"),
+      tier: document.getElementById("studentTier"),
+      accessCode: document.getElementById("generatedCode")
+    };
 
-        return `
-          <tr>
-            <td>${student.name}</td>
-            <td>${student.email || "—"}</td>
-            <td>${(student.completedLessons || []).length} / ${window.LESSONS.length}</td>
-            <td>${currentLesson > window.LESSONS.length ? "Complete" : `Lesson ${currentLesson}`}</td>
-            <td>${stage}</td>
-            <td>${attempts}</td>
-            <td>${formatSeconds(quizTime)}</td>
-            <td>${lastActivity}</td>
-          </tr>
-        `;
-      }).join("");
-
-      body.innerHTML = rows || '<tr><td colspan="8">No student records found.</td></tr>';
-      document.getElementById("totalQuizTime").textContent = formatSeconds(totalQuizSeconds);
+    function stageLabel(student) {
+      const map = {
+        "not-started": "Not Started",
+        lesson: "Lesson",
+        scenario: "Scenario",
+        "ready-for-quiz": "Ready for Quiz",
+        quiz: "Quiz In Progress",
+        passed: "Passed",
+        completed: "Completed"
+      };
+      return map[student.currentStage] || student.currentStage || "Not Started";
     }
 
-    document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
-    loadAdmin();
+    function progressLabel(student) {
+      const total = (window.LESSONS || []).length || 8;
+      return `${student.completedLessons.length} / ${total}`;
+    }
+
+    function progressPercent(student) {
+      return Math.round((student.completedLessons.length / (((window.LESSONS || []).length || 8))) * 100);
+    }
+
+    function totalAttempts(student) {
+      return Object.values(student.progress || {}).reduce((sum, p) => sum + Number(p?.attempts || 0), 0);
+    }
+
+    function titleCase(value) {
+      return String(value || "").replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+    }
+
+    function applyStats(rows) {
+      const totalStudents = rows.length;
+      const pending = rows.filter((s) => s.paymentStatus === "pending").length;
+      const paid = rows.filter((s) => s.paymentStatus === "paid").length;
+      const revenue = rows.reduce((sum, s) => sum + (s.paymentStatus === "paid" ? Number(s.price || 0) : 0), 0);
+      document.getElementById("statTotalStudents").textContent = totalStudents;
+      document.getElementById("statPendingPayments").textContent = pending;
+      document.getElementById("statPaidStudents").textContent = paid;
+      document.getElementById("statRevenue").textContent = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue);
+    }
+
+    function filteredRows() {
+      const term = searchInput.value.trim().toLowerCase();
+      let rows = [...studentRows];
+      if (term) {
+        rows = rows.filter((s) => [s.name, s.email, s.accessCode].join(" ").toLowerCase().includes(term));
+      }
+      if (paymentFilter.value !== "all") rows = rows.filter((s) => s.paymentStatus === paymentFilter.value);
+      if (portalFilter.value !== "all") rows = rows.filter((s) => s.status === portalFilter.value);
+      if (sortBy.value === "name") rows.sort((a, b) => a.name.localeCompare(b.name));
+      if (sortBy.value === "progress") rows.sort((a, b) => progressPercent(b) - progressPercent(a));
+      if (sortBy.value === "quiztime") rows.sort((a, b) => Number(b.totalQuizTimeSeconds || 0) - Number(a.totalQuizTimeSeconds || 0));
+      if (sortBy.value === "newest") rows.sort((a, b) => String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || "")));
+      return rows;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function actionButton(label, attr, value, extra = "") {
+      return `<button class="btn btn-outline btn-sm ${extra}" data-${attr}="${value}">${label}</button>`;
+    }
+
+    function renderTable() {
+      const rows = filteredRows();
+      applyStats(studentRows);
+      body.innerHTML = rows.map((student) => `
+        <tr>
+          <td>${escapeHtml(student.name)}</td>
+          <td>${escapeHtml(student.email || "—")}</td>
+          <td>${escapeHtml(student.course || "Louisiana Concealed Carry")}</td>
+          <td>$${Number(student.price || 0)}</td>
+          <td>${escapeHtml(student.paymentMethod || "—")}</td>
+          <td><span class="pill-tag ${student.paymentStatus}">${titleCase(student.paymentStatus)}</span></td>
+          <td><span class="pill-tag ${student.status}">${titleCase(student.status)}</span></td>
+          <td>
+            <div class="code-cell">
+              <code>${escapeHtml(student.accessCode || "—")}</code>
+              <button class="table-link" data-copy="${escapeHtml(student.accessCode || "")}">Copy</button>
+            </div>
+          </td>
+          <td>Lesson ${Number(student.currentLesson || 1)}</td>
+          <td>${stageLabel(student)}</td>
+          <td>${totalAttempts(student)}</td>
+          <td>${formatSeconds(student.totalQuizTimeSeconds || 0)}</td>
+          <td>
+            <div class="progress-mini"><span style="width:${progressPercent(student)}%"></span></div>
+            <small>${progressLabel(student)}</small>
+          </td>
+          <td>${student.lastActivityAt ? new Date(student.lastActivityAt).toLocaleString() : "—"}</td>
+          <td>
+            <div class="table-actions admin-action-stack">
+              ${actionButton('View/Edit','edit',student.id)}
+              ${actionButton('Regenerate','regencode',student.id)}
+              ${actionButton('Mark Paid','markpaid',student.id)}
+              ${actionButton('Mark Pending','markpending',student.id)}
+              ${actionButton('Mark Waived','markwaived',student.id)}
+              ${actionButton(student.status === 'active' ? 'Lock' : 'Unlock','lock',student.id)}
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    async function loadStudents() {
+      refreshBtn.disabled = true;
+      const snapshot = await getDocs(collection(db, "portalStudents"));
+      studentRows = snapshot.docs.map((snap) => normalizeStudent({ id: snap.id, ...snap.data() }));
+      renderTable();
+      refreshBtn.disabled = false;
+    }
+
+    function autoAdjustFields() {
+      const method = fields.paymentMethod.value;
+      const status = fields.paymentStatus.value;
+      if (method === 'Waived') {
+        fields.paymentStatus.value = 'waived';
+        fields.price.value = 0;
+        fields.tier.value = 'FREE';
+      }
+      if (status === 'waived') {
+        fields.paymentMethod.value = 'Waived';
+        fields.price.value = 0;
+        fields.tier.value = 'FREE';
+      }
+    }
+
+    function openModal(student = null) {
+      editingId = student?.id || null;
+      modalTitle.textContent = editingId ? "Edit Student" : "Add Student";
+      modalMessage.classList.add("hidden");
+      fields.name.value = student?.name || "";
+      fields.email.value = student?.email || "";
+      fields.course.value = student?.course || "Louisiana Concealed Carry";
+      fields.price.value = Number(student?.price ?? 150);
+      fields.paymentMethod.value = student?.paymentMethod || "PayPal";
+      fields.paymentStatus.value = student?.paymentStatus || "paid";
+      fields.portalStatus.value = student?.status || "active";
+      fields.tier.value = student?.tier || "FULL";
+      fields.accessCode.value = student?.accessCode || generateAccessCode(student?.name || "BSA");
+      autoAdjustFields();
+      modal.showModal();
+    }
+
+    function closeModal() {
+      modal.close();
+      editingId = null;
+    }
+
+    async function saveStudent(event) {
+      event.preventDefault();
+      const isWaived = fields.paymentStatus.value === 'waived' || fields.paymentMethod.value === 'Waived';
+      const payload = {
+        name: fields.name.value,
+        email: fields.email.value,
+        course: fields.course.value,
+        price: Number(fields.price.value || 0),
+        paymentMethod: fields.paymentMethod.value,
+        paymentStatus: fields.paymentStatus.value,
+        status: fields.portalStatus.value,
+        tier: isWaived ? 'FREE' : fields.tier.value,
+        paid: fields.paymentStatus.value === 'paid',
+        accessCode: fields.accessCode.value
+      };
+
+      try {
+        if (editingId) {
+          await updateDoc(doc(db, 'portalStudents', editingId), {
+            ...payload,
+            updatedAt: serverTimestamp()
+          });
+        } else {
+          await createStudentRecord(payload);
+        }
+        closeModal();
+        await loadStudents();
+      } catch (error) {
+        modalMessage.textContent = error.message || 'Unable to save student.';
+        modalMessage.classList.remove('hidden');
+      }
+    }
+
+    async function updateStudent(id, patch = {}) {
+      await updateDoc(doc(db, 'portalStudents', id), {
+        ...patch,
+        updatedAt: serverTimestamp()
+      });
+      await loadStudents();
+    }
+
+    async function toggleLock(id) {
+      const student = studentRows.find((row) => row.id === id);
+      if (!student) return;
+      await updateStudent(id, { status: student.status === 'active' ? 'locked' : 'active' });
+    }
+
+    async function regenerateCode(id) {
+      const student = studentRows.find((row) => row.id === id);
+      if (!student) return;
+      const code = generateAccessCode(student.name || 'BSA');
+      await updateStudent(id, { accessCode: code });
+      try { await navigator.clipboard.writeText(code); } catch {}
+    }
+
+    async function markStudent(id, status) {
+      const patch = { paymentStatus: status, paid: status === 'paid' };
+      if (status === 'waived') {
+        patch.paymentMethod = 'Waived';
+        patch.price = 0;
+        patch.tier = 'FREE';
+        patch.status = 'active';
+      }
+      await updateStudent(id, patch);
+    }
+
+    async function exportCsv() {
+      const rows = filteredRows();
+      const headers = ['Name','Email','Course','Price','Payment Method','Payment Status','Portal Status','Access Code','Current Lesson','Current Stage','Attempts','Total Quiz Time','Progress','Last Activity'];
+      const csvRows = [headers.join(',')];
+      rows.forEach((student) => {
+        const row = [
+          student.name,
+          student.email,
+          student.course,
+          student.price,
+          student.paymentMethod,
+          student.paymentStatus,
+          student.status,
+          student.accessCode,
+          `Lesson ${student.currentLesson || 1}`,
+          stageLabel(student),
+          totalAttempts(student),
+          formatSeconds(student.totalQuizTimeSeconds || 0),
+          progressLabel(student),
+          student.lastActivityAt ? new Date(student.lastActivityAt).toISOString() : ''
+        ].map((value) => `"${String(value || '').replaceAll('"', '""')}"`);
+        csvRows.push(row.join(','));
+      });
+      const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bsa-students.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    addStudentBtn.addEventListener('click', () => openModal());
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelModalBtn.addEventListener('click', closeModal);
+    regenCodeBtn.addEventListener('click', () => {
+      fields.accessCode.value = generateAccessCode(fields.name.value || 'BSA');
+    });
+    fields.paymentMethod.addEventListener('change', autoAdjustFields);
+    fields.paymentStatus.addEventListener('change', autoAdjustFields);
+    formWrap.addEventListener('submit', saveStudent);
+    refreshBtn.addEventListener('click', loadStudents);
+    exportBtn.addEventListener('click', exportCsv);
+    document.getElementById('applyFiltersBtn').addEventListener('click', renderTable);
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+      searchInput.value = '';
+      paymentFilter.value = 'all';
+      portalFilter.value = 'all';
+      sortBy.value = 'newest';
+      renderTable();
+    });
+    [searchInput, paymentFilter, portalFilter, sortBy].forEach((el) => el.addEventListener('input', renderTable));
+
+    body.addEventListener('click', async (event) => {
+      const copy = event.target.closest('[data-copy]');
+      const edit = event.target.closest('[data-edit]');
+      const lock = event.target.closest('[data-lock]');
+      const regencode = event.target.closest('[data-regencode]');
+      const markpaid = event.target.closest('[data-markpaid]');
+      const markpending = event.target.closest('[data-markpending]');
+      const markwaived = event.target.closest('[data-markwaived]');
+      if (copy) {
+        await navigator.clipboard.writeText(copy.getAttribute('data-copy'));
+        copy.textContent = 'Copied';
+        setTimeout(() => copy.textContent = 'Copy', 1200);
+      }
+      if (edit) {
+        const student = studentRows.find((row) => row.id === edit.getAttribute('data-edit'));
+        if (student) openModal(student);
+      }
+      if (lock) await toggleLock(lock.getAttribute('data-lock'));
+      if (regencode) await regenerateCode(regencode.getAttribute('data-regencode'));
+      if (markpaid) await markStudent(markpaid.getAttribute('data-markpaid'), 'paid');
+      if (markpending) await markStudent(markpending.getAttribute('data-markpending'), 'pending');
+      if (markwaived) await markStudent(markwaived.getAttribute('data-markwaived'), 'waived');
+    });
+
+    await loadStudents();
   </script>
 </body>
 </html>

@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
         <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
       </div>
       <div class="top-actions">
@@ -23,11 +23,7 @@
     <section class="panel content-card" id="quizPanel">
       <span class="eyebrow">20 randomized questions • pass at 80%</span>
       <h2 id="quizTitle"></h2>
-      <p class="muted">Question order and answer order are randomized. The portal prefers unseen questions first so repeat quizzes are less repetitive.</p>
-      <div class="quiz-toolbar">
-        <div class="chip">Elapsed Time: <strong id="elapsedTime">0m 0s</strong></div>
-        <div class="chip">Question Mix: mostly different each attempt</div>
-      </div>
+      <p class="muted">Questions are randomized, answers are shuffled, and the portal prefers unseen questions first for each student.</p>
       <div id="rereadNotice" class="notice warn hidden" style="margin-bottom:16px"></div>
       <div id="quizLockNotice" class="notice info hidden quiz-lock-note"></div>
       <div id="quizWrap" class="q-list"></div>
@@ -51,9 +47,10 @@
       getLessonProgress,
       getAttemptCount,
       recordQuizResult,
-      selectQuizQuestions,
-      setLessonStage,
-      formatSeconds
+      randomSample,
+      shuffleArray,
+      formatSeconds,
+      setCurrentLessonStage
     } from "./app.js";
 
     requireLogin();
@@ -62,15 +59,20 @@
     const lessonId = Number(params.get("lesson") || 1);
     const reviewMode = params.get("review") === "1";
 
-    if (!isLessonAllowedByTier(lessonId, student) || !lessonSequenceUnlocked(lessonId, student)) {
+    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
       window.location.href = "dashboard.html";
     }
 
     const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
+    const basePool = (window.QUIZ_BANK[lessonId] || window.QUIZ_BANK[1] || []).map((q, idx) => ({ ...q, _qid: q.id || `L${lessonId}_Q${idx + 1}` }));
     const progress = getLessonProgress(lessonId, student);
 
     document.getElementById("quizTitle").textContent = `${lesson.id}. ${lesson.title} — Quiz`;
     document.getElementById("backLessonLink").href = `lesson.html?lesson=${lesson.id}`;
+
+    if (!reviewMode) {
+      await setCurrentLessonStage(lessonId, "quiz");
+    }
 
     if (!progress.scenarioCompleted && !reviewMode) {
       document.getElementById("quizLockNotice").textContent = "Complete the scenario review before taking the quiz.";
@@ -81,8 +83,8 @@
     const attemptCount = getAttemptCount(lessonId, student);
     if (attemptCount >= 1 && !reviewMode) {
       document.getElementById("rereadNotice").textContent = attemptCount >= 2
-        ? "Please re-read the lesson summary before another attempt. The system will keep giving you mostly different questions, but the content still matters."
-        : "If you score below 80%, you will need to retake the quiz. Expect a mostly different random set next time.";
+        ? "Please re-read the lesson summary before another attempt."
+        : "If you score below 80%, you will need to retake the quiz.";
       document.getElementById("rereadNotice").classList.remove("hidden");
     }
 
@@ -90,23 +92,14 @@
       renderResults(progress.quizScore, progress.quizDetails, progress.lastQuizTimeSeconds || 0);
       document.getElementById("quizPanel").classList.add("hidden");
     } else {
-      await setLessonStage(lessonId, "quiz");
-
-      const selectedQuestions = selectQuizQuestions(lessonId, 20, student);
+      const selectedQuestions = buildQuiz(basePool, progress.seenQuestionIds || []);
       const quizWrap = document.getElementById("quizWrap");
       const startedAt = Date.now();
-      const elapsedTimeNode = document.getElementById("elapsedTime");
-
-      const timer = setInterval(() => {
-        const seconds = Math.round((Date.now() - startedAt) / 1000);
-        elapsedTimeNode.textContent = formatSeconds(seconds);
-      }, 1000);
 
       selectedQuestions.forEach((item, idx) => {
         const card = document.createElement("div");
         card.className = "question-card";
-        const badge = `<div class="question-meta"><span class="chip">${item.difficulty || "mixed"}</span><span class="chip">${item.category || "General"}</span></div>`;
-        card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>${badge}`;
+        card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
         const options = document.createElement("div");
         options.className = "options";
         const choices = item.type === "tf" ? ["True", "False"] : item.choices;
@@ -128,9 +121,6 @@
 
       document.getElementById("submitQuizBtn").addEventListener("click", async () => {
         if (!progress.scenarioCompleted) return;
-
-        clearInterval(timer);
-        const elapsedSeconds = Math.round((Date.now() - startedAt) / 1000);
 
         let correct = 0;
         const details = [];
@@ -156,31 +146,41 @@
           }
 
           if (isCorrect) correct += 1;
-          details.push({
-            id: item.id,
-            question: item.q,
-            yourAnswer,
-            correctAnswer,
-            explanation: item.explanation,
-            difficulty: item.difficulty || "mixed",
-            category: item.category || "General",
-            isCorrect
-          });
+          details.push({ question: item.q, yourAnswer, correctAnswer, explanation: item.explanation, isCorrect });
         });
 
         const score = Math.round((correct / selectedQuestions.length) * 100);
-        await recordQuizResult(lessonId, {
-          score,
-          details,
-          questionIds: selectedQuestions.map((q) => q.id),
-          elapsedSeconds
+        const durationSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+        await recordQuizResult(lessonId, score, details, {
+          durationSeconds,
+          selectedQuestionIds: selectedQuestions.map((q) => q._qid)
         });
-        renderResults(score, details, elapsedSeconds, attemptCount + 1);
+        renderResults(score, details, durationSeconds, attemptCount + 1);
         document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth" });
       });
     }
 
-    function renderResults(score, details, elapsedSeconds = 0, attemptsOverride) {
+    function buildQuiz(pool, seenQuestionIds) {
+      const unseen = pool.filter((item) => !seenQuestionIds.includes(item._qid));
+      const chosen = [
+        ...randomSample(unseen, 20),
+        ...randomSample(pool.filter((item) => seenQuestionIds.includes(item._qid)), Math.max(0, 20 - unseen.length))
+      ].slice(0, 20);
+
+      return chosen.map((item) => {
+        if (item.type === "tf") return item;
+        const options = item.choices.map((choice, index) => ({ choice, index }));
+        const shuffled = shuffleArray(options);
+        const newAnswer = shuffled.findIndex((option) => option.index === item.answer);
+        return {
+          ...item,
+          choices: shuffled.map((option) => option.choice),
+          answer: newAnswer
+        };
+      });
+    }
+
+    function renderResults(score, details, durationSeconds = 0, attemptsOverride) {
       const passed = score >= PASSING_SCORE;
       const resultPanel = document.getElementById("resultPanel");
       const missed = details.filter((d) => !d.isCorrect);
@@ -192,11 +192,11 @@
           <div class="flex-row" style="justify-content:space-between;align-items:center;margin-bottom:16px;">
             <div>
               <div class="banner ${passed ? "pass" : "retake"}">${passed ? "PASS" : "RETAKE REQUIRED"} • Score: ${score}%</div>
-              <p class="muted">Passing score is ${PASSING_SCORE}%. Attempt time: ${formatSeconds(elapsedSeconds)}.</p>
+              <p class="muted">Passing score is ${PASSING_SCORE}%. Time on this attempt: ${formatSeconds(durationSeconds)}.</p>
             </div>
             <div class="score-circle" style="--pct:${score}%"><span>${score}%</span></div>
           </div>
-          ${passed ? '<div class="notice ok">Lesson quiz passed. Your progress is saved and the next lesson is unlocked.</div>' : '<div class="notice bad">Anything below 80% requires a retake. Your next attempt will prefer mostly unseen questions.</div>'}
+          ${passed ? '<div class="notice ok">Lesson quiz passed. Your progress is saved and the next lesson is unlocked.</div>' : '<div class="notice bad">Anything below 80% requires a retake. Questions and answers randomize again from the larger question bank.</div>'}
           ${!passed && attemptsSeen >= 2 ? '<div class="notice warn" style="margin-top:12px">Please re-read the lesson summary before your next attempt.</div>' : ""}
           <div class="lesson-actions" style="margin-top:16px;">
             ${passed ? `<a class="btn btn-blue" href="${lessonId === window.LESSONS.length ? "complete.html" : `lesson.html?lesson=${lessonId + 1}`}">${lessonId === window.LESSONS.length ? "Finish Online Portion" : "Proceed to Next Lesson"}</a>` : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`}
@@ -205,7 +205,7 @@
         </div>
         <div class="panel result-card">
           <h3>Missed Question Review</h3>
-          ${missed.length ? missed.map((item) => `<div class="review-item"><p><strong>${item.question}</strong></p><p><strong>Type:</strong> ${item.category} • ${item.difficulty}</p><p>Your answer: ${item.yourAnswer}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`).join("") : '<div class="review-item"><p>No missed questions on this attempt.</p></div>'}
+          ${missed.length ? missed.map((item) => `<div class="review-item"><p><strong>${item.question}</strong></p><p>Your answer: ${item.yourAnswer}</p><p>Correct answer: ${item.correctAnswer}</p><p>${item.explanation}</p></div>`).join("") : '<div class="review-item"><p>No missed questions on this attempt.</p></div>'}
         </div>`;
     }
   </script>

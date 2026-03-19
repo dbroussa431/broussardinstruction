@@ -2,27 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Portal Login</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body>
   <div class="login-wrap">
     <div class="panel login-card">
-      <div class="brand login-brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
+      <div class="brand" style="margin-bottom:18px;align-items:center;">
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
         <div>
-          <h1>Broussard Shooting Academy</h1>
+          <h1 style="color:var(--bsa-blue-dark)">Broussard Shooting Academy</h1>
           <p class="muted">Private Student Portal • Online Prerequisite Access</p>
         </div>
       </div>
-
       <span class="eyebrow">Weekend-ready student access</span>
       <h2>Log in with your access code</h2>
-      <p>This portal is private. Students complete lesson summaries, scenario reviews, and randomized quizzes in smaller phone-friendly chunks. Final certificate is handed in person after the live review and range portion.</p>
+      <p>This portal is private. Students complete lesson summaries, scenario reviews, and quizzes in smaller phone-friendly chunks. Final certificate is handed in person after the live review and range portion.</p>
 
       <form id="loginForm">
         <div class="field">
@@ -33,13 +29,7 @@
       </form>
 
       <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
-
-      <div class="purchase-panel">
-        <strong>No code yet?</strong>
-        <p>Use the purchase button from your main site or contact the academy for a manual or waived access code.</p>
-      </div>
-
-      <div class="login-meta">Progress saves to Firebase and follows the student across devices. Randomized quizzes reduce repeated question sets while preserving your lesson record.</div>
+      <div class="login-meta">Use the access code created in the admin dashboard. Progress saves to Firebase and follows the student across devices.</div>
     </div>
   </div>
 
