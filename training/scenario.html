@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
         <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
       </div>
       <div class="top-actions">
@@ -24,7 +24,7 @@
     <section class="panel content-card">
       <span class="eyebrow">2 short scenarios before the quiz</span>
       <h2 id="scenarioTitle"></h2>
-      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
+      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit. Scenario review does not lock students into a single answer, but it does prepare them for stronger quiz reasoning.</p>
       <div id="scenarioWrap"></div>
       <div id="scenarioResults" class="hidden"></div>
       <div class="lesson-actions">
@@ -43,14 +43,15 @@
       lessonSequenceUnlocked,
       isLessonAllowedByTier,
       getLessonProgress,
-      setScenarioCompleted
+      setScenarioCompleted,
+      setLessonStage
     } from "./app.js";
 
     requireLogin();
     const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
     const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
+    if (!isLessonAllowedByTier(lessonId, student) || !lessonSequenceUnlocked(lessonId, student)) {
       window.location.href = "dashboard.html";
     }
 
@@ -60,6 +61,8 @@
     if (!progress.contentViewed) {
       window.location.href = `lesson.html?lesson=${lesson.id}`;
     }
+
+    await setLessonStage(lesson.id, "scenario");
 
     document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
     document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;

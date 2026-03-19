@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="logo.png" alt="BSA logo"></div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
         <div>
           <h1>Broussard Shooting Academy</h1>
           <p>Private Student Portal • Online Prerequisite Training</p>
@@ -19,6 +20,7 @@
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
         <a class="btn btn-light" href="#live-range">Live Review & Range</a>
+        <a class="btn btn-light" href="admin-dashboard.html">Admin View</a>
         <button class="btn btn-gold" id="logoutBtn">Logout</button>
       </div>
     </div>
@@ -29,12 +31,12 @@
       <div class="panel hero-main">
         <span class="eyebrow">Online prerequisite completed in stages</span>
         <h2 id="welcomeLine">Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.</h2>
-        <p>This portal is built for students who cannot give up one long 10-hour block all at once. Complete each lesson in smaller chunks, pass each quiz with at least 80%, finish the scenario review, and then schedule your in-person live portion with Broussard Shooting Academy.</p>
+        <p>This portal is designed so students can work in smaller chunks without losing continuity. Each lesson includes a concise lesson summary, scenario review, and a randomized quiz. Most students will receive different question sets over time because the portal prefers unseen questions first.</p>
         <div class="meta-row">
           <span class="pill">8 Lessons</span>
           <span class="pill">20-Question Randomized Quizzes</span>
-          <span class="pill">2 Scenarios Per Lesson</span>
-          <span class="pill" id="tierPill">Tier: FREE</span>
+          <span class="pill">Mixed Recall + Application Questions</span>
+          <span class="pill" id="tierPill">Tier: FULL</span>
         </div>
       </div>
       <div class="panel hero-side">
@@ -48,6 +50,10 @@
           <strong id="studentStatus">In Progress</strong>
         </div>
         <div class="stat-card">
+          <small>Total Quiz Time</small>
+          <strong id="quizTimeTotal">0m 0s</strong>
+        </div>
+        <div class="stat-card">
           <small>Certificate Status</small>
           <strong id="certificateStatus">Handed in Person Only</strong>
         </div>
@@ -57,7 +63,7 @@
     <div class="section-head">
       <div>
         <h3>Lesson Dashboard</h3>
-        <p>Lesson summaries, scenario reviews, and pass/retake tracking.</p>
+        <p>Lesson summaries, scenario reviews, quiz status, and timing information.</p>
       </div>
     </div>
 
@@ -65,7 +71,7 @@
 
     <section class="next-step panel" id="live-range">
       <h3>Final Step: Live Review & Range Qualification</h3>
-      <p>After all 8 online lessons, quizzes, and scenarios are successfully completed, the student status changes to <strong>Online Prerequisite Completed</strong>. From there, the student requests an in-person appointment for the live class review and range portion. Final certificate is handed personally by Broussard Shooting Academy after successful completion.</p>
+      <p>After all 8 online lessons, scenario reviews, and quizzes are completed at 80% or better, the student status changes to <strong>Online Prerequisite Completed</strong>. The student then schedules an in-person appointment for classroom review and range qualification. Final certificate is handed personally by Broussard Shooting Academy after successful live completion.</p>
       <div class="lesson-actions">
         <button class="btn btn-gold" id="requestLiveBtn">Request Live Session</button>
         <a class="btn btn-outline" href="complete.html">View Completion Requirements</a>
@@ -84,20 +90,27 @@
       allLessonsComplete,
       lessonStatus,
       getLessonProgress,
+      getLessonStageLabel,
       isLessonAllowedByTier,
-      logout
+      logout,
+      formatSeconds
     } from "./app.js";
 
     requireLogin();
     const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 
     const prog = overallProgress(student);
+    const totalQuizSeconds = (window.LESSONS || []).reduce((sum, lesson) => {
+      return sum + Number(getLessonProgress(lesson.id, student).totalQuizTimeSeconds || 0);
+    }, 0);
+
     document.getElementById("welcomeLine").textContent = `${student?.name || "Student"}, train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.`;
     document.getElementById("progressLabel").textContent = `${prog.passed} / ${prog.total} Lessons Passed`;
     document.getElementById("progressBar").style.width = `${prog.percent}%`;
     document.getElementById("studentStatus").textContent = allLessonsComplete(student) ? "Online Prerequisite Completed" : "In Progress";
     document.getElementById("certificateStatus").textContent = allLessonsComplete(student) ? "Ready for Live Review" : "Handed in Person Only";
-    document.getElementById("tierPill").textContent = `Tier: ${student?.tier || "FREE"}`;
+    document.getElementById("tierPill").textContent = `Tier: ${student?.tier || "FULL"}`;
+    document.getElementById("quizTimeTotal").textContent = formatSeconds(totalQuizSeconds);
 
     const requestLiveBtn = document.getElementById("requestLiveBtn");
     if (!allLessonsComplete(student)) {
@@ -114,6 +127,7 @@
     window.LESSONS.forEach((lesson) => {
       const status = lessonStatus(lesson.id, student);
       const progress = getLessonProgress(lesson.id, student);
+      const currentStage = getLessonStageLabel(progress);
 
       const card = document.createElement("article");
       card.className = `panel lesson-card ${status.locked ? "locked-card" : ""}`;
@@ -121,14 +135,14 @@
       let primaryLabel = "Start Lesson";
       let primaryHref = `lesson.html?lesson=${lesson.id}`;
 
-      if (!isLessonAllowedByTier(lesson.id, student.tier)) {
-        primaryLabel = "Available in FULL Tier";
+      if (!isLessonAllowedByTier(lesson.id, student)) {
+        primaryLabel = "Restricted";
         primaryHref = "#";
       } else if (status.locked) {
         primaryLabel = "Complete Previous Lesson First";
         primaryHref = "#";
       } else if (progress.contentViewed) {
-        primaryLabel = "Continue Lesson";
+        primaryLabel = progress.quizPassed ? "Review Lesson" : "Continue Lesson";
       }
 
       const actionButtons = [];
@@ -142,11 +156,12 @@
         actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>`);
       }
 
-      if (progress.quizPassed && Array.isArray(progress.quizDetails) && progress.quizDetails.length) {
-        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>`);
+      if (progress.quizDetails?.length) {
+        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">Review Last Attempt</a>`);
       }
 
       const attemptChip = progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : "";
+      const timeChip = `<span class="chip">Quiz Time: ${formatSeconds(progress.totalQuizTimeSeconds || 0)}</span>`;
 
       card.innerHTML = `
         <div class="lesson-top">
@@ -161,8 +176,8 @@
         </div>
         <div class="lesson-meta">
           <span class="chip">Estimated Time: ${lesson.estTime}</span>
-          <span class="chip">20-question quiz</span>
-          <span class="chip">2 scenarios</span>
+          <span class="chip">Current Stage: ${currentStage}</span>
+          ${timeChip}
           ${attemptChip}
         </div>
         <div class="lesson-actions">

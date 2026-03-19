@@ -90,8 +90,22 @@ button{font:inherit}
 }
 .flex-row { display:flex; gap:16px; }
 .complete-panel { max-width:900px; margin:40px auto; }
-.complete-list { margin:18px 0 0 20px; color:var(--ink-soft); }
+.complete-list { margin:18px 0 0 20px; color:var(--muted); }
 .complete-list li { margin:8px 0; }
-.login-meta { margin-top:14px; color:var(--ink-soft); font-size:.95rem; }
+.login-meta { margin-top:14px; color:var(--muted); font-size:.95rem; }
 .lesson-lock { margin-top:12px; }
 .btn-disabled { opacity:.65; cursor:not-allowed; }
+
+
+table{border-collapse:collapse;width:100%}
+.table-wrap{overflow:auto}
+.admin-table th,.admin-table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.admin-table th{background:#f7f9fd;color:var(--bsa-blue-dark);position:sticky;top:0}
+.login-brand{margin-bottom:18px;align-items:center}
+.purchase-panel{margin-top:18px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;background:#fafcff}
+.quiz-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.question-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.result-card strong{display:block;font-size:2rem;color:var(--bsa-blue-dark)}
+@media (max-width:640px){
+  .admin-table th,.admin-table td{font-size:.92rem}
+}
