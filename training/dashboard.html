@@ -20,8 +20,7 @@
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
         <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-        <a class="btn btn-light" href="admin-dashboard.html">Admin View</a>
-        <button class="btn btn-gold" id="logoutBtn">Logout</button>
+                <button class="btn btn-gold" id="logoutBtn">Logout</button>
       </div>
     </div>
   </header>
@@ -148,12 +147,9 @@
       const actionButtons = [];
       actionButtons.push(`<a class="btn btn-blue" href="${primaryHref}">${primaryLabel}</a>`);
 
-      if (!status.locked && progress.contentViewed) {
-        actionButtons.push(`<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Open Scenarios</a>`);
-      }
-
-      if (!status.locked && progress.scenarioCompleted) {
-        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>`);
+      if (!status.locked) {
+        actionButtons.push(`<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">${progress.scenarioCompleted ? "Review Scenarios" : "Open Scenarios"}</a>`);
+        actionButtons.push(`<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">${progress.quizPassed ? "Review Quiz" : "Take Quiz"}</a>`);
       }
 
       if (progress.quizDetails?.length) {

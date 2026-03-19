@@ -1,68 +1,134 @@
 <!DOCTYPE html>
-
-          <div class="field">
-            <label for="portalStatus">Portal Status</label>
-            <select id="portalStatus">
-              <option value="Locked">Locked</option>
-              <option value="Active">Active</option>
-              <option value="Expired">Expired</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="progressLabel">Progress Label</label>
-            <select id="progressLabel">
-              <option value="Not Started">Not Started</option>
-              <option value="Lesson 1">Lesson 1</option>
-              <option value="Lesson 2">Lesson 2</option>
-              <option value="Lesson 3">Lesson 3</option>
-              <option value="Lesson 4">Lesson 4</option>
-              <option value="Lesson 5">Lesson 5</option>
-              <option value="Lesson 6">Lesson 6</option>
-              <option value="Lesson 7">Lesson 7</option>
-              <option value="Lesson 8">Lesson 8</option>
-              <option value="Quiz Passed">Quiz Passed</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="progressPercent">Progress %</label>
-            <input type="number" id="progressPercent" min="0" max="100" step="1" value="0" />
-          </div>
-
-          <div class="field">
-            <label for="completionDate">Completion Date</label>
-            <input type="date" id="completionDate" />
-          </div>
-
-          <div class="field">
-            <label for="certificateIssued">Certificate Issued</label>
-            <select id="certificateIssued">
-              <option value="false">No</option>
-              <option value="true">Yes</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="accessCode">Access Code</label>
-            <input type="text" id="accessCode" placeholder="Auto-generated if left blank" />
-          </div>
-
-          <div class="field full">
-            <label for="notes">Notes</label>
-            <textarea id="notes" placeholder="Optional notes about payment, direct pay, waived reason, follow-up, etc."></textarea>
-          </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
+        <div>
+          <h1>BSA Admin Dashboard</h1>
+          <p>Student progress, timing, and portal status</p>
         </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn btn-light" id="cancelStudentBtn">Cancel</button>
-          <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
-        </div>
-      </form>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Student Portal</a>
+        <button class="btn btn-light" id="refreshAdmin">Refresh Records</button>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <script type="module" src="/training/js/admin.js"></script>
+  <main class="container admin-shell">
+    <section class="admin-cards">
+      <article class="panel admin-card">
+        <small>Total Students</small>
+        <strong id="totalStudents">0</strong>
+      </article>
+      <article class="panel admin-card">
+        <small>Active Students</small>
+        <strong id="activeStudents">0</strong>
+      </article>
+      <article class="panel admin-card">
+        <small>Completed Online</small>
+        <strong id="completedOnline">0</strong>
+      </article>
+      <article class="panel admin-card">
+        <small>Total Quiz Time</small>
+        <strong id="totalQuizTime">0m 0s</strong>
+      </article>
+    </section>
+
+    <section class="panel admin-panel">
+      <div class="section-head">
+        <div>
+          <h3>Student Progress Snapshot</h3>
+          <p>Shows stage, lesson location, attempts, total quiz time, and last activity.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Completed</th>
+              <th>Current Lesson</th>
+              <th>Current Stage</th>
+              <th>Total Attempts</th>
+              <th>Total Quiz Time</th>
+              <th>Last Activity</th>
+            </tr>
+          </thead>
+          <tbody id="adminRows">
+            <tr><td colspan="8">Loading student records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { normalizeStudent, getLessonProgress, getLessonStageLabel, formatSeconds } from "./app.js";
+
+    async function loadAdmin() {
+      const body = document.getElementById("adminRows");
+      body.innerHTML = '<tr><td colspan="8">Loading student records...</td></tr>';
+      const snap = await getDocs(collection(db, "portalStudents"));
+      const students = snap.docs.map((doc) => normalizeStudent({ id: doc.id, ...doc.data() }));
+
+      document.getElementById("totalStudents").textContent = students.length;
+      document.getElementById("activeStudents").textContent = students.filter((s) => s.status === "active").length;
+      document.getElementById("completedOnline").textContent = students.filter((s) => (s.completedLessons || []).length >= 8).length;
+
+      let totalQuizSeconds = 0;
+      const rows = students.map((student) => {
+        const lessonProgressEntries = Object.entries(student.progress || {}).map(([lessonId, value]) => ({ lessonId: Number(lessonId), value }));
+        const latestLesson = lessonProgressEntries.sort((a, b) => {
+          const aTime = new Date(a.value.lastActivityAt || 0).getTime();
+          const bTime = new Date(b.value.lastActivityAt || 0).getTime();
+          return bTime - aTime || b.lessonId - a.lessonId;
+        })[0];
+        const currentLesson = latestLesson?.lessonId || ((student.completedLessons?.length || 0) + 1);
+        const progress = getLessonProgress(currentLesson, student);
+        const stage = latestLesson ? getLessonStageLabel(progress) : "Not Started";
+        const attempts = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.attempts || 0), 0);
+        const quizTime = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.totalQuizTimeSeconds || 0), 0);
+        totalQuizSeconds += quizTime;
+        const lastActivity = lessonProgressEntries
+          .map((entry) => entry.value.lastActivityAt)
+          .filter(Boolean)
+          .sort()
+          .pop() || "—";
+
+        return `
+          <tr>
+            <td>${student.name}</td>
+            <td>${student.email || "—"}</td>
+            <td>${(student.completedLessons || []).length} / ${window.LESSONS.length}</td>
+            <td>${currentLesson > window.LESSONS.length ? "Complete" : `Lesson ${currentLesson}`}</td>
+            <td>${stage}</td>
+            <td>${attempts}</td>
+            <td>${formatSeconds(quizTime)}</td>
+            <td>${lastActivity}</td>
+          </tr>
+        `;
+      }).join("");
+
+      body.innerHTML = rows || '<tr><td colspan="8">No student records found.</td></tr>';
+      document.getElementById("totalQuizTime").textContent = formatSeconds(totalQuizSeconds);
+    }
+
+    document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
+    loadAdmin();
+  </script>
 </body>
 </html>
