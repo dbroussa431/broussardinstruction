@@ -1,50 +1,65 @@
-(async function () {
-  try {
-    const app = await import('../app.js');
-    const { login, getCurrentStudent } = app;
 
-    const current = getCurrentStudent();
-    if (current && current.accessCode && current.status === 'active') {
-      window.location.href = 'dashboard.html';
+(function () {
+  function ready(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  ready(function () {
+    var pageHasModernForm = !!document.getElementById("loginForm");
+    var input = document.getElementById("accessCode") || document.querySelector('input[type="text"], input[type="email"], input');
+    var button = document.getElementById("loginBtn") || document.querySelector('button, input[type="submit"]');
+
+    if (!input || !button) {
+      if (!pageHasModernForm) window.location.href = "login.html";
       return;
     }
 
-    const form = document.getElementById('loginForm') || document.querySelector('form');
-    const accessCode = document.getElementById('accessCode') || document.querySelector('input[type="text"], input[type="password"], input[name="accessCode"]');
-    const loginBtn = document.getElementById('loginBtn') || document.querySelector('button[type="submit"], input[type="submit"]');
-    const loginMsg = document.getElementById('loginMsg') || document.getElementById('message');
-
     function showMessage(message) {
-      if (loginMsg) {
-        loginMsg.textContent = message;
-        loginMsg.style.display = 'block';
-      } else {
-        alert(message);
+      var node = document.getElementById("loginMsg");
+      if (!node) {
+        node = document.createElement("p");
+        node.id = "loginMsg";
+        node.style.color = "#ffb8b8";
+        node.style.marginTop = "12px";
+        (button.parentNode || document.body).appendChild(node);
       }
+      node.textContent = message;
+      node.classList.remove("hidden");
     }
 
-    function setLoading(isLoading) {
-      if (!loginBtn) return;
-      loginBtn.disabled = isLoading;
-      if ('textContent' in loginBtn) {
-        loginBtn.textContent = isLoading ? 'Checking Code...' : 'Enter';
-      }
+    function handleLogin(evt) {
+      if (evt) evt.preventDefault();
+      button.disabled = true;
+      var original = button.textContent || button.value || "Enter";
+      if (button.textContent !== undefined) button.textContent = "Checking Code...";
+      if (button.value !== undefined) button.value = "Checking Code...";
+
+      import("../app.js").then(function (mod) {
+        return mod.login(input.value);
+      }).then(function (result) {
+        if (!result.ok) {
+          showMessage(result.message || "Unable to log in.");
+          button.disabled = false;
+          if (button.textContent !== undefined) button.textContent = original;
+          if (button.value !== undefined) button.value = original;
+          return;
+        }
+        window.location.href = "dashboard.html";
+      }).catch(function (error) {
+        console.error(error);
+        showMessage("Login failed. Please try again.");
+        button.disabled = false;
+        if (button.textContent !== undefined) button.textContent = original;
+        if (button.value !== undefined) button.value = original;
+      });
     }
 
-    if (!form || !accessCode) return;
-
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      setLoading(true);
-      const result = await login(accessCode.value);
-      if (!result.ok) {
-        showMessage(result.message || 'Login failed.');
-        setLoading(false);
-        return;
-      }
-      window.location.href = 'dashboard.html';
+    var form = document.getElementById("loginForm") || button.closest("form");
+    if (form) form.addEventListener("submit", handleLogin);
+    button.addEventListener("click", handleLogin);
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") handleLogin(event);
     });
-  } catch (error) {
-    console.error('Compatibility login bootstrap failed:', error);
-  }
+  });
 })();
