@@ -1,7 +1,11 @@
 window.BSA_PAY_CONFIG = {
-  paypalClientId: "REPLACE_WITH_PAYPAL_CLIENT_ID",
+  paypalClientId: "AXA3pfi5Xw9XYJCftXrScMroVnGMhmDfxbZkQL8B...",
+  courseName: "Louisiana Concealed Carry",
+  coursePrice: 150,
   currency: "USD",
-  amount: "150.00",
-  createOrderUrl: "https://us-central1-bsa-training-admin.cloudfunctions.net/createPayPalOrder",
-  captureOrderUrl: "https://us-central1-bsa-training-admin.cloudfunctions.net/capturePayPalOrder"
+  purchaseSuccessUrl: "https://broussardshootingacademy.com/training/login.html?purchase=success",
+  purchaseCancelUrl: "https://broussardshootingacademy.com/training/purchase.html?purchase=cancelled",
+  functionsBaseUrl: "https://us-central1-bsa-training-admin.cloudfunctions.net",
+  supportEmail: "BroussardShootingAcademy@protonmail.com",
+  supportPhone: "504-289-6605"
 };
