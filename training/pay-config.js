@@ -1,5 +1,5 @@
 window.BSA_PAY_CONFIG = {
-  paypalClientId: "AXA3pfi5Xw9XYJCftXrScMroVnGMhmDfxbZkQL8B...",
+  paypalClientId: "AXA3pfi5Xw9XYJCftXrScMroVnGMhmDfxbZkQL8BWm5n5y0Ivolgd9TMms7mfWEvSMDQUbka4Hz7A_rc",
   courseName: "Louisiana Concealed Carry",
   coursePrice: 150,
   currency: "USD",
