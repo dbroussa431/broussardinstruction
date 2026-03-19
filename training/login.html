@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Portal Login</title>
+  <link rel="icon" type="image/png" href="/IMAGES/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/IMAGES/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -29,7 +31,16 @@
       </form>
 
       <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
-      <div class="login-meta">Use the access code created in the admin dashboard. Progress saves to Firebase and follows the student across devices.</div>
+
+      <div class="purchase-cta-block">
+        <p class="purchase-cta-title">Need portal access?</p>
+        <a class="btn btn-outline purchase-cta-btn" href="purchase.html">Purchase Course Access</a>
+        <p class="login-meta" style="margin-top:10px;">
+          Waived and admin-issued codes still work here. Paid self-service purchases generate and email codes automatically after confirmed PayPal payment.
+        </p>
+      </div>
+
+      <div class="login-meta">If your progress was already in Firebase, it will load back into your dashboard after login.</div>
     </div>
   </div>
 

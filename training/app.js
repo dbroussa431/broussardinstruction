@@ -7,7 +7,6 @@ import {
   doc,
   getDoc,
   updateDoc,
-  addDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -26,11 +25,6 @@ function freshProgressForLesson(existing = {}) {
     quizScore: Number(existing.quizScore || 0),
     attempts: Number(existing.attempts || 0),
     quizDetails: Array.isArray(existing.quizDetails) ? existing.quizDetails : [],
-    seenQuestionIds: Array.isArray(existing.seenQuestionIds) ? existing.seenQuestionIds : [],
-    totalQuizTimeSeconds: Number(existing.totalQuizTimeSeconds || 0),
-    lastQuizTimeSeconds: Number(existing.lastQuizTimeSeconds || 0),
-    currentStage: String(existing.currentStage || "not-started"),
-    lastActivityAt: existing.lastActivityAt || null,
     completedAt: existing.completedAt || null
   };
 }
@@ -55,53 +49,14 @@ function normalizeStudent(rawStudent = {}) {
     name: String(rawStudent.name || "").trim() || "Student",
     email: String(rawStudent.email || "").trim().toLowerCase(),
     accessCode: String(rawStudent.accessCode || "").trim().toUpperCase(),
-    tier: String(rawStudent.tier || "FULL").trim().toUpperCase(),
+    tier: String(rawStudent.tier || "FREE").trim().toUpperCase(),
     paid: !!rawStudent.paid,
     status: String(rawStudent.status || "active").trim().toLowerCase(),
-    paymentStatus: String(rawStudent.paymentStatus || (rawStudent.paid ? "paid" : "pending")).trim().toLowerCase(),
-    paymentMethod: String(rawStudent.paymentMethod || (rawStudent.paid ? "paypal" : "manual")).trim(),
-    course: String(rawStudent.course || "Louisiana Concealed Carry").trim(),
-    price: Number(rawStudent.price || 0),
     progress,
     completedLessons,
-    currentLesson: Number(rawStudent.currentLesson || inferCurrentLesson(progress, completedLessons) || 1),
-    currentStage: String(rawStudent.currentStage || inferCurrentStage(progress, completedLessons)).trim(),
-    totalQuizTimeSeconds: Number(rawStudent.totalQuizTimeSeconds || sumQuizTime(progress)),
-    lastActivityAt: rawStudent.lastActivityAt || inferLastActivity(progress) || null,
     lastLoginAt: rawStudent.lastLoginAt || null,
-    updatedAt: rawStudent.updatedAt || null,
-    createdAt: rawStudent.createdAt || null
+    updatedAt: rawStudent.updatedAt || null
   };
-}
-
-function inferCurrentLesson(progress = {}, completedLessons = []) {
-  const lessons = getLessons();
-  for (const lesson of lessons) {
-    if (!completedLessons.includes(lesson.id)) return lesson.id;
-  }
-  return lessons.length || 1;
-}
-
-function inferCurrentStage(progress = {}, completedLessons = []) {
-  const lessonId = inferCurrentLesson(progress, completedLessons);
-  const p = freshProgressForLesson(progress?.[lessonId] || {});
-  if (completedLessons.length >= (getLessons().length || 8)) return "completed";
-  if (p.quizPassed) return "passed";
-  if (p.scenarioCompleted) return "ready-for-quiz";
-  if (p.contentViewed) return "scenario";
-  return "not-started";
-}
-
-function inferLastActivity(progress = {}) {
-  return Object.values(progress)
-    .map((value) => value?.lastActivityAt)
-    .filter(Boolean)
-    .sort()
-    .pop() || null;
-}
-
-function sumQuizTime(progress = {}) {
-  return Object.values(progress).reduce((sum, item) => sum + Number(item?.totalQuizTimeSeconds || 0), 0);
 }
 
 function cacheStudent(student) {
@@ -138,12 +93,8 @@ function randomSample(items, count) {
   return copy.slice(0, Math.min(count, copy.length));
 }
 
-function shuffleArray(items) {
-  return randomSample(items, items.length);
-}
-
-function isLessonAllowedByTier(lessonId, tier = "FULL") {
-  return true;
+function isLessonAllowedByTier(lessonId, tier = "FREE") {
+  return Number(lessonId) >= 1;
 }
 
 function lessonSequenceUnlocked(lessonId, student = getCurrentStudent()) {
@@ -156,7 +107,7 @@ function lessonSequenceUnlocked(lessonId, student = getCurrentStudent()) {
 function lessonStatus(lessonId, student = getCurrentStudent()) {
   const progress = getLessonProgress(lessonId, student);
 
-  if (!isLessonAllowedByTier(lessonId, student?.tier || "FULL")) {
+  if (!isLessonAllowedByTier(lessonId, student?.tier || "FREE")) {
     return { locked: true, className: "locked", label: "Upgrade Required" };
   }
 
@@ -199,22 +150,6 @@ function allLessonsComplete(student = getCurrentStudent()) {
   return !!student && lessons.length > 0 && student.completedLessons.length >= lessons.length;
 }
 
-function formatSeconds(totalSeconds = 0) {
-  const seconds = Number(totalSeconds || 0);
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}m ${secs}s`;
-}
-
-function generateAccessCode(name = "BSA") {
-  const prefix = String(name || "BSA")
-    .replace(/[^A-Za-z]/g, "")
-    .toUpperCase()
-    .slice(0, 4) || "BSA";
-  const random = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `${prefix}-${random}`;
-}
-
 async function login(code) {
   const cleanCode = String(code || "").trim().toUpperCase();
   if (!cleanCode) {
@@ -222,10 +157,12 @@ async function login(code) {
   }
 
   try {
-    let snapshot = await getDocs(query(collection(db, "portalStudents"), where("accessCode", "==", cleanCode), where("status", "==", "active")));
-    if (snapshot.empty) {
-      snapshot = await getDocs(query(collection(db, "portalStudents"), where("accessCode", "==", cleanCode)));
-    }
+    const q = query(
+      collection(db, "portalStudents"),
+      where("accessCode", "==", cleanCode),
+      where("status", "==", "active")
+    );
+    const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
       return { ok: false, message: "Invalid or inactive access code." };
@@ -236,7 +173,6 @@ async function login(code) {
 
     await updateDoc(doc(db, "portalStudents", student.id), {
       lastLoginAt: serverTimestamp(),
-      lastActivityAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
 
@@ -290,8 +226,6 @@ async function updateStudentProgress(lessonId, patch = {}) {
   const refreshed = (await refreshCurrentStudentFromFirestore()) || student;
   const existing = freshProgressForLesson(refreshed.progress?.[lessonId] || {});
   const merged = { ...existing, ...patch };
-  const nowIso = new Date().toISOString();
-  merged.lastActivityAt = patch.lastActivityAt || nowIso;
 
   const progress = { ...refreshed.progress, [lessonId]: merged };
   const completedSet = new Set(refreshed.completedLessons || []);
@@ -299,19 +233,10 @@ async function updateStudentProgress(lessonId, patch = {}) {
   else completedSet.delete(Number(lessonId));
 
   const completedLessons = [...completedSet].sort((a, b) => a - b);
-  const currentLesson = merged.quizPassed
-    ? Math.min((getLessons().length || 8), Number(lessonId) + 1)
-    : Number(lessonId);
-  const currentStage = merged.quizPassed ? "passed" : merged.currentStage || inferCurrentStage(progress, completedLessons);
-  const totalQuizTimeSeconds = sumQuizTime(progress);
 
   const payload = {
     progress,
     completedLessons,
-    currentLesson,
-    currentStage,
-    totalQuizTimeSeconds,
-    lastActivityAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   };
 
@@ -320,11 +245,7 @@ async function updateStudentProgress(lessonId, patch = {}) {
   const updatedStudent = cacheStudent({
     ...refreshed,
     progress,
-    completedLessons,
-    currentLesson,
-    currentStage,
-    totalQuizTimeSeconds,
-    lastActivityAt: nowIso
+    completedLessons
   });
 
   return updatedStudent;
@@ -332,82 +253,33 @@ async function updateStudentProgress(lessonId, patch = {}) {
 
 async function setLessonContentViewed(lessonId) {
   const progress = getLessonProgress(lessonId);
-  return updateStudentProgress(lessonId, {
-    contentViewed: true,
-    currentStage: progress.quizPassed ? "passed" : "lesson"
-  });
+  if (progress.contentViewed) return getCurrentStudent();
+  return updateStudentProgress(lessonId, { contentViewed: true });
 }
 
 async function setScenarioCompleted(lessonId) {
-  return updateStudentProgress(lessonId, {
-    scenarioCompleted: true,
-    currentStage: "ready-for-quiz"
-  });
-}
-
-async function setCurrentLessonStage(lessonId, stage) {
-  return updateStudentProgress(lessonId, {
-    currentStage: stage
-  });
+  return updateStudentProgress(lessonId, { scenarioCompleted: true });
 }
 
 function getAttemptCount(lessonId, student = getCurrentStudent()) {
   return Number(getLessonProgress(lessonId, student).attempts || 0);
 }
 
-async function recordQuizResult(lessonId, score, details, meta = {}) {
+async function recordQuizResult(lessonId, score, details) {
   const current = getLessonProgress(lessonId);
   const attempts = Number(current.attempts || 0) + 1;
-  const durationSeconds = Number(meta.durationSeconds || 0);
-  const selectedQuestionIds = Array.isArray(meta.selectedQuestionIds) ? meta.selectedQuestionIds : [];
-  const seenQuestionIds = [...new Set([...(current.seenQuestionIds || []), ...selectedQuestionIds])];
 
   return updateStudentProgress(lessonId, {
     attempts,
     quizScore: score,
     quizPassed: score >= PASSING_SCORE,
     quizDetails: details,
-    seenQuestionIds,
-    lastQuizTimeSeconds: durationSeconds,
-    totalQuizTimeSeconds: Number(current.totalQuizTimeSeconds || 0) + durationSeconds,
-    currentStage: score >= PASSING_SCORE ? "passed" : "quiz",
-    completedAt: score >= PASSING_SCORE ? new Date().toISOString() : current.completedAt || null
+    completedAt: new Date().toISOString()
   });
 }
 
 function requestLiveSessionAllowed(student = getCurrentStudent()) {
   return allLessonsComplete(student);
-}
-
-async function createStudentRecord(payload = {}) {
-  const name = String(payload.name || "Student").trim();
-  const email = String(payload.email || "").trim().toLowerCase();
-  const price = Number(payload.price || 0);
-  const paid = !!payload.paid || String(payload.paymentStatus || "").toLowerCase() === "paid";
-  const accessCode = String(payload.accessCode || generateAccessCode(name)).trim().toUpperCase();
-
-  const docRef = await addDoc(collection(db, "portalStudents"), {
-    name,
-    email,
-    accessCode,
-    tier: String(payload.tier || "FULL").toUpperCase(),
-    paid,
-    status: String(payload.status || "active").toLowerCase(),
-    paymentStatus: String(payload.paymentStatus || (paid ? "paid" : "pending")).toLowerCase(),
-    paymentMethod: String(payload.paymentMethod || (paid ? "paypal" : "manual")),
-    course: String(payload.course || "Louisiana Concealed Carry"),
-    price,
-    progress: {},
-    completedLessons: [],
-    currentLesson: 1,
-    currentStage: "not-started",
-    totalQuizTimeSeconds: 0,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-    lastActivityAt: serverTimestamp()
-  });
-
-  return { id: docRef.id, accessCode };
 }
 
 const api = {
@@ -423,7 +295,6 @@ const api = {
   cacheStudent,
   setLessonContentViewed,
   setScenarioCompleted,
-  setCurrentLessonStage,
   recordQuizResult,
   getAttemptCount,
   getLessonProgress,
@@ -434,10 +305,6 @@ const api = {
   isLessonAllowedByTier,
   qs,
   randomSample,
-  shuffleArray,
-  formatSeconds,
-  generateAccessCode,
-  createStudentRecord,
   requestLiveSessionAllowed
 };
 
@@ -456,7 +323,6 @@ export {
   cacheStudent,
   setLessonContentViewed,
   setScenarioCompleted,
-  setCurrentLessonStage,
   recordQuizResult,
   getAttemptCount,
   getLessonProgress,
@@ -467,9 +333,5 @@ export {
   isLessonAllowedByTier,
   qs,
   randomSample,
-  shuffleArray,
-  formatSeconds,
-  generateAccessCode,
-  createStudentRecord,
   requestLiveSessionAllowed
 };
