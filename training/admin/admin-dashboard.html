@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Portal Admin Snapshot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
+        <div><h1>BSA Portal Admin Snapshot</h1><p>Student timing, progress, and stage tracking</p></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Student Portal</a>
+        <button class="btn btn-gold" id="refreshAdmin">Refresh Records</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="results-grid">
+      <div class="panel result-card"><small>Total Students</small><strong id="totalStudents">0</strong></div>
+      <div class="panel result-card"><small>Active Students</small><strong id="activeStudents">0</strong></div>
+      <div class="panel result-card"><small>Total Quiz Time</small><strong id="totalQuizTime">0m 0s</strong></div>
+      <div class="panel result-card"><small>Completed Online</small><strong id="completedOnline">0</strong></div>
+    </section>
+
+    <section class="panel content-card" style="margin-top:20px;">
+      <div class="section-head">
+        <div>
+          <h3>Student Progress Snapshot</h3>
+          <p>Shows lesson stage, attempts, quiz time, and last activity.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Completed</th>
+              <th>Current Lesson</th>
+              <th>Current Stage</th>
+              <th>Attempts</th>
+              <th>Total Quiz Time</th>
+              <th>Last Active</th>
+            </tr>
+          </thead>
+          <tbody id="adminRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { normalizeStudent, getLessonProgress, getLessonStageLabel, formatSeconds } from "./app.js";
+
+    async function loadAdmin() {
+      const snap = await getDocs(collection(db, "portalStudents"));
+      const students = snap.docs.map((doc) => normalizeStudent({ id: doc.id, ...doc.data() }));
+
+      document.getElementById("totalStudents").textContent = students.length;
+      document.getElementById("activeStudents").textContent = students.filter((s) => s.status === "active").length;
+      document.getElementById("completedOnline").textContent = students.filter((s) => (s.completedLessons || []).length >= 8).length;
+
+      let totalQuizSeconds = 0;
+      const rows = students.map((student) => {
+        const lastLessonVisited = Math.max(0, ...Object.values(student.progress || {}).map((p) => Number(p.lastLessonVisited || 0)));
+        const currentLesson = lastLessonVisited || ((student.completedLessons?.length || 0) + 1);
+        const lessonProgress = getLessonProgress(currentLesson, student);
+        const stage = getLessonStageLabel(lessonProgress);
+        const attempts = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.attempts || 0), 0);
+        const quizTime = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.totalQuizTimeSeconds || 0), 0);
+        totalQuizSeconds += quizTime;
+        const lastActivity = Object.values(student.progress || {})
+          .map((item) => item.lastActivityAt)
+          .filter(Boolean)
+          .sort()
+          .pop() || student.updatedAt || "—";
+
+        return `
+          <tr>
+            <td>${student.name}</td>
+            <td>${student.email || "—"}</td>
+            <td>${(student.completedLessons || []).length} / ${window.LESSONS.length}</td>
+            <td>${currentLesson > window.LESSONS.length ? "Complete" : `Lesson ${currentLesson}`}</td>
+            <td>${stage}</td>
+            <td>${attempts}</td>
+            <td>${formatSeconds(quizTime)}</td>
+            <td>${typeof lastActivity === "string" ? lastActivity : "Recently updated"}</td>
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById("adminRows").innerHTML = rows || '<tr><td colspan="8">No student records found.</td></tr>';
+      document.getElementById("totalQuizTime").textContent = formatSeconds(totalQuizSeconds);
+    }
+
+    document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
+    loadAdmin();
+  </script>
+</body>
+</html>
