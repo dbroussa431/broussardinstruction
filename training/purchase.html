@@ -7,129 +7,67 @@
   <link rel="icon" href="/IMAGES/favicon.ico">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .purchase-wrap {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-    .purchase-card {
-      max-width: 760px;
-      width: 100%;
-      padding: 30px;
-    }
-    .purchase-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 20px;
-      align-items: start;
-    }
-    .purchase-box {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: #fff;
-      padding: 18px;
-    }
-    .purchase-box h3 {
-      margin: 0 0 10px;
-    }
-    .purchase-price {
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--bsa-blue-dark);
-      margin: 6px 0 0;
-    }
-    .purchase-helper {
-      color: var(--muted);
-      line-height: 1.6;
-      margin: 0 0 18px;
-    }
-    .status-area {
-      margin-top: 14px;
-    }
-    .status-area .notice {
-      margin-bottom: 12px;
-    }
-    .code-box {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #f8fbff;
-      padding: 14px;
-      font-weight: 800;
-      color: var(--bsa-blue-dark);
-      word-break: break-word;
-    }
-    .hidden {
-      display: none !important;
-    }
-    @media (max-width: 900px) {
-      .purchase-grid {
-        grid-template-columns: 1fr;
-      }
-      .purchase-card {
-        padding: 20px;
-      }
-    }
+    .purchase-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .purchase-card{max-width:920px;width:100%;padding:30px}
+    .purchase-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+    .purchase-box{border:1px solid var(--line,#d9e0ec);border-radius:18px;background:#fff;padding:18px}
+    .purchase-box h3{margin:0 0 8px}
+    .purchase-price{font-size:2rem;font-weight:900;color:var(--bsa-blue-dark,#17356b);margin:10px 0 0}
+    .purchase-helper{color:var(--muted,#68758a);line-height:1.65;margin:0 0 16px}
+    .status-area{margin-top:14px}
+    .status-area .notice{margin-bottom:12px}
+    .code-box{border:1px solid var(--line,#d9e0ec);border-radius:14px;background:#f8fbff;padding:14px;font-weight:800;color:var(--bsa-blue-dark,#17356b);word-break:break-word}
+    .manual-fallback{margin-top:12px;padding-top:14px;border-top:1px solid var(--line,#d9e0ec)}
+    .hidden{display:none!important}
+    .field-note{font-size:.92rem;color:var(--muted,#68758a);margin-top:8px}
+    @media (max-width:900px){.purchase-grid{grid-template-columns:1fr}.purchase-card{padding:20px}}
   </style>
 </head>
 <body>
   <div class="purchase-wrap">
     <section class="panel purchase-card">
       <div class="brand" style="margin-bottom:18px;align-items:center;">
-        <div class="brand-mark">
-          <img src="images/bsa-logo.png" alt="BSA logo">
-        </div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
         <div>
           <h1 style="color:var(--bsa-blue-dark);margin:0;">Broussard Shooting Academy</h1>
           <p class="muted" style="margin:4px 0 0;">Purchase portal access</p>
         </div>
       </div>
-
       <div class="purchase-grid">
         <div>
           <span class="eyebrow">Automatic code delivery</span>
           <h2 style="margin:0 0 12px;font-size:2rem;">Buy access and get your code by email</h2>
-          <p class="purchase-helper">
-            After PayPal payment is captured, Firebase generates a portal code, creates the student record,
-            and emails the access code automatically.
-          </p>
-
+          <p class="purchase-helper">After PayPal payment is captured, Firebase generates a portal code, creates the student record, and emails the access code automatically.</p>
           <div class="field">
             <label for="buyerName">Full name</label>
             <input id="buyerName" type="text" placeholder="Your full name" autocomplete="name">
           </div>
-
           <div class="field">
             <label for="buyerEmail">Email address</label>
             <input id="buyerEmail" type="email" placeholder="you@example.com" autocomplete="email">
           </div>
-
+          <p class="field-note">Use the name and email address you want attached to your student record.</p>
           <div class="purchase-box" style="margin-top:16px;">
             <h3>BSA Online Prerequisite Access</h3>
             <div class="purchase-price">$150.00</div>
           </div>
-
-          <div class="notice warn" style="margin-top:16px;">
-            If email delivery fails, the generated code is still shown on the confirmation screen so the buyer can log in immediately.
-          </div>
+          <div class="notice warn" style="margin-top:16px;">If email delivery fails, the generated code is still shown on the confirmation screen so the buyer can log in immediately.</div>
         </div>
-
         <div>
           <div class="purchase-box">
             <h3>Pay securely with PayPal</h3>
-            <p class="purchase-helper">
-              Use the same name and email you want attached to your student record.
-            </p>
-
+            <p class="purchase-helper">This page first tries automated checkout. If PayPal script loading fails, a manual PayPal backup link appears below.</p>
             <div id="paypal-button-container"></div>
-
             <div class="status-area">
               <div id="loadingNotice" class="notice info hidden">Loading PayPal checkout…</div>
               <div id="errorNotice" class="notice bad hidden"></div>
               <div id="successNotice" class="notice ok hidden"></div>
               <div id="codeNotice" class="code-box hidden"></div>
             </div>
-
+            <div id="manualFallback" class="manual-fallback hidden">
+              <p class="muted" style="margin:0 0 10px;">Backup option if automated checkout is temporarily unavailable:</p>
+              <a id="manualPayLink" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Pay with PayPal.Me</a>
+            </div>
             <div class="lesson-actions" style="margin-top:16px;">
               <a class="btn btn-outline" href="login.html">Back to Login</a>
             </div>
@@ -138,159 +76,69 @@
       </div>
     </section>
   </div>
-
   <script src="pay-config.js"></script>
   <script>
-    function show(el, text) {
-      if (typeof text === "string") el.textContent = text;
-      el.classList.remove("hidden");
-    }
-
-    function hide(el) {
-      el.classList.add("hidden");
-    }
-
-    function validEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
-    }
-
-    async function loadPayPalSdk(clientId, currency) {
-      return new Promise((resolve, reject) => {
-        const existing = document.querySelector('script[data-paypal-sdk="1"]');
-        if (existing) {
-          existing.remove();
-        }
-
-        const script = document.createElement("script");
-        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${encodeURIComponent(currency)}`;
-        script.async = true;
-        script.dataset.paypalSdk = "1";
-        script.onload = resolve;
-        script.onerror = reject;
+    function show(el, text){ if(typeof text==="string") el.textContent=text; el.classList.remove("hidden"); }
+    function hide(el){ el.classList.add("hidden"); }
+    function validEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||"").trim()); }
+    function normalize(text){ return String(text||"").trim(); }
+    async function loadPayPalSdk(clientId, currency){
+      return new Promise((resolve,reject)=>{
+        const existing=document.querySelector('script[data-paypal-sdk="1"]');
+        if(existing) existing.remove();
+        const script=document.createElement("script");
+        script.src="https://www.paypal.com/sdk/js?client-id="+encodeURIComponent(clientId)+"&currency="+encodeURIComponent(currency||"USD");
+        script.async=true; script.dataset.paypalSdk="1";
+        script.onload=resolve; script.onerror=reject;
         document.head.appendChild(script);
       });
     }
-
-    async function initPurchase() {
-      const cfg = window.BSA_PAY_CONFIG;
-      const loadingNotice = document.getElementById("loadingNotice");
-      const errorNotice = document.getElementById("errorNotice");
-      const successNotice = document.getElementById("successNotice");
-      const codeNotice = document.getElementById("codeNotice");
-      const buyerName = document.getElementById("buyerName");
-      const buyerEmail = document.getElementById("buyerEmail");
-
-      hide(errorNotice);
-      hide(successNotice);
-      hide(codeNotice);
-      show(loadingNotice, "Loading PayPal checkout…");
-
-      if (!cfg || !cfg.paypalClientId || !cfg.functionsBaseUrl) {
+    async function initPurchase(){
+      const cfg=window.BSA_PAY_CONFIG||{};
+      const loadingNotice=document.getElementById("loadingNotice");
+      const errorNotice=document.getElementById("errorNotice");
+      const successNotice=document.getElementById("successNotice");
+      const codeNotice=document.getElementById("codeNotice");
+      const buyerName=document.getElementById("buyerName");
+      const buyerEmail=document.getElementById("buyerEmail");
+      const manualFallback=document.getElementById("manualFallback");
+      const manualPayLink=document.getElementById("manualPayLink");
+      manualPayLink.href=cfg.manualPayPalMeUrl||"https://www.paypal.com/paypalme/dbroussa431/150";
+      hide(errorNotice); hide(successNotice); hide(codeNotice); show(loadingNotice,"Loading PayPal checkout…");
+      if(!cfg.paypalClientId || !cfg.createOrderUrl || !cfg.captureOrderUrl){ hide(loadingNotice); show(errorNotice,"Payment configuration is incomplete. Use the manual PayPal backup link below."); show(manualFallback); return; }
+      try{
+        await loadPayPalSdk(cfg.paypalClientId,cfg.currency||"USD");
         hide(loadingNotice);
-        show(errorNotice, "Payment configuration is missing. Please contact Broussard Shooting Academy.");
-        return;
-      }
-
-      try {
-        await loadPayPalSdk(cfg.paypalClientId, cfg.currency || "USD");
-        hide(loadingNotice);
-
-        if (!window.paypal) {
-          show(errorNotice, "PayPal failed to load. Please refresh and try again.");
-          return;
-        }
-
+        if(!window.paypal || !window.paypal.Buttons){ show(errorNotice,"Unable to load PayPal checkout right now."); show(manualFallback); return; }
         window.paypal.Buttons({
-          style: {
-            layout: "vertical",
-            color: "gold",
-            shape: "rect",
-            label: "paypal"
-          },
-
-          createOrder: async () => {
-            hide(errorNotice);
-            hide(successNotice);
-            hide(codeNotice);
-
-            const name = buyerName.value.trim();
-            const email = buyerEmail.value.trim().toLowerCase();
-
-            if (!name) {
-              show(errorNotice, "Please enter your full name before checkout.");
-              throw new Error("Missing buyer name");
-            }
-
-            if (!validEmail(email)) {
-              show(errorNotice, "Please enter a valid email address before checkout.");
-              throw new Error("Missing or invalid buyer email");
-            }
-
-            const response = await fetch(`${cfg.functionsBaseUrl}/createPayPalOrder`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name,
-                email
-              })
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (!response.ok || !data.orderID) {
-              show(errorNotice, data.error || "Unable to create PayPal order.");
-              throw new Error(data.error || "Unable to create PayPal order");
-            }
-
+          style:{layout:"vertical",color:"gold",shape:"rect",label:"paypal"},
+          createOrder: async ()=>{
+            hide(errorNotice); hide(successNotice); hide(codeNotice);
+            const name=normalize(buyerName.value); const email=normalize(buyerEmail.value).toLowerCase();
+            if(!name){ show(errorNotice,"Please enter your full name before checkout."); throw new Error("Missing buyer name");}
+            if(!validEmail(email)){ show(errorNotice,"Please enter a valid email address before checkout."); throw new Error("Missing buyer email");}
+            const response=await fetch(cfg.createOrderUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email})});
+            const data=await response.json().catch(()=>({}));
+            if(!response.ok || !data.orderID){ show(errorNotice,data.error||"Unable to create PayPal order."); show(manualFallback); throw new Error(data.error||"Unable to create PayPal order");}
             return data.orderID;
           },
-
-          onApprove: async (data) => {
-            hide(errorNotice);
-            show(loadingNotice, "Finalizing payment and generating your portal code…");
-
-            const response = await fetch(`${cfg.functionsBaseUrl}/capturePayPalOrder`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderID: data.orderID,
-                name: buyerName.value.trim(),
-                email: buyerEmail.value.trim().toLowerCase()
-              })
-            });
-
-            const result = await response.json().catch(() => ({}));
+          onApprove: async (data)=>{
+            hide(errorNotice); hide(successNotice); hide(codeNotice);
+            show(loadingNotice,"Finalizing payment and generating your portal code…");
+            const response=await fetch(cfg.captureOrderUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({orderID:data.orderID,name:normalize(buyerName.value),email:normalize(buyerEmail.value).toLowerCase()})});
+            const result=await response.json().catch(()=>({}));
             hide(loadingNotice);
-
-            if (!response.ok || !result.success) {
-              show(errorNotice, result.error || "Payment was approved but code delivery failed. Contact Broussard Shooting Academy.");
-              return;
-            }
-
-            show(successNotice, result.emailSent
-              ? "Payment complete. Your access code has been emailed."
-              : "Payment complete. Email delivery failed, but your access code is shown below.");
-
-            show(codeNotice, `Your access code: ${result.accessCode}`);
+            if(!response.ok || !result.success){ show(errorNotice,result.error||"Payment was approved but code delivery failed. Contact Broussard Shooting Academy."); return; }
+            show(successNotice,result.emailSent ? "Payment complete. Your access code has been emailed." : "Payment complete. Email delivery failed, but your access code is shown below.");
+            show(codeNotice,"Your access code: "+result.accessCode);
           },
-
-          onCancel: () => {
-            hide(loadingNotice);
-            show(errorNotice, "Checkout was cancelled.");
-          },
-
-          onError: (err) => {
-            console.error(err);
-            hide(loadingNotice);
-            show(errorNotice, "PayPal checkout failed. Please try again or contact Broussard Shooting Academy.");
-          }
+          onCancel: ()=>{ hide(loadingNotice); show(errorNotice,"Checkout was cancelled.");},
+          onError: (err)=>{ console.error(err); hide(loadingNotice); show(errorNotice,"Unable to load PayPal checkout right now."); show(manualFallback); }
         }).render("#paypal-button-container");
-      } catch (error) {
-        console.error(error);
-        hide(loadingNotice);
-        show(errorNotice, "Unable to load PayPal checkout right now.");
+      }catch(error){
+        console.error(error); hide(loadingNotice); show(errorNotice,"Unable to load PayPal checkout right now."); show(manualFallback);
       }
     }
-
     initPurchase();
   </script>
 </body>
