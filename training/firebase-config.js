@@ -1,16 +1,18 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCF3y6cr25Ls9MKM2YPJLHJEAgA3PzRp-o",
+  apiKey: "PASTE_YOUR_FIREBASE_API_KEY",
   authDomain: "bsa-training-admin.firebaseapp.com",
   projectId: "bsa-training-admin",
-  storageBucket: "bsa-training-admin.firebasestorage.app",
-  messagingSenderId: "972595893407",
-  appId: "1:972595893407:web:f415a0f24602bd9603beaa"
+  storageBucket: "bsa-training-admin.appspot.com",
+  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+  appId: "PASTE_YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-export { db };
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+export default app;
