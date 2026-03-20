@@ -7,118 +7,275 @@
   <link rel="stylesheet" href="./styles.css">
   <style>
     .admin-page { max-width: 1500px; }
+
     .admin-stats-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 18px;
+      margin-bottom: 20px;
     }
-    .admin-stat-card { padding: 18px 20px; }
-    .admin-stat-card small { display:block; color: var(--muted); margin-bottom: 6px; font-weight:700; }
-    .admin-stat-card strong { font-size: 1.5rem; color: var(--bsa-blue-dark); }
-    .admin-toolbar-wrap, .admin-table-panel { padding: 22px; }
+
+    .admin-stat-card {
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid #e1e6f0;
+      box-shadow: 0 12px 30px rgba(17, 35, 74, .08);
+    }
+
+    .admin-stat-card small {
+      display: block;
+      color: #6e7890;
+      margin-bottom: 8px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .84rem;
+    }
+
+    .admin-stat-card strong {
+      font-size: 2.2rem;
+      color: #17356b;
+      line-height: 1;
+    }
+
+    .admin-stat-card.warning { box-shadow: inset 0 -3px 0 #efc45d, 0 12px 30px rgba(17,35,74,.08); }
+    .admin-stat-card.success { box-shadow: inset 0 -3px 0 #9bd0a9, 0 12px 30px rgba(17,35,74,.08); }
+    .admin-stat-card.gold { box-shadow: inset 0 -3px 0 #efc45d, 0 12px 30px rgba(17,35,74,.08); }
+
+    .admin-toolbar-wrap,
+    .admin-table-panel {
+      padding: 22px 24px;
+    }
+
     .admin-toolbar-row {
       display: grid;
-      grid-template-columns: 1.3fr repeat(3, minmax(180px, .7fr)) auto;
+      grid-template-columns: 1.4fr .9fr .9fr .7fr auto;
       gap: 14px;
       align-items: end;
     }
-    .search-block, .filter-block { display:grid; gap:8px; }
-    .filter-block.compact label, .search-block label { font-weight: 700; }
-    .filter-actions { display:flex; gap:10px; flex-wrap:wrap; }
-    .admin-table-head { margin-bottom: 14px; }
-    .admin-table-head h2 { margin:0; }
-    .admin-table-head p { margin:6px 0 0; color:var(--muted); }
-    .table-scroll { overflow-x:auto; }
+
+    .search-block,
+    .filter-block {
+      display: grid;
+      gap: 8px;
+    }
+
+    .search-block label,
+    .filter-block label {
+      font-weight: 800;
+      color: #30476f;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-table-head {
+      margin-bottom: 16px;
+    }
+
+    .admin-table-head h2 {
+      margin: 0;
+      font-size: 2rem;
+      color: #0f2245;
+    }
+
+    .admin-table-head p {
+      margin: 6px 0 0;
+      color: #68758a;
+      font-size: 1.05rem;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 16px;
+    }
+
     .admin-table {
-      width:100%;
-      min-width: 1500px;
+      width: 100%;
+      min-width: 1700px;
       border-collapse: collapse;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
     }
-    .admin-table th, .admin-table td {
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--line);
-      text-align:left;
-      vertical-align: top;
-    }
-    .admin-table th {
-      background:#f6f8fc;
-      color: var(--bsa-blue-dark);
+
+    .admin-table thead th {
+      background: linear-gradient(180deg, #343946 0%, #242935 100%);
+      color: #ffffff;
       font-size: .92rem;
+      font-weight: 800;
+      padding: 14px 12px;
+      border-bottom: 0;
+      line-height: 1.2;
     }
-    .admin-table td.cell-wrap {
-      overflow-wrap:anywhere;
-      word-break:break-word;
+
+    .admin-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #dde4ef;
+      vertical-align: top;
+      background: #fff;
     }
+
+    .admin-table tbody tr:hover td {
+      background: #f8fbff;
+    }
+
+    .cell-wrap {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
     .mini-actions {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
+
     .mini-actions .btn {
       padding: 8px 10px;
       border-radius: 10px;
-      font-size: .88rem;
+      font-size: .84rem;
+      white-space: nowrap;
     }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+      border: 1px solid #dbe2ee;
+      background: #f5f8fd;
+      color: #31425e;
+    }
+
+    .status-pill.active {
+      background: #e8f7ee;
+      border-color: #c4e6cf;
+      color: #16673a;
+    }
+
+    .status-pill.locked {
+      background: #fff1f0;
+      border-color: #f0cdca;
+      color: #9f2a24;
+    }
+
+    .status-pill.paid {
+      background: #e8f7ee;
+      border-color: #c4e6cf;
+      color: #16673a;
+    }
+
+    .status-pill.pending {
+      background: #fff7e5;
+      border-color: #f0d897;
+      color: #8a6400;
+    }
+
+    .status-pill.waived {
+      background: #eef2fb;
+      border-color: #d6def0;
+      color: #37558f;
+    }
+
     .admin-modal {
       border: 0;
       padding: 0;
       background: transparent;
     }
+
     .admin-modal::backdrop {
-      background: rgba(10, 18, 38, .45);
+      background: rgba(10, 18, 38, .46);
     }
+
     .admin-modal-card {
-      width: min(760px, calc(100vw - 24px));
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.2);
-      padding: 22px;
+      width: min(820px, calc(100vw - 24px));
+      background: #ffffff;
+      border: 1px solid #dfe5ef;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.2);
+      padding: 24px;
     }
+
     .admin-modal-head {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       margin-bottom: 16px;
     }
-    .admin-modal-head h3 { margin:0; }
-    .icon-close {
-      width: 40px;
-      height: 40px;
-      border:1px solid var(--line);
-      border-radius: 12px;
-      background:#fff;
-      font-size: 1.4rem;
-      cursor:pointer;
+
+    .admin-modal-head h3 {
+      margin: 0;
+      color: #17356b;
+      font-size: 1.5rem;
     }
+
+    .icon-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #dbe2ee;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
     .admin-form-grid {
-      display:grid;
+      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
-    .field-span-2 { grid-column: 1 / -1; }
+
+    .field-span-2 {
+      grid-column: 1 / -1;
+    }
+
     .code-inline {
-      display:grid;
+      display: grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
     }
+
     .modal-message {
       margin-top: 16px;
       padding: 12px 14px;
       border-radius: 12px;
       font-weight: 700;
+      border: 1px solid transparent;
     }
-    .modal-message.ok { background:#e9f8ef; color:#166c38; border:1px solid #bfe7cc; }
-    .modal-message.bad { background:#fff0ef; color:#9d2720; border:1px solid #f1c6c3; }
+
+    .modal-message.ok {
+      background: #e9f8ef;
+      color: #166c38;
+      border-color: #bfe7cc;
+    }
+
+    .modal-message.bad {
+      background: #fff0ef;
+      color: #9d2720;
+      border-color: #f1c6c3;
+    }
 
     @media (max-width: 1200px) {
       .admin-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .admin-toolbar-row { grid-template-columns: 1fr 1fr; }
     }
+
     @media (max-width: 720px) {
-      .admin-stats-grid, .admin-toolbar-row, .admin-form-grid { grid-template-columns: 1fr; }
+      .admin-stats-grid,
+      .admin-toolbar-row,
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+
       .field-span-2 { grid-column: auto; }
       .code-inline { grid-template-columns: 1fr; }
     }
@@ -144,19 +301,19 @@
 
   <main class="container admin-page">
     <section class="admin-stats-grid">
-      <article class="panel admin-stat-card">
+      <article class="admin-stat-card">
         <small>Total Students</small>
         <strong id="statTotalStudents">0</strong>
       </article>
-      <article class="panel admin-stat-card warning">
+      <article class="admin-stat-card warning">
         <small>Pending Payments</small>
         <strong id="statPendingPayments">0</strong>
       </article>
-      <article class="panel admin-stat-card success">
+      <article class="admin-stat-card success">
         <small>Paid Students</small>
         <strong id="statPaidStudents">0</strong>
       </article>
-      <article class="panel admin-stat-card gold">
+      <article class="admin-stat-card gold">
         <small>Revenue Collected</small>
         <strong id="statRevenue">$0</strong>
       </article>
@@ -168,7 +325,7 @@
           <label for="searchInput">Search Records</label>
           <input id="searchInput" type="text" placeholder="Search by name, email, or code">
         </div>
-        <div class="filter-block compact">
+        <div class="filter-block">
           <label for="paymentFilter">Payment Status</label>
           <select id="paymentFilter">
             <option value="all">All Payment Statuses</option>
@@ -177,7 +334,7 @@
             <option value="waived">Waived</option>
           </select>
         </div>
-        <div class="filter-block compact">
+        <div class="filter-block">
           <label for="portalFilter">Portal Status</label>
           <select id="portalFilter">
             <option value="all">All Portal Statuses</option>
@@ -185,7 +342,7 @@
             <option value="locked">Locked</option>
           </select>
         </div>
-        <div class="filter-block compact">
+        <div class="filter-block">
           <label for="sortBy">Sort By</label>
           <select id="sortBy">
             <option value="newest">Newest</option>
@@ -207,6 +364,7 @@
           <p>Payment, code, timing, current stage, and lesson completion.</p>
         </div>
       </div>
+
       <div class="table-scroll">
         <table class="admin-table">
           <thead>
@@ -242,11 +400,28 @@
         <h3 id="modalTitle">Add Student</h3>
         <button value="cancel" class="icon-close" type="button" id="closeModalBtn">×</button>
       </div>
+
       <div class="admin-form-grid">
-        <div class="field"><label for="studentName">Name</label><input id="studentName" required></div>
-        <div class="field"><label for="studentEmail">Email</label><input id="studentEmail" type="email"></div>
-        <div class="field"><label for="studentCourse">Course</label><input id="studentCourse" value="Louisiana Concealed Carry"></div>
-        <div class="field"><label for="studentPrice">Price</label><input id="studentPrice" type="number" min="0" step="1" value="150"></div>
+        <div class="field">
+          <label for="studentName">Name</label>
+          <input id="studentName" required>
+        </div>
+
+        <div class="field">
+          <label for="studentEmail">Email</label>
+          <input id="studentEmail" type="email">
+        </div>
+
+        <div class="field">
+          <label for="studentCourse">Course</label>
+          <input id="studentCourse" value="Louisiana Concealed Carry">
+        </div>
+
+        <div class="field">
+          <label for="studentPrice">Price</label>
+          <input id="studentPrice" type="number" min="0" step="1" value="150">
+        </div>
+
         <div class="field">
           <label for="studentPaymentMethod">Payment Method</label>
           <select id="studentPaymentMethod">
@@ -255,6 +430,7 @@
             <option value="Waived">Waived</option>
           </select>
         </div>
+
         <div class="field">
           <label for="studentPaymentStatus">Payment Status</label>
           <select id="studentPaymentStatus">
@@ -263,6 +439,7 @@
             <option value="waived">Waived</option>
           </select>
         </div>
+
         <div class="field">
           <label for="studentPortalStatus">Portal Status</label>
           <select id="studentPortalStatus">
@@ -270,6 +447,7 @@
             <option value="locked">Locked</option>
           </select>
         </div>
+
         <div class="field">
           <label for="studentTier">Tier</label>
           <select id="studentTier">
@@ -278,6 +456,7 @@
             <option value="DISC">DISC</option>
           </select>
         </div>
+
         <div class="field field-span-2">
           <label for="generatedCode">Access Code</label>
           <div class="code-inline">
@@ -286,7 +465,9 @@
           </div>
         </div>
       </div>
+
       <div class="modal-message hidden" id="modalMessage"></div>
+
       <div class="lesson-actions" style="margin-top:18px;">
         <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
         <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancel</button>
@@ -294,6 +475,7 @@
     </form>
   </dialog>
 
-  <script type="module" src="./admin.js?v=3"></script>
+  <script src="./data.js"></script>
+  <script type="module" src="./admin.js?v=4"></script>
 </body>
 </html>
