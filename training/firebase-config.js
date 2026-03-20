@@ -7,7 +7,7 @@ const firebaseConfig = {
   authDomain: "bsa-training-admin.firebaseapp.com",
   projectId: "bsa-training-admin",
   storageBucket: "bsa-training-admin.appspot.com",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+  messagingSenderId: "972595893407",
   appId: "bsa-training-admin"
 };
 
