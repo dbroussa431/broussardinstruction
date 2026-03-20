@@ -1,15 +1,12 @@
 import { db } from "./firebase-config.js";
 import {
   collection,
-  query,
-  where,
   getDocs,
   doc,
   getDoc,
   updateDoc,
-  addDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const CURRENT_STUDENT_KEY = "bsaPortalCurrentStudent";
 const PASSING_SCORE = 80;
