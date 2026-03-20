@@ -8,7 +8,7 @@ const firebaseConfig = {
   projectId: "bsa-training-admin",
   storageBucket: "bsa-training-admin.appspot.com",
   messagingSenderId: "972595893407",
-  appId: "bsa-training-admin"
+  appId: "1:972595893407:web:f415a0f24602bd9603beaa"
 };
 
 const app = initializeApp(firebaseConfig);
