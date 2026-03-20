@@ -1,4 +1,4 @@
-import { db } from '../js/firebase-config.js';
+import { db } from "./firebase-config.js";
 import {
   collection,
   getDocs
@@ -24,8 +24,8 @@ async function loadAdmin() {
       Total Students: ${total}<br>
       Revenue: $${revenue}
     `;
-  } catch (error) {
-    console.error("Admin load failed:", error);
+  } catch (err) {
+    console.error("ADMIN ERROR:", err);
     document.getElementById("stats").innerHTML = "Error loading admin data.";
   }
 }
