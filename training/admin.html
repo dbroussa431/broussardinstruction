@@ -1,87 +1,83 @@
-import { db } from "./firebase-config.js?v=2";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Admin Dashboard</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner admin-wide">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'">
+        </div>
+        <div>
+          <h1>BSA Admin Dashboard</h1>
+          <p>Administrative tools and student access management</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="./dashboard.html">Student Portal</a>
+        <button class="btn btn-gold" id="refreshAdmin" type="button">Refresh Records</button>
+      </div>
+    </div>
+  </header>
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+  <main class="container container-wide">
+    <section class="results-grid admin-results-grid">
+      <div class="panel result-card">
+        <small>Total Students</small>
+        <strong id="totalStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Estimated Revenue</small>
+        <strong id="totalRevenue">$0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Active Students</small>
+        <strong id="activeStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Completed Online</small>
+        <strong id="completedOnline">0</strong>
+      </div>
+    </section>
 
-function formatDate(value) {
-  if (!value) return "—";
-  if (typeof value === "string") return value;
-  if (value?.toDate && typeof value.toDate === "function") {
-    try {
-      return value.toDate().toLocaleString();
-    } catch {
-      return "Recently updated";
-    }
-  }
-  return "—";
-}
+    <section class="panel content-card" style="margin-top:20px;">
+      <div class="section-head">
+        <div>
+          <h3>Student Dashboard</h3>
+          <p>Live portal records from Firestore.</p>
+        </div>
+      </div>
 
-async function loadAdmin() {
-  const totalStudentsEl = document.getElementById("totalStudents");
-  const totalRevenueEl = document.getElementById("totalRevenue");
-  const activeStudentsEl = document.getElementById("activeStudents");
-  const completedOnlineEl = document.getElementById("completedOnline");
-  const adminRowsEl = document.getElementById("adminRows");
-  const adminErrorEl = document.getElementById("adminError");
-  const refreshButton = document.getElementById("refreshAdmin");
+      <div id="adminError" class="notice bad hidden" style="margin-bottom:16px;"></div>
 
-  try {
-    refreshButton.disabled = true;
-    adminErrorEl.classList.add("hidden");
-    adminRowsEl.innerHTML = `<tr><td colspan="7">Loading student records...</td></tr>`;
+      <div class="table-wrap admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Access Code</th>
+              <th>Tier</th>
+              <th>Status</th>
+              <th>Completed</th>
+              <th>Last Login</th>
+            </tr>
+          </thead>
+          <tbody id="adminRows">
+            <tr>
+              <td colspan="7">Loading student records...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-    const snap = await getDocs(collection(db, "portalStudents"));
-    const students = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
-
-    let totalRevenue = 0;
-    let activeCount = 0;
-    let completedCount = 0;
-
-    const rows = students.map((s) => {
-      const tier = String(s.tier || "").toUpperCase();
-      const status = String(s.status || "").toLowerCase();
-      const completedLessons = Array.isArray(s.completedLessons) ? s.completedLessons.length : 0;
-
-      if (tier === "FULL") totalRevenue += 150;
-      if (tier === "DISC") totalRevenue += 100;
-      if (status === "active") activeCount++;
-      if (completedLessons >= 8) completedCount++;
-
-      return `
-        <tr>
-          <td>${escapeHtml(s.name || "—")}</td>
-          <td class="cell-wrap">${escapeHtml(s.email || "—")}</td>
-          <td class="cell-wrap">${escapeHtml(s.accessCode || "—")}</td>
-          <td>${escapeHtml(tier || "—")}</td>
-          <td>${escapeHtml(status || "—")}</td>
-          <td>${completedLessons} / 8</td>
-          <td class="cell-wrap">${escapeHtml(formatDate(s.lastLoginAt))}</td>
-        </tr>
-      `;
-    }).join("");
-
-    totalStudentsEl.textContent = String(students.length);
-    totalRevenueEl.textContent = `$${totalRevenue}`;
-    activeStudentsEl.textContent = String(activeCount);
-    completedOnlineEl.textContent = String(completedCount);
-
-    adminRowsEl.innerHTML = rows || `<tr><td colspan="7">No student records found.</td></tr>`;
-  } catch (err) {
-    console.error("ADMIN ERROR:", err);
-    adminErrorEl.textContent = "Error loading admin dashboard.";
-    adminErrorEl.classList.remove("hidden");
-    adminRowsEl.innerHTML = `<tr><td colspan="7">Unable to load records.</td></tr>`;
-  } finally {
-    refreshButton.disabled = false;
-  }
-}
-
-document.getElementById("refreshAdmin")?.addEventListener("click", loadAdmin);
-loadAdmin();
+  <script type="module" src="./admin.js?v=2"></script>
+</body>
+</html>
