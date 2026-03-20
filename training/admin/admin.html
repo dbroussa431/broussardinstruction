@@ -1,12 +1,83 @@
 <!DOCTYPE html>
-<html>
-<body style="background:#111;color:white">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Admin Dashboard</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner admin-wide">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'">
+        </div>
+        <div>
+          <h1>BSA Admin Dashboard</h1>
+          <p>Administrative tools and student access management</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="./dashboard.html">Student Portal</a>
+        <button class="btn btn-gold" id="refreshAdmin" type="button">Refresh Records</button>
+      </div>
+    </div>
+  </header>
 
-<h1>Admin Dashboard</h1>
+  <main class="container container-wide">
+    <section class="results-grid admin-results-grid">
+      <div class="panel result-card">
+        <small>Total Students</small>
+        <strong id="totalStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Estimated Revenue</small>
+        <strong id="totalRevenue">$0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Active Students</small>
+        <strong id="activeStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Completed Online</small>
+        <strong id="completedOnline">0</strong>
+      </div>
+    </section>
 
-<div id="stats"></div>
+    <section class="panel content-card" style="margin-top:20px;">
+      <div class="section-head">
+        <div>
+          <h3>Student Dashboard</h3>
+          <p>Live portal records from Firestore.</p>
+        </div>
+      </div>
 
-<script type="module" src="admin.js"></script>
+      <div id="adminError" class="notice bad hidden" style="margin-bottom:16px;"></div>
 
+      <div class="table-wrap admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Access Code</th>
+              <th>Tier</th>
+              <th>Status</th>
+              <th>Completed</th>
+              <th>Last Login</th>
+            </tr>
+          </thead>
+          <tbody id="adminRows">
+            <tr>
+              <td colspan="7">Loading student records...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./admin.js?v=2"></script>
 </body>
 </html>
