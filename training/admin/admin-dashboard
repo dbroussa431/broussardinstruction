@@ -1,1 +1,1 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=../admin.html"><title>Redirecting...</title></head><body>Redirecting to admin.html...</body></html>
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
