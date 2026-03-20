@@ -1,10 +1,11 @@
-import { db } from "./firebase-config.js?v=3";
+import { db } from "./firebase-config.js?v=4";
 import {
   collection,
   getDocs,
   addDoc,
   doc,
   updateDoc,
+  deleteDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -45,14 +46,28 @@ function normalizeAccessCode(value) {
   return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
 }
 
+function normalizePaymentStatus(student) {
+  const status = String(student.paymentStatus || "").trim().toLowerCase();
+  if (status === "paid" || status === "pending" || status === "waived") return status;
+  if (student.paid === true) return "paid";
+  if (String(student.paymentMethod || "").trim().toLowerCase() === "waived") return "waived";
+  return "pending";
+}
+
+function isPaidStudent(student) {
+  return normalizePaymentStatus(student) === "paid" || student.paid === true;
+}
+
+function revenueForStudent(student) {
+  if (!isPaidStudent(student)) return 0;
+  const price = Number(student.price || 0);
+  return Number.isFinite(price) ? price : 0;
+}
+
 function generateAccessCode(tier = "FREE") {
   const cleanTier = String(tier || "FREE").trim().toUpperCase();
-  if (cleanTier === "FULL") {
-    return `BSA-FULL-${Math.floor(1000 + Math.random() * 9000)}`;
-  }
-  if (cleanTier === "DISC") {
-    return `BSA-DISC-${Math.floor(1000 + Math.random() * 9000)}`;
-  }
+  if (cleanTier === "FULL") return `BSA-FULL-${Math.floor(1000 + Math.random() * 9000)}`;
+  if (cleanTier === "DISC") return `BSA-DISC-${Math.floor(1000 + Math.random() * 9000)}`;
   return `BSA-FREE-${Math.floor(1000 + Math.random() * 9000)}`;
 }
 
@@ -131,6 +146,16 @@ function formatFirestoreDate(value) {
   return "—";
 }
 
+function paymentBadge(status) {
+  const safe = String(status || "pending").toLowerCase();
+  return `<span class="status-pill ${escapeHtml(safe)}">${escapeHtml(safe)}</span>`;
+}
+
+function portalBadge(status) {
+  const safe = String(status || "active").toLowerCase();
+  return `<span class="status-pill ${escapeHtml(safe)}">${escapeHtml(safe)}</span>`;
+}
+
 function showModalMessage(message, kind = "bad") {
   modalMessage.textContent = message;
   modalMessage.classList.remove("hidden", "ok", "bad");
@@ -158,8 +183,30 @@ function resetForm() {
   clearModalMessage();
 }
 
+function fillForm(student) {
+  editingId = student.id;
+  modalTitle.textContent = "Edit Student";
+  fields.name.value = student.name || "";
+  fields.email.value = student.email || "";
+  fields.course.value = student.course || "Louisiana Concealed Carry";
+  fields.price.value = String(Number(student.price || 0));
+  fields.paymentMethod.value = student.paymentMethod || "PayPal";
+  fields.paymentStatus.value = normalizePaymentStatus(student);
+  fields.portalStatus.value = student.status || "active";
+  fields.tier.value = String(student.tier || "FREE").toUpperCase();
+  fields.accessCode.value = normalizeAccessCode(student.accessCode || generateAccessCode(fields.tier.value));
+  clearModalMessage();
+}
+
 function openModalForAdd() {
   resetForm();
+  modal.showModal();
+}
+
+function openModalForEdit(studentId) {
+  const student = studentRows.find((s) => s.id === studentId);
+  if (!student) return;
+  fillForm(student);
   modal.showModal();
 }
 
@@ -169,11 +216,9 @@ function closeModal() {
 
 function applyStats(rows) {
   const totalStudents = rows.length;
-  const pending = rows.filter((s) => String(s.paymentStatus || "") === "pending").length;
-  const paid = rows.filter((s) => String(s.paymentStatus || "") === "paid").length;
-  const revenue = rows.reduce((sum, s) => {
-    return sum + (String(s.paymentStatus || "") === "paid" ? Number(s.price || 0) : 0);
-  }, 0);
+  const pending = rows.filter((s) => normalizePaymentStatus(s) === "pending").length;
+  const paid = rows.filter((s) => isPaidStudent(s)).length;
+  const revenue = rows.reduce((sum, s) => sum + revenueForStudent(s), 0);
 
   document.getElementById("statTotalStudents").textContent = totalStudents;
   document.getElementById("statPendingPayments").textContent = pending;
@@ -193,7 +238,7 @@ function filteredRows() {
   }
 
   if (paymentFilter.value !== "all") {
-    rows = rows.filter((s) => String(s.paymentStatus || "") === paymentFilter.value);
+    rows = rows.filter((s) => normalizePaymentStatus(s) === paymentFilter.value);
   }
 
   if (portalFilter.value !== "all") {
@@ -263,6 +308,22 @@ async function togglePortalStatus(studentId) {
   }
 }
 
+async function removeStudent(studentId) {
+  const student = studentRows.find((s) => s.id === studentId);
+  if (!student) return;
+
+  const confirmed = window.confirm(`Delete ${student.name || "this student"}? This cannot be undone.`);
+  if (!confirmed) return;
+
+  try {
+    await deleteDoc(doc(db, "portalStudents", studentId));
+    await loadAdminData();
+  } catch (err) {
+    console.error("Delete student failed:", err);
+    alert("Could not delete student.");
+  }
+}
+
 function exportCsv() {
   const rows = filteredRows();
   const header = [
@@ -276,7 +337,7 @@ function exportCsv() {
     s.course || "",
     s.price || "",
     s.paymentMethod || "",
-    s.paymentStatus || "",
+    normalizePaymentStatus(s),
     s.status || "",
     s.accessCode || "",
     currentLessonLabel(s),
@@ -303,33 +364,39 @@ function renderRows() {
   const rows = filteredRows();
   applyStats(studentRows);
 
-  body.innerHTML = rows.length ? rows.map((student) => `
-    <tr>
-      <td>${escapeHtml(student.name || "—")}</td>
-      <td class="cell-wrap">${escapeHtml(student.email || "—")}</td>
-      <td>${escapeHtml(student.course || "Louisiana Concealed Carry")}</td>
-      <td>${escapeHtml(student.price || 0)}</td>
-      <td>${escapeHtml(student.paymentMethod || "—")}</td>
-      <td>${escapeHtml(student.paymentStatus || "—")}</td>
-      <td>${escapeHtml(student.status || "—")}</td>
-      <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
-      <td>${escapeHtml(currentLessonLabel(student))}</td>
-      <td>${escapeHtml(stageLabel(student))}</td>
-      <td>${totalAttempts(student)}</td>
-      <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
-      <td>${escapeHtml(progressLabel(student))}</td>
-      <td class="cell-wrap">${escapeHtml(formatFirestoreDate(lastActivity(student)))}</td>
-      <td>
-        <div class="mini-actions">
-          <button class="btn btn-outline" type="button" data-copy="${escapeHtml(student.accessCode || "")}">Copy Code</button>
-          <button class="btn btn-outline" type="button" data-regen="${student.id}">Regen Code</button>
-          <button class="btn btn-outline" type="button" data-toggle="${student.id}">
-            ${String(student.status || "active") === "active" ? "Lock" : "Unlock"}
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join("") : `<tr><td colspan="15">No student records found.</td></tr>`;
+  body.innerHTML = rows.length ? rows.map((student) => {
+    const payStatus = normalizePaymentStatus(student);
+
+    return `
+      <tr>
+        <td>${escapeHtml(student.name || "—")}</td>
+        <td class="cell-wrap">${escapeHtml(student.email || "—")}</td>
+        <td>${escapeHtml(student.course || "Louisiana Concealed Carry")}</td>
+        <td>${escapeHtml(student.price || 0)}</td>
+        <td>${escapeHtml(student.paymentMethod || "—")}</td>
+        <td>${paymentBadge(payStatus)}</td>
+        <td>${portalBadge(student.status || "active")}</td>
+        <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
+        <td>${escapeHtml(currentLessonLabel(student))}</td>
+        <td>${escapeHtml(stageLabel(student))}</td>
+        <td>${totalAttempts(student)}</td>
+        <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
+        <td>${escapeHtml(progressLabel(student))}</td>
+        <td class="cell-wrap">${escapeHtml(formatFirestoreDate(lastActivity(student)))}</td>
+        <td>
+          <div class="mini-actions">
+            <button class="btn btn-outline" type="button" data-copy="${escapeHtml(student.accessCode || "")}">Copy</button>
+            <button class="btn btn-outline" type="button" data-edit="${student.id}">Edit</button>
+            <button class="btn btn-outline" type="button" data-regen="${student.id}">Regen</button>
+            <button class="btn btn-outline" type="button" data-toggle="${student.id}">
+              ${String(student.status || "active") === "active" ? "Lock" : "Unlock"}
+            </button>
+            <button class="btn btn-danger" type="button" data-delete="${student.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("") : `<tr><td colspan="15">No student records found.</td></tr>`;
 }
 
 async function loadAdminData() {
@@ -346,7 +413,8 @@ async function loadAdminData() {
         course: raw.course || "Louisiana Concealed Carry",
         price: Number(raw.price || 0),
         paymentMethod: raw.paymentMethod || "PayPal",
-        paymentStatus: raw.paymentStatus || (raw.paid ? "paid" : "pending"),
+        paymentStatus: raw.paymentStatus || "",
+        paid: raw.paid === true,
         status: raw.status || "active",
         accessCode: normalizeAccessCode(raw.accessCode || ""),
         tier: String(raw.tier || "FREE").toUpperCase(),
@@ -395,15 +463,23 @@ async function saveStudent(event) {
     status: portalStatus,
     accessCode,
     paid: paymentStatus === "paid",
-    progress: {},
-    completedLessons: [],
-    createdAt: new Date().toISOString(),
     updatedAt: serverTimestamp()
   };
 
   try {
-    await addDoc(collection(db, "portalStudents"), payload);
-    showModalMessage("Student saved successfully.", "ok");
+    if (editingId) {
+      await updateDoc(doc(db, "portalStudents", editingId), payload);
+      showModalMessage("Student updated successfully.", "ok");
+    } else {
+      await addDoc(collection(db, "portalStudents"), {
+        ...payload,
+        progress: {},
+        completedLessons: [],
+        createdAt: new Date().toISOString()
+      });
+      showModalMessage("Student saved successfully.", "ok");
+    }
+
     await loadAdminData();
     setTimeout(() => modal.close(), 500);
   } catch (err) {
@@ -444,11 +520,18 @@ sortBy.addEventListener("change", renderRows);
 
 body.addEventListener("click", async (event) => {
   const copyBtn = event.target.closest("[data-copy]");
+  const editBtn = event.target.closest("[data-edit]");
   const regenBtn = event.target.closest("[data-regen]");
   const toggleBtn = event.target.closest("[data-toggle]");
+  const deleteBtn = event.target.closest("[data-delete]");
 
   if (copyBtn) {
     await copyText(copyBtn.getAttribute("data-copy"));
+    return;
+  }
+
+  if (editBtn) {
+    openModalForEdit(editBtn.getAttribute("data-edit"));
     return;
   }
 
@@ -459,6 +542,11 @@ body.addEventListener("click", async (event) => {
 
   if (toggleBtn) {
     await togglePortalStatus(toggleBtn.getAttribute("data-toggle"));
+    return;
+  }
+
+  if (deleteBtn) {
+    await removeStudent(deleteBtn.getAttribute("data-delete"));
   }
 });
 
