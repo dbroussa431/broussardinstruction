@@ -8,24 +8,41 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="topbar-inner">
+    <div class="topbar-inner admin-wide">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
-        <div><h1>BSA Portal Admin Snapshot</h1><p>Student timing, progress, and stage tracking</p></div>
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'">
+        </div>
+        <div>
+          <h1>BSA Portal Admin Snapshot</h1>
+          <p>Student timing, progress, and stage tracking</p>
+        </div>
       </div>
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Student Portal</a>
-        <button class="btn btn-gold" id="refreshAdmin">Refresh Records</button>
+        <button class="btn btn-gold" id="refreshAdmin" type="button">Refresh Records</button>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <section class="results-grid">
-      <div class="panel result-card"><small>Total Students</small><strong id="totalStudents">0</strong></div>
-      <div class="panel result-card"><small>Active Students</small><strong id="activeStudents">0</strong></div>
-      <div class="panel result-card"><small>Total Quiz Time</small><strong id="totalQuizTime">0m 0s</strong></div>
-      <div class="panel result-card"><small>Completed Online</small><strong id="completedOnline">0</strong></div>
+  <main class="container container-wide">
+    <section class="results-grid admin-results-grid">
+      <div class="panel result-card">
+        <small>Total Students</small>
+        <strong id="totalStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Active Students</small>
+        <strong id="activeStudents">0</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Total Quiz Time</small>
+        <strong id="totalQuizTime">0m 0s</strong>
+      </div>
+      <div class="panel result-card">
+        <small>Completed Online</small>
+        <strong id="completedOnline">0</strong>
+      </div>
     </section>
 
     <section class="panel content-card" style="margin-top:20px;">
@@ -35,7 +52,10 @@
           <p>Shows lesson stage, attempts, quiz time, and last activity.</p>
         </div>
       </div>
-      <div class="table-wrap">
+
+      <div id="adminError" class="notice bad hidden" style="margin-bottom:16px;"></div>
+
+      <div class="table-wrap admin-table-wrap">
         <table class="admin-table">
           <thead>
             <tr>
@@ -49,7 +69,11 @@
               <th>Last Active</th>
             </tr>
           </thead>
-          <tbody id="adminRows"></tbody>
+          <tbody id="adminRows">
+            <tr>
+              <td colspan="8">Loading student records...</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </section>
@@ -61,48 +85,132 @@
     import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { normalizeStudent, getLessonProgress, getLessonStageLabel, formatSeconds } from "./app.js";
 
-    async function loadAdmin() {
-      const snap = await getDocs(collection(db, "portalStudents"));
-      const students = snap.docs.map((doc) => normalizeStudent({ id: doc.id, ...doc.data() }));
+    const totalStudentsEl = document.getElementById("totalStudents");
+    const activeStudentsEl = document.getElementById("activeStudents");
+    const totalQuizTimeEl = document.getElementById("totalQuizTime");
+    const completedOnlineEl = document.getElementById("completedOnline");
+    const adminRowsEl = document.getElementById("adminRows");
+    const adminErrorEl = document.getElementById("adminError");
+    const refreshButton = document.getElementById("refreshAdmin");
 
-      document.getElementById("totalStudents").textContent = students.length;
-      document.getElementById("activeStudents").textContent = students.filter((s) => s.status === "active").length;
-      document.getElementById("completedOnline").textContent = students.filter((s) => (s.completedLessons || []).length >= 8).length;
-
-      let totalQuizSeconds = 0;
-      const rows = students.map((student) => {
-        const lastLessonVisited = Math.max(0, ...Object.values(student.progress || {}).map((p) => Number(p.lastLessonVisited || 0)));
-        const currentLesson = lastLessonVisited || ((student.completedLessons?.length || 0) + 1);
-        const lessonProgress = getLessonProgress(currentLesson, student);
-        const stage = getLessonStageLabel(lessonProgress);
-        const attempts = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.attempts || 0), 0);
-        const quizTime = Object.values(student.progress || {}).reduce((sum, item) => sum + Number(item.totalQuizTimeSeconds || 0), 0);
-        totalQuizSeconds += quizTime;
-        const lastActivity = Object.values(student.progress || {})
-          .map((item) => item.lastActivityAt)
-          .filter(Boolean)
-          .sort()
-          .pop() || student.updatedAt || "—";
-
-        return `
-          <tr>
-            <td>${student.name}</td>
-            <td>${student.email || "—"}</td>
-            <td>${(student.completedLessons || []).length} / ${window.LESSONS.length}</td>
-            <td>${currentLesson > window.LESSONS.length ? "Complete" : `Lesson ${currentLesson}`}</td>
-            <td>${stage}</td>
-            <td>${attempts}</td>
-            <td>${formatSeconds(quizTime)}</td>
-            <td>${typeof lastActivity === "string" ? lastActivity : "Recently updated"}</td>
-          </tr>
-        `;
-      }).join("");
-
-      document.getElementById("adminRows").innerHTML = rows || '<tr><td colspan="8">No student records found.</td></tr>';
-      document.getElementById("totalQuizTime").textContent = formatSeconds(totalQuizSeconds);
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
+    function showAdminError(message) {
+      adminErrorEl.textContent = message;
+      adminErrorEl.classList.remove("hidden");
+    }
+
+    function hideAdminError() {
+      adminErrorEl.textContent = "";
+      adminErrorEl.classList.add("hidden");
+    }
+
+    function safeDateLabel(value) {
+      if (!value) return "—";
+      if (typeof value === "string") return value;
+
+      if (value?.toDate && typeof value.toDate === "function") {
+        try {
+          return value.toDate().toLocaleString();
+        } catch (_) {
+          return "Recently updated";
+        }
+      }
+
+      return "Recently updated";
+    }
+
+    async function loadAdmin() {
+      hideAdminError();
+      refreshButton.disabled = true;
+      refreshButton.textContent = "Refreshing...";
+
+      adminRowsEl.innerHTML = `<tr><td colspan="8">Loading student records...</td></tr>`;
+
+      try {
+        const snap = await getDocs(collection(db, "portalStudents"));
+        const students = snap.docs.map((doc) => normalizeStudent({ id: doc.id, ...doc.data() }));
+
+        totalStudentsEl.textContent = students.length;
+        activeStudentsEl.textContent = students.filter((s) => String(s.status || "").toLowerCase() === "active").length;
+        completedOnlineEl.textContent = students.filter((s) => (s.completedLessons || []).length >= 8).length;
+
+        let totalQuizSeconds = 0;
+
+        const rows = students.map((student) => {
+          const progressValues = Object.values(student.progress || {});
+          const lastLessonVisited = Math.max(0, ...progressValues.map((p) => Number(p?.lastLessonVisited || 0)));
+          const currentLesson = lastLessonVisited || ((student.completedLessons?.length || 0) + 1);
+          const safeLessonCount = Array.isArray(window.LESSONS) ? window.LESSONS.length : 0;
+          const lessonProgress = getLessonProgress(currentLesson, student);
+          const stage = getLessonStageLabel(lessonProgress);
+          const attempts = progressValues.reduce((sum, item) => sum + Number(item?.attempts || 0), 0);
+          const quizTime = progressValues.reduce((sum, item) => sum + Number(item?.totalQuizTimeSeconds || 0), 0);
+          totalQuizSeconds += quizTime;
+
+          const lastActivity =
+            progressValues
+              .map((item) => item?.lastActivityAt)
+              .filter(Boolean)
+              .sort()
+              .pop() ||
+            student.updatedAt ||
+            "—";
+
+          const currentLessonLabel =
+            safeLessonCount > 0 && currentLesson > safeLessonCount
+              ? "Complete"
+              : `Lesson ${currentLesson}`;
+
+          return `
+            <tr>
+              <td>${escapeHtml(student.name || "—")}</td>
+              <td class="cell-wrap">${escapeHtml(student.email || "—")}</td>
+              <td>${escapeHtml((student.completedLessons || []).length)} / ${escapeHtml(safeLessonCount)}</td>
+              <td>${escapeHtml(currentLessonLabel)}</td>
+              <td>${escapeHtml(stage || "—")}</td>
+              <td>${escapeHtml(attempts)}</td>
+              <td>${escapeHtml(formatSeconds(quizTime))}</td>
+              <td class="cell-wrap">${escapeHtml(safeDateLabel(lastActivity))}</td>
+            </tr>
+          `;
+        }).join("");
+
+        adminRowsEl.innerHTML = rows || `<tr><td colspan="8">No student records found.</td></tr>`;
+        totalQuizTimeEl.textContent = formatSeconds(totalQuizSeconds);
+      } catch (error) {
+        console.error("Admin snapshot load failed:", error);
+
+        totalStudentsEl.textContent = "0";
+        activeStudentsEl.textContent = "0";
+        totalQuizTimeEl.textContent = "0m 0s";
+        completedOnlineEl.textContent = "0";
+
+        adminRowsEl.innerHTML = `<tr><td colspan="8">Unable to load student records.</td></tr>`;
+
+        const rawMessage = String(error?.message || "").toLowerCase();
+
+        if (rawMessage.includes("permission") || rawMessage.includes("missing or insufficient permissions")) {
+          showAdminError("Firebase permissions are blocking admin reads. Check Firestore rules for portalStudents.");
+        } else if (rawMessage.includes("network") || rawMessage.includes("offline") || rawMessage.includes("failed to fetch")) {
+          showAdminError("Could not connect to Firebase while loading admin records.");
+        } else {
+          showAdminError("Admin dashboard failed to load records. Check Firebase config, collection name, and imports.");
+        }
+      } finally {
+        refreshButton.disabled = false;
+        refreshButton.textContent = "Refresh Records";
+      }
+    }
+
+    refreshButton.addEventListener("click", loadAdmin);
     loadAdmin();
   </script>
 </body>
