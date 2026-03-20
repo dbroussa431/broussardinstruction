@@ -1,5 +1,67 @@
-import { db } from "./firebase-config.js?v=2";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { db } from "./firebase-config.js?v=3";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+let studentRows = [];
+let editingId = null;
+
+const body = document.getElementById("studentTableBody");
+const addStudentBtn = document.getElementById("addStudentBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const exportBtn = document.getElementById("exportBtn");
+const modal = document.getElementById("studentModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const cancelModalBtn = document.getElementById("cancelModalBtn");
+const regenCodeBtn = document.getElementById("regenCodeBtn");
+const formWrap = document.getElementById("studentFormWrap");
+const modalTitle = document.getElementById("modalTitle");
+const modalMessage = document.getElementById("modalMessage");
+const searchInput = document.getElementById("searchInput");
+const paymentFilter = document.getElementById("paymentFilter");
+const portalFilter = document.getElementById("portalFilter");
+const sortBy = document.getElementById("sortBy");
+const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+const fields = {
+  name: document.getElementById("studentName"),
+  email: document.getElementById("studentEmail"),
+  course: document.getElementById("studentCourse"),
+  price: document.getElementById("studentPrice"),
+  paymentMethod: document.getElementById("studentPaymentMethod"),
+  paymentStatus: document.getElementById("studentPaymentStatus"),
+  portalStatus: document.getElementById("studentPortalStatus"),
+  tier: document.getElementById("studentTier"),
+  accessCode: document.getElementById("generatedCode")
+};
+
+function normalizeAccessCode(value) {
+  return String(value || "").trim().toUpperCase().replace(/\s+/g, "");
+}
+
+function generateAccessCode(tier = "FREE") {
+  const cleanTier = String(tier || "FREE").trim().toUpperCase();
+  if (cleanTier === "FULL") {
+    return `BSA-FULL-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+  if (cleanTier === "DISC") {
+    return `BSA-DISC-${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+  return `BSA-FREE-${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function formatSeconds(totalSeconds = 0) {
+  const safe = Math.max(0, Number(totalSeconds || 0));
+  const minutes = Math.floor(safe / 60);
+  const seconds = safe % 60;
+  return `${minutes}m ${seconds}s`;
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -10,78 +72,394 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function formatDate(value) {
+function stageLabel(student) {
+  const progress = student.progress || {};
+  const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
+  const total = Array.isArray(window.LESSONS) ? window.LESSONS.length : 8;
+
+  if (completed >= total) return "Completed";
+
+  const values = Object.values(progress);
+  if (values.some((p) => p?.quizPassed)) return "In Progress";
+  if (values.some((p) => p?.scenarioCompleted)) return "Ready for Quiz";
+  if (values.some((p) => p?.contentViewed)) return "Scenario Review";
+
+  return "Not Started";
+}
+
+function currentLessonLabel(student) {
+  const progress = student.progress || {};
+  const visited = Math.max(0, ...Object.values(progress).map((p) => Number(p?.lastLessonVisited || 0)));
+  const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
+  const total = Array.isArray(window.LESSONS) ? window.LESSONS.length : 8;
+  const current = visited || (completed + 1);
+  return current > total ? "Complete" : `Lesson ${current}`;
+}
+
+function progressLabel(student) {
+  const total = (window.LESSONS || []).length || 8;
+  const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
+  return `${completed} / ${total}`;
+}
+
+function totalAttempts(student) {
+  return Object.values(student.progress || {}).reduce((sum, p) => sum + Number(p?.attempts || 0), 0);
+}
+
+function totalQuizTime(student) {
+  return Object.values(student.progress || {}).reduce((sum, p) => sum + Number(p?.totalQuizTimeSeconds || 0), 0);
+}
+
+function lastActivity(student) {
+  const timestamps = Object.values(student.progress || {})
+    .map((p) => p?.lastActivityAt)
+    .filter(Boolean)
+    .sort();
+  return timestamps.pop() || student.lastLoginAt || student.updatedAt || "—";
+}
+
+function formatFirestoreDate(value) {
   if (!value) return "—";
   if (typeof value === "string") return value;
   if (value?.toDate && typeof value.toDate === "function") {
     try {
       return value.toDate().toLocaleString();
     } catch {
-      return "Recently updated";
+      return "—";
     }
   }
   return "—";
 }
 
-async function loadAdmin() {
-  const totalStudentsEl = document.getElementById("totalStudents");
-  const totalRevenueEl = document.getElementById("totalRevenue");
-  const activeStudentsEl = document.getElementById("activeStudents");
-  const completedOnlineEl = document.getElementById("completedOnline");
-  const adminRowsEl = document.getElementById("adminRows");
-  const adminErrorEl = document.getElementById("adminError");
-  const refreshButton = document.getElementById("refreshAdmin");
+function showModalMessage(message, kind = "bad") {
+  modalMessage.textContent = message;
+  modalMessage.classList.remove("hidden", "ok", "bad");
+  modalMessage.classList.add(kind);
+}
 
+function clearModalMessage() {
+  modalMessage.textContent = "";
+  modalMessage.classList.add("hidden");
+  modalMessage.classList.remove("ok", "bad");
+}
+
+function resetForm() {
+  editingId = null;
+  modalTitle.textContent = "Add Student";
+  fields.name.value = "";
+  fields.email.value = "";
+  fields.course.value = "Louisiana Concealed Carry";
+  fields.price.value = "150";
+  fields.paymentMethod.value = "PayPal";
+  fields.paymentStatus.value = "paid";
+  fields.portalStatus.value = "active";
+  fields.tier.value = "FULL";
+  fields.accessCode.value = generateAccessCode(fields.tier.value);
+  clearModalMessage();
+}
+
+function openModalForAdd() {
+  resetForm();
+  modal.showModal();
+}
+
+function closeModal() {
+  modal.close();
+}
+
+function applyStats(rows) {
+  const totalStudents = rows.length;
+  const pending = rows.filter((s) => String(s.paymentStatus || "") === "pending").length;
+  const paid = rows.filter((s) => String(s.paymentStatus || "") === "paid").length;
+  const revenue = rows.reduce((sum, s) => {
+    return sum + (String(s.paymentStatus || "") === "paid" ? Number(s.price || 0) : 0);
+  }, 0);
+
+  document.getElementById("statTotalStudents").textContent = totalStudents;
+  document.getElementById("statPendingPayments").textContent = pending;
+  document.getElementById("statPaidStudents").textContent = paid;
+  document.getElementById("statRevenue").textContent =
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue);
+}
+
+function filteredRows() {
+  const term = searchInput.value.trim().toLowerCase();
+  let rows = [...studentRows];
+
+  if (term) {
+    rows = rows.filter((s) =>
+      [s.name, s.email, s.accessCode].join(" ").toLowerCase().includes(term)
+    );
+  }
+
+  if (paymentFilter.value !== "all") {
+    rows = rows.filter((s) => String(s.paymentStatus || "") === paymentFilter.value);
+  }
+
+  if (portalFilter.value !== "all") {
+    rows = rows.filter((s) => String(s.status || "") === portalFilter.value);
+  }
+
+  if (sortBy.value === "name") {
+    rows.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+  }
+
+  if (sortBy.value === "progress") {
+    rows.sort((a, b) => {
+      const aCount = Array.isArray(a.completedLessons) ? a.completedLessons.length : 0;
+      const bCount = Array.isArray(b.completedLessons) ? b.completedLessons.length : 0;
+      return bCount - aCount;
+    });
+  }
+
+  if (sortBy.value === "newest") {
+    rows.sort((a, b) => String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || "")));
+  }
+
+  return rows;
+}
+
+async function copyText(value) {
   try {
-    refreshButton.disabled = true;
-    adminErrorEl.classList.add("hidden");
-    adminRowsEl.innerHTML = `<tr><td colspan="7">Loading student records...</td></tr>`;
-
-    const snap = await getDocs(collection(db, "portalStudents"));
-    const students = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
-
-    let totalRevenue = 0;
-    let activeCount = 0;
-    let completedCount = 0;
-
-    const rows = students.map((s) => {
-      const tier = String(s.tier || "").toUpperCase();
-      const status = String(s.status || "").toLowerCase();
-      const completedLessons = Array.isArray(s.completedLessons) ? s.completedLessons.length : 0;
-
-      if (tier === "FULL") totalRevenue += 150;
-      if (tier === "DISC") totalRevenue += 100;
-      if (status === "active") activeCount++;
-      if (completedLessons >= 8) completedCount++;
-
-      return `
-        <tr>
-          <td>${escapeHtml(s.name || "—")}</td>
-          <td class="cell-wrap">${escapeHtml(s.email || "—")}</td>
-          <td class="cell-wrap">${escapeHtml(s.accessCode || "—")}</td>
-          <td>${escapeHtml(tier || "—")}</td>
-          <td>${escapeHtml(status || "—")}</td>
-          <td>${completedLessons} / 8</td>
-          <td class="cell-wrap">${escapeHtml(formatDate(s.lastLoginAt))}</td>
-        </tr>
-      `;
-    }).join("");
-
-    totalStudentsEl.textContent = String(students.length);
-    totalRevenueEl.textContent = `$${totalRevenue}`;
-    activeStudentsEl.textContent = String(activeCount);
-    completedOnlineEl.textContent = String(completedCount);
-
-    adminRowsEl.innerHTML = rows || `<tr><td colspan="7">No student records found.</td></tr>`;
+    await navigator.clipboard.writeText(String(value || ""));
   } catch (err) {
-    console.error("ADMIN ERROR:", err);
-    adminErrorEl.textContent = "Error loading admin dashboard.";
-    adminErrorEl.classList.remove("hidden");
-    adminRowsEl.innerHTML = `<tr><td colspan="7">Unable to load records.</td></tr>`;
-  } finally {
-    refreshButton.disabled = false;
+    console.error("Clipboard copy failed:", err);
   }
 }
 
-document.getElementById("refreshAdmin")?.addEventListener("click", loadAdmin);
-loadAdmin();
+async function regenCode(studentId) {
+  const student = studentRows.find((s) => s.id === studentId);
+  if (!student) return;
+
+  const newCode = generateAccessCode(student.tier || "FREE");
+
+  try {
+    await updateDoc(doc(db, "portalStudents", studentId), {
+      accessCode: newCode,
+      updatedAt: serverTimestamp()
+    });
+    await loadAdminData();
+  } catch (err) {
+    console.error("Regenerate code failed:", err);
+    alert("Could not regenerate code.");
+  }
+}
+
+async function togglePortalStatus(studentId) {
+  const student = studentRows.find((s) => s.id === studentId);
+  if (!student) return;
+
+  const nextStatus = String(student.status || "active") === "active" ? "locked" : "active";
+
+  try {
+    await updateDoc(doc(db, "portalStudents", studentId), {
+      status: nextStatus,
+      updatedAt: serverTimestamp()
+    });
+    await loadAdminData();
+  } catch (err) {
+    console.error("Status update failed:", err);
+    alert("Could not update portal status.");
+  }
+}
+
+function exportCsv() {
+  const rows = filteredRows();
+  const header = [
+    "Name","Email","Course","Price","Payment Method","Payment Status","Portal Status",
+    "Access Code","Current Lesson","Current Stage","Attempts","Total Quiz Time","Progress","Last Activity"
+  ];
+
+  const lines = rows.map((s) => ([
+    s.name || "",
+    s.email || "",
+    s.course || "",
+    s.price || "",
+    s.paymentMethod || "",
+    s.paymentStatus || "",
+    s.status || "",
+    s.accessCode || "",
+    currentLessonLabel(s),
+    stageLabel(s),
+    totalAttempts(s),
+    formatSeconds(totalQuizTime(s)),
+    progressLabel(s),
+    formatFirestoreDate(lastActivity(s))
+  ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")));
+
+  const csv = [header.join(","), ...lines].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "bsa_admin_export.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function renderRows() {
+  const rows = filteredRows();
+  applyStats(studentRows);
+
+  body.innerHTML = rows.length ? rows.map((student) => `
+    <tr>
+      <td>${escapeHtml(student.name || "—")}</td>
+      <td class="cell-wrap">${escapeHtml(student.email || "—")}</td>
+      <td>${escapeHtml(student.course || "Louisiana Concealed Carry")}</td>
+      <td>${escapeHtml(student.price || 0)}</td>
+      <td>${escapeHtml(student.paymentMethod || "—")}</td>
+      <td>${escapeHtml(student.paymentStatus || "—")}</td>
+      <td>${escapeHtml(student.status || "—")}</td>
+      <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
+      <td>${escapeHtml(currentLessonLabel(student))}</td>
+      <td>${escapeHtml(stageLabel(student))}</td>
+      <td>${totalAttempts(student)}</td>
+      <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
+      <td>${escapeHtml(progressLabel(student))}</td>
+      <td class="cell-wrap">${escapeHtml(formatFirestoreDate(lastActivity(student)))}</td>
+      <td>
+        <div class="mini-actions">
+          <button class="btn btn-outline" type="button" data-copy="${escapeHtml(student.accessCode || "")}">Copy Code</button>
+          <button class="btn btn-outline" type="button" data-regen="${student.id}">Regen Code</button>
+          <button class="btn btn-outline" type="button" data-toggle="${student.id}">
+            ${String(student.status || "active") === "active" ? "Lock" : "Unlock"}
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join("") : `<tr><td colspan="15">No student records found.</td></tr>`;
+}
+
+async function loadAdminData() {
+  body.innerHTML = `<tr><td colspan="15">Loading student records...</td></tr>`;
+
+  try {
+    const snap = await getDocs(collection(db, "portalStudents"));
+    studentRows = snap.docs.map((docSnap) => {
+      const raw = docSnap.data() || {};
+      return {
+        id: docSnap.id,
+        name: raw.name || "Student",
+        email: raw.email || "",
+        course: raw.course || "Louisiana Concealed Carry",
+        price: Number(raw.price || 0),
+        paymentMethod: raw.paymentMethod || "PayPal",
+        paymentStatus: raw.paymentStatus || (raw.paid ? "paid" : "pending"),
+        status: raw.status || "active",
+        accessCode: normalizeAccessCode(raw.accessCode || ""),
+        tier: String(raw.tier || "FREE").toUpperCase(),
+        progress: raw.progress || {},
+        completedLessons: Array.isArray(raw.completedLessons) ? raw.completedLessons : [],
+        createdAt: raw.createdAt || "",
+        updatedAt: raw.updatedAt || "",
+        lastLoginAt: raw.lastLoginAt || ""
+      };
+    });
+
+    renderRows();
+  } catch (err) {
+    console.error("ADMIN LOAD ERROR:", err);
+    body.innerHTML = `<tr><td colspan="15">Error loading student records.</td></tr>`;
+  }
+}
+
+async function saveStudent(event) {
+  event.preventDefault();
+  clearModalMessage();
+
+  const name = fields.name.value.trim();
+  const email = fields.email.value.trim().toLowerCase();
+  const course = fields.course.value.trim();
+  const price = Number(fields.price.value || 0);
+  const paymentMethod = fields.paymentMethod.value;
+  const paymentStatus = fields.paymentStatus.value;
+  const portalStatus = fields.portalStatus.value;
+  const tier = fields.tier.value;
+  const accessCode = normalizeAccessCode(fields.accessCode.value || generateAccessCode(tier));
+
+  if (!name) {
+    showModalMessage("Student name is required.", "bad");
+    return;
+  }
+
+  const payload = {
+    name,
+    email,
+    course,
+    price,
+    paymentMethod,
+    paymentStatus,
+    tier,
+    status: portalStatus,
+    accessCode,
+    paid: paymentStatus === "paid",
+    progress: {},
+    completedLessons: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: serverTimestamp()
+  };
+
+  try {
+    await addDoc(collection(db, "portalStudents"), payload);
+    showModalMessage("Student saved successfully.", "ok");
+    await loadAdminData();
+    setTimeout(() => modal.close(), 500);
+  } catch (err) {
+    console.error("Save student failed:", err);
+    showModalMessage("Could not save student record.", "bad");
+  }
+}
+
+addStudentBtn.addEventListener("click", openModalForAdd);
+refreshBtn.addEventListener("click", loadAdminData);
+exportBtn.addEventListener("click", exportCsv);
+
+regenCodeBtn.addEventListener("click", () => {
+  fields.accessCode.value = generateAccessCode(fields.tier.value);
+});
+
+fields.tier.addEventListener("change", () => {
+  fields.accessCode.value = generateAccessCode(fields.tier.value);
+});
+
+closeModalBtn.addEventListener("click", closeModal);
+cancelModalBtn.addEventListener("click", closeModal);
+formWrap.addEventListener("submit", saveStudent);
+
+applyFiltersBtn.addEventListener("click", renderRows);
+clearFiltersBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  paymentFilter.value = "all";
+  portalFilter.value = "all";
+  sortBy.value = "newest";
+  renderRows();
+});
+
+searchInput.addEventListener("input", renderRows);
+paymentFilter.addEventListener("change", renderRows);
+portalFilter.addEventListener("change", renderRows);
+sortBy.addEventListener("change", renderRows);
+
+body.addEventListener("click", async (event) => {
+  const copyBtn = event.target.closest("[data-copy]");
+  const regenBtn = event.target.closest("[data-regen]");
+  const toggleBtn = event.target.closest("[data-toggle]");
+
+  if (copyBtn) {
+    await copyText(copyBtn.getAttribute("data-copy"));
+    return;
+  }
+
+  if (regenBtn) {
+    await regenCode(regenBtn.getAttribute("data-regen"));
+    return;
+  }
+
+  if (toggleBtn) {
+    await togglePortalStatus(toggleBtn.getAttribute("data-toggle"));
+  }
+});
+
+loadAdminData();
