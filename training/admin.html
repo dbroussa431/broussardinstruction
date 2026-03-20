@@ -4,199 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Admin Dashboard</title>
-  <link rel="icon" href="/IMAGES/favicon.ico">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .admin-page{min-height:100vh;background:linear-gradient(180deg,#eef2f9 0%,#f7f8fc 100%)}
-    .admin-wrap{max-width:1400px;margin:0 auto;padding:24px 20px 42px}
-    .admin-hero{background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));color:#fff;border-radius:24px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;box-shadow:0 20px 45px rgba(23,53,107,.18)}
-    .admin-hero .brand h1{color:#fff;margin:0}
-    .admin-hero .brand p{color:rgba(255,255,255,.88);margin:4px 0 0}
-    .admin-actions{display:flex;gap:12px;flex-wrap:wrap}
-    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:24px 0}
-    .stat-tile{background:#fff;border:1px solid rgba(17,35,74,.06);border-radius:20px;padding:18px 20px;box-shadow:0 12px 30px rgba(19,40,78,.08)}
-    .stat-label{font-size:.85rem;color:#6c7b95;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-    .stat-value{font-size:2.2rem;font-weight:900;color:var(--bsa-blue-dark);margin-top:8px}
-    .card{background:#fff;border:1px solid rgba(17,35,74,.06);border-radius:22px;box-shadow:0 12px 30px rgba(19,40,78,.08);padding:20px}
-    .filters{display:grid;grid-template-columns:2fr 1fr 1fr auto auto;gap:12px;align-items:end}
-    .table-wrap{overflow:auto;margin-top:16px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:12px 10px;border-bottom:1px solid #e6ebf3;vertical-align:top;font-size:.95rem}
-    th{font-size:.86rem;color:#6c7b95;text-transform:uppercase;letter-spacing:.04em;text-align:left;background:#f8fbff;position:sticky;top:0}
-    .subtle{color:#6c7b95}
-    .tag{display:inline-block;border-radius:999px;padding:6px 10px;font-size:.82rem;font-weight:800}
-    .tag.green{background:#e6f7ef;color:#1c7d4f}
-    .tag.gold{background:#fff4d8;color:#8b6500}
-    .tag.red{background:#fee8e6;color:#b23d33}
-    .tag.blue{background:#e9f2ff;color:#1f468c}
-    .mini-actions{display:flex;flex-wrap:wrap;gap:8px}
-    .mini-actions .btn{padding:8px 10px;font-size:.85rem;border-radius:10px}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(10,18,35,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000}
-    .modal-backdrop.show{display:flex}
-    .modal{max-width:680px;width:100%;background:#fff;border-radius:22px;box-shadow:0 24px 50px rgba(0,0,0,.18);padding:22px}
-    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .modal h3{margin:0 0 12px}
-    .inline-note{font-size:.9rem;color:#6c7b95;margin-top:6px}
-    .empty{text-align:center;color:#6c7b95;padding:26px}
-    @media (max-width:1100px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr 1fr}.admin-hero{flex-direction:column;align-items:flex-start}}
-    @media (max-width:720px){.stats-grid,.modal-grid,.filters{grid-template-columns:1fr}.admin-wrap{padding:16px}.admin-hero{padding:16px}}
-  </style>
 </head>
-<body class="admin-page">
-  <div class="admin-wrap">
-    <section class="admin-hero">
+<body>
+  <header class="topbar">
+    <div class="topbar-inner admin-wide">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
+        <div class="brand-mark">
+          <img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'">
+        </div>
         <div>
-          <h1>Admin Dashboard</h1>
-          <p>Students, payments, codes, progress, and timing</p>
+          <h1>BSA Admin Dashboard</h1>
+          <p>Administrative tools and student access management</p>
         </div>
-      </div>
-      <div class="admin-actions">
-        <button class="btn btn-gold" id="addStudentBtn">Add Student</button>
-        <button class="btn btn-light" id="refreshBtn">Refresh Records</button>
-        <button class="btn btn-light" id="exportBtn">Export CSV</button>
-        <a class="btn btn-light" href="dashboard.html">Student Portal</a>
-      </div>
-    </section>
-    <section class="stats-grid">
-      <div class="stat-tile"><div class="stat-label">Total Students</div><div class="stat-value" id="statTotal">0</div></div>
-      <div class="stat-tile"><div class="stat-label">Pending Payments</div><div class="stat-value" id="statPending">0</div></div>
-      <div class="stat-tile"><div class="stat-label">Paid Students</div><div class="stat-value" id="statPaid">0</div></div>
-      <div class="stat-tile"><div class="stat-label">Revenue Collected</div><div class="stat-value" id="statRevenue">$0</div></div>
-    </section>
-    <section class="card">
-      <div class="filters">
-        <div class="field" style="margin:0;">
-          <label for="searchInput">Search Records</label>
-          <input id="searchInput" type="text" placeholder="Search by name, email, or code">
-        </div>
-        <div class="field" style="margin:0;">
-          <label for="paymentFilter">Payment Status</label>
-          <select id="paymentFilter">
-            <option value="">All Payment Statuses</option>
-            <option value="Paid">Paid</option>
-            <option value="Pending">Pending</option>
-            <option value="Waived">Waived</option>
-          </select>
-        </div>
-        <div class="field" style="margin:0;">
-          <label for="portalFilter">Portal Status</label>
-          <select id="portalFilter">
-            <option value="">All Portal Statuses</option>
-            <option value="Active">Active</option>
-            <option value="Locked">Locked</option>
-          </select>
-        </div>
-        <div class="field" style="margin:0;">
-          <label for="sortBy">Sort By</label>
-          <select id="sortBy">
-            <option value="newest">Newest</option>
-            <option value="name">Name</option>
-            <option value="progress">Progress</option>
-          </select>
-        </div>
-        <div class="lesson-actions" style="margin:0;">
-          <button class="btn btn-blue" id="applyFiltersBtn">Filter</button>
-          <button class="btn btn-outline" id="clearFiltersBtn">Clear</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th><th>Email</th><th>Course</th><th>Price</th><th>Payment</th><th>Portal</th><th>Access Code</th><th>Current Lesson</th><th>Current Stage</th><th>Total Attempts</th><th>Total Quiz Time</th><th>Progress</th><th>Last Activity</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="studentTableBody"><tr><td colspan="14" class="empty">Loading student records…</td></tr></tbody>
-        </table>
-      </div>
-    </section>
-  </div>
-  <div id="modalBackdrop" class="modal-backdrop">
-    <div class="modal">
-      <h3 id="modalTitle">Add Student</h3>
-      <div class="modal-grid">
-        <div class="field"><label for="studentName">Name</label><input id="studentName" type="text" placeholder="Student name"></div>
-        <div class="field"><label for="studentEmail">Email</label><input id="studentEmail" type="email" placeholder="you@example.com"></div>
-        <div class="field"><label for="studentCourse">Course</label><input id="studentCourse" type="text" value="Louisiana Concealed Carry Course"></div>
-        <div class="field"><label for="studentPrice">Price</label><input id="studentPrice" type="number" value="150" min="0" step="1"></div>
-        <div class="field"><label for="studentPaymentMethod">Payment Method</label><select id="studentPaymentMethod"><option>PayPal</option><option>Waived</option><option>Direct</option></select></div>
-        <div class="field"><label for="studentPaymentStatus">Payment Status</label><select id="studentPaymentStatus"><option>Paid</option><option>Pending</option><option>Waived</option></select></div>
-        <div class="field"><label for="studentPortalStatus">Portal Status</label><select id="studentPortalStatus"><option>Active</option><option>Locked</option></select></div>
-        <div class="field"><label for="studentTier">Tier</label><select id="studentTier"><option value="FULL">FULL</option><option value="FREE">FREE</option></select></div>
-        <div class="field" style="grid-column:1/-1;">
-          <label for="studentAccessCode">Access Code</label>
-          <div class="lesson-actions" style="margin:0;">
-            <input id="studentAccessCode" type="text" placeholder="Generate or enter code" style="flex:1;">
-            <button class="btn btn-outline" type="button" id="generateCodeBtn">Generate Code</button>
-          </div>
-          <div class="inline-note">FREE / waived students also have full lesson access in this build.</div>
-        </div>
-      </div>
-      <div class="lesson-actions" style="margin-top:18px;">
-        <button class="btn btn-blue" id="saveStudentBtn">Save Student</button>
-        <button class="btn btn-outline" id="cancelModalBtn" type="button">Cancel</button>
       </div>
     </div>
-  </div>
-  <script type="module">
-    import { db } from "./firebase-config.js";
-    import { collection, getDocs, addDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  </header>
 
-    const els={statTotal:document.getElementById("statTotal"),statPending:document.getElementById("statPending"),statPaid:document.getElementById("statPaid"),statRevenue:document.getElementById("statRevenue"),tbody:document.getElementById("studentTableBody"),search:document.getElementById("searchInput"),payment:document.getElementById("paymentFilter"),portal:document.getElementById("portalFilter"),sortBy:document.getElementById("sortBy"),addBtn:document.getElementById("addStudentBtn"),refreshBtn:document.getElementById("refreshBtn"),exportBtn:document.getElementById("exportBtn"),applyBtn:document.getElementById("applyFiltersBtn"),clearBtn:document.getElementById("clearFiltersBtn"),modalBackdrop:document.getElementById("modalBackdrop"),modalTitle:document.getElementById("modalTitle"),saveStudentBtn:document.getElementById("saveStudentBtn"),cancelModalBtn:document.getElementById("cancelModalBtn"),generateCodeBtn:document.getElementById("generateCodeBtn"),studentName:document.getElementById("studentName"),studentEmail:document.getElementById("studentEmail"),studentCourse:document.getElementById("studentCourse"),studentPrice:document.getElementById("studentPrice"),studentPaymentMethod:document.getElementById("studentPaymentMethod"),studentPaymentStatus:document.getElementById("studentPaymentStatus"),studentPortalStatus:document.getElementById("studentPortalStatus"),studentTier:document.getElementById("studentTier"),studentAccessCode:document.getElementById("studentAccessCode")};
-    let students=[]; let editingId=null;
-    const safeText=(v)=>v==null?"":String(v);
-    const money=(v)=>"$"+Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0});
-    function totalQuizSeconds(student){ let total=Number(student.totalQuizTimeSeconds||0); const progress=student.progress||{}; Object.values(progress).forEach((p)=>{ if(p&&typeof p==="object"){ total+=Number(p.quizTimeSeconds||0); total+=Number(p.totalQuizTimeSeconds||0); }}); return total; }
-    const formatDuration=(s)=>Math.floor(Number(s||0)/60)+"m "+(Number(s||0)%60)+"s";
-    const completedCount=(student)=>Array.isArray(student.completedLessons)?student.completedLessons.length:0;
-    function currentLesson(student){ if(student.currentLesson) return student.currentLesson; const progress=student.progress||{}; const ids=Object.keys(progress).map(Number).filter((n)=>!Number.isNaN(n)).sort((a,b)=>a-b); if(!ids.length) return "Lesson 1"; const firstOpen=ids.find((id)=>!(progress[id]||{}).quizPassed); return "Lesson "+(firstOpen||Math.max(...ids)); }
-    function currentStage(student){ if(student.currentStage) return student.currentStage; const progress=student.progress||{}; const ids=Object.keys(progress).map(Number).filter((n)=>!Number.isNaN(n)).sort((a,b)=>a-b); if(!ids.length) return "Not Started"; const lessonId=ids.find((id)=>!(progress[id]||{}).quizPassed)||Math.max(...ids); const p=progress[lessonId]||{}; if(p.quizPassed) return "Passed"; if(p.quizScore!=null) return "Retake"; if(p.scenarioCompleted) return "Ready for Quiz"; if(p.contentViewed) return "Scenario Pending"; return "Not Started"; }
-    function totalAttempts(student){ let total=Number(student.totalAttempts||0); const progress=student.progress||{}; Object.values(progress).forEach((p)=>{ if(p&&typeof p==="object") total+=Number(p.attemptCount||0); }); return total; }
-    const progressPercent=(student)=>Math.round((completedCount(student)/8)*100);
-    function paymentTag(value){ const v=(value||"").toString().toLowerCase(); if(v==="paid") return '<span class="tag green">Paid</span>'; if(v==="pending") return '<span class="tag gold">Pending</span>'; if(v==="waived") return '<span class="tag blue">Waived</span>'; return '<span class="tag blue">'+safeText(value||"—")+'</span>'; }
-    function portalTag(value){ const v=(value||"").toString().toLowerCase(); if(v==="active") return '<span class="tag green">Active</span>'; if(v==="locked") return '<span class="tag red">Locked</span>'; return '<span class="tag blue">'+safeText(value||"—")+'</span>'; }
-    function codeGen(){ const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let out="BSA-"; for(let i=0;i<8;i++) out+=alphabet[Math.floor(Math.random()*alphabet.length)]; return out; }
-    function normalizeStudent(docSnap){ const s=docSnap.data()||{}; return {id:docSnap.id,name:s.name||"",email:s.email||"",course:s.course||"Louisiana Concealed Carry Course",price:Number(s.price||0),paymentMethod:s.paymentMethod||"Waived",paymentStatus:s.paymentStatus|| (s.paid?"Paid":"Pending"),portalStatus:s.portalStatus||((s.status||"").toLowerCase()==="active"?"Active":"Locked"),accessCode:s.accessCode||"",tier:s.tier||"FULL",paid:!!s.paid,progress:s.progress||{},completedLessons:s.completedLessons||[],lastActivityAt:s.lastActivityAt||s.updatedAt||null,raw:s}; }
-    async function loadStudents(){ els.tbody.innerHTML='<tr><td colspan="14" class="empty">Loading student records…</td></tr>'; const snap=await getDocs(collection(db,"portalStudents")); students=snap.docs.map(normalizeStudent); render(); }
-    function filteredStudents(){ const search=els.search.value.trim().toLowerCase(); const payment=els.payment.value; const portal=els.portal.value; const sortBy=els.sortBy.value;
-      let rows=students.filter((s)=>{ const matchesSearch=!search||[s.name,s.email,s.accessCode].some((v)=>safeText(v).toLowerCase().includes(search)); const matchesPayment=!payment||s.paymentStatus===payment; const matchesPortal=!portal||s.portalStatus===portal; return matchesSearch&&matchesPayment&&matchesPortal; });
-      rows.sort((a,b)=> sortBy==="name" ? safeText(a.name).localeCompare(safeText(b.name)) : sortBy==="progress" ? progressPercent(b)-progressPercent(a) : safeText(b.id).localeCompare(safeText(a.id)));
-      return rows;
-    }
-    function updateStats(rows){ const total=rows.length; const pending=rows.filter((s)=>(s.paymentStatus||"")==="Pending").length; const paid=rows.filter((s)=>(s.paymentStatus||"")==="Paid").length; const revenue=rows.filter((s)=>(s.paymentStatus||"")==="Paid").reduce((sum,s)=>sum+Number(s.price||0),0); els.statTotal.textContent=total; els.statPending.textContent=pending; els.statPaid.textContent=paid; els.statRevenue.textContent=money(revenue); }
-    function render(){ const rows=filteredStudents(); updateStats(rows); if(!rows.length){ els.tbody.innerHTML='<tr><td colspan="14" class="empty">No matching student records found.</td></tr>'; return; }
-      els.tbody.innerHTML=rows.map((s)=>`<tr><td><strong>${safeText(s.name||"—")}</strong></td><td>${safeText(s.email||"—")}</td><td>${safeText(s.course||"—")}</td><td>${money(s.price)}</td><td><div>${paymentTag(s.paymentStatus)}</div><div class="subtle">${safeText(s.paymentMethod||"—")}</div></td><td>${portalTag(s.portalStatus)}</td><td><div style="font-weight:800">${safeText(s.accessCode||"—")}</div><div class="mini-actions" style="margin-top:6px;"><button class="btn btn-outline" data-action="copy" data-id="${s.id}">Copy</button><button class="btn btn-outline" data-action="regen" data-id="${s.id}">Regen</button></div></td><td>${safeText(currentLesson(s))}</td><td>${safeText(currentStage(s))}</td><td>${totalAttempts(s)}</td><td>${formatDuration(totalQuizSeconds(s))}</td><td>${progressPercent(s)}%</td><td>${safeText(s.lastActivityAt?.toDate ? s.lastActivityAt.toDate().toLocaleString() : "—")}</td><td><div class="mini-actions"><button class="btn btn-blue" data-action="edit" data-id="${s.id}">Edit</button><button class="btn btn-outline" data-action="togglePortal" data-id="${s.id}">${s.portalStatus==="Active"?"Lock":"Unlock"}</button><button class="btn btn-outline" data-action="markPaid" data-id="${s.id}">Paid</button><button class="btn btn-outline" data-action="markWaived" data-id="${s.id}">Waived</button><button class="btn btn-outline" data-action="markPending" data-id="${s.id}">Pending</button></div></td></tr>`).join("");
-    }
-    function openModal(student=null){ editingId=student?student.id:null; els.modalTitle.textContent=student?"Edit Student":"Add Student"; els.studentName.value=student?.name||""; els.studentEmail.value=student?.email||""; els.studentCourse.value=student?.course||"Louisiana Concealed Carry Course"; els.studentPrice.value=student?.price??150; els.studentPaymentMethod.value=student?.paymentMethod||"PayPal"; els.studentPaymentStatus.value=student?.paymentStatus||"Paid"; els.studentPortalStatus.value=student?.portalStatus||"Active"; els.studentTier.value="FULL"; els.studentAccessCode.value=student?.accessCode||codeGen(); els.modalBackdrop.classList.add("show"); }
-    function closeModal(){ editingId=null; els.modalBackdrop.classList.remove("show"); }
-    async function saveStudent(){ const payload={name:els.studentName.value.trim(),email:els.studentEmail.value.trim().toLowerCase(),course:els.studentCourse.value.trim()||"Louisiana Concealed Carry Course",price:Number(els.studentPrice.value||0),paymentMethod:els.studentPaymentMethod.value,paymentStatus:els.studentPaymentStatus.value,portalStatus:els.studentPortalStatus.value,accessCode:els.studentAccessCode.value.trim()||codeGen(),tier:"FULL",paid:els.studentPaymentStatus.value==="Paid",status:els.studentPortalStatus.value==="Active"?"active":"locked",updatedAt:serverTimestamp()}; if(!payload.name) return alert("Student name is required."); if(!payload.email) return alert("Student email is required.");
-      if(editingId){ await updateDoc(doc(db,"portalStudents",editingId),payload); } else { await addDoc(collection(db,"portalStudents"),{...payload,progress:{},completedLessons:[],createdAt:serverTimestamp()}); }
-      closeModal(); await loadStudents();
-    }
-    async function handleTableAction(event){ const button=event.target.closest("[data-action]"); if(!button) return; const id=button.dataset.id; const action=button.dataset.action; const student=students.find((s)=>s.id===id); if(!student) return;
-      if(action==="copy"){ await navigator.clipboard.writeText(student.accessCode||""); button.textContent="Copied"; setTimeout(()=>button.textContent="Copy",1200); return; }
-      if(action==="regen"){ await updateDoc(doc(db,"portalStudents",id),{accessCode:codeGen(),updatedAt:serverTimestamp(),tier:"FULL"}); await loadStudents(); return; }
-      if(action==="edit"){ openModal(student); return; }
-      if(action==="togglePortal"){ const nextPortal=student.portalStatus==="Active"?"Locked":"Active"; await updateDoc(doc(db,"portalStudents",id),{portalStatus:nextPortal,status:nextPortal==="Active"?"active":"locked",updatedAt:serverTimestamp()}); await loadStudents(); return; }
-      if(action==="markPaid"||action==="markWaived"||action==="markPending"){ const map={markPaid:{paymentStatus:"Paid",paymentMethod:student.paymentMethod==="Waived"?"PayPal":student.paymentMethod,paid:true},markWaived:{paymentStatus:"Waived",paymentMethod:"Waived",paid:false},markPending:{paymentStatus:"Pending",paymentMethod:student.paymentMethod||"PayPal",paid:false}}; await updateDoc(doc(db,"portalStudents",id),{...map[action],tier:"FULL",updatedAt:serverTimestamp()}); await loadStudents(); }
-    }
-    function exportCsv(){ const rows=filteredStudents(); const headers=["Name","Email","Course","Price","Payment Method","Payment Status","Portal Status","Access Code","Current Lesson","Current Stage","Total Attempts","Total Quiz Time","Progress %","Last Activity"]; const lines=[headers.join(",")];
-      rows.forEach((s)=>{ const row=[s.name,s.email,s.course,s.price,s.paymentMethod,s.paymentStatus,s.portalStatus,s.accessCode,currentLesson(s),currentStage(s),totalAttempts(s),formatDuration(totalQuizSeconds(s)),progressPercent(s),s.lastActivityAt?.toDate ? s.lastActivityAt.toDate().toISOString() : ""].map((v)=>'"'+safeText(v).replace(/"/g,'""')+'"'); lines.push(row.join(",")); });
-      const blob=new Blob([lines.join("\n")],{type:"text/csv;charset=utf-8;"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="bsa-student-records.csv"; a.click(); URL.revokeObjectURL(url);
-    }
-    els.addBtn.addEventListener("click",()=>openModal());
-    els.refreshBtn.addEventListener("click",loadStudents);
-    els.exportBtn.addEventListener("click",exportCsv);
-    els.applyBtn.addEventListener("click",render);
-    els.clearBtn.addEventListener("click",()=>{ els.search.value=""; els.payment.value=""; els.portal.value=""; els.sortBy.value="newest"; render(); });
-    els.generateCodeBtn.addEventListener("click",()=>els.studentAccessCode.value=codeGen());
-    els.cancelModalBtn.addEventListener("click",closeModal);
-    els.saveStudentBtn.addEventListener("click",saveStudent);
-    els.tbody.addEventListener("click",handleTableAction);
-    els.modalBackdrop.addEventListener("click",(e)=>{ if(e.target===els.modalBackdrop) closeModal(); });
-    loadStudents().catch((err)=>{ console.error(err); els.tbody.innerHTML='<tr><td colspan="14" class="empty">Unable to load student records. Check firebase-config.js export and Firestore permissions.</td></tr>'; });
+  <main class="container container-wide">
+    <section class="panel content-card">
+      <div class="section-head">
+        <div>
+          <h3>Admin Overview</h3>
+          <p>This page loads the admin script and displays admin stats.</p>
+        </div>
+      </div>
+
+      <div id="stats" class="admin-stats-box">
+        Loading admin data...
+      </div>
+
+      <div id="adminError" class="notice bad hidden" style="margin-top:16px;"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    const errorBox = document.getElementById("adminError");
+
+    window.addEventListener("error", (event) => {
+      console.error("Admin page error:", event.error || event.message);
+      errorBox.textContent = "Admin page error while loading dashboard tools.";
+      errorBox.classList.remove("hidden");
+    });
+
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error("Unhandled admin promise rejection:", event.reason);
+      errorBox.textContent = "Admin dashboard failed while connecting to Firebase or loading admin data.";
+      errorBox.classList.remove("hidden");
+    });
   </script>
+
+  <script type="module" src="admin.js"></script>
 </body>
 </html>
