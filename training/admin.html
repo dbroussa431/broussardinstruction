@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Admin Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <header class="topbar">
@@ -30,30 +30,10 @@
         </div>
       </div>
 
-      <div id="stats" class="admin-stats-box">
-        Loading admin data...
-      </div>
-
-      <div id="adminError" class="notice bad hidden" style="margin-top:16px;"></div>
+      <div id="stats" class="admin-stats-box">Loading admin data...</div>
     </section>
   </main>
 
-  <script type="module">
-    const errorBox = document.getElementById("adminError");
-
-    window.addEventListener("error", (event) => {
-      console.error("Admin page error:", event.error || event.message);
-      errorBox.textContent = "Admin page error while loading dashboard tools.";
-      errorBox.classList.remove("hidden");
-    });
-
-    window.addEventListener("unhandledrejection", (event) => {
-      console.error("Unhandled admin promise rejection:", event.reason);
-      errorBox.textContent = "Admin dashboard failed while connecting to Firebase or loading admin data.";
-      errorBox.classList.remove("hidden");
-    });
-  </script>
-
-  <script type="module" src="admin.js"></script>
+  <script type="module" src="./admin.js?v=1"></script>
 </body>
 </html>
