@@ -20,6 +20,7 @@
     .manual-fallback{margin-top:12px;padding-top:14px;border-top:1px solid var(--line,#d9e0ec)}
     .hidden{display:none!important}
     .field-note{font-size:.92rem;color:var(--muted,#68758a);margin-top:8px}
+    #paypal-button-container{min-height:160px}
     @media (max-width:900px){.purchase-grid{grid-template-columns:1fr}.purchase-card{padding:20px}}
   </style>
 </head>
@@ -98,7 +99,7 @@
     </section>
   </div>
 
-  <script src="pay-config.js?v=2"></script>
+  <script src="pay-config.js?v=3"></script>
   <script>
     function show(el, text) {
       if (!el) return;
@@ -111,16 +112,16 @@
       el.classList.add("hidden");
     }
 
-    function validEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
-    }
-
     function normalize(text) {
       return String(text || "").trim();
     }
 
+    function validEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalize(email));
+    }
+
     function looksLikeValidClientId(value) {
-      const v = String(value || "").trim();
+      const v = normalize(value);
       if (!v) return false;
       if (v.includes("@")) return false;
       if (v.toLowerCase().includes("paypalme")) return false;
@@ -147,16 +148,42 @@
       });
     }
 
+    function getBuyerFields() {
+      return {
+        name: document.getElementById("buyerName"),
+        email: document.getElementById("buyerEmail")
+      };
+    }
+
+    function validateBuyerFields() {
+      const { name, email } = getBuyerFields();
+      const buyerName = normalize(name?.value);
+      const buyerEmail = normalize(email?.value).toLowerCase();
+
+      if (!buyerName) {
+        return { ok: false, message: "Please enter your full name before checkout." };
+      }
+
+      if (!validEmail(buyerEmail)) {
+        return { ok: false, message: "Please enter a valid email address before checkout." };
+      }
+
+      return {
+        ok: true,
+        name: buyerName,
+        email: buyerEmail
+      };
+    }
+
     async function initPurchase() {
       const cfg = window.BSA_PAY_CONFIG || {};
       const loadingNotice = document.getElementById("loadingNotice");
       const errorNotice = document.getElementById("errorNotice");
       const successNotice = document.getElementById("successNotice");
       const codeNotice = document.getElementById("codeNotice");
-      const buyerName = document.getElementById("buyerName");
-      const buyerEmail = document.getElementById("buyerEmail");
       const manualFallback = document.getElementById("manualFallback");
       const manualPayLink = document.getElementById("manualPayLink");
+      const paypalContainer = document.getElementById("paypal-button-container");
 
       hide(errorNotice);
       hide(successNotice);
@@ -182,11 +209,26 @@
         await loadPayPalSdk(cfg.paypalClientId, cfg.currency || "USD");
         hide(loadingNotice);
 
-        if (!window.paypal || !window.paypal.Buttons) {
+        if (!window.paypal || !window.paypal.Buttons || !paypalContainer) {
           show(errorNotice, "Unable to load PayPal checkout right now.");
           show(manualFallback);
           return;
         }
+
+        const validationResult = validateBuyerFields();
+        if (!validationResult.ok) {
+          show(errorNotice, validationResult.message);
+        }
+
+        const { name: buyerNameInput, email: buyerEmailInput } = getBuyerFields();
+
+        buyerNameInput?.addEventListener("input", () => {
+          hide(errorNotice);
+        });
+
+        buyerEmailInput?.addEventListener("input", () => {
+          hide(errorNotice);
+        });
 
         window.paypal.Buttons({
           style: {
@@ -201,23 +243,19 @@
             hide(successNotice);
             hide(codeNotice);
 
-            const name = normalize(buyerName?.value);
-            const email = normalize(buyerEmail?.value).toLowerCase();
-
-            if (!name) {
-              show(errorNotice, "Please enter your full name before checkout.");
-              throw new Error("Missing buyer name");
-            }
-
-            if (!validEmail(email)) {
-              show(errorNotice, "Please enter a valid email address before checkout.");
-              throw new Error("Missing buyer email");
+            const check = validateBuyerFields();
+            if (!check.ok) {
+              show(errorNotice, check.message);
+              return Promise.reject(new Error(check.message));
             }
 
             const response = await fetch(cfg.createOrderUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email })
+              body: JSON.stringify({
+                name: check.name,
+                email: check.email
+              })
             });
 
             const data = await response.json().catch(() => ({}));
@@ -235,6 +273,13 @@
             hide(errorNotice);
             hide(successNotice);
             hide(codeNotice);
+
+            const check = validateBuyerFields();
+            if (!check.ok) {
+              show(errorNotice, check.message);
+              return;
+            }
+
             show(loadingNotice, "Finalizing payment and generating your portal code…");
 
             const response = await fetch(cfg.captureOrderUrl, {
@@ -242,8 +287,8 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 orderID: data.orderID,
-                name: normalize(buyerName?.value),
-                email: normalize(buyerEmail?.value).toLowerCase()
+                name: check.name,
+                email: check.email
               })
             });
 
@@ -273,6 +318,19 @@
           onError: (err) => {
             console.error("PayPal button error:", err);
             hide(loadingNotice);
+
+            const msg = String(err?.message || "").toLowerCase();
+
+            if (msg.includes("full name") || msg.includes("missing buyer name")) {
+              show(errorNotice, "Please enter your full name before checkout.");
+              return;
+            }
+
+            if (msg.includes("valid email") || msg.includes("missing buyer email")) {
+              show(errorNotice, "Please enter a valid email address before checkout.");
+              return;
+            }
+
             show(errorNotice, "Unable to load PayPal checkout right now.");
             show(manualFallback);
           }
