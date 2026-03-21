@@ -99,7 +99,7 @@
     </section>
   </div>
 
-  <script src="pay-config.js?v=3"></script>
+  <script src="pay-config.js?v=4"></script>
   <script>
     function show(el, text) {
       if (!el) return;
@@ -215,20 +215,10 @@
           return;
         }
 
-        const validationResult = validateBuyerFields();
-        if (!validationResult.ok) {
-          show(errorNotice, validationResult.message);
-        }
-
         const { name: buyerNameInput, email: buyerEmailInput } = getBuyerFields();
 
-        buyerNameInput?.addEventListener("input", () => {
-          hide(errorNotice);
-        });
-
-        buyerEmailInput?.addEventListener("input", () => {
-          hide(errorNotice);
-        });
+        buyerNameInput?.addEventListener("input", () => hide(errorNotice));
+        buyerEmailInput?.addEventListener("input", () => hide(errorNotice));
 
         window.paypal.Buttons({
           style: {
@@ -328,6 +318,12 @@
 
             if (msg.includes("valid email") || msg.includes("missing buyer email")) {
               show(errorNotice, "Please enter a valid email address before checkout.");
+              return;
+            }
+
+            if (msg.includes("failed to fetch") || msg.includes("cors")) {
+              show(errorNotice, "Payment service is blocked by server configuration right now. Use the PayPal.Me backup link below until the endpoint is fixed.");
+              show(manualFallback);
               return;
             }
 
