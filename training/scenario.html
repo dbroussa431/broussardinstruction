@@ -1,103 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSA Scenario Review</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --text: #f9fafb;
+      --muted: #cbd5e1;
+      --gold: #f59e0b;
+      --green: #22c55e;
+      --red: #ef4444;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      width: min(900px, 92%);
+      margin: 0 auto;
+      padding: 24px 0 50px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,0.08);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .panel {
+      background: rgba(17,24,39,0.88);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .muted {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .scenario {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .scenario h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .option {
+      display: block;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .option input {
+      margin-right: 8px;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .feedback.good {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
+    }
+
+    .feedback.bad {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.35);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    button, .btn-link {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.96rem;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #111827;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
+  <div class="wrap">
+    <div class="topbar">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Scenario Review</p>
       </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
+
+      <div class="nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a id="continueToQuizTop" href="quiz.html?lesson=1">Continue to Quiz</a>
       </div>
     </div>
-  </header>
 
-  <main class="container">
-    <section class="panel content-card">
-      <span class="eyebrow">2 short scenarios before the quiz</span>
-      <h2 id="scenarioTitle"></h2>
-      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
-      <div id="scenarioWrap"></div>
-      <div id="scenarioResults" class="hidden"></div>
-      <div class="lesson-actions">
-        <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
-        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
-      </div>
+    <section class="panel">
+      <div class="eyebrow" id="lessonLabel">Lesson 1</div>
+      <h2>2 short scenarios before the quiz</h2>
+      <p class="muted">
+        Choose the best answer for each scenario. Explanations appear after you submit.
+      </p>
+
+      <form id="scenarioForm">
+        <div class="scenario">
+          <h3 id="scenario1Title">Scenario 1</h3>
+          <p id="scenario1Text"></p>
+          <div id="scenario1Options"></div>
+          <div class="feedback" id="scenario1Feedback"></div>
+        </div>
+
+        <div class="scenario">
+          <h3 id="scenario2Title">Scenario 2</h3>
+          <p id="scenario2Text"></p>
+          <div id="scenario2Options"></div>
+          <div class="feedback" id="scenario2Feedback"></div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Submit Scenario Review</button>
+          <a id="continueToQuizBottom" class="btn-link btn-secondary" href="quiz.html?lesson=1">Continue to Quiz</a>
+        </div>
+      </form>
     </section>
-  </main>
+  </div>
 
-  <script src="data.js"></script>
-  <script type="module">
-    import {
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
-      getCurrentStudent,
-      lessonSequenceUnlocked,
-      isLessonAllowedByTier,
-      getLessonProgress,
-      setScenarioCompleted,
-      setCurrentLessonStage
-    } from "./app.js";
+  <script>
+    function getLessonNumber() {
+      const params = new URLSearchParams(window.location.search);
 
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+      let lesson =
+        params.get("lesson") ||
+        params.get("module") ||
+        params.get("id");
 
-    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
-      window.location.href = "dashboard.html";
+      if (!lesson && window.location.hash) {
+        const match = window.location.hash.match(/lesson-(\d+)/i);
+        if (match) lesson = match[1];
+      }
+
+      if (!lesson) {
+        lesson = localStorage.getItem("currentLesson");
+      }
+
+      if (!lesson) lesson = "1";
+
+      lesson = String(lesson).replace(/[^\d]/g, "");
+
+      if (!lesson || Number(lesson) < 1 || Number(lesson) > 8) {
+        lesson = "1";
+      }
+
+      localStorage.setItem("currentLesson", lesson);
+      return lesson;
     }
 
-    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-    const progress = getLessonProgress(lesson.id, student);
+    const SCENARIO_BANK = {
+      1: [
+        {
+          title: "Scenario 1",
+          text: "You pick up a firearm at home to inspect it after someone else handled it. What is the safest first step?",
+          options: [
+            "Assume it is unloaded because it was stored earlier.",
+            "Point it in a safe direction and verify its condition.",
+            "Pull the trigger to test if it is working."
+          ],
+          answer: 1,
+          explanation: "Always point in a safe direction and verify the firearm’s condition yourself."
+        },
+        {
+          title: "Scenario 2",
+          text: "A friend asks to see your firearm during a conversation. What should you do first?",
+          options: [
+            "Hand it over immediately if the friend has experience.",
+            "Keep your finger on the trigger so you stay in control.",
+            "Unload and clear it before any transfer, while maintaining safe direction."
+          ],
+          answer: 2,
+          explanation: "Any transfer should be done only after unloading and clearing the firearm safely."
+        }
+      ],
+      2: [
+        {
+          title: "Scenario 1",
+          text: "You are angry after an argument and consider handling your firearm. What is the best choice?",
+          options: [
+            "Handle it anyway because you know how to use it.",
+            "Wait until you are calm and emotionally in control.",
+            "Practice drawing to release stress."
+          ],
+          answer: 1,
+          explanation: "Firearms should not be handled when angry, upset, distracted, or emotionally compromised."
+        },
+        {
+          title: "Scenario 2",
+          text: "You are unsure whether an area has restrictions on carry. What should you do?",
+          options: [
+            "Carry anyway and hope it is allowed.",
+            "Check the applicable rules before entering.",
+            "Rely only on what someone told you months ago."
+          ],
+          answer: 1,
+          explanation: "When legal restrictions may apply, verify before entering rather than guessing."
+        }
+      ],
+      3: [
+        {
+          title: "Scenario 1",
+          text: "A child regularly visits your home. What storage practice is safest?",
+          options: [
+            "Store the firearm loaded in a drawer for quick access.",
+            "Store it where children cannot reach it and secure it appropriately.",
+            "Tell the child not to touch it and leave it visible."
+          ],
+          answer: 1,
+          explanation: "Secure storage is essential to prevent unauthorized access, especially by children."
+        },
+        {
+          title: "Scenario 2",
+          text: "You leave your vehicle parked in public. What is the best approach for a firearm left behind?",
+          options: [
+            "Leave it visible because the doors are locked.",
+            "Secure it discreetly and reduce unauthorized access risk.",
+            "Place it under a seat without checking who can see."
+          ],
+          answer: 1,
+          explanation: "A secured, discreet approach reduces theft and unauthorized access risk."
+        }
+      ],
+      4: [
+        {
+          title: "Scenario 1",
+          text: "You enter a parking lot late at night and notice someone acting strangely near your car. Best response?",
+          options: [
+            "Ignore everything and keep looking at your phone.",
+            "Stay aware, create space, and move to a safer position.",
+            "Approach the person to challenge them immediately."
+          ],
+          answer: 1,
+          explanation: "Awareness, distance, and safer positioning are often the best first response."
+        },
+        {
+          title: "Scenario 2",
+          text: "You are distracted while fueling your vehicle. What awareness habit helps most?",
+          options: [
+            "Keep both earbuds in and focus only on the pump.",
+            "Periodically scan your surroundings and maintain attention.",
+            "Turn your back to the lot for privacy."
+          ],
+          answer: 1,
+          explanation: "Maintaining awareness helps you identify and avoid potential problems early."
+        }
+      ],
+      5: [
+        {
+          title: "Scenario 1",
+          text: "A heated disagreement is happening, but there is still room to leave safely. What is generally best?",
+          options: [
+            "Escalate verbally to show confidence.",
+            "Leave if you can do so safely.",
+            "Stay and continue arguing to prove a point."
+          ],
+          answer: 1,
+          explanation: "If safe disengagement is available, avoiding escalation is usually the better course."
+        },
+        {
+          title: "Scenario 2",
+          text: "Someone is verbally rude but not presenting an immediate deadly threat. Best mindset?",
+          options: [
+            "Treat words alone as automatic justification for force.",
+            "Stay controlled and assess actual threat level.",
+            "Display your firearm to end the argument."
+          ],
+          answer: 1,
+          explanation: "You must assess actual threat, not react emotionally to insults or provocation."
+        }
+      ],
+      6: [
+        {
+          title: "Scenario 1",
+          text: "After a defensive incident, what is an important immediate priority once safe?",
+          options: [
+            "Post about it online.",
+            "Ensure safety and contact emergency services as appropriate.",
+            "Leave without reporting anything."
+          ],
+          answer: 1,
+          explanation: "Once safe, emergency response and proper reporting are important priorities."
+        },
+        {
+          title: "Scenario 2",
+          text: "During a high-stress incident, why is judgment difficult?",
+          options: [
+            "Because stress can affect perception and decision-making.",
+            "Because training no longer matters at all.",
+            "Because every situation has only one obvious answer."
+          ],
+          answer: 0,
+          explanation: "Stress affects perception and judgment, which is why preparation and discipline matter."
+        }
+      ],
+      7: [
+        {
+          title: "Scenario 1",
+          text: "You notice your carry gear is worn and no longer secure. What should you do?",
+          options: [
+            "Keep using it until it fully fails.",
+            "Replace or repair unsafe gear before continued use.",
+            "Ignore it because the firearm still works."
+          ],
+          answer: 1,
+          explanation: "Support gear matters. Unsafe or worn equipment should be corrected before continued use."
+        },
+        {
+          title: "Scenario 2",
+          text: "You have not cleaned your firearm in a long time and reliability is uncertain. Best response?",
+          options: [
+            "Carry it without checking because it probably works.",
+            "Inspect and maintain it before relying on it.",
+            "Test reliability only during an emergency."
+          ],
+          answer: 1,
+          explanation: "A defensive firearm should be maintained and inspected before you rely on it."
+        }
+      ],
+      8: [
+        {
+          title: "Scenario 1",
+          text: "You completed the online material but skipped reviewing weak areas. Best next step?",
+          options: [
+            "Move on without review because finishing is enough.",
+            "Review weak areas before the live session.",
+            "Ignore mistakes because the live class will cover everything."
+          ],
+          answer: 1,
+          explanation: "A final review of weak areas helps you arrive better prepared for the live portion."
+        },
+        {
+          title: "Scenario 2",
+          text: "You passed several sections but still feel unsure on safety details. Best approach?",
+          options: [
+            "Refresh the material and ask questions during live review.",
+            "Assume uncertainty does not matter anymore.",
+            "Skip the live review if quizzes were close enough."
+          ],
+          answer: 0,
+          explanation: "Refreshing safety details and asking questions is the right move before qualification."
+        }
+      ]
+    };
 
-    if (!progress.contentViewed) {
-      window.location.href = `lesson.html?lesson=${lesson.id}`;
+    const lesson = Number(getLessonNumber());
+    const scenarios = SCENARIO_BANK[lesson] || SCENARIO_BANK[1];
+
+    document.getElementById("lessonLabel").textContent = `Lesson ${lesson}`;
+
+    function setQuizLinks() {
+      const href = `quiz.html?lesson=${lesson}`;
+      document.getElementById("continueToQuizTop").href = href;
+      document.getElementById("continueToQuizBottom").href = href;
     }
 
-    await setCurrentLessonStage(lesson.id, progress.scenarioCompleted ? "ready-for-quiz" : "scenario");
+    function renderScenario(index, data) {
+      document.getElementById(`scenario${index}Title`).textContent = data.title;
+      document.getElementById(`scenario${index}Text`).textContent = data.text;
 
-    document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
-    document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
-    document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
+      const optionsWrap = document.getElementById(`scenario${index}Options`);
+      optionsWrap.innerHTML = data.options.map((option, i) => `
+        <label class="option">
+          <input type="radio" name="scenario${index}" value="${i}">
+          ${option}
+        </label>
+      `).join("");
+    }
 
-    const wrap = document.getElementById("scenarioWrap");
-    lesson.scenarios.forEach((sc, index) => {
-      const card = document.createElement("div");
-      card.className = "scenario-card";
-      card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
-      const list = document.createElement("div");
-      list.className = "answer-list";
-      sc.choices.forEach((choice, i) => {
-        const label = document.createElement("label");
-        label.className = "answer-option";
-        label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65 + i)}. ${choice}`;
-        list.appendChild(label);
-      });
-      card.appendChild(list);
-      wrap.appendChild(card);
+    function showFeedback(index, selectedIndex, data) {
+      const feedback = document.getElementById(`scenario${index}Feedback`);
+      const correct = selectedIndex === data.answer;
+
+      feedback.className = `feedback ${correct ? "good" : "bad"}`;
+      feedback.style.display = "block";
+      feedback.innerHTML = `
+        <strong>${correct ? "Correct." : "Not quite."}</strong>
+        ${data.explanation}
+      `;
+    }
+
+    document.getElementById("scenarioForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const selected1 = document.querySelector('input[name="scenario1"]:checked');
+      const selected2 = document.querySelector('input[name="scenario2"]:checked');
+
+      if (!selected1 || !selected2) {
+        alert("Please answer both scenarios before submitting.");
+        return;
+      }
+
+      showFeedback(1, Number(selected1.value), scenarios[0]);
+      showFeedback(2, Number(selected2.value), scenarios[1]);
+
+      localStorage.setItem(`bsa_scenario_done_${lesson}`, "true");
     });
 
-    document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
-      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
-      lesson.scenarios.forEach((sc, index) => {
-        const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
-        const pickedIndex = picked ? Number(picked.value) : -1;
-        html += `<div class="review-item"><p><strong>Scenario ${index + 1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : "No answer selected"}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
-      });
-
-      document.getElementById("scenarioResults").innerHTML = html;
-      document.getElementById("scenarioResults").classList.remove("hidden");
-      await setScenarioCompleted(lesson.id);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    });
+    setQuizLinks();
+    renderScenario(1, scenarios[0]);
+    renderScenario(2, scenarios[1]);
   </script>
 </body>
 </html>
