@@ -1,3 +1,4 @@
+
 window.LESSONS = [
   {
     id: 1,

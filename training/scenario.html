@@ -28,57 +28,66 @@
       <div id="scenarioWrap"></div>
       <div id="scenarioResults" class="hidden"></div>
       <div class="lesson-actions">
-        <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
+        <button class="btn btn-blue" id="submitScenarioBtn" type="button">Submit Scenario Review</button>
         <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
       </div>
     </section>
   </main>
 
   <script src="data.js"></script>
-  <script src="app.js"></script>
-  <script>
-    BSA.requireLogin();
-    const lessonId = Number(BSA.qs('lesson') || 1);
-    if (!BSA.lessonUnlocked(lessonId)) window.location.href = 'dashboard.html';
-    const lesson = BSA.getLessonById(lessonId) || LESSONS[0];
-    const scenarios = BSA.ensureScenarioSet(lesson.id);
-    document.getElementById('scenarioTitle').textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
-    document.getElementById('toQuizTop').href = `quiz.html?lesson=${lesson.id}`;
-    document.getElementById('quizLink').href = `quiz.html?lesson=${lesson.id}`;
+  <script type="module">
+    import {
+      requireLogin,
+      refreshCurrentStudentFromFirestore,
+      getCurrentStudent,
+      lessonSequenceUnlocked,
+      getScenarioQuestionsForLesson,
+      setScenarioCompleted
+    } from "./app.js";
 
-    const wrap = document.getElementById('scenarioWrap');
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+
+    if (!lessonSequenceUnlocked(lessonId, student)) {
+      window.location.href = "dashboard.html";
+    }
+
+    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
+    const scenarios = getScenarioQuestionsForLesson(lesson.id, 2);
+
+    document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
+    document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
+    document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
+
+    const wrap = document.getElementById("scenarioWrap");
     scenarios.forEach((sc, index) => {
-      const card = document.createElement('div');
-      card.className = 'scenario-card';
+      const card = document.createElement("div");
+      card.className = "scenario-card";
       card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
-      const list = document.createElement('div');
-      list.className = 'answer-list';
+      const list = document.createElement("div");
+      list.className = "answer-list";
       sc.choices.forEach((choice, i) => {
-        const label = document.createElement('label');
-        label.className = 'answer-option';
+        const label = document.createElement("label");
+        label.className = "answer-option";
         label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65+i)}. ${choice}`;
-        label.addEventListener('click', () => {
-          list.querySelectorAll('.answer-option').forEach((el) => el.classList.remove('selected'));
-          label.classList.add('selected');
-        });
         list.appendChild(label);
       });
       card.appendChild(list);
       wrap.appendChild(card);
     });
 
-    document.getElementById('submitScenarioBtn').addEventListener('click', () => {
+    document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
       let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
       scenarios.forEach((sc, index) => {
         const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
         const pickedIndex = picked ? Number(picked.value) : -1;
-        html += `<div class="review-item"><p><strong>Scenario ${index+1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : 'No answer selected'}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
+        html += `<div class="review-item"><p><strong>Scenario ${index + 1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : 'No answer selected'}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
       });
-      document.getElementById('scenarioResults').innerHTML = html;
-      document.getElementById('scenarioResults').classList.remove('hidden');
-      BSA.setScenarioCompleted(lesson.id);
-      BSA.resetQuizSet(lesson.id);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      document.getElementById("scenarioResults").innerHTML = html;
+      document.getElementById("scenarioResults").classList.remove("hidden");
+      await setScenarioCompleted(lesson.id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     });
   </script>
 </body>

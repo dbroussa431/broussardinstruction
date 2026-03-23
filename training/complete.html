@@ -11,7 +11,7 @@
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-mark"><img src="/images/bsa-logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Online Prerequisite Completed</p></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Online Prerequisite Completion</p></div>
       </div>
       <div class="top-actions">
         <a class="btn btn-light" href="dashboard.html">Dashboard</a>
@@ -21,24 +21,36 @@
 
   <main class="container">
     <section class="panel content-card center">
-      <span class="eyebrow">Online prerequisite completed</span>
-      <h2>Online work complete</h2>
-      <p class="muted">Status: <strong>Online Prerequisite Completed</strong></p>
-      <div class="banner pass">Your online lessons, scenario reviews, and quizzes are complete.</div>
-      <p>You are now ready to schedule the live class review and range qualification with Broussard Shooting Academy.</p>
-      <div class="callout center"><strong>No printable certificate appears here.</strong><br>Final certificate is handed personally after successful completion of the live portion and range work.</div>
-      <div class="lesson-actions" style="justify-content:center;">
-        <a class="btn btn-outline" href="dashboard.html">Return to Dashboard</a>
+      <span class="eyebrow">Final online step</span>
+      <h2 id="completeHeadline">Online prerequisite complete</h2>
+      <p id="completeBody">You have completed the online portion of the training portal. Your final certificate is still handed in person after live review and range qualification.</p>
+
+      <ul class="helper-list" style="display:inline-block;text-align:left">
+        <li>Bring any required documents and equipment for the live class.</li>
+        <li>Arrive ready to review safety, legal standards, handling, and range qualification.</li>
+        <li>Your online completion is saved to your student record in Firebase.</li>
+        <li>Certificate delivery remains instructor-controlled and is not downloadable here.</li>
+      </ul>
+
+      <div class="lesson-actions" style="justify-content:center;margin-top:20px;">
+        <a class="btn btn-gold" href="dashboard.html#live-range">Return to Live Review Section</a>
+        <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
       </div>
     </section>
   </main>
 
   <script src="data.js"></script>
-  <script src="app.js"></script>
-  <script>
-    BSA.requireLogin();
-    if (!BSA.allLessonsComplete()) {
-      window.location.href = 'dashboard.html';
+  <script type="module">
+    import { requireLogin, refreshCurrentStudentFromFirestore, getCurrentStudent, allLessonsComplete } from "./app.js";
+
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+
+    if (!allLessonsComplete(student)) {
+      document.getElementById("completeHeadline").textContent = "Online prerequisite still in progress";
+      document.getElementById("completeBody").textContent = "Finish all 8 lessons, scenario reviews, and quizzes at 80% or better before scheduling your live review and range qualification.";
+    } else {
+      document.getElementById("completeHeadline").textContent = `${student.name}, your online prerequisite is complete`;
     }
   </script>
 </body>
