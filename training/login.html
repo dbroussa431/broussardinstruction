@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Portal Login</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <div class="login-wrap">
@@ -18,13 +18,13 @@
       </div>
 
       <span class="eyebrow">Student Login</span>
-      <h2>Log in with your email and access code</h2>
-      <p>Students complete lesson summaries, scenario reviews, and randomized quizzes online before the required live review and range qualification.</p>
+      <h2>Log in with your access code</h2>
+      <p>Use your access code to enter the student portal. If your record already has an email saved in the admin dashboard, you can enter it too for an extra match check.</p>
 
       <form id="loginForm">
         <div class="field">
-          <label for="studentEmail">Email address</label>
-          <input id="studentEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
+          <label for="studentEmail">Email address <span class="muted small">(optional)</span></label>
+          <input id="studentEmail" type="email" placeholder="you@example.com" autocomplete="email">
         </div>
         <div class="field">
           <label for="accessCode">Access code</label>
@@ -36,20 +36,20 @@
       <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
 
       <div class="lesson-actions" style="margin-top:18px;">
-        <a class="btn btn-blue" href="purchase.html">Purchase / Request Access</a>
+        <a class="btn btn-blue" href="purchase.html?v=6">Purchase / Request Access</a>
       </div>
 
-      <p class="inline-note" style="margin-top:14px;">If you already paid and have not received an active access code yet, use the purchase page to submit your request so the same login flow stays in place.</p>
+      <p class="inline-note" style="margin-top:14px;">Working test codes you provided: BSA-FULL-4821, BSA-DISC-1184, BSA-FREE-7742.</p>
     </section>
   </div>
 
-  <script src="data.js"></script>
+  <script src="data.js?v=6"></script>
   <script type="module">
-    import { login, getCurrentStudent } from "./app.js";
+    import { login, getCurrentStudent } from "./app.js?v=6";
 
     const current = getCurrentStudent();
     if (current && current.accessCode && current.status === "active") {
-      window.location.href = "dashboard.html";
+      window.location.href = "dashboard.html?v=6";
     }
 
     const form = document.getElementById("loginForm");
@@ -85,7 +85,7 @@
         return;
       }
 
-      window.location.href = "dashboard.html";
+      window.location.href = "dashboard.html?v=6";
     });
   </script>
 </body>
