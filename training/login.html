@@ -4,155 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Portal Login</title>
-  <link rel="icon" href="/IMAGES/favicon.ico">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="login-wrap">
     <div class="panel login-card">
-      <div class="brand login-brand">
-        <div class="brand-mark">
-          <img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'">
-        </div>
+      <div class="brand" style="margin-bottom:18px;align-items:center;">
+        <div class="brand-mark"><img src="/images/bsa-logo.png" alt="BSA logo"></div>
         <div>
-          <h1 class="login-title">Broussard Shooting Academy</h1>
+          <h1 style="font-size:1.5rem;margin:0;">Broussard Shooting Academy</h1>
           <p class="muted">Private Student Portal • Online Prerequisite Access</p>
         </div>
       </div>
-
       <span class="eyebrow">Weekend-ready student access</span>
       <h2>Log in with your access code</h2>
-      <p>
-        This portal is private. Students complete lesson summaries, scenario reviews,
-        and quizzes in smaller phone-friendly chunks. Final certificate is handed in
-        person after the live review and range portion.
-      </p>
-
-      <form id="loginForm" novalidate>
+      <p>This portal is private. Students complete lesson summaries, scenario reviews, and quizzes in smaller phone-friendly chunks. Final certificate is handed in person after the live review and range portion.</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="studentName">Student name</label>
+          <input id="studentName" type="text" placeholder="Enter student name">
+        </div>
         <div class="field">
           <label for="accessCode">Access code</label>
-          <input
-            id="accessCode"
-            type="text"
-            placeholder="Example: BSA-FREE-7555"
-            autocomplete="off"
-            spellcheck="false"
-            autocapitalize="characters"
-            required
-          >
+          <input id="accessCode" type="text" placeholder="Example: BSAWEEKEND" required>
         </div>
-        <button class="btn btn-gold" id="loginBtn" type="submit">Enter Student Portal</button>
+        <button class="btn btn-gold" type="submit">Enter Student Portal</button>
       </form>
-
       <p id="loginMsg" class="notice bad hidden" style="margin-top:16px"></p>
-
-      <div class="notice info" style="margin-top:16px;">New student and need access?</div>
-      <div class="lesson-actions" style="margin-top:12px;">
-        <a class="btn btn-blue" href="purchase.html">Purchase Course Access</a>
-      </div>
-
-      <div class="login-meta">
-        Use the access code created in the admin dashboard or delivered automatically
-        after verified PayPal payment. Progress saves to Firebase and follows the
-        student across devices.
-      </div>
     </div>
   </div>
-
   <script src="data.js"></script>
-
-  <script type="module">
-    import { login, getCurrentStudent } from "./app.js";
-
-    const form = document.getElementById("loginForm");
-    const accessCodeInput = document.getElementById("accessCode");
-    const loginBtn = document.getElementById("loginBtn");
-    const loginMsg = document.getElementById("loginMsg");
-
-    function normalizeAccessCode(value) {
-      return String(value || "")
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "");
-    }
-
-    function showMessage(message) {
-      loginMsg.textContent = message;
-      loginMsg.classList.remove("hidden");
-    }
-
-    function hideMessage() {
-      loginMsg.textContent = "";
-      loginMsg.classList.add("hidden");
-    }
-
-    function setLoading(isLoading) {
-      loginBtn.disabled = isLoading;
-      loginBtn.textContent = isLoading ? "Checking Code..." : "Enter Student Portal";
-    }
-
-    try {
-      const current = getCurrentStudent?.();
-      if (current && current.accessCode && String(current.status || "").toLowerCase() === "active") {
-        window.location.href = "dashboard.html";
-      }
-    } catch (error) {
-      console.error("Auto-session check failed:", error);
-    }
-
-    accessCodeInput.addEventListener("input", () => {
-      const cursor = accessCodeInput.selectionStart;
-      const normalized = accessCodeInput.value.toUpperCase();
-      accessCodeInput.value = normalized;
-      try {
-        accessCodeInput.setSelectionRange(cursor, cursor);
-      } catch (_) {}
-    });
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      hideMessage();
-
-      const rawCode = accessCodeInput.value;
-      const cleanedCode = normalizeAccessCode(rawCode);
-      accessCodeInput.value = cleanedCode;
-
-      if (!cleanedCode) {
-        showMessage("Please enter your access code.");
+  <script src="app.js"></script>
+  <script>
+    const student = BSA.getStudent();
+    if (student) window.location.href = 'dashboard.html';
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const result = BSA.login(document.getElementById('accessCode').value, document.getElementById('studentName').value);
+      const msg = document.getElementById('loginMsg');
+      if(!result.ok){
+        msg.textContent = result.message;
+        msg.classList.remove('hidden');
         return;
       }
-
-      setLoading(true);
-
-      try {
-        const result = await login(cleanedCode);
-
-        if (!result || result.ok !== true) {
-          const message =
-            result?.message ||
-            "Unable to log in right now. Please verify the access code and try again.";
-          showMessage(message);
-          return;
-        }
-
-        window.location.href = "dashboard.html";
-      } catch (error) {
-        console.error("Student login error:", error);
-
-        const rawMessage = String(error?.message || "").toLowerCase();
-
-        if (rawMessage.includes("permission") || rawMessage.includes("missing or insufficient permissions")) {
-          showMessage("Firebase permissions are blocking login. Check Firestore rules and portal access settings.");
-        } else if (rawMessage.includes("network") || rawMessage.includes("offline")) {
-          showMessage("Connection problem while reaching Firebase. Please try again.");
-        } else if (rawMessage.includes("failed to fetch")) {
-          showMessage("Could not reach the portal database. Check Firebase configuration and hosting paths.");
-        } else {
-          showMessage("Login system error. The portal could not validate this code right now.");
-        }
-      } finally {
-        setLoading(false);
-      }
+      window.location.href = 'dashboard.html';
     });
   </script>
 </body>

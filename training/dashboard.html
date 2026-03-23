@@ -1,330 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --card: #1f2937;
-      --text: #f9fafb;
-      --muted: #cbd5e1;
-      --gold: #f59e0b;
-      --green: #22c55e;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --border: rgba(255,255,255,0.08);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
-      color: var(--text);
-    }
-
-    .wrap {
-      width: min(1100px, 92%);
-      margin: 0 auto;
-      padding: 24px 0 50px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand img {
-      width: 56px;
-      height: 56px;
-      object-fit: contain;
-      background: #fff;
-      border-radius: 10px;
-      padding: 4px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 1.6rem;
-    }
-
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .nav {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .nav a {
-      color: #fff;
-      text-decoration: none;
-      background: rgba(255,255,255,0.08);
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-
-    .hero,
-    .panel {
-      background: rgba(17,24,39,0.85);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 22px;
-      backdrop-filter: blur(4px);
-    }
-
-    .hero {
-      margin-bottom: 22px;
-    }
-
-    .hero h2 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-    }
-
-    .hero p {
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 0;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 14px;
-      margin: 22px 0;
-    }
-
-    .stat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-    }
-
-    .stat .label {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 8px;
-    }
-
-    .stat .value {
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
-
-    .panel h3 {
-      margin-top: 0;
-      margin-bottom: 16px;
-      font-size: 1.25rem;
-    }
-
-    .lessons {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 14px;
-    }
-
-    .lesson-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-    }
-
-    .lesson-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .lesson-title {
-      margin: 0;
-      font-size: 1.08rem;
-    }
-
-    .badge {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      white-space: nowrap;
-    }
-
-    .lesson-card p {
-      color: var(--muted);
-      line-height: 1.5;
-      margin: 0 0 14px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      text-decoration: none;
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 700;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background: var(--gold);
-      color: #111827;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #fff;
-      border-color: var(--border);
-    }
-
-    .footer-note {
-      margin-top: 22px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    @media (max-width: 800px) {
-      .stats,
-      .lessons {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
+  <header class="topbar">
+    <div class="topbar-inner">
       <div class="brand">
-        <img src="../images/logo.png" alt="BSA logo" onerror="this.style.display='none'">
+        <div class="brand-mark"><img src="/images/bsa-logo.png" alt="BSA logo"></div>
         <div>
           <h1>Broussard Shooting Academy</h1>
           <p>Private Student Portal • Online Prerequisite Training</p>
         </div>
       </div>
-
-      <div class="nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="requirements.html">View Completion Requirements</a>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-light" href="#live-range">View Completion Requirements</a>
+        <button class="btn btn-gold" id="logoutBtn">Logout</button>
       </div>
     </div>
+  </header>
 
+  <main class="container">
     <section class="hero">
-      <h2>Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.</h2>
-      <p>
-        Complete each lesson in smaller chunks, finish the scenario review, pass each quiz with at least 80%,
-        and then schedule your in-person live portion with Broussard Shooting Academy.
-      </p>
+      <div class="panel hero-main">
+        <h2 id="welcomeLine">Train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.</h2>
+        <p>Complete each lesson in smaller chunks, finish the scenario review, pass each quiz with at least 80%, and then schedule your in-person live portion with Broussard Shooting Academy.</p>
+      </div>
+      <div class="hero-side">
+        <div class="stat-card panel">
+          <small>Lessons</small>
+          <strong id="lessonCount">8</strong>
+        </div>
+        <div class="stat-card panel">
+          <small>Quiz Requirement</small>
+          <strong>80% to Pass</strong>
+        </div>
+        <div class="stat-card panel">
+          <small>Student Status</small>
+          <strong id="studentStatus">In Progress</strong>
+        </div>
+      </div>
     </section>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="label">Lessons</div>
-        <div class="value">8</div>
-      </div>
-      <div class="stat">
-        <div class="label">Quiz Requirement</div>
-        <div class="value">80% to Pass</div>
-      </div>
-      <div class="stat">
-        <div class="label">Student Status</div>
-        <div class="value" id="studentStatus">In Progress</div>
+    <section class="panel next-step" style="margin-top:0;margin-bottom:18px;">
+      <small style="display:block;color:#d7deea;margin-bottom:8px">Overall Progress</small>
+      <strong id="progressLabel" style="font-size:1.4rem;display:block;margin-bottom:10px;">0 / 8 Lessons Passed</strong>
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+
+    <div class="section-head">
+      <div>
+        <h3>Lesson Dashboard</h3>
       </div>
     </div>
 
-    <section class="panel">
-      <h3>Lesson Dashboard</h3>
-      <div class="lessons" id="lessonGrid"></div>
+    <section class="lesson-grid" id="lessonGrid"></section>
 
-      <div class="footer-note">
-        After all 8 online lessons, quizzes, and scenarios are successfully completed,
-        the student status changes to <strong>Online Prerequisite Completed</strong>.
-        Final certificate is handed in person after successful completion of the live review and range portion.
-      </div>
+    <section class="next-step panel" id="live-range">
+      <h3>Final Step: Live Review & Range Qualification</h3>
+      <p>After all 8 online lessons, quizzes, and scenarios are successfully completed, the student status changes to <strong>Online Prerequisite Completed</strong>. From there, the student requests an in-person appointment for the live class review and range portion. Final certificate is handed personally after successful completion.</p>
+      <div class="footer-note">No printable certificate appears inside this portal.</div>
     </section>
-  </div>
+  </main>
 
+  <script src="data.js"></script>
+  <script src="app.js"></script>
   <script>
-    const LESSONS = [
-      { id: 1, title: "Lesson 1", summary: "Safety fundamentals and safe firearm handling." },
-      { id: 2, title: "Lesson 2", summary: "Louisiana law basics, responsibility, and safe conduct." },
-      { id: 3, title: "Lesson 3", summary: "Storage, transportation, and preventing unauthorized access." },
-      { id: 4, title: "Lesson 4", summary: "Mindset, awareness, and threat avoidance." },
-      { id: 5, title: "Lesson 5", summary: "Defensive principles and lawful decision-making." },
-      { id: 6, title: "Lesson 6", summary: "Use-of-force judgment and aftermath basics." },
-      { id: 7, title: "Lesson 7", summary: "Equipment, maintenance, and practical carry issues." },
-      { id: 8, title: "Lesson 8", summary: "Final review before live session and qualification." }
-    ];
+    BSA.requireLogin();
+    const student = BSA.getStudent();
+    const prog = BSA.overallProgress();
+    document.getElementById('welcomeLine').textContent = `${student?.name || 'Student'}, train on your schedule. Finish your lessons. Then meet in person for live review and range qualification.`;
+    document.getElementById('progressLabel').textContent = `${prog.passed} / ${prog.total} Lessons Passed`;
+    document.getElementById('progressBar').style.width = `${prog.percent}%`;
+    document.getElementById('studentStatus').textContent = BSA.allLessonsComplete() ? 'Online Prerequisite Completed' : 'In Progress';
+    document.getElementById('lessonCount').textContent = LESSONS.length;
 
-    function getQuizKey(lessonId) {
-      return `bsa_quiz_passed_${lessonId}`;
-    }
-
-    function isLessonPassed(lessonId) {
-      return localStorage.getItem(getQuizKey(lessonId)) === "true";
-    }
-
-    function updateStudentStatus() {
-      const passed = LESSONS.filter(l => isLessonPassed(l.id)).length;
-      const statusEl = document.getElementById("studentStatus");
-      statusEl.textContent = passed === LESSONS.length
-        ? "Online Prerequisite Completed"
-        : "In Progress";
-    }
-
-    function renderLessons() {
-      const grid = document.getElementById("lessonGrid");
-
-      grid.innerHTML = LESSONS.map(lesson => {
-        const passed = isLessonPassed(lesson.id);
-
-        return `
-          <div class="lesson-card">
-            <div class="lesson-top">
-              <h4 class="lesson-title">${lesson.title}</h4>
-              <span class="badge">${passed ? "Passed" : "Not Passed Yet"}</span>
-            </div>
-            <p>${lesson.summary}</p>
-            <div class="actions">
-              <a class="btn btn-primary" href="scenario.html?lesson=${lesson.id}">Start Scenario</a>
-              <a class="btn btn-secondary" href="quiz.html?lesson=${lesson.id}">Go Direct to Quiz</a>
+    const grid = document.getElementById('lessonGrid');
+    LESSONS.forEach((lesson) => {
+      const status = BSA.lessonStatus(lesson.id);
+      const progress = BSA.getLessonProgress(lesson.id);
+      const card = document.createElement('article');
+      card.className = 'panel lesson-card';
+      card.innerHTML = `
+        <div class="lesson-top">
+          <div style="display:flex;gap:12px;align-items:start;">
+            <div class="lesson-num">${lesson.id}</div>
+            <div>
+              <h4 class="lesson-title">Lesson ${lesson.id}</h4>
+              <p class="lesson-desc">${lesson.summary}</p>
             </div>
           </div>
-        `;
-      }).join("");
-    }
+          <span class="status ${status.className}">${status.quizPassed ? status.label : (progress.quizPassed ? status.label : (progress.quizPassed ? status.label : (progress.quizPassed ? status.label : (progress.quizPassed ? status.label : status.label.replace('Complete Previous Lesson First','Not Passed Yet')))) )}</span>
+        </div>
+        <div class="lesson-actions">
+          <a class="btn btn-gold" href="${status.locked ? '#' : `lesson.html?lesson=${lesson.id}`}">${status.locked ? 'Locked' : (progress.contentViewed ? 'Open Lesson' : 'Start Lesson')}</a>
+          <a class="btn btn-outline" href="${status.locked ? '#' : `scenario.html?lesson=${lesson.id}`}">Start Scenario</a>
+          <a class="btn btn-outline" href="${status.locked ? '#' : `quiz.html?lesson=${lesson.id}`}">Go Direct to Quiz</a>
+        </div>`;
+      grid.appendChild(card);
+    });
 
-    renderLessons();
-    updateStudentStatus();
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      BSA.logout();
+      window.location.href = 'login.html';
+    });
   </script>
 </body>
 </html>

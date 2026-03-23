@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo"></div>
+        <div class="brand-mark"><img src="/images/bsa-logo.png" alt="BSA logo"></div>
         <div><h1>Broussard Shooting Academy</h1><p>Lesson Summary</p></div>
       </div>
       <div class="top-actions">
@@ -31,7 +31,7 @@
       <h2 id="lessonTitle"></h2>
       <p id="lessonSummary" class="muted"></p>
       <div id="lessonContent"></div>
-      <div class="callout"><strong>Important:</strong> Score at least 80% to pass. After repeated failed attempts, the portal can require the student to review the chapter summary again before trying again.</div>
+      <div class="callout"><strong>Important:</strong> Score at least 80% to pass. After one or two failed attempts, re-read the lesson summary before trying again.</div>
       <div class="lesson-actions">
         <a class="btn btn-blue" id="toScenarioBottom" href="#">Continue to Scenarios</a>
         <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
@@ -40,57 +40,40 @@
   </main>
 
   <script src="data.js"></script>
-  <script type="module">
-    import {
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
-      getCurrentStudent,
-      lessonSequenceUnlocked,
-      isLessonAllowedByTier,
-      setLessonContentViewed
-    } from "./app.js";
-
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-
-    if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
-      window.location.href = "dashboard.html";
-    }
-
-    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-    await setLessonContentViewed(lesson.id);
-
-    document.getElementById("lessonTitle").textContent = `${lesson.id}. ${lesson.title}`;
-    document.getElementById("lessonSummary").textContent = lesson.summary;
-    document.getElementById("sideTitle").textContent = lesson.title;
-
-    const side = document.getElementById("sideSections");
-    const content = document.getElementById("lessonContent");
-
+  <script src="app.js"></script>
+  <script>
+    BSA.requireLogin();
+    const lessonId = Number(BSA.qs('lesson') || 1);
+    if (!BSA.lessonUnlocked(lessonId)) window.location.href = 'dashboard.html';
+    const lesson = BSA.getLessonById(lessonId) || LESSONS[0];
+    BSA.setLessonContentViewed(lesson.id);
+    BSA.resetScenarioSet(lesson.id);
+    document.getElementById('lessonTitle').textContent = `${lesson.id}. ${lesson.title}`;
+    document.getElementById('lessonSummary').textContent = lesson.summary;
+    document.getElementById('sideTitle').textContent = lesson.title;
+    const side = document.getElementById('sideSections');
+    const content = document.getElementById('lessonContent');
     lesson.sections.forEach((section, idx) => {
-      const anchor = `sec${idx + 1}`;
-      const link = document.createElement("a");
+      const anchor = `sec${idx+1}`;
+      const link = document.createElement('a');
       link.href = `#${anchor}`;
       link.textContent = section.heading;
-      if (idx === 0) link.classList.add("active");
+      if (idx === 0) link.classList.add('active');
       side.appendChild(link);
-
-      const wrap = document.createElement("section");
+      const wrap = document.createElement('section');
       wrap.id = anchor;
       wrap.innerHTML = `<h3>${section.heading}</h3>`;
-      const ul = document.createElement("ul");
+      const ul = document.createElement('ul');
       section.body.forEach((item) => {
-        const li = document.createElement("li");
+        const li = document.createElement('li');
         li.textContent = item;
         ul.appendChild(li);
       });
       wrap.appendChild(ul);
       content.appendChild(wrap);
     });
-
-    document.getElementById("toScenarioTop").href = `scenario.html?lesson=${lesson.id}`;
-    document.getElementById("toScenarioBottom").href = `scenario.html?lesson=${lesson.id}`;
+    document.getElementById('toScenarioTop').href = `scenario.html?lesson=${lesson.id}`;
+    document.getElementById('toScenarioBottom').href = `scenario.html?lesson=${lesson.id}`;
   </script>
 </body>
 </html>
