@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson 8 - Final Readiness</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -10,7 +11,9 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="../images/bsa-logo.png"></div>
+      <div class="brand-mark">
+        <img src="../images/bsa-logo.png" alt="BSA logo">
+      </div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Final Validation</p>
@@ -20,25 +23,108 @@
 </header>
 
 <main class="container">
-  <section class="panel content-card">
 
-    <h2 id="sectionTitle"></h2>
-    <p id="sectionContent" class="muted"></p>
+  <!-- TITLE -->
+  <section class="panel">
+    <h2>Lesson 8: Final Readiness Check</h2>
+    <p>This final module reinforces legal judgment and real-world decision-making. Read carefully and respond based on lawful and responsible carry behavior.</p>
+  </section>
 
-    <div id="scenarioBlock" class="scenario-card"></div>
+  <!-- CHECKPOINT -->
+  <section class="panel">
 
-    <div id="quizBlock"></div>
-
-    <div class="lesson-actions">
-      <button id="submitBtn" class="btn btn-blue">Submit</button>
+    <!-- GIST -->
+    <div class="lesson-gist">
+      <h3>Law Checkpoint 2</h3>
+      <ul>
+        <li>Deadly force requires an immediate, serious threat</li>
+        <li>Property alone does NOT justify deadly force</li>
+        <li>Avoid escalation whenever possible</li>
+      </ul>
     </div>
 
-    <div id="result"></div>
+    <!-- SCENARIO -->
+    <div class="scenario-box">
+      <strong>Scenario:</strong> Someone grabs your property and runs away. They are not threatening you directly.
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="question-block">
+
+      <!-- Q1 -->
+      <div class="question">
+        <p><strong>1. Is deadly force justified?</strong></p>
+        <label><input type="radio" name="q1"> Yes if the property is valuable</label>
+        <label><input type="radio" name="q1"> Yes if you feel threatened</label>
+        <label><input type="radio" name="q1"> No, property alone is not enough</label>
+        <label><input type="radio" name="q1"> Only at night</label>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question">
+        <p><strong>2. Deadly force requires:</strong></p>
+        <label><input type="radio" name="q2"> Loss of property</label>
+        <label><input type="radio" name="q2"> Immediate serious threat</label>
+        <label><input type="radio" name="q2"> Verbal conflict</label>
+        <label><input type="radio" name="q2"> Anger</label>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question">
+        <p><strong>3. What is the safest and legally sound response?</strong></p>
+        <label><input type="radio" name="q3"> Chase aggressively</label>
+        <label><input type="radio" name="q3"> Draw your weapon immediately</label>
+        <label><input type="radio" name="q3"> Create distance and call authorities</label>
+        <label><input type="radio" name="q3"> Physically engage</label>
+      </div>
+
+    </div>
+
+    <!-- ACTION -->
+    <div class="lesson-actions">
+      <button class="btn btn-blue" onclick="submitCheckpoint()">Submit Answers</button>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div id="feedbackBox" class="panel" style="display:none; margin-top:20px;"></div>
 
   </section>
+
 </main>
 
-<script type="module" src="../js/chapter8-controller.js"></script>
+<script>
+function submitCheckpoint() {
+  const q1 = document.querySelector('input[name="q1"]:checked');
+  const q2 = document.querySelector('input[name="q2"]:checked');
+  const q3 = document.querySelector('input[name="q3"]:checked');
+  const feedback = document.getElementById("feedbackBox");
+
+  if (!q1 || !q2 || !q3) {
+    alert("Please answer all questions.");
+    return;
+  }
+
+  let score = 0;
+
+  if (q1.parentElement.textContent.includes("No, property alone")) score++;
+  if (q2.parentElement.textContent.includes("Immediate serious threat")) score++;
+  if (q3.parentElement.textContent.includes("Create distance")) score++;
+
+  feedback.style.display = "block";
+
+  if (score === 3) {
+    feedback.innerHTML = `
+      <h3>Correct</h3>
+      <p>You demonstrated proper understanding of lawful use of force and de-escalation.</p>
+    `;
+  } else {
+    feedback.innerHTML = `
+      <h3>Review Required</h3>
+      <p>Deadly force is only justified under immediate serious threat. Property alone is not enough, and escalation should be avoided.</p>
+    `;
+  }
+}
+</script>
 
 </body>
 </html>
