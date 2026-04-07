@@ -1,6 +1,6 @@
-import { CH8 } from "./chapter8-data.js";
+import { CH8_SECTIONS } from "./chapter8-data.js";
 
-let index = 0;
+let sectionIndex = 0;
 
 const title = document.getElementById("sectionTitle");
 const content = document.getElementById("sectionContent");
@@ -8,67 +8,97 @@ const scenarioBlock = document.getElementById("scenarioBlock");
 const quizBlock = document.getElementById("quizBlock");
 const result = document.getElementById("result");
 
-function loadSection() {
+function renderSection() {
 
-  const data = CH8[index];
+const s = CH8_SECTIONS[sectionIndex];
 
-  title.textContent = data.title;
-  content.textContent = data.content;
+title.textContent = s.title;
 
-  scenarioBlock.innerHTML = `<p><strong>Scenario:</strong> ${data.scenario}</p>`;
+content.innerHTML = s.gist.map(g => `<li>${g}</li>`).join("");
 
-  quizBlock.innerHTML = "";
+scenarioBlock.innerHTML = `<strong>Scenario:</strong> ${s.scenario}`;
 
-  data.answers.forEach((a, i) => {
+quizBlock.innerHTML = "";
 
-    const label = document.createElement("label");
-    label.className = "option";
+s.questions.sort(() => Math.random() - 0.5);
 
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = "q";
-    input.value = i;
+s.questions.forEach((q, i) => {
 
-    label.appendChild(input);
-    label.append(" " + a);
+```
+const block = document.createElement("div");
+block.className = "question-card";
 
-    quizBlock.appendChild(label);
+block.innerHTML = `<h4>${i + 1}. ${q.q}</h4>`;
 
-  });
+const options = document.createElement("div");
+
+q.choices.forEach((c, idx) => {
+
+  const label = document.createElement("label");
+  label.className = "option";
+
+  label.innerHTML = `
+    <input type="radio" name="q_${i}" value="${idx}">
+    ${c}
+  `;
+
+  options.appendChild(label);
+
+});
+
+block.appendChild(options);
+quizBlock.appendChild(block);
+```
+
+});
 
 }
 
 document.getElementById("submitBtn").onclick = () => {
 
-  const selected = document.querySelector("input[name=q]:checked");
+const s = CH8_SECTIONS[sectionIndex];
+let correct = 0;
 
-  if (!selected) return;
+s.questions.forEach((q, i) => {
 
-  const val = Number(selected.value);
-  const correct = CH8[index].correct;
+```
+const selected = document.querySelector(`input[name=q_${i}]:checked`);
 
-  if (val === correct) {
+if (selected && Number(selected.value) === q.answer) {
+  correct++;
+}
+```
 
-    result.innerHTML = "<span style='color:green'>Correct</span>";
+});
 
-    index++;
+const percent = (correct / s.questions.length) * 100;
 
-    if (index >= CH8.length) {
-      result.innerHTML = "<strong>Chapter 8 Complete</strong>";
-      return;
-    }
+if (percent >= 80) {
 
-    setTimeout(() => {
-      result.innerHTML = "";
-      loadSection();
-    }, 800);
+```
+result.innerHTML = "<span style='color:green'>PASS</span>";
 
-  } else {
+sectionIndex++;
 
-    result.innerHTML = "<span style='color:red'>Incorrect — retry required</span>";
+if (sectionIndex >= CH8_SECTIONS.length) {
+  result.innerHTML = "<strong>CHAPTER 8 COMPLETE</strong>";
+  return;
+}
 
-  }
+setTimeout(() => {
+  result.innerHTML = "";
+  renderSection();
+}, 1000);
+```
+
+} else {
+
+```
+result.innerHTML = "<span style='color:red'>FAILED — REPEAT SECTION</span>";
+```
+
+}
 
 };
 
-loadSection();
+renderSection();
