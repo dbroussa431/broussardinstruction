@@ -1,197 +1,74 @@
-import { CHAPTER8 } from "./chapter8-data.js";
+import { CH8 } from "./chapter8-data.js";
 
-const content = document.getElementById("content");
-const progress = document.getElementById("progress");
-const btn = document.getElementById("continueBtn");
+let index = 0;
 
-let state = JSON.parse(localStorage.getItem("ch8")) || {
-part: "law",
-index: 0,
-stage: "gist"
-};
+const title = document.getElementById("sectionTitle");
+const content = document.getElementById("sectionContent");
+const scenarioBlock = document.getElementById("scenarioBlock");
+const quizBlock = document.getElementById("quizBlock");
+const result = document.getElementById("result");
 
-function save(){
-localStorage.setItem("ch8", JSON.stringify(state));
-}
+function loadSection() {
 
-function updateProgress(){
-progress.textContent = `${state.part.toUpperCase()} - Checkpoint ${state.index+1}`;
-}
+  const data = CH8[index];
 
-function render(){
+  title.textContent = data.title;
+  content.textContent = data.content;
 
-updateProgress();
+  scenarioBlock.innerHTML = `<p><strong>Scenario:</strong> ${data.scenario}</p>`;
 
-const section = CHAPTER8[state.part][state.index];
+  quizBlock.innerHTML = "";
 
-if(state.stage === "gist"){
+  data.answers.forEach((a, i) => {
 
-content.innerHTML = `
-<div class="card">
-<h2>${section.title}</h2>
-${section.gist.map(p=>`<p>${p}</p>`).join("")}
-</div>
-`;
+    const label = document.createElement("label");
+    label.className = "option";
 
-btn.style.display="block";
-btn.onclick=()=>{
-state.stage="scenario";
-save();
-render();
-};
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "q";
+    input.value = i;
+
+    label.appendChild(input);
+    label.append(" " + a);
+
+    quizBlock.appendChild(label);
+
+  });
 
 }
 
-else if(state.stage==="scenario"){
+document.getElementById("submitBtn").onclick = () => {
 
-btn.style.display="none";
+  const selected = document.querySelector("input[name=q]:checked");
 
-content.innerHTML = `
-<div class="card">
-<h2>Scenario</h2>
-<p>${section.scenario.question}</p>
-${section.scenario.answers.map((a,i)=>
-`<button data-i="${i}">${a}</button>`
-).join("")}
-</div>
-`;
+  if (!selected) return;
 
-document.querySelectorAll("button[data-i]").forEach(b=>{
-b.onclick = ()=>{
-const i = Number(b.dataset.i);
-if(i===section.scenario.correct){
-state.stage="quiz";
-save();
-render();
-}else{
-alert("Review the material and try again.");
-}
-};
-});
+  const val = Number(selected.value);
+  const correct = CH8[index].correct;
 
-}
+  if (val === correct) {
 
-else if(state.stage==="quiz"){
+    result.innerHTML = "<span style='color:green'>Correct</span>";
 
-btn.style.display="none";
+    index++;
 
-const pool = section.quizPool;
-const selected = shuffle(pool).slice(0,5);
+    if (index >= CH8.length) {
+      result.innerHTML = "<strong>Chapter 8 Complete</strong>";
+      return;
+    }
 
-let answers = [];
+    setTimeout(() => {
+      result.innerHTML = "";
+      loadSection();
+    }, 800);
 
-content.innerHTML = `
-<div class="card">
-<h2>Quiz</h2>
-${selected.map((q,i)=>`
-<p>${q.q}</p>
-${q.options.map((o,j)=>`
-<button data-q="${i}" data-a="${j}">${o}</button>
-`).join("")}
-`).join("")}
-<button id="submitQuiz">Submit</button>
-</div>
-`;
+  } else {
 
-document.querySelectorAll("button[data-q]").forEach(b=>{
-b.onclick = ()=>{
-answers[b.dataset.q] = Number(b.dataset.a);
-b.style.background="#ccc";
-};
-});
+    result.innerHTML = "<span style='color:red'>Incorrect — retry required</span>";
 
-document.getElementById("submitQuiz").onclick=()=>{
-
-let correct=0;
-
-selected.forEach((q,i)=>{
-if(answers[i]===q.correct) correct++;
-});
-
-if(correct>=4){
-next();
-}else{
-alert("You must pass this checkpoint.");
-state.stage="gist";
-save();
-render();
-}
+  }
 
 };
 
-}
-
-}
-
-function next(){
-
-state.index++;
-
-if(state.index >= CHAPTER8[state.part].length){
-
-if(state.part==="law"){
-state.part="mental";
-state.index=0;
-}
-else if(state.part==="mental"){
-renderFinal();
-return;
-}
-
-}
-
-state.stage="gist";
-save();
-render();
-
-}
-
-function renderFinal(){
-
-content.innerHTML = `
-<div class="card">
-<h2>Final Check</h2>
-${CHAPTER8.final.map((q,i)=>`
-<p>${q.q}</p>
-${q.options.map((o,j)=>`
-<button data-q="${i}" data-a="${j}">${o}</button>
-`).join("")}
-`).join("")}
-<button id="submitFinal">Submit</button>
-</div>
-`;
-
-let answers=[];
-
-document.querySelectorAll("button[data-q]").forEach(b=>{
-b.onclick=()=>{
-answers[b.dataset.q]=Number(b.dataset.a);
-};
-});
-
-document.getElementById("submitFinal").onclick=()=>{
-
-let correct=0;
-
-CHAPTER8.final.forEach((q,i)=>{
-if(answers[i]===q.correct) correct++;
-});
-
-if(correct>=CHAPTER8.final.length){
-alert("Lesson Complete");
-localStorage.removeItem("ch8");
-window.location.href="dashboard.html";
-}else{
-alert("Retry final section");
-renderFinal();
-}
-
-};
-
-}
-
-function shuffle(arr){
-return arr.sort(()=>Math.random()-0.5);
-}
-
-render();
+loadSection();
