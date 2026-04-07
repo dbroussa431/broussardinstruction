@@ -6,143 +6,167 @@
   <title>BSA Quiz</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Lesson Quiz</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+        <div>
+          <h1>Broussard Shooting Academy</h1>
+          <p>Lesson Quiz</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
       </div>
     </div>
+  </header>
 
-    <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+  <main class="container">
+    <div class="panel content-card">
+      <h2 id="quizTitle">Quiz</h2>
+      <p id="quizIntro" class="muted">Answer all questions. A score of 80% or higher is required to pass.</p>
+      <div id="quizContainer"></div>
+      <button id="submitBtn" class="btn btn-gold" type="button">Submit Quiz</button>
+      <div id="result" style="margin-top:20px;"></div>
     </div>
-  </div>
-</header>
+  </main>
 
-<main class="container">
+  <script src="data.js"></script>
 
-  <div class="panel content-card">
-    <h2>Quiz</h2>
-    <div id="quizContainer"></div>
+  <script type="module">
+    import {
+      requireLogin,
+      markLessonComplete
+    } from "./app.js";
 
-    <button id="submitBtn" class="btn btn-gold">Submit Quiz</button>
+    requireLogin();
 
-    <div id="result" style="margin-top:20px;"></div>
-  </div>
+    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-</main>
+    const quizTitle = document.getElementById("quizTitle");
+    const container = document.getElementById("quizContainer");
+    const resultDiv = document.getElementById("result");
+    const submitBtn = document.getElementById("submitBtn");
 
-<script src="data.js"></script>
-
-<script type="module">
-
-import {
-  requireLogin,
-  markLessonComplete
-} from "./app.js";
-
-requireLogin();
-
-const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-
-const container = document.getElementById("quizContainer");
-const resultDiv = document.getElementById("result");
-const submitBtn = document.getElementById("submitBtn");
-
-// ✅ RANDOMIZER FOR ALL LESSONS
-function getRandomQuestions(pool, min = 6, max = 8) {
-  if (!pool || pool.length === 0) return [];
-
-  const count = Math.min(
-    pool.length,
-    Math.floor(Math.random() * (max - min + 1)) + min
-  );
-
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
-
-// 🔥 LOAD QUESTIONS
-const fullPool = window.QUIZ_BANK[lessonId] || [];
-const questions = getRandomQuestions(fullPool);
-
-// 🔴 SAFETY CHECK
-if (questions.length === 0) {
-  container.innerHTML = "<p>No quiz questions found for this lesson.</p>";
-}
-
-// 🔥 RENDER
-questions.forEach((q, i) => {
-
-  const block = document.createElement("div");
-  block.style.marginBottom = "20px";
-
-  const question = document.createElement("p");
-  question.innerHTML = `<strong>${i + 1}. ${q.q}</strong>`;
-  block.appendChild(question);
-
-  // ✅ IMPORTANT: uses "choices"
-  q.choices.forEach((choice, j) => {
-
-    const label = document.createElement("label");
-    label.style.display = "block";
-
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = "q" + i;
-    input.value = j;
-
-    label.appendChild(input);
-    label.append(" " + choice);
-
-    block.appendChild(label);
-
-  });
-
-  container.appendChild(block);
-});
-
-// 🔥 SUBMIT
-submitBtn.onclick = () => {
-
-  let correct = 0;
-
-  questions.forEach((q, i) => {
-
-    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-
-    if (selected && Number(selected.value) === q.answer) {
-      correct++;
+    const lesson = (window.LESSONS || []).find((l) => l.id === lessonId);
+    if (lesson) {
+      quizTitle.textContent = `${lesson.id}. ${lesson.title} — Quiz`;
     }
 
-  });
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
 
-  const percent = Math.round((correct / questions.length) * 100);
+    function getRandomQuestions(pool, min = 6, max = 8) {
+      if (!Array.isArray(pool) || pool.length === 0) return [];
+      const count = Math.min(
+        pool.length,
+        Math.floor(Math.random() * (max - min + 1)) + min
+      );
+      return shuffle(pool).slice(0, count);
+    }
 
-  if (percent >= 80) {
+    const fullPool = window.QUIZ_BANK?.[lessonId] || [];
+    const questions = getRandomQuestions(fullPool);
 
-    resultDiv.innerHTML = `<strong style="color:green;">Passed (${percent}%)</strong>`;
+    if (!questions.length) {
+      container.innerHTML = "<p>No quiz questions found for this lesson.</p>";
+      submitBtn.style.display = "none";
+      throw new Error(`No quiz questions found for lesson ${lessonId}`);
+    }
 
-    markLessonComplete(lessonId);
+    function getQuestionChoices(q) {
+      if (q.type === "tf") {
+        return ["True", "False"];
+      }
+      if (Array.isArray(q.choices)) {
+        return q.choices;
+      }
+      return [];
+    }
 
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1500);
+    questions.forEach((q, i) => {
+      const block = document.createElement("div");
+      block.style.marginBottom = "24px";
 
-  } else {
+      const question = document.createElement("p");
+      question.innerHTML = `<strong>${i + 1}. ${q.q}</strong>`;
+      block.appendChild(question);
 
-    resultDiv.innerHTML = `<strong style="color:red;">Failed (${percent}%) — Try Again</strong>`;
+      const choices = getQuestionChoices(q);
 
-  }
-};
+      if (!choices.length) {
+        const errorText = document.createElement("p");
+        errorText.style.color = "red";
+        errorText.textContent = "This question is missing answer choices.";
+        block.appendChild(errorText);
+        container.appendChild(block);
+        return;
+      }
 
-</script>
+      choices.forEach((choice, j) => {
+        const label = document.createElement("label");
+        label.style.display = "block";
+        label.style.marginBottom = "6px";
 
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${i}`;
+        input.value = j;
+        input.style.marginRight = "8px";
+
+        label.appendChild(input);
+        label.append(choice);
+
+        block.appendChild(label);
+      });
+
+      container.appendChild(block);
+    });
+
+    submitBtn.onclick = () => {
+      let correct = 0;
+
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!selected) return;
+
+        const selectedIndex = Number(selected.value);
+
+        if (q.type === "tf") {
+          const expectedIndex = q.answer === true ? 0 : 1;
+          if (selectedIndex === expectedIndex) {
+            correct++;
+          }
+        } else {
+          if (selectedIndex === q.answer) {
+            correct++;
+          }
+        }
+      });
+
+      const percent = Math.round((correct / questions.length) * 100);
+
+      if (percent >= 80) {
+        resultDiv.innerHTML = `<strong style="color:green;">Passed (${percent}%)</strong>`;
+        try {
+          await markLessonComplete(lessonId);
+        } catch (err) {
+          console.error("markLessonComplete failed:", err);
+        }
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+      } else {
+        resultDiv.innerHTML = `<strong style="color:red;">Failed (${percent}%) — Try Again</strong>`;
+      }
+    };
+  </script>
 </body>
 </html>
