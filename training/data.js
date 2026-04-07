@@ -455,71 +455,151 @@ window.LESSONS = [
       }
     ]
   },
-  {
-    id: 8,
-    slug: 'bsa-final-review',
-    title: 'BSA Final Review & Live-Class Prep',
-    estTime: '15 min',
-    summary: 'This custom Broussard Shooting Academy lesson pulls together the online prerequisite and prepares the student for classroom review, legal discussion, practical handling, and the live range qualification.',
-    sections: [
-      {
-        heading: 'What the Online Portion Accomplishes',
-        body: [
-          'The online work prepares students with concepts, vocabulary, and decision-making principles before the live class.',
-          'It does not replace instructor observation, live-fire coaching, or safe range qualification.',
-          'Students should arrive ready to review, ask questions, and apply what they have studied.'
-        ]
-      },
-      {
-        heading: 'What to Bring to Live Class',
-        body: [
-          'Bring required identification, hearing and eye protection, and any equipment listed by the academy.',
-          'Arrive with a safe, teachable mindset and a willingness to slow down when unsure.',
-          'Students should know their own access code, email, and course record if follow-up is needed.'
-        ]
-      },
-      {
-        heading: 'Live-Class Expectations',
-        body: [
-          'The instructor will review safety, legal concepts, handling, and performance standards.',
-          'The live session is where students demonstrate safe conduct, not just memory of quiz answers.',
-          'Successful completion depends on both knowledge and safe practical execution.'
-        ]
-      },
-      {
-        heading: 'Final Readiness Mindset',
-        body: [
-          'The goal is not to look fast or tactical; the goal is to be safe, lawful, and competent.',
-          'Students should review weak areas honestly before class.',
-          'Preparation supports confidence, but humility keeps students safe.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'A student passed the online quizzes but says they do not need the live class anymore. What is the correct response?',
-        choices: [
-          'The online portal fully replaces the instructor-led session',
-          'The live class and range qualification are still required',
-          'Only the certificate matters now',
-          'The live portion is optional for good students'
-        ],
-        answer: 1,
-        explanation: 'The BSA final review makes clear that the online prerequisite does not replace live classroom and range performance.'
-      },
-      {
-        prompt: 'A student is nervous about the live range day and starts rushing through preparation. What is the best advice?',
-        choices: [
-          'Go faster so you can get it over with',
-          'Slow down, review weak areas, and arrive ready to learn safely',
-          'Ignore the online material',
-          'Focus only on equipment, not mindset'
-        ],
-        answer: 1,
-        explanation: 'The final BSA lesson stresses safe preparation, honesty about weak areas, and a teachable mindset.'
-      }
-    ]
-  }
+ {
+  id: 8,
+  slug: 'final-readiness-validation',
+  title: 'Final Readiness: Law & Mental Responsibility',
+  estTime: '30+ min',
+  summary: 'This final lesson validates your understanding of Louisiana firearm law and mental readiness. You must be able to apply the law, recognize risk, and make sound decisions under stress.',
+
+  sections: [
+
+    {
+      heading: 'Louisiana Carry & Eligibility',
+      body: [
+        'Louisiana allows permitless concealed carry for individuals 18 and older.',
+        'You must still be legally eligible to possess a firearm.',
+        'Being under legal prohibition (felony, certain restrictions) makes possession illegal regardless of training.',
+        'Carrying legally does not remove responsibility or consequences.'
+      ]
+    },
+
+    {
+      heading: 'Restricted Locations & Responsibilities',
+      body: [
+        'Certain locations restrict firearm carry regardless of permitless status.',
+        'Private property owners may prohibit firearms.',
+        'Ignoring posted restrictions can create legal risk.',
+        'Knowing where you are is just as important as knowing what you carry.'
+      ]
+    },
+
+    {
+      heading: 'Use of Force Reality',
+      body: [
+        'Deadly force must be justified by a real and immediate threat of death or serious harm.',
+        'You are responsible for every round fired.',
+        'Property alone rarely justifies deadly force.',
+        'Every decision may be reviewed after the fact by law enforcement and courts.'
+      ]
+    },
+
+    {
+      heading: 'Stress & Human Performance',
+      body: [
+        'Under stress, your body may shake, vision may narrow, and thinking may slow.',
+        'This is a normal biological response, not failure.',
+        'You will not perform better than your level of preparation.',
+        'Training helps, but it does not eliminate stress effects.'
+      ]
+    },
+
+    {
+      heading: 'Emotional Control & Judgment',
+      body: [
+        'Anger, fear, and ego can lead to poor decisions.',
+        'Carrying a firearm requires emotional discipline.',
+        'Avoid escalating situations when possible.',
+        'The best outcome is often avoiding the confrontation entirely.'
+      ]
+    },
+
+    {
+      heading: 'Substance Use & Responsibility',
+      body: [
+        'Carrying while impaired creates serious legal and safety risks.',
+        'Even small amounts of alcohol can affect judgment.',
+        'Your decisions must remain clear and controlled.',
+        'Responsibility does not pause because you feel “fine.”'
+      ]
+    },
+
+    {
+      heading: 'Final Responsibility Mindset',
+      body: [
+        'Owning or carrying a firearm is a long-term responsibility.',
+        'You must balance legality, safety, and judgment at all times.',
+        'Confidence must come from preparation, not assumption.',
+        'Your goal is to be safe, lawful, and in control — not fast or aggressive.'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You are legally carrying in Louisiana and enter a business with a posted no-firearms sign. What is the best decision?',
+      choices: [
+        'Ignore the sign because you are legally carrying',
+        'Leave or secure the firearm elsewhere before entering',
+        'Conceal better so no one notices',
+        'Enter and leave quickly'
+      ],
+      answer: 1,
+      explanation: 'Private property restrictions still matter and can create legal consequences.'
+    },
+
+    {
+      prompt: 'Someone grabs your property and runs away. There is no immediate threat to your life. What is the best response?',
+      choices: [
+        'Use deadly force to stop them',
+        'Chase and escalate the situation',
+        'Recognize property alone does not justify deadly force',
+        'Draw your firearm to scare them'
+      ],
+      answer: 2,
+      explanation: 'Deadly force is tied to threat of serious harm, not property loss.'
+    },
+
+    {
+      prompt: 'After a stressful confrontation, your hands are shaking and your thoughts feel scattered. What does this indicate?',
+      choices: [
+        'You failed to handle the situation',
+        'You reacted incorrectly',
+        'A normal stress response',
+        'You should not carry anymore'
+      ],
+      answer: 2,
+      explanation: 'Stress reactions are normal physiological responses.'
+    },
+
+    {
+      prompt: 'You feel angry during a heated argument while carrying. What is the best action?',
+      choices: [
+        'Stand your ground and escalate',
+        'Use your firearm to gain control',
+        'Create distance and disengage',
+        'Win the argument quickly'
+      ],
+      answer: 2,
+      explanation: 'Emotional control and de-escalation are critical.'
+    },
+
+    {
+      prompt: 'You had a drink earlier and feel “fine” while carrying. What matters most?',
+      choices: [
+        'How you feel',
+        'Time passed',
+        'Judgment and impairment risk',
+        'Whether others noticed'
+      ],
+      answer: 2,
+      explanation: 'Impairment affects decision-making regardless of perception.'
+    }
+
+  ]
+}
 ];
 
 window.QUIZ_BANK = {
@@ -677,26 +757,26 @@ window.QUIZ_BANK = {
     { q: 'Which answer best reflects maturity in post-class development?', choices: ['Seek more structured learning and community if appropriate', 'Assume completion means mastery', 'Stop practicing to protect confidence', 'Buy gear instead of training'], answer: 0, explanation: 'That is the strongest lesson-based answer.' },
     { q: 'Which student best understood Lesson 7?', choices: ['The one who keeps improving from the fundamentals upward', 'The one who thinks advanced equals skipping basics', 'The one who thinks one class is enough forever', 'The one who believes only gear matters'], answer: 0, explanation: 'That best reflects the chapter.' }
   ],
-  8: [
-    { q: 'What does the online portion of the BSA course mainly accomplish?', choices: ['It prepares students with concepts and vocabulary before the live class', 'It completely replaces live instruction and range work', 'It exists only for recordkeeping', 'It automatically issues the permit'], answer: 0, explanation: 'The BSA final review treats the online portion as preparation, not replacement.' },
-    { q: 'True or False: Passing the online quizzes means the live classroom and range qualification are no longer required.', type: 'tf', answer: false, explanation: 'Live review and range qualification still matter.' },
-    { q: 'What should a student bring to live class in addition to any required documents?', choices: ['Only confidence', 'The safe, teachable mindset and required equipment listed by the academy', 'Nothing if they scored high online', 'Only a screenshot of the dashboard'], answer: 1, explanation: 'The final BSA prep lesson emphasizes mindset and required equipment.' },
-    { q: 'What is the best attitude heading into the live range session?', choices: ['Try to look fast and tactical', 'Slow down, stay teachable, and focus on safe performance', 'Hide weak areas from the instructor', 'Assume equipment matters more than conduct'], answer: 1, explanation: 'The lesson emphasizes humility, honesty, and safe execution.' },
-    { q: 'True or False: The live portion is where students demonstrate safe conduct, not just memory of quiz answers.', type: 'tf', answer: true, explanation: 'That is central to the BSA final review lesson.' },
-    { q: 'If a student feels weak on one chapter, what should they do before live class?', choices: ['Ignore it and hope for the best', 'Review weak areas honestly before class', 'Skip the live class', 'Only focus on gear'], answer: 1, explanation: 'The final-prep lesson stresses reviewing weak areas before class.' },
-    { q: 'What is the best summary of “online prerequisite complete” ?', choices: ['The student is ready for the next required step, not fully finished', 'The student is fully certified', 'The range is optional now', 'Nothing further is required'], answer: 0, explanation: 'The online portion is a prerequisite, not the whole course.' },
-    { q: 'True or False: Students should know their own email and access code in case the instructor needs to verify records.', type: 'tf', answer: true, explanation: 'The lesson includes practical readiness and record awareness.' },
-    { q: 'Which statement best fits BSA’s live-class expectation?', choices: ['The instructor will review safety, legal issues, handling, and qualification standards', 'Only the online portal matters', 'Students will not handle firearms in the live class', 'The live class is just a formality'], answer: 0, explanation: 'The final review ties live completion to instruction and performance standards.' },
-    { q: 'What should matter more than ego at the live session?', choices: ['Looking experienced', 'Being safe, lawful, and competent', 'Finishing first', 'Using the most expensive equipment'], answer: 1, explanation: 'The lesson makes safety, legality, and competence the priority.' },
-    { q: 'True or False: The online prerequisite can help students arrive more prepared and confident for the live session.', type: 'tf', answer: true, explanation: 'That is one of its main goals.' },
-    { q: 'What is one sign a student understood the BSA final-prep lesson?', choices: ['They know the live portion still matters and they arrive ready to learn', 'They think the quizzes replaced the instructor', 'They focus only on gear', 'They assume the certificate is automatic'], answer: 0, explanation: 'That is the best reflection of the final lesson.' },
-    { q: 'If a student passed every quiz but shows unsafe conduct in live class, what principle from the lesson applies?', choices: ['Quiz scores override unsafe behavior', 'Safe practical conduct still matters for successful completion', 'Only paperwork matters', 'Unsafe conduct is acceptable if the student is confident'], answer: 1, explanation: 'The BSA final review makes safe practical conduct essential.' },
-    { q: 'True or False: Students should arrive ready to ask questions if something remains unclear.', type: 'tf', answer: true, explanation: 'A teachable mindset is part of preparation.' },
-    { q: 'What is the best short summary of Lesson 8?', choices: ['Online study prepares you for the live class, but final completion still requires safe instructor-verified performance', 'The online dashboard is the entire course', 'Live class is optional after passing quizzes', 'Only range speed matters now'], answer: 0, explanation: 'That best captures the custom BSA final lesson.' },
-    { q: 'What should the student do if they are unsure about a procedure during live class?', choices: ['Guess quickly so they do not look inexperienced', 'Slow down and ask for clarification', 'Copy the nearest shooter', 'Ignore the issue'], answer: 1, explanation: 'The lesson values humility and teachability over appearances.' },
-    { q: 'True or False: The final goal is to become safe, lawful, and competent rather than simply to “pass a website.”', type: 'tf', answer: true, explanation: 'That is the guiding mindset of the final lesson.' },
-    { q: 'Which answer best describes what the instructor is verifying in the live phase?', choices: ['Only attendance', 'Safe conduct, understanding, and practical performance', 'Only the email address', 'Only whether the student owns a firearm'], answer: 1, explanation: 'The live portion verifies more than memory.' },
-    { q: 'What is the best final-prep decision if a student is nervous?', choices: ['Rush through everything before class', 'Review, breathe, prepare carefully, and arrive ready to learn', 'Avoid asking questions', 'Skip the range'], answer: 1, explanation: 'Preparation and humility are the correct response.' },
-    { q: 'Which student best understood Lesson 8?', choices: ['The student who knows the online work is preparation for live instructor-led completion', 'The student who thinks the certificate is automatic', 'The student who thinks safety is secondary to speed', 'The student who believes equipment is the whole course'], answer: 0, explanation: 'That best reflects the final BSA lesson.' }
-  ]
+ 8: [
+  { q: 'Minimum legal age for permitless carry in Louisiana?', choices: ['21','18','19','25'], answer: 1 },
+  { q: 'Does permitless carry remove all restrictions?', choices: ['Yes','No','Only some','Depends'], answer: 1 },
+  { q: 'Can private property restrict firearms?', choices: ['No','Yes','Only businesses','Only government'], answer: 1 },
+  { q: 'Deadly force requires?', choices: ['Fear','Anger','Immediate serious threat','Property loss'], answer: 2 },
+  { q: 'Property alone justifies deadly force?', type:'tf', answer:false },
+  { q: 'Stress reactions mean failure?', type:'tf', answer:false },
+  { q: 'Tunnel vision can occur under stress?', type:'tf', answer:true },
+  { q: 'Best response to anger while armed?', choices:['Escalate','Leave','Argue','Dominate'], answer:1 },
+  { q: 'Alcohol affects judgment?', type:'tf', answer:true },
+  { q: 'Feeling fine means you are not impaired?', type:'tf', answer:false },
+  { q: 'Responsibility includes?', choices:['Only shooting','Legal + mental + safety','Only training','Only gear'], answer:1 },
+  { q: 'You are responsible for?', choices:['Only intent','Every round fired','Only hits','Only misses'], answer:1 },
+  { q: 'Avoidance is?', choices:['Weakness','Best option often','Illegal','Unnecessary'], answer:1 },
+  { q: 'Confidence should come from?', choices:['Ego','Gear','Preparation','Speed'], answer:2 },
+  { q: 'Carrying requires?', choices:['Skill only','Judgment + control','Speed','Experience only'], answer:1 },
+  { q: 'Legal review happens?', choices:['Never','After incidents','Only in court','Only if arrested'], answer:1 },
+  { q: 'Best mindset?', choices:['Aggressive','Prepared','Reactive','Emotional'], answer:1 },
+  { q: 'Stress removes decision-making?', type:'tf', answer:false },
+  { q: 'Substance use risk?', choices:['None','Low','High','Depends'], answer:2 },
+  { q: 'Final goal?', choices:['Win fights','Be safe lawful competent','Be fast','Be armed'], answer:1 }
+]
 };
