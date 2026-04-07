@@ -26,10 +26,9 @@
 <main class="container">
   <div class="panel content-card">
     <h2>Quiz</h2>
-    <p class="muted">Answer all questions. 80% required to pass.</p>
+    <p class="muted">80% required. Critical mistakes will fail automatically.</p>
 
     <div id="quizContainer"></div>
-
     <button id="submitBtn" class="btn btn-gold">Submit Quiz</button>
 
     <div id="result" style="margin-top:20px;"></div>
@@ -39,39 +38,43 @@
 <script src="data.js"></script>
 
 <script type="module">
-
 import { requireLogin, markLessonComplete } from "./app.js";
 
 requireLogin();
 
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-
 const container = document.getElementById("quizContainer");
 const resultDiv = document.getElementById("result");
 const submitBtn = document.getElementById("submitBtn");
 
-// 🔥 RANDOMIZER
-function getRandomQuestions(pool, min = 6, max = 8) {
-  if (!pool || pool.length === 0) return [];
+// 🔥 TRACK USED QUESTIONS (session-based)
+let usedQuestions = JSON.parse(sessionStorage.getItem("usedQuestions_" + lessonId) || "[]");
 
-  const count = Math.min(
-    pool.length,
-    Math.floor(Math.random() * (max - min + 1)) + min
-  );
+// 🔥 RANDOMIZER WITH NO REPEAT
+function getQuestions(pool, count = 7) {
 
-  return [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+  let available = pool.filter(q => !usedQuestions.includes(q.q));
+
+  // If exhausted, reset
+  if (available.length < count) {
+    usedQuestions = [];
+    available = pool;
+  }
+
+  const selected = [...available].sort(() => Math.random() - 0.5).slice(0, count);
+
+  // Save used
+  selected.forEach(q => usedQuestions.push(q.q));
+  sessionStorage.setItem("usedQuestions_" + lessonId, JSON.stringify(usedQuestions));
+
+  return selected;
 }
 
-// 🔥 LOAD QUESTIONS
+// 🔥 LOAD
 const pool = window.QUIZ_BANK?.[lessonId] || [];
-const questions = getRandomQuestions(pool);
+const questions = getQuestions(pool);
 
-// 🔴 SAFETY
-if (!questions.length) {
-  container.innerHTML = "<p>No quiz questions found.</p>";
-}
-
-// 🔥 GET CHOICES (handles all formats)
+// 🔥 CHOICE HANDLER
 function getChoices(q) {
   if (q.type === "tf") return ["True", "False"];
   if (q.choices) return q.choices;
@@ -91,14 +94,7 @@ questions.forEach((q, i) => {
 
   const choices = getChoices(q);
 
-  if (!choices.length) {
-    block.innerHTML += "<p style='color:red'>Invalid question format</p>";
-    container.appendChild(block);
-    return;
-  }
-
   choices.forEach((choice, j) => {
-
     const label = document.createElement("label");
     label.style.display = "block";
 
@@ -111,16 +107,22 @@ questions.forEach((q, i) => {
     label.append(" " + choice);
 
     block.appendChild(label);
-
   });
 
   container.appendChild(block);
 });
 
-// 🔥 SUBMIT
+// 🔥 SUBMIT WITH WEAK AREA TRACKING
 submitBtn.onclick = () => {
 
   let correct = 0;
+  let criticalFail = false;
+
+  let weakAreas = {
+    law: 0,
+    safety: 0,
+    mental: 0
+  };
 
   questions.forEach((q, i) => {
 
@@ -129,23 +131,53 @@ submitBtn.onclick = () => {
 
     const val = Number(selected.value);
 
+    let isCorrect = false;
+
     if (q.type === "tf") {
       const expected = q.answer === true ? 0 : 1;
-      if (val === expected) correct++;
+      isCorrect = (val === expected);
     } else {
-      if (val === q.answer) correct++;
+      isCorrect = (val === q.answer);
+    }
+
+    // 🔴 TRACK WEAK AREAS
+    if (!isCorrect) {
+      if (q.category === "law") weakAreas.law++;
+      if (q.category === "safety") weakAreas.safety++;
+      if (q.category === "mental") weakAreas.mental++;
+
+      // 🔥 CRITICAL FAIL RULE
+      if (q.critical === true) {
+        criticalFail = true;
+      }
+    } else {
+      correct++;
     }
 
   });
 
   const percent = Math.round((correct / questions.length) * 100);
 
-  if (percent >= 80) {
+  console.log("Weak Areas:", weakAreas);
+
+  if (percent >= 80 && !criticalFail) {
+
     resultDiv.innerHTML = `<strong style="color:green;">Passed (${percent}%)</strong>`;
+
     markLessonComplete(lessonId);
+
     setTimeout(() => window.location.href = "dashboard.html", 1500);
+
   } else {
-    resultDiv.innerHTML = `<strong style="color:red;">Failed (${percent}%) — Try Again</strong>`;
+
+    let reason = "";
+
+    if (criticalFail) {
+      reason = "<br><span style='color:red;'>Critical mistake — review required.</span>";
+    }
+
+    resultDiv.innerHTML = `<strong style="color:red;">Failed (${percent}%) — Try Again</strong>${reason}`;
+
   }
 };
 
