@@ -97,8 +97,10 @@
     window.LESSONS.forEach((lesson) => {
       const status = lessonStatus(lesson.id, student);
       const progress = getLessonProgress(lesson.id, student);
+
       const card = document.createElement("article");
       card.className = "panel lesson-card";
+
       card.innerHTML = `
         <div class="lesson-top">
           <div style="display:flex;gap:12px;align-items:start;">
@@ -110,24 +112,50 @@
           </div>
           <span class="status ${status.className}">${status.label}</span>
         </div>
+
         <div class="lesson-meta">
           <span class="chip">Estimated Time: ${lesson.estTime}</span>
           <span class="chip">20-question quiz</span>
           <span class="chip">2 scenarios</span>
           ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
         </div>
+
         <div class="lesson-actions">
-          <a class="btn btn-blue" href="${
-  status.locked
-    ? "#"
-    : (lesson.id === 8
-        ? "lessons/lesson8.html"
-        : `lesson.html?lesson=${lesson.id}`)
-}">${status.locked ? "Complete Previous Lesson First" : (progress.contentViewed ? "Continue Lesson" : "Start Lesson")}</a>
-          ${!status.locked && progress.contentViewed ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Open Scenarios</a>` : ""}
-          ${!status.locked && progress.scenarioCompleted ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>` : ""}
-          ${progress.quizPassed ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>` : ""}
-        </div>`;
+
+          ${
+            status.locked
+              ? `<a class="btn btn-blue btn-disabled">Complete Previous Lesson First</a>`
+              : (lesson.id === 8
+                  ? `<a class="btn btn-blue" href="lessons/lesson8.html">
+                       ${progress.contentViewed ? "Continue Chapter 8" : "Start Chapter 8"}
+                     </a>`
+                  : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
+                       ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+                     </a>`
+                )
+          }
+
+          ${
+            !status.locked && lesson.id !== 8 && progress.contentViewed
+              ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Open Scenarios</a>`
+              : ""
+          }
+
+          ${
+            !status.locked && lesson.id !== 8 && progress.scenarioCompleted
+              ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>`
+              : ""
+          }
+
+          ${
+            lesson.id !== 8 && progress.quizPassed
+              ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>`
+              : ""
+          }
+
+        </div>
+      `;
+
       grid.appendChild(card);
     });
 
