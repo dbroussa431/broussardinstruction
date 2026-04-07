@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 8 - Final Readiness</title>
-<link rel="stylesheet" href="css/portal.css">
-
-<style>
-.container { max-width: 900px; margin: auto; padding: 30px; }
-.card { background:#fff; padding:20px; border-radius:10px; margin-bottom:20px; }
-button { margin:8px 0; display:block; width:100%; }
-.progress { margin-bottom:15px; font-weight:bold; }
-</style>
+  <meta charset="UTF-8">
+  <title>Lesson 8 - Final Readiness</title>
+  <link rel="stylesheet" href="../styles.css">
 </head>
-
 <body>
 
-<div class="container">
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark"><img src="../images/bsa-logo.png"></div>
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Final Validation</p>
+      </div>
+    </div>
+  </div>
+</header>
 
-<h1>Lesson 8 — Final Readiness</h1>
-<div class="progress" id="progress"></div>
+<main class="container">
+  <section class="panel content-card">
 
-<div id="content"></div>
+    <h2 id="sectionTitle"></h2>
+    <p id="sectionContent" class="muted"></p>
 
-<button id="continueBtn">Continue</button>
+    <div id="scenarioBlock" class="scenario-card"></div>
 
-</div>
+    <div id="quizBlock"></div>
 
-<script type="module" src="js/chapter8-controller.js"></script>
+    <div class="lesson-actions">
+      <button id="submitBtn" class="btn btn-blue">Submit</button>
+    </div>
+
+    <div id="result"></div>
+
+  </section>
+</main>
+
+<script type="module" src="../js/chapter8-controller.js"></script>
 
 </body>
 </html>
