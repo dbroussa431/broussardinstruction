@@ -5,7 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Quiz</title>
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* 🔥 LOCAL UI FIX (no global breakage) */
+
+    .quiz-question {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .quiz-question h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .quiz-option {
+      display: block;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .quiz-option:hover {
+      background: #eef2f7;
+    }
+
+    .quiz-option input {
+      margin-right: 8px;
+    }
+
+    #submitBtn {
+      margin-top: 15px;
+    }
+
+    #result {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+  </style>
 </head>
+
 <body>
 
 <header class="topbar">
@@ -26,12 +71,13 @@
 <main class="container">
   <div class="panel content-card">
     <h2>Quiz</h2>
-    <p class="muted">80% required to pass.</p>
+    <p class="muted">80% required to pass. Critical mistakes will fail automatically.</p>
 
     <div id="quizContainer"></div>
+
     <button id="submitBtn" class="btn btn-gold">Submit Quiz</button>
 
-    <div id="result" style="margin-top:20px;"></div>
+    <div id="result"></div>
   </div>
 </main>
 
@@ -49,28 +95,38 @@ const container = document.getElementById("quizContainer");
 const resultDiv = document.getElementById("result");
 const submitBtn = document.getElementById("submitBtn");
 
-// 🔥 RANDOMIZER
-function getRandomQuestions(pool, min = 6, max = 8) {
-  if (!pool || pool.length === 0) return [];
+// 🔥 CERTIFICATION ENGINE
+function getCertifiedQuestions(pool) {
 
-  const count = Math.min(
-    pool.length,
-    Math.floor(Math.random() * (max - min + 1)) + min
-  );
+  const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
 
-  return [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+  const law = pool.filter(q => q.category === "law");
+  const mental = pool.filter(q => q.category === "mental");
+  const safety = pool.filter(q => q.category === "safety");
+
+  let selected = [];
+
+  if (law.length) selected.push(...shuffle(law).slice(0, 2));
+  if (mental.length) selected.push(...shuffle(mental).slice(0, 2));
+  if (safety.length) selected.push(...shuffle(safety).slice(0, 1));
+
+  const remaining = pool.filter(q => !selected.includes(q));
+
+  selected = [...selected, ...shuffle(remaining).slice(0, 3)];
+
+  return shuffle(selected).slice(0, 8);
 }
 
 // 🔥 LOAD QUESTIONS
 const pool = window.QUIZ_BANK?.[lessonId] || [];
-const questions = getRandomQuestions(pool);
+const questions = getCertifiedQuestions(pool);
 
 // 🔴 SAFETY
 if (!questions.length) {
   container.innerHTML = "<p>No quiz questions found.</p>";
 }
 
-// 🔥 SUPPORT ALL FORMATS
+// 🔥 SUPPORT ALL TYPES
 function getChoices(q) {
   if (q.type === "tf") return ["True", "False"];
   if (q.choices) return q.choices;
@@ -78,14 +134,14 @@ function getChoices(q) {
   return [];
 }
 
-// 🔥 RENDER
+// 🔥 RENDER (UI FIXED)
 questions.forEach((q, i) => {
 
   const block = document.createElement("div");
-  block.style.marginBottom = "20px";
+  block.className = "quiz-question";
 
-  const question = document.createElement("p");
-  question.innerHTML = `<strong>${i + 1}. ${q.q}</strong>`;
+  const question = document.createElement("h4");
+  question.textContent = `${i + 1}. ${q.q}`;
   block.appendChild(question);
 
   const choices = getChoices(q);
@@ -93,7 +149,7 @@ questions.forEach((q, i) => {
   choices.forEach((choice, j) => {
 
     const label = document.createElement("label");
-    label.style.display = "block";
+    label.className = "quiz-option";
 
     const input = document.createElement("input");
     input.type = "radio";
@@ -101,7 +157,7 @@ questions.forEach((q, i) => {
     input.value = j;
 
     label.appendChild(input);
-    label.append(" " + choice);
+    label.append(choice);
 
     block.appendChild(label);
 
@@ -114,6 +170,7 @@ questions.forEach((q, i) => {
 submitBtn.onclick = () => {
 
   let correct = 0;
+  let criticalFail = false;
 
   questions.forEach((q, i) => {
 
@@ -122,28 +179,40 @@ submitBtn.onclick = () => {
 
     const val = Number(selected.value);
 
+    let isCorrect = false;
+
     if (q.type === "tf") {
       const expected = q.answer === true ? 0 : 1;
-      if (val === expected) correct++;
+      isCorrect = (val === expected);
     } else {
-      if (val === q.answer) correct++;
+      isCorrect = (val === q.answer);
+    }
+
+    if (isCorrect) {
+      correct++;
+    } else if (q.critical === true) {
+      criticalFail = true;
     }
 
   });
 
   const percent = Math.round((correct / questions.length) * 100);
 
-  if (percent >= 80) {
+  if (percent >= 80 && !criticalFail) {
 
-    resultDiv.innerHTML = `<strong style="color:green;">Passed (${percent}%)</strong>`;
+    resultDiv.innerHTML = `<span style="color:green;">Passed (${percent}%)</span>`;
 
-    // 🔥 SIMPLE REDIRECT (no dependency)
     setTimeout(() => window.location.href = "dashboard.html", 1500);
 
   } else {
 
-    resultDiv.innerHTML = `<strong style="color:red;">Failed (${percent}%) — Try Again</strong>`;
+    let msg = `Failed (${percent}%)`;
 
+    if (criticalFail) {
+      msg += " — Critical mistake";
+    }
+
+    resultDiv.innerHTML = `<span style="color:red;">${msg}</span>`;
   }
 };
 
