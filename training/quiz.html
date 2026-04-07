@@ -28,7 +28,7 @@
 <main class="container">
 
   <div class="panel content-card">
-    <h2 id="quizTitle">Quiz</h2>
+    <h2>Quiz</h2>
     <div id="quizContainer"></div>
 
     <button id="submitBtn" class="btn btn-gold">Submit Quiz</button>
@@ -44,7 +44,6 @@
 
 import {
   requireLogin,
-  getCurrentStudent,
   markLessonComplete
 } from "./app.js";
 
@@ -56,17 +55,29 @@ const container = document.getElementById("quizContainer");
 const resultDiv = document.getElementById("result");
 const submitBtn = document.getElementById("submitBtn");
 
-// 🔥 RANDOMIZER (used for ALL lessons)
+// ✅ RANDOMIZER FOR ALL LESSONS
 function getRandomQuestions(pool, min = 6, max = 8) {
-  const count = Math.floor(Math.random() * (max - min + 1)) + min;
+  if (!pool || pool.length === 0) return [];
+
+  const count = Math.min(
+    pool.length,
+    Math.floor(Math.random() * (max - min + 1)) + min
+  );
+
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
 
-// 🔥 LOAD QUESTIONS (ALL lessons randomized)
-let questions = getRandomQuestions(window.QUIZ_BANK[lessonId] || []);
+// 🔥 LOAD QUESTIONS
+const fullPool = window.QUIZ_BANK[lessonId] || [];
+const questions = getRandomQuestions(fullPool);
 
-// Render questions
+// 🔴 SAFETY CHECK
+if (questions.length === 0) {
+  container.innerHTML = "<p>No quiz questions found for this lesson.</p>";
+}
+
+// 🔥 RENDER
 questions.forEach((q, i) => {
 
   const block = document.createElement("div");
@@ -76,7 +87,9 @@ questions.forEach((q, i) => {
   question.innerHTML = `<strong>${i + 1}. ${q.q}</strong>`;
   block.appendChild(question);
 
+  // ✅ IMPORTANT: uses "choices"
   q.choices.forEach((choice, j) => {
+
     const label = document.createElement("label");
     label.style.display = "block";
 
@@ -89,22 +102,25 @@ questions.forEach((q, i) => {
     label.append(" " + choice);
 
     block.appendChild(label);
+
   });
 
   container.appendChild(block);
 });
 
-// Submit logic
+// 🔥 SUBMIT
 submitBtn.onclick = () => {
 
   let correct = 0;
 
   questions.forEach((q, i) => {
+
     const selected = document.querySelector(`input[name="q${i}"]:checked`);
 
     if (selected && Number(selected.value) === q.answer) {
       correct++;
     }
+
   });
 
   const percent = Math.round((correct / questions.length) * 100);
