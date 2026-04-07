@@ -5,50 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Quiz</title>
   <link rel="stylesheet" href="styles.css">
-
-  <style>
-    /* 🔥 LOCAL UI FIX (no global breakage) */
-
-    .quiz-question {
-      background: #f9fafb;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .quiz-question h4 {
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .quiz-option {
-      display: block;
-      padding: 8px 10px;
-      margin-bottom: 6px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .quiz-option:hover {
-      background: #eef2f7;
-    }
-
-    .quiz-option input {
-      margin-right: 8px;
-    }
-
-    #submitBtn {
-      margin-top: 15px;
-    }
-
-    #result {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-  </style>
 </head>
 
 <body>
@@ -69,152 +25,171 @@
 </header>
 
 <main class="container">
-  <div class="panel content-card">
-    <h2>Quiz</h2>
-    <p class="muted">80% required to pass. Critical mistakes will fail automatically.</p>
 
-    <div id="quizContainer"></div>
+  <section class="panel content-card" id="quizPanel">
+    <span class="eyebrow">20 randomized questions • pass at 80%</span>
+    <h2 id="quizTitle"></h2>
 
-    <button id="submitBtn" class="btn btn-gold">Submit Quiz</button>
+    <p class="muted">
+      Answer all questions. A score of 80% or higher is required to pass.
+    </p>
 
-    <div id="result"></div>
-  </div>
+    <div id="quizWrap" class="q-list"></div>
+
+    <div class="lesson-actions">
+      <button class="btn btn-blue" id="submitQuizBtn" type="button">Submit Quiz</button>
+      <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
+    </div>
+  </section>
+
+  <section id="resultPanel" class="results-grid hidden" style="margin-top:24px"></section>
+
 </main>
 
 <script src="data.js"></script>
 
 <script type="module">
 
-import { requireLogin } from "./app.js";
+import {
+  PASSING_SCORE,
+  requireLogin,
+  refreshCurrentStudentFromFirestore,
+  getCurrentStudent,
+  getLessonProgress,
+  getQuizQuestionsForLesson,
+  recordQuizResult,
+  clearActiveQuiz
+} from "./app.js";
 
 requireLogin();
 
+const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+const lesson = window.LESSONS.find(l => l.id === lessonId) || window.LESSONS[0];
 
-const container = document.getElementById("quizContainer");
-const resultDiv = document.getElementById("result");
-const submitBtn = document.getElementById("submitBtn");
+document.getElementById("quizTitle").textContent = `${lesson.id}. ${lesson.title} — Quiz`;
+document.getElementById("backLessonLink").href = `lesson.html?lesson=${lesson.id}`;
 
-// 🔥 CERTIFICATION ENGINE
-function getCertifiedQuestions(pool) {
+clearActiveQuiz(lessonId);
 
-  const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+const quizWrap = document.getElementById("quizWrap");
+const selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
 
-  const law = pool.filter(q => q.category === "law");
-  const mental = pool.filter(q => q.category === "mental");
-  const safety = pool.filter(q => q.category === "safety");
+// 🔥 RENDER QUESTIONS (ORIGINAL STYLE)
+selectedQuestions.forEach((item, idx) => {
 
-  let selected = [];
+  const card = document.createElement("div");
+  card.className = "question-card";
 
-  if (law.length) selected.push(...shuffle(law).slice(0, 2));
-  if (mental.length) selected.push(...shuffle(mental).slice(0, 2));
-  if (safety.length) selected.push(...shuffle(safety).slice(0, 1));
+  const title = document.createElement("h4");
+  title.textContent = `${idx + 1}. ${item.q}`;
+  card.appendChild(title);
 
-  const remaining = pool.filter(q => !selected.includes(q));
+  const options = document.createElement("div");
+  options.className = "options";
 
-  selected = [...selected, ...shuffle(remaining).slice(0, 3)];
+  const choices = item.type === "tf" ? ["True", "False"] : item.choices;
 
-  return shuffle(selected).slice(0, 8);
-}
+  choices.forEach((choice, i) => {
 
-// 🔥 LOAD QUESTIONS
-const pool = window.QUIZ_BANK?.[lessonId] || [];
-const questions = getCertifiedQuestions(pool);
-
-// 🔴 SAFETY
-if (!questions.length) {
-  container.innerHTML = "<p>No quiz questions found.</p>";
-}
-
-// 🔥 SUPPORT ALL TYPES
-function getChoices(q) {
-  if (q.type === "tf") return ["True", "False"];
-  if (q.choices) return q.choices;
-  if (q.options) return q.options;
-  return [];
-}
-
-// 🔥 RENDER (UI FIXED)
-questions.forEach((q, i) => {
-
-  const block = document.createElement("div");
-  block.className = "quiz-question";
-
-  const question = document.createElement("h4");
-  question.textContent = `${i + 1}. ${q.q}`;
-  block.appendChild(question);
-
-  const choices = getChoices(q);
-
-  choices.forEach((choice, j) => {
-
-    const label = document.createElement("label");
-    label.className = "quiz-option";
+    const option = document.createElement("label");
+    option.className = "option";
 
     const input = document.createElement("input");
     input.type = "radio";
-    input.name = "q" + i;
-    input.value = j;
+    input.name = `q_${idx}`;
+    input.value = item.type === "tf"
+      ? (i === 0 ? "true" : "false")
+      : i;
 
-    label.appendChild(input);
-    label.append(choice);
+    option.appendChild(input);
+    option.append(` ${choice}`);
 
-    block.appendChild(label);
+    option.addEventListener("click", () => {
+      options.querySelectorAll(".option").forEach(el => el.classList.remove("selected"));
+      option.classList.add("selected");
+    });
+
+    options.appendChild(option);
 
   });
 
-  container.appendChild(block);
+  card.appendChild(options);
+  quizWrap.appendChild(card);
+
 });
 
 // 🔥 SUBMIT
-submitBtn.onclick = () => {
+document.getElementById("submitQuizBtn").addEventListener("click", async () => {
 
   let correct = 0;
-  let criticalFail = false;
+  const details = [];
 
-  questions.forEach((q, i) => {
+  selectedQuestions.forEach((item, idx) => {
 
-    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-    if (!selected) return;
-
-    const val = Number(selected.value);
+    const picked = document.querySelector(`input[name="q_${idx}"]:checked`);
 
     let isCorrect = false;
+    let yourAnswer = "No answer selected";
+    let correctAnswer = "";
 
-    if (q.type === "tf") {
-      const expected = q.answer === true ? 0 : 1;
-      isCorrect = (val === expected);
+    if (item.type === "tf") {
+      correctAnswer = item.answer ? "True" : "False";
+      if (picked) {
+        yourAnswer = picked.value === "true" ? "True" : "False";
+        isCorrect = String(item.answer) === picked.value;
+      }
     } else {
-      isCorrect = (val === q.answer);
+      correctAnswer = item.choices[item.answer];
+      if (picked) {
+        yourAnswer = item.choices[Number(picked.value)];
+        isCorrect = Number(picked.value) === item.answer;
+      }
     }
 
-    if (isCorrect) {
-      correct++;
-    } else if (q.critical === true) {
-      criticalFail = true;
-    }
+    if (isCorrect) correct++;
+
+    details.push({
+      question: item.q,
+      yourAnswer,
+      correctAnswer,
+      explanation: item.explanation,
+      isCorrect
+    });
 
   });
 
-  const percent = Math.round((correct / questions.length) * 100);
+  const score = Math.round((correct / selectedQuestions.length) * 100);
 
-  if (percent >= 80 && !criticalFail) {
+  await recordQuizResult(lessonId, score, details, 0);
 
-    resultDiv.innerHTML = `<span style="color:green;">Passed (${percent}%)</span>`;
+  renderResults(score, details);
 
-    setTimeout(() => window.location.href = "dashboard.html", 1500);
+});
 
-  } else {
+// 🔥 RESULTS
+function renderResults(score, details) {
 
-    let msg = `Failed (${percent}%)`;
+  const passed = score >= PASSING_SCORE;
+  const resultPanel = document.getElementById("resultPanel");
 
-    if (criticalFail) {
-      msg += " — Critical mistake";
-    }
+  resultPanel.classList.remove("hidden");
 
-    resultDiv.innerHTML = `<span style="color:red;">${msg}</span>`;
-  }
-};
+  resultPanel.innerHTML = `
+    <div class="panel result-card">
+      <div class="banner ${passed ? "pass" : "retake"}">
+        ${passed ? "PASS" : "RETAKE REQUIRED"} • Score: ${score}%
+      </div>
+
+      <div class="lesson-actions">
+        ${passed
+          ? `<a class="btn btn-blue" href="lesson.html?lesson=${lessonId + 1}">Next Lesson</a>`
+          : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`
+        }
+      </div>
+    </div>
+  `;
+}
 
 </script>
 
