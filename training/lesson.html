@@ -1,64 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Lesson</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Lesson Summary</p>
-      </div>
-    </div>
-
-    <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-gold" id="toScenarioTop">Continue</a>
-    </div>
-  </div>
-</header>
-
-<main class="container lesson-layout">
-
-  <aside class="panel sidebar">
-    <h3 id="sideTitle">Lesson</h3>
-    <div id="sideSections"></div>
-    <div class="notice warn small">
-      Read the lesson gist before continuing.
-    </div>
-  </aside>
-
-  <section class="panel content-card">
-    <span class="eyebrow">Lesson Content</span>
-    <h2 id="lessonTitle"></h2>
-    <p id="lessonSummary" class="muted"></p>
-
-    <div id="lessonContent"></div>
-
-    <div class="callout">
-      <strong>Important:</strong> Score at least 80% to pass.
-    </div>
-
-    <div class="lesson-actions">
-      <a class="btn btn-blue" id="toScenarioBottom">Continue</a>
-      <a class="btn btn-outline" href="dashboard.html">Back</a>
-    </div>
-
-  </section>
-</main>
-
-<script src="data.js"></script>
-
 <script type="module">
-
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -76,19 +16,21 @@ const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStuden
 
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-// 🔒 Access control (unchanged)
+// 🔒 Access control
 if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
   window.location.href = "dashboard.html";
 }
 
-// =========================
-// 🔴 CHAPTER 8 FULL CONTROL
-// =========================
+/* =========================
+   🔴 CHAPTER 8 TAKES OVER FIRST
+   ========================= */
 
 if (lessonId === 8) {
 
+  await setLessonContentViewed(8);
+
   document.getElementById("lessonTitle").textContent = "8. Final Readiness";
-  document.getElementById("lessonSummary").textContent = "Complete all checkpoints to pass this lesson.";
+  document.getElementById("lessonSummary").textContent = "Complete all checkpoints to pass.";
   document.getElementById("sideTitle").textContent = "Final Validation";
 
   document.getElementById("sideSections").innerHTML = `
@@ -97,21 +39,20 @@ if (lessonId === 8) {
     <div>Final Validation</div>
   `;
 
-  // Remove default navigation
   document.getElementById("toScenarioTop").style.display = "none";
   document.getElementById("toScenarioBottom").style.display = "none";
 
-  // 🔥 Run Chapter 8 system inside this page
+  // 🚀 THIS IS THE KEY
   startChapter8();
 
-  return;
+  return; // ⛔ STOP everything else
 }
 
-// =========================
-// 🔵 NORMAL LESSONS (1–7)
-// =========================
+/* =========================
+   🔵 NORMAL LESSONS 1–7
+   ========================= */
 
-const lesson = window.LESSONS.find(l => l.id === lessonId);
+const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
 
 await setLessonContentViewed(lesson.id);
 
@@ -153,8 +94,4 @@ lesson.sections.forEach((section, idx) => {
 
 document.getElementById("toScenarioTop").href = `scenario.html?lesson=${lesson.id}`;
 document.getElementById("toScenarioBottom").href = `scenario.html?lesson=${lesson.id}`;
-
 </script>
-
-</body>
-</html>
