@@ -39,7 +39,7 @@
 
 <script type="module">
 
-import { requireLogin, markLessonComplete } from "./app.js";
+import { requireLogin } from "./app.js";
 
 requireLogin();
 
@@ -49,7 +49,7 @@ const container = document.getElementById("quizContainer");
 const resultDiv = document.getElementById("result");
 const submitBtn = document.getElementById("submitBtn");
 
-// 🔥 SIMPLE RANDOMIZER (NO BREAKAGE)
+// 🔥 RANDOMIZER
 function getRandomQuestions(pool, min = 6, max = 8) {
   if (!pool || pool.length === 0) return [];
 
@@ -65,7 +65,7 @@ function getRandomQuestions(pool, min = 6, max = 8) {
 const pool = window.QUIZ_BANK?.[lessonId] || [];
 const questions = getRandomQuestions(pool);
 
-// 🔴 SAFETY CHECK
+// 🔴 SAFETY
 if (!questions.length) {
   container.innerHTML = "<p>No quiz questions found.</p>";
 }
@@ -78,7 +78,7 @@ function getChoices(q) {
   return [];
 }
 
-// 🔥 RENDER QUESTIONS
+// 🔥 RENDER
 questions.forEach((q, i) => {
 
   const block = document.createElement("div");
@@ -136,8 +136,8 @@ submitBtn.onclick = () => {
   if (percent >= 80) {
 
     resultDiv.innerHTML = `<strong style="color:green;">Passed (${percent}%)</strong>`;
-    markLessonComplete(lessonId);
 
+    // 🔥 SIMPLE REDIRECT (no dependency)
     setTimeout(() => window.location.href = "dashboard.html", 1500);
 
   } else {
