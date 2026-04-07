@@ -1,92 +1,122 @@
 import { CHAPTER8 } from "./chapter8-data.js";
 
+const content = document.getElementById("content");
+const progress = document.getElementById("progress");
+const btn = document.getElementById("continueBtn");
+
 let state = JSON.parse(localStorage.getItem("ch8")) || {
 part: "law",
 index: 0,
 stage: "gist"
 };
 
-const content = document.getElementById("content");
-const btn = document.getElementById("continueBtn");
-
-function save() {
+function save(){
 localStorage.setItem("ch8", JSON.stringify(state));
 }
 
-function render() {
+function updateProgress(){
+progress.textContent = `${state.part.toUpperCase()} - Checkpoint ${state.index+1}`;
+}
 
-let section = CHAPTER8[state.part][state.index];
+function render(){
 
-if (state.stage === "gist") {
+updateProgress();
+
+const section = CHAPTER8[state.part][state.index];
+
+if(state.stage === "gist"){
 
 content.innerHTML = `
+<div class="card">
 <h2>${section.title}</h2>
-${section.gist.map(p => `<p>${p}</p>`).join("")}
+${section.gist.map(p=>`<p>${p}</p>`).join("")}
+</div>
 `;
 
-btn.onclick = () => {
-state.stage = "scenario";
+btn.style.display="block";
+btn.onclick=()=>{
+state.stage="scenario";
 save();
 render();
 };
 
 }
 
-else if (state.stage === "scenario") {
+else if(state.stage==="scenario"){
+
+btn.style.display="none";
 
 content.innerHTML = `
+<div class="card">
 <h2>Scenario</h2>
 <p>${section.scenario.question}</p>
 ${section.scenario.answers.map((a,i)=>
-`<button onclick="answer(${i})">${a}</button>`
+`<button data-i="${i}">${a}</button>`
 ).join("")}
+</div>
 `;
 
-window.answer = (i) => {
-if(i === section.scenario.correct){
-state.stage = "quiz";
+document.querySelectorAll("button[data-i]").forEach(b=>{
+b.onclick = ()=>{
+const i = Number(b.dataset.i);
+if(i===section.scenario.correct){
+state.stage="quiz";
 save();
 render();
 }else{
-alert("Try again");
+alert("Review the material and try again.");
 }
 };
-
-btn.style.display = "none";
+});
 
 }
 
-else if (state.stage === "quiz") {
+else if(state.stage==="quiz"){
+
+btn.style.display="none";
+
+const pool = section.quizPool;
+const selected = shuffle(pool).slice(0,5);
+
+let answers = [];
 
 content.innerHTML = `
+<div class="card">
 <h2>Quiz</h2>
-${section.quiz.map((q,i)=>`
+${selected.map((q,i)=>`
 <p>${q.q}</p>
-${q.options.map((o,j)=>
-`<button onclick="quiz(${i},${j})">${o}</button>`
-).join("")}
+${q.options.map((o,j)=>`
+<button data-q="${i}" data-a="${j}">${o}</button>
 `).join("")}
+`).join("")}
+<button id="submitQuiz">Submit</button>
+</div>
 `;
 
-let score = 0;
+document.querySelectorAll("button[data-q]").forEach(b=>{
+b.onclick = ()=>{
+answers[b.dataset.q] = Number(b.dataset.a);
+b.style.background="#ccc";
+};
+});
 
-window.quiz = (qi, ai) => {
-if(ai === section.quiz[qi].correct){
-score++;
-}
+document.getElementById("submitQuiz").onclick=()=>{
 
-if(qi === section.quiz.length - 1){
+let correct=0;
 
-if(score >= section.quiz.length){
+selected.forEach((q,i)=>{
+if(answers[i]===q.correct) correct++;
+});
+
+if(correct>=4){
 next();
 }else{
-alert("Retry section");
-state.stage = "gist";
+alert("You must pass this checkpoint.");
+state.stage="gist";
 save();
 render();
 }
 
-}
 };
 
 }
@@ -99,22 +129,18 @@ state.index++;
 
 if(state.index >= CHAPTER8[state.part].length){
 
-if(state.part === "law"){
-state.part = "mental";
-state.index = 0;
-state.stage = "gist";
+if(state.part==="law"){
+state.part="mental";
+state.index=0;
 }
-else if(state.part === "mental"){
-state.part = "final";
-state.index = 0;
-state.stage = "final";
+else if(state.part==="mental"){
 renderFinal();
 return;
 }
 
 }
 
-state.stage = "gist";
+state.stage="gist";
 save();
 render();
 
@@ -123,38 +149,49 @@ render();
 function renderFinal(){
 
 content.innerHTML = `
-<h2>Final Quiz</h2>
+<div class="card">
+<h2>Final Check</h2>
 ${CHAPTER8.final.map((q,i)=>`
 <p>${q.q}</p>
-${q.options.map((o,j)=>
-`<button onclick="final(${i},${j})">${o}</button>`
-).join("")}
+${q.options.map((o,j)=>`
+<button data-q="${i}" data-a="${j}">${o}</button>
 `).join("")}
+`).join("")}
+<button id="submitFinal">Submit</button>
+</div>
 `;
 
-let score = 0;
+let answers=[];
 
-window.final = (qi, ai) => {
+document.querySelectorAll("button[data-q]").forEach(b=>{
+b.onclick=()=>{
+answers[b.dataset.q]=Number(b.dataset.a);
+};
+});
 
-if(ai === CHAPTER8.final[qi].correct){
-score++;
-}
+document.getElementById("submitFinal").onclick=()=>{
 
-if(qi === CHAPTER8.final.length - 1){
+let correct=0;
 
-if(score >= CHAPTER8.final.length){
+CHAPTER8.final.forEach((q,i)=>{
+if(answers[i]===q.correct) correct++;
+});
+
+if(correct>=CHAPTER8.final.length){
 alert("Lesson Complete");
 localStorage.removeItem("ch8");
-window.location.href = "dashboard.html";
+window.location.href="dashboard.html";
 }else{
-alert("Retry final");
+alert("Retry final section");
 renderFinal();
-}
-
 }
 
 };
 
+}
+
+function shuffle(arr){
+return arr.sort(()=>Math.random()-0.5);
 }
 
 render();
