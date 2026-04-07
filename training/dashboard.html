@@ -117,7 +117,13 @@
           ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
         </div>
         <div class="lesson-actions">
-          <a class="btn btn-blue" href="${status.locked ? "#" : `lesson.html?lesson=${lesson.id}`}">${status.locked ? "Complete Previous Lesson First" : (progress.contentViewed ? "Continue Lesson" : "Start Lesson")}</a>
+          <a class="btn btn-blue" href="${
+  status.locked
+    ? "#"
+    : (lesson.id === 8
+        ? "lessons/lesson8.html"
+        : `lesson.html?lesson=${lesson.id}`)
+}">${status.locked ? "Complete Previous Lesson First" : (progress.contentViewed ? "Continue Lesson" : "Start Lesson")}</a>
           ${!status.locked && progress.contentViewed ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Open Scenarios</a>` : ""}
           ${!status.locked && progress.scenarioCompleted ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Take Quiz</a>` : ""}
           ${progress.quizPassed ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>` : ""}
