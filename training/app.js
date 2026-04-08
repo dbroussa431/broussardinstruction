@@ -43,7 +43,13 @@ function freshProgressForLesson(existing = {}) {
     completedAt: existing.completedAt || null,
     lastLessonVisited: Number(existing.lastLessonVisited || 0),
     totalQuizTimeSeconds: Number(existing.totalQuizTimeSeconds || 0),
-    lastActivityAt: existing.lastActivityAt || null
+    lastActivityAt: existing.lastActivityAt || null,
+
+    // Final evaluation support
+    criticalFail: !!existing.criticalFail,
+    finalEvaluation: !!existing.finalEvaluation,
+    evaluationType: String(existing.evaluationType || "").trim(),
+    evaluationNotes: String(existing.evaluationNotes || "").trim()
   };
 }
 
@@ -141,6 +147,9 @@ function lessonStatus(lessonId, student = getCurrentStudent()) {
   }
   if (progress.quizPassed) {
     return { locked: false, className: "passed", label: `Passed • ${progress.quizScore || PASSING_SCORE}%` };
+  }
+  if (progress.criticalFail) {
+    return { locked: false, className: "retake", label: "Critical Fail" };
   }
   if (progress.scenarioCompleted) {
     return { locked: false, className: "in-progress", label: "Ready for Quiz" };
@@ -307,20 +316,63 @@ function getAttemptCount(lessonId, student = getCurrentStudent()) {
   return Number(getLessonProgress(lessonId, student).attempts || 0);
 }
 
-async function recordQuizResult(lessonId, score, details, totalQuizTimeSeconds = 0) {
+async function recordQuizResult(lessonId, score, details, totalQuizTimeSeconds = 0, options = {}) {
   const current = getLessonProgress(lessonId);
   const attempts = Number(current.attempts || 0) + 1;
+  const criticalFail = !!options.criticalFail;
+  const passed = !criticalFail && Number(score || 0) >= PASSING_SCORE;
+
   clearActiveQuiz(lessonId);
 
   return updateStudentProgress(lessonId, {
     attempts,
     quizScore: Number(score || 0),
-    quizPassed: Number(score || 0) >= PASSING_SCORE,
+    quizPassed: passed,
     quizDetails: Array.isArray(details) ? details : [],
     completedAt: new Date().toISOString(),
     totalQuizTimeSeconds: Number(current.totalQuizTimeSeconds || 0) + Number(totalQuizTimeSeconds || 0),
-    lastLessonVisited: Number(lessonId)
+    lastLessonVisited: Number(lessonId),
+
+    // Final evaluation support
+    criticalFail,
+    finalEvaluation: !!options.finalEvaluation,
+    evaluationType: String(options.evaluationType || ""),
+    evaluationNotes: String(options.evaluationNotes || "")
   });
+}
+
+async function setLessonQuizPassed(lessonId, score = PASSING_SCORE, details = [], totalQuizTimeSeconds = 0, options = {}) {
+  clearActiveQuiz(lessonId);
+
+  return updateStudentProgress(lessonId, {
+    attempts: Number(getLessonProgress(lessonId).attempts || 0) + 1,
+    quizScore: Number(score || PASSING_SCORE),
+    quizPassed: true,
+    quizDetails: Array.isArray(details) ? details : [],
+    completedAt: new Date().toISOString(),
+    totalQuizTimeSeconds: Number(getLessonProgress(lessonId).totalQuizTimeSeconds || 0) + Number(totalQuizTimeSeconds || 0),
+    lastLessonVisited: Number(lessonId),
+
+    criticalFail: false,
+    finalEvaluation: !!options.finalEvaluation,
+    evaluationType: String(options.evaluationType || ""),
+    evaluationNotes: String(options.evaluationNotes || "")
+  });
+}
+
+async function recordFinalEvaluation(lessonId, score, details = [], totalQuizTimeSeconds = 0, options = {}) {
+  return recordQuizResult(
+    lessonId,
+    score,
+    details,
+    totalQuizTimeSeconds,
+    {
+      finalEvaluation: true,
+      evaluationType: String(options.evaluationType || "final"),
+      evaluationNotes: String(options.evaluationNotes || ""),
+      criticalFail: !!options.criticalFail
+    }
+  );
 }
 
 function getActiveQuizStore() {
@@ -460,6 +512,8 @@ const api = {
   setLessonContentViewed,
   setScenarioCompleted,
   recordQuizResult,
+  setLessonQuizPassed,
+  recordFinalEvaluation,
   getAttemptCount,
   getLessonProgress,
   lessonStatus,
@@ -494,6 +548,8 @@ export {
   setLessonContentViewed,
   setScenarioCompleted,
   recordQuizResult,
+  setLessonQuizPassed,
+  recordFinalEvaluation,
   getAttemptCount,
   getLessonProgress,
   lessonStatus,
@@ -510,4 +566,3 @@ export {
   clearActiveQuiz,
   submitPurchaseRequest
 };
-
