@@ -823,3 +823,54 @@ dialog::backdrop{background:rgba(10,18,38,.46)}
 .lesson-block h3 {
   margin-bottom: 8px;
 }
+/* =========================
+   FINAL EVALUATION (CH 8)
+========================= */
+
+.final-gate {
+  border: 2px solid var(--bsa-gold);
+  background: linear-gradient(180deg, #fffdf8, #f7f9fc);
+  position: relative;
+}
+
+.final-gate::before {
+  content: "FINAL EVALUATION";
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: var(--bsa-gold);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.final-callout {
+  background: #fff3cd;
+  border-left: 5px solid var(--bsa-gold);
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.final-callout strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.final-warning {
+  color: #b02a2a;
+  font-weight: 600;
+}
+
+.final-button {
+  background: var(--bsa-gold);
+  color: #000;
+  font-weight: 700;
+}
+
+.final-button:hover {
+  filter: brightness(0.95);
+}
