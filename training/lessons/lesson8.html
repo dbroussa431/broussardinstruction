@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 8 - Capstone</title>
-<link rel="stylesheet" href="../styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 8 - Capstone</title>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
@@ -13,13 +13,14 @@
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-mark">
-        <img src="../images/bsa-logo.png">
+        <img src="../images/bsa-logo.png" alt="BSA logo">
       </div>
       <div>
         <h1>BSA Training Portal</h1>
         <p>Final Capstone Evaluation</p>
       </div>
     </div>
+
     <div class="top-actions">
       <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
     </div>
@@ -28,180 +29,111 @@
 
 <main class="container">
 
-<section class="panel content-card">
-  <h2>Final Readiness Evaluation</h2>
+  <section class="panel">
+    <h2>Final Readiness Evaluation</h2>
 
-  <div class="callout">
-    <strong>This is your final validation.</strong>
-    <ul>
-      <li>Minimum passing score: 80%</li>
-      <li>Some answers can automatically fail you</li>
-      <li>Your time and results are tracked</li>
-    </ul>
-  </div>
-</section>
+    <div class="callout">
+      <strong>This is your final validation.</strong>
+      <ul>
+        <li>Minimum passing score: 80%</li>
+        <li>Some answers can automatically fail you</li>
+        <li>Your time and results are tracked</li>
+      </ul>
+    </div>
+  </section>
 
-<section class="panel content-card">
+  <section id="lesson-content" class="panel"></section>
 
-  <h3 id="scenarioTitle"></h3>
-
-  <div class="callout">
-    <ul id="gistList"></ul>
-  </div>
-
-  <div class="info-card">
-    <p id="scenarioText"></p>
-  </div>
-
-  <div class="question-card">
-    <h4 id="questionText"></h4>
-    <div id="options"></div>
-  </div>
+  <section id="scenario-container" class="panel"></section>
 
   <div class="lesson-actions">
-    <button class="btn btn-outline" id="prevBtn">Previous</button>
-    <button class="btn btn-blue" id="nextBtn">Next</button>
-    <button class="btn btn-gold hidden" id="submitBtn">Submit</button>
+    <a class="btn btn-outline" href="../dashboard.html">Previous</a>
+    <a class="btn btn-blue" href="../dashboard.html">Next</a>
   </div>
-
-</section>
-
-<section class="panel content-card hidden" id="results">
-  <h2 id="resultTitle"></h2>
-  <h3 id="resultScore"></h3>
-
-  <div class="callout" id="resultMessage"></div>
-
-  <a href="../dashboard.html" class="btn btn-light">Return to Dashboard</a>
-</section>
 
 </main>
 
+<!-- IMPORTANT: LOAD DATA FIRST -->
 <script src="../data.js"></script>
 
-<script type="module">
-import {
-  requireLogin,
-  getCurrentStudent,
-  refreshCurrentStudentFromFirestore,
-  updateStudentProgress
-} from "../app.js";
+<script>
+function renderLesson() {
 
-requireLogin();
-
-let student = await refreshCurrentStudentFromFirestore() || getCurrentStudent();
-
-const lessonId = 8;
-const scenarios = window.LESSON8_CAPSTONE.scenarios;
-const passScore = window.LESSON8_CAPSTONE.passScore;
-
-let index = 0;
-let answers = {};
-let startTime = Date.now();
-
-const el = id => document.getElementById(id);
-
-function render() {
-  const s = scenarios[index];
-
-  el("scenarioTitle").textContent = s.title;
-  el("scenarioText").textContent = s.scenario;
-  el("questionText").textContent = s.question;
-
-  el("gistList").innerHTML = s.gist.map(g => `<li>${g}</li>`).join("");
-
-  // 🔥 CORRECT OPTIONS STRUCTURE
-  const optionsWrap = document.createElement("div");
-  optionsWrap.className = "options";
-
-  s.options.forEach((o, i) => {
-    const div = document.createElement("div");
-    div.className = "option";
-    div.textContent = o.text;
-
-    if (answers[s.id] === i) {
-      div.classList.add("selected");
-    }
-
-    div.onclick = () => {
-      answers[s.id] = i;
-      render();
-    };
-
-    optionsWrap.appendChild(div);
-  });
-
-  el("options").innerHTML = "";
-  el("options").appendChild(optionsWrap);
-
-  el("prevBtn").disabled = index === 0;
-  el("nextBtn").classList.toggle("hidden", index === scenarios.length - 1);
-  el("submitBtn").classList.toggle("hidden", index !== scenarios.length - 1);
-}
-
-function calculate() {
-  let score = 0;
-  let autoFail = false;
-
-  scenarios.forEach(s => {
-    const selected = s.options[answers[s.id]];
-    if (!selected) return;
-
-    score += selected.weight * (s.weight / 100);
-
-    if (s.critical && selected.autoFail) {
-      autoFail = true;
-    }
-  });
-
-  return {
-    score: Math.round(score),
-    passed: !autoFail && score >= passScore,
-    autoFail
-  };
-}
-
-async function submit() {
-  const time = Math.floor((Date.now() - startTime) / 1000);
-  const result = calculate();
-
-  await updateStudentProgress(lessonId, {
-    contentViewed: true,
-    scenarioCompleted: true,
-    quizPassed: result.passed,
-    quizScore: result.score,
-    attempts: (student.progress?.[8]?.attempts || 0) + 1,
-    totalQuizTimeSeconds: time,
-    completedAt: new Date().toISOString(),
-    capstoneCompleted: true,
-    instructorReviewRequired: result.autoFail
-  });
-
-  el("results").classList.remove("hidden");
-
-  el("resultTitle").textContent = result.passed ? "PASSED" : "REVIEW REQUIRED";
-  el("resultScore").textContent = result.score + "%";
-
-  el("resultMessage").textContent = result.passed
-    ? "You passed the final evaluation."
-    : "You must review and retake the capstone.";
-}
-
-el("nextBtn").onclick = () => {
-  if (answers[scenarios[index].id] !== undefined) {
-    index++;
-    render();
+  if (!window.LESSONS) {
+    console.error("LESSONS not loaded");
+    return;
   }
-};
 
-el("prevBtn").onclick = () => {
-  index--;
-  render();
-};
+  const lesson = window.LESSONS.find(l => Number(l.id) === 8);
 
-el("submitBtn").onclick = submit;
+  if (!lesson) {
+    console.error("Lesson 8 not found");
+    return;
+  }
 
-render();
+  // =========================
+  // RENDER GIST / SECTIONS
+  // =========================
+
+  const contentEl = document.getElementById("lesson-content");
+
+  contentEl.innerHTML = `
+    <div class="pill">SELF-CONTAINED LESSON GIST</div>
+    <h2>${lesson.title}</h2>
+    <p>${lesson.summary || ""}</p>
+  `;
+
+  if (Array.isArray(lesson.sections)) {
+    lesson.sections.forEach(sec => {
+      const block = document.createElement("div");
+      block.className = "lesson-block";
+
+      block.innerHTML = `
+        <h3>${sec.heading}</h3>
+        <ul>
+          ${sec.body.map(b => `<li>${b}</li>`).join("")}
+        </ul>
+      `;
+
+      contentEl.appendChild(block);
+    });
+  }
+
+  // =========================
+  // RENDER SCENARIOS (SAFE)
+  // =========================
+
+  const scenarioEl = document.getElementById("scenario-container");
+
+  if (!Array.isArray(lesson.scenarios)) {
+    console.warn("No scenarios found for lesson 8");
+    return;
+  }
+
+  lesson.scenarios.forEach((sc, index) => {
+    const div = document.createElement("div");
+    div.className = "scenario";
+
+    div.innerHTML = `
+      <p><strong>Scenario ${index + 1}:</strong> ${sc.prompt}</p>
+      <div class="options">
+        ${sc.choices.map((c, i) => `
+          <label>
+            <input type="radio" name="q${index}" value="${i}">
+            ${c}
+          </label>
+        `).join("")}
+      </div>
+    `;
+
+    scenarioEl.appendChild(div);
+  });
+}
+
+// WAIT UNTIL PAGE + DATA LOAD
+window.addEventListener("DOMContentLoaded", () => {
+  setTimeout(renderLesson, 50);
+});
 </script>
 
 </body>
