@@ -31,23 +31,25 @@
     <div class="panel hero-main">
       <span class="eyebrow">Online prerequisite completed in stages</span>
       <h2 id="welcomeLine"></h2>
+
       <p>
-        Complete each lesson in smaller chunks, pass each quiz with at least 80%, 
-        complete each scenario review, and then schedule your in-person live portion.
+        Complete each lesson, pass each quiz (80%+), complete scenarios,
+        and pass the <strong>Final Evaluation</strong> before live training.
       </p>
 
       <div class="meta-row">
-        <span class="pill">8 Lessons</span>
+        <span class="pill">10 Lessons</span>
         <span class="pill">20-Question Quizzes</span>
         <span class="pill">2 Scenarios Per Lesson</span>
-        <span class="pill">Live Range Required</span>
+        <span class="pill">Final Evaluation Required</span>
       </div>
     </div>
 
     <div class="panel hero-side">
+
       <div class="stat-card">
         <small>Overall Progress</small>
-        <strong id="progressLabel">0 / 8 Lessons Passed</strong>
+        <strong id="progressLabel">0 / 10 Lessons Passed</strong>
         <div class="progress-wrap">
           <div class="progress-bar" id="progressBar"></div>
         </div>
@@ -62,22 +64,40 @@
         <small>Account</small>
         <strong id="studentEmailLabel">—</strong>
       </div>
+
     </div>
   </section>
 
   <div class="section-head">
     <h3>Lesson Dashboard</h3>
-    <p>Lesson summaries, scenarios, and quiz tracking.</p>
+    <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
   </div>
 
   <section class="lesson-grid" id="lessonGrid"></section>
 
   <section class="next-step panel" id="live-range">
     <h3>Final Step: Live Review & Range Qualification</h3>
+
     <p>
-      After all lessons, quizzes, and scenarios are completed, your status becomes 
-      <strong>Online Prerequisite Completed</strong>. Then schedule your live training.
+      You must complete all lessons, including:
     </p>
+
+    <ul>
+      <li>Lessons 1–7 (Core Training)</li>
+      <li>Lesson 8 (Louisiana Law)</li>
+      <li>Lesson 9 (Mental Readiness)</li>
+      <li><strong>Lesson 10 (Final Evaluation)</strong></li>
+    </ul>
+
+    <p>
+      ⚠️ <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
+    </p>
+
+    <p>
+      Once complete, your status becomes:
+      <strong>Online Prerequisite Completed – Cleared for Live Range</strong>
+    </p>
+
   </section>
 
 </main>
@@ -85,6 +105,7 @@
 <script src="data.js"></script>
 
 <script type="module">
+
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -101,21 +122,27 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
-// Header
+// Header Info
 document.getElementById("welcomeLine").textContent =
   `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+
+// Progress
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
+
 document.getElementById("progressBar").style.width = `${prog.percent}%`;
 
+// Status
+const complete = allLessonsComplete(student);
+
 document.getElementById("studentStatus").textContent =
-  allLessonsComplete(student)
-    ? "Online Prerequisite Completed"
+  complete
+    ? "Online Prerequisite Completed – Cleared for Live Range"
     : "In Progress";
 
-// Build lessons
+// Build Lesson Cards
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
@@ -123,13 +150,17 @@ window.LESSONS.forEach((lesson) => {
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
 
+  const isFinal = lesson.id === 10;
+
   const card = document.createElement("article");
   card.className = "panel lesson-card";
 
   card.innerHTML = `
     <div class="lesson-top">
       <div style="display:flex;gap:12px;">
-        <div class="lesson-num">${lesson.id}</div>
+        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
+          ${isFinal ? '★' : lesson.id}
+        </div>
         <div>
           <h4>${lesson.title}</h4>
           <p>${lesson.summary}</p>
@@ -142,6 +173,7 @@ window.LESSONS.forEach((lesson) => {
       <span class="chip">Time: ${lesson.estTime}</span>
       <span class="chip">Quiz</span>
       <span class="chip">Scenarios</span>
+      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
       ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
     </div>
 
@@ -150,26 +182,30 @@ window.LESSONS.forEach((lesson) => {
       ${
         status.locked
           ? `<span class="btn btn-blue btn-disabled">Locked</span>`
-          : `<a class="btn btn-blue" href="./lesson.html?lesson=${lesson.id}">
+          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
                ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
              </a>`
       }
 
       ${
         !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="./scenario.html?lesson=${lesson.id}">Open Scenarios</a>`
+          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
           : ""
       }
 
       ${
         !status.locked && progress.scenarioCompleted
-          ? `<a class="btn btn-outline" href="./quiz.html?lesson=${lesson.id}">Take Quiz</a>`
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
+               ${isFinal ? "Start Evaluation" : "Take Quiz"}
+             </a>`
           : ""
       }
 
       ${
         progress.quizPassed
-          ? `<a class="btn btn-outline" href="./quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>`
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
+               Review Answers
+             </a>`
           : ""
       }
 
@@ -184,6 +220,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   logout();
   window.location.href = "login.html";
 });
+
 </script>
 
 </body>
