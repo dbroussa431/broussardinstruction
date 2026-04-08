@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BSA Admin Login</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main class="container" style="max-width:500px; margin-top:100px;">
+
+<div class="panel content-card">
+  <h2>Admin Login</h2>
+
+  <div class="field">
+    <label>Username</label>
+    <input id="adminUser">
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input id="adminPass" type="password">
+  </div>
+
+  <button class="btn btn-blue" id="loginBtn">Login</button>
+
+  <div id="loginError" class="notice warn hidden"></div>
+</div>
+
+</main>
+
+<script>
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "BSA-2274";
+
+document.getElementById("loginBtn").onclick = () => {
+  const u = document.getElementById("adminUser").value;
+  const p = document.getElementById("adminPass").value;
+
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    localStorage.setItem("bsa_admin_auth", "true");
+    window.location.href = "admin.html";
+  } else {
+    const err = document.getElementById("loginError");
+    err.textContent = "Invalid credentials";
+    err.classList.remove("hidden");
+  }
+};
+</script>
+
+</body>
+</html>
