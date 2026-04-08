@@ -1,114 +1,3 @@
-// ===== ORIGINAL IMPORTS (UNCHANGED) =====
-import { db } from "./firebase-config.js?v=5";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  doc,
-  updateDoc,
-  deleteDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-// ===== EXISTING VARIABLES (UNCHANGED) =====
-let studentRows = [];
-let editingId = null;
-
-const body = document.getElementById("studentTableBody");
-
-// ===== 🔥 NEW: FINAL EVAL HELPERS =====
-function getFinalEval(student) {
-  const final = student.progress?.["10"];
-
-  if (!final) return { label: "—", class: "" };
-
-  if (final.criticalFail) return { label: "CRITICAL FAIL", class: "bad" };
-
-  if (final.quizScore >= 80) return { label: "PASS", class: "ok" };
-
-  return { label: "FAIL", class: "warn" };
-}
-
-// ===== 🔥 NEW: STATS TRACKING =====
-function applyStats(rows) {
-
-  const totalStudents = rows.length;
-  const pending = rows.filter((s) => normalizePaymentStatus(s) === "pending").length;
-  const paid = rows.filter((s) => isPaidStudent(s)).length;
-  const revenue = rows.reduce((sum, s) => sum + revenueForStudent(s), 0);
-
-  let passedFinal = 0;
-  let criticalFails = 0;
-
-  rows.forEach(s => {
-    const f = s.progress?.["10"];
-    if (f?.criticalFail) criticalFails++;
-    if (f?.quizScore >= 80 && !f?.criticalFail) passedFinal++;
-  });
-
-  document.getElementById("statTotalStudents").textContent = totalStudents;
-  document.getElementById("statPendingPayments").textContent = pending;
-  document.getElementById("statPaidStudents").textContent = paid;
-  document.getElementById("statRevenue").textContent =
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue);
-
-  // 🔥 NEW STATS (SAFE IF ELEMENT EXISTS)
-  if (document.getElementById("statPassedFinal"))
-    document.getElementById("statPassedFinal").textContent = passedFinal;
-
-  if (document.getElementById("statCritical"))
-    document.getElementById("statCritical").textContent = criticalFails;
-}
-
-// ===== 🔥 UPDATED TABLE RENDER =====
-function renderRows() {
-
-  const rows = filteredRows();
-  applyStats(studentRows);
-
-  body.innerHTML = rows.length ? rows.map((student) => {
-
-    const payStatus = normalizePaymentStatus(student);
-    const final = getFinalEval(student);
-
-    return `
-      <tr>
-        <td>${escapeHtml(student.name || "—")}</td>
-        <td class="cell-wrap">${escapeHtml(student.email || "—")}</td>
-        <td>${escapeHtml(student.course || "Louisiana Concealed Carry")}</td>
-        <td>${escapeHtml(student.price || 0)}</td>
-        <td>${escapeHtml(student.paymentMethod || "—")}</td>
-        <td>${paymentBadge(payStatus)}</td>
-        <td>${portalBadge(student.status || "active")}</td>
-        <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
-        <td>${escapeHtml(currentLessonLabel(student))}</td>
-        <td>${escapeHtml(stageLabel(student))}</td>
-        <td>${totalAttempts(student)}</td>
-        <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
-        <td>${escapeHtml(progressLabel(student))}</td>
-        <td>${escapeHtml(formatFirestoreDate(lastActivity(student)))}</td>
-
-        <!-- 🔥 NEW COLUMN -->
-        <td class="${final.class}">
-          ${final.label}
-        </td>
-
-        <td>
-          <div class="mini-actions">
-            <button class="btn btn-outline" type="button" data-copy="${escapeHtml(student.accessCode || "")}">Copy</button>
-            <button class="btn btn-outline" type="button" data-edit="${student.id}">Edit</button>
-            <button class="btn btn-outline" type="button" data-regen="${student.id}">Regen</button>
-            <button class="btn btn-outline" type="button" data-toggle="${student.id}">
-              ${String(student.status || "active") === "active" ? "Lock" : "Unlock"}
-            </button>
-            <button class="btn btn-danger" type="button" data-delete="${student.id}">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join("") : `<tr><td colspan="16">No student records found.</td></tr>`;
-}
-
 import { db } from "./firebase-config.js?v=4";
 import {
   collection,
@@ -198,17 +87,73 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function getTotalLessons() {
+  return (window.LESSONS || []).length || 10;
+}
+
+function getFinalEvaluationProgress(student) {
+  const finalLessonId = 10;
+  const finalProgress = student?.progress?.[finalLessonId] || student?.progress?.["10"] || null;
+
+  if (!finalProgress) {
+    return {
+      exists: false,
+      score: 0,
+      quizPassed: false,
+      criticalFail: false,
+      label: "—",
+      className: ""
+    };
+  }
+
+  const score = Number(finalProgress.quizScore || 0);
+  const quizPassed = !!finalProgress.quizPassed;
+  const criticalFail = !!finalProgress.criticalFail;
+
+  if (criticalFail) {
+    return {
+      exists: true,
+      score,
+      quizPassed,
+      criticalFail,
+      label: "CRITICAL FAIL",
+      className: "locked"
+    };
+  }
+
+  if (quizPassed || score >= 80) {
+    return {
+      exists: true,
+      score,
+      quizPassed: true,
+      criticalFail: false,
+      label: `PASS ${score}%`,
+      className: "active"
+    };
+  }
+
+  return {
+    exists: true,
+    score,
+    quizPassed: false,
+    criticalFail: false,
+    label: `FAIL ${score}%`,
+    className: "pending"
+  };
+}
+
 function stageLabel(student) {
   const progress = student.progress || {};
   const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  const total = Array.isArray(window.LESSONS) ? window.LESSONS.length : 8;
+  const total = getTotalLessons();
+  const finalEval = getFinalEvaluationProgress(student);
 
+  if (finalEval.criticalFail) return "Critical Fail";
   if (completed >= total) return "Completed";
-
-  const values = Object.values(progress);
-  if (values.some((p) => p?.quizPassed)) return "In Progress";
-  if (values.some((p) => p?.scenarioCompleted)) return "Ready for Quiz";
-  if (values.some((p) => p?.contentViewed)) return "Scenario Review";
+  if (finalEval.exists && !finalEval.quizPassed) return "Final Evaluation Retake";
+  if (Object.values(progress).some((p) => p?.quizPassed)) return "In Progress";
+  if (Object.values(progress).some((p) => p?.scenarioCompleted)) return "Ready for Quiz";
+  if (Object.values(progress).some((p) => p?.contentViewed)) return "Scenario Review";
 
   return "Not Started";
 }
@@ -217,15 +162,19 @@ function currentLessonLabel(student) {
   const progress = student.progress || {};
   const visited = Math.max(0, ...Object.values(progress).map((p) => Number(p?.lastLessonVisited || 0)));
   const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  const total = Array.isArray(window.LESSONS) ? window.LESSONS.length : 8;
+  const total = getTotalLessons();
   const current = visited || (completed + 1);
   return current > total ? "Complete" : `Lesson ${current}`;
 }
 
 function progressLabel(student) {
-  const total = (window.LESSONS || []).length || 8;
+  const total = getTotalLessons();
   const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  return `${completed} / ${total}`;
+  const finalEval = getFinalEvaluationProgress(student);
+
+  return finalEval.exists
+    ? `${completed} / ${total} • ${finalEval.label}`
+    : `${completed} / ${total}`;
 }
 
 function totalAttempts(student) {
@@ -265,6 +214,12 @@ function paymentBadge(status) {
 function portalBadge(status) {
   const safe = String(status || "active").toLowerCase();
   return `<span class="status-pill ${escapeHtml(safe)}">${escapeHtml(safe)}</span>`;
+}
+
+function finalEvalBadge(student) {
+  const finalEval = getFinalEvaluationProgress(student);
+  if (!finalEval.exists) return `<span class="status-pill">—</span>`;
+  return `<span class="status-pill ${escapeHtml(finalEval.className)}">${escapeHtml(finalEval.label)}</span>`;
 }
 
 function showModalMessage(message, kind = "bad") {
@@ -335,7 +290,11 @@ function applyStats(rows) {
   document.getElementById("statPendingPayments").textContent = pending;
   document.getElementById("statPaidStudents").textContent = paid;
   document.getElementById("statRevenue").textContent =
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue);
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0
+    }).format(revenue);
 }
 
 function filteredRows() {
@@ -369,7 +328,9 @@ function filteredRows() {
   }
 
   if (sortBy.value === "newest") {
-    rows.sort((a, b) => String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || "")));
+    rows.sort((a, b) =>
+      String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || ""))
+    );
   }
 
   return rows;
@@ -438,26 +399,43 @@ async function removeStudent(studentId) {
 function exportCsv() {
   const rows = filteredRows();
   const header = [
-    "Name","Email","Course","Price","Payment Method","Payment Status","Portal Status",
-    "Access Code","Current Lesson","Current Stage","Attempts","Total Quiz Time","Progress","Last Activity"
+    "Name",
+    "Email",
+    "Course",
+    "Price",
+    "Payment Method",
+    "Payment Status",
+    "Portal Status",
+    "Access Code",
+    "Current Lesson",
+    "Current Stage",
+    "Attempts",
+    "Total Quiz Time",
+    "Progress",
+    "Final Evaluation",
+    "Last Activity"
   ];
 
-  const lines = rows.map((s) => ([
-    s.name || "",
-    s.email || "",
-    s.course || "",
-    s.price || "",
-    s.paymentMethod || "",
-    normalizePaymentStatus(s),
-    s.status || "",
-    s.accessCode || "",
-    currentLessonLabel(s),
-    stageLabel(s),
-    totalAttempts(s),
-    formatSeconds(totalQuizTime(s)),
-    progressLabel(s),
-    formatFirestoreDate(lastActivity(s))
-  ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")));
+  const lines = rows.map((s) => {
+    const finalEval = getFinalEvaluationProgress(s);
+    return ([
+      s.name || "",
+      s.email || "",
+      s.course || "",
+      s.price || "",
+      s.paymentMethod || "",
+      normalizePaymentStatus(s),
+      s.status || "",
+      s.accessCode || "",
+      currentLessonLabel(s),
+      stageLabel(s),
+      totalAttempts(s),
+      formatSeconds(totalQuizTime(s)),
+      progressLabel(s),
+      finalEval.label,
+      formatFirestoreDate(lastActivity(s))
+    ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","));
+  });
 
   const csv = [header.join(","), ...lines].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -489,7 +467,10 @@ function renderRows() {
         <td>${portalBadge(student.status || "active")}</td>
         <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
         <td>${escapeHtml(currentLessonLabel(student))}</td>
-        <td>${escapeHtml(stageLabel(student))}</td>
+        <td>
+          ${escapeHtml(stageLabel(student))}
+          <div style="margin-top:6px;">${finalEvalBadge(student)}</div>
+        </td>
         <td>${totalAttempts(student)}</td>
         <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
         <td>${escapeHtml(progressLabel(student))}</td>
