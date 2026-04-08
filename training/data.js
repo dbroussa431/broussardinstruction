@@ -1,4 +1,3 @@
-
 window.LESSONS = [
   {
     id: 1,
@@ -521,6 +520,15 @@ window.LESSONS = [
     ]
   }
 ];
+
+/* Compatibility layer for pages that expect window.LESSON_CONTENT */
+window.LESSON_CONTENT = {};
+window.LESSONS.forEach((lesson) => {
+  window.LESSON_CONTENT[lesson.id] = {
+    title: lesson.title,
+    sections: lesson.sections || []
+  };
+});
 
 window.QUIZ_BANK = {
   1: [
