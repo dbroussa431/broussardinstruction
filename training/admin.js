@@ -1,4 +1,4 @@
-import { db } from "./firebase-config.js?v=4";
+import { db } from "./firebase-config.js?v=5";
 import {
   collection,
   getDocs,
@@ -16,6 +16,7 @@ const body = document.getElementById("studentTableBody");
 const addStudentBtn = document.getElementById("addStudentBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const exportBtn = document.getElementById("exportBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const modal = document.getElementById("studentModal");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const cancelModalBtn = document.getElementById("cancelModalBtn");
@@ -92,8 +93,7 @@ function getTotalLessons() {
 }
 
 function getFinalEvaluationProgress(student) {
-  const finalLessonId = 10;
-  const finalProgress = student?.progress?.[finalLessonId] || student?.progress?.["10"] || null;
+  const finalProgress = student?.progress?.[10] || student?.progress?.["10"] || null;
 
   if (!finalProgress) {
     return {
@@ -117,7 +117,7 @@ function getFinalEvaluationProgress(student) {
       quizPassed,
       criticalFail,
       label: "CRITICAL FAIL",
-      className: "locked"
+      className: "critical"
     };
   }
 
@@ -128,7 +128,7 @@ function getFinalEvaluationProgress(student) {
       quizPassed: true,
       criticalFail: false,
       label: `PASS ${score}%`,
-      className: "active"
+      className: "passed"
     };
   }
 
@@ -138,7 +138,7 @@ function getFinalEvaluationProgress(student) {
     quizPassed: false,
     criticalFail: false,
     label: `FAIL ${score}%`,
-    className: "pending"
+    className: "failed"
   };
 }
 
@@ -151,9 +151,11 @@ function stageLabel(student) {
   if (finalEval.criticalFail) return "Critical Fail";
   if (completed >= total) return "Completed";
   if (finalEval.exists && !finalEval.quizPassed) return "Final Evaluation Retake";
-  if (Object.values(progress).some((p) => p?.quizPassed)) return "In Progress";
-  if (Object.values(progress).some((p) => p?.scenarioCompleted)) return "Ready for Quiz";
-  if (Object.values(progress).some((p) => p?.contentViewed)) return "Scenario Review";
+
+  const values = Object.values(progress);
+  if (values.some((p) => p?.quizPassed)) return "In Progress";
+  if (values.some((p) => p?.scenarioCompleted)) return "Ready for Quiz";
+  if (values.some((p) => p?.contentViewed)) return "Scenario Review";
 
   return "Not Started";
 }
@@ -170,11 +172,7 @@ function currentLessonLabel(student) {
 function progressLabel(student) {
   const total = getTotalLessons();
   const completed = Array.isArray(student.completedLessons) ? student.completedLessons.length : 0;
-  const finalEval = getFinalEvaluationProgress(student);
-
-  return finalEval.exists
-    ? `${completed} / ${total} • ${finalEval.label}`
-    : `${completed} / ${total}`;
+  return `${completed} / ${total}`;
 }
 
 function totalAttempts(student) {
@@ -286,15 +284,26 @@ function applyStats(rows) {
   const paid = rows.filter((s) => isPaidStudent(s)).length;
   const revenue = rows.reduce((sum, s) => sum + revenueForStudent(s), 0);
 
+  let passedFinal = 0;
+  let criticalFails = 0;
+
+  rows.forEach((s) => {
+    const finalEval = getFinalEvaluationProgress(s);
+    if (finalEval.criticalFail) criticalFails += 1;
+    if (finalEval.exists && finalEval.quizPassed && !finalEval.criticalFail) passedFinal += 1;
+  });
+
   document.getElementById("statTotalStudents").textContent = totalStudents;
   document.getElementById("statPendingPayments").textContent = pending;
   document.getElementById("statPaidStudents").textContent = paid;
   document.getElementById("statRevenue").textContent =
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0
-    }).format(revenue);
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue);
+
+  const statPassedFinal = document.getElementById("statPassedFinal");
+  const statCritical = document.getElementById("statCritical");
+
+  if (statPassedFinal) statPassedFinal.textContent = passedFinal;
+  if (statCritical) statCritical.textContent = criticalFails;
 }
 
 function filteredRows() {
@@ -328,9 +337,7 @@ function filteredRows() {
   }
 
   if (sortBy.value === "newest") {
-    rows.sort((a, b) =>
-      String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || ""))
-    );
+    rows.sort((a, b) => String(b.createdAt || b.updatedAt || "").localeCompare(String(a.createdAt || a.updatedAt || "")));
   }
 
   return rows;
@@ -467,13 +474,11 @@ function renderRows() {
         <td>${portalBadge(student.status || "active")}</td>
         <td class="cell-wrap">${escapeHtml(student.accessCode || "—")}</td>
         <td>${escapeHtml(currentLessonLabel(student))}</td>
-        <td>
-          ${escapeHtml(stageLabel(student))}
-          <div style="margin-top:6px;">${finalEvalBadge(student)}</div>
-        </td>
+        <td>${escapeHtml(stageLabel(student))}</td>
         <td>${totalAttempts(student)}</td>
         <td>${escapeHtml(formatSeconds(totalQuizTime(student)))}</td>
         <td>${escapeHtml(progressLabel(student))}</td>
+        <td>${finalEvalBadge(student)}</td>
         <td class="cell-wrap">${escapeHtml(formatFirestoreDate(lastActivity(student)))}</td>
         <td>
           <div class="mini-actions">
@@ -488,11 +493,11 @@ function renderRows() {
         </td>
       </tr>
     `;
-  }).join("") : `<tr><td colspan="15">No student records found.</td></tr>`;
+  }).join("") : `<tr><td colspan="16">No student records found.</td></tr>`;
 }
 
 async function loadAdminData() {
-  body.innerHTML = `<tr><td colspan="15">Loading student records...</td></tr>`;
+  body.innerHTML = `<tr><td colspan="16">Loading student records...</td></tr>`;
 
   try {
     const snap = await getDocs(collection(db, "portalStudents"));
@@ -521,7 +526,7 @@ async function loadAdminData() {
     renderRows();
   } catch (err) {
     console.error("ADMIN LOAD ERROR:", err);
-    body.innerHTML = `<tr><td colspan="15">Error loading student records.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="16">Error loading student records.</td></tr>`;
   }
 }
 
@@ -578,6 +583,13 @@ async function saveStudent(event) {
     console.error("Save student failed:", err);
     showModalMessage("Could not save student record.", "bad");
   }
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("bsa_admin_auth");
+    window.location.href = "admin-login.html";
+  });
 }
 
 addStudentBtn.addEventListener("click", openModalForAdd);
