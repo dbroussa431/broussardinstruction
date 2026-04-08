@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Final Evaluation</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSA Final Evaluation</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -27,38 +27,28 @@
 
 <main class="container">
 
-  <section class="panel content-card">
+<section class="panel content-card">
 
-    <span class="eyebrow">FINAL EVALUATION</span>
-    <h2 id="quizTitle"></h2>
+<span class="eyebrow">FINAL EVALUATION</span>
+<h2 id="quizTitle"></h2>
 
-    <p class="muted">
-      This evaluation measures legal understanding and responsible decision-making.
-    </p>
+<div class="callout warn">
+<strong>This is your final validation.</strong>
+<ul>
+<li>Minimum passing score: 80%</li>
+<li>Incorrect decisions may result in failure</li>
+<li>This determines readiness for live training</li>
+</ul>
+</div>
 
-    <div class="callout warn">
-      <strong>This is your final validation.</strong>
-      <ul>
-        <li>Minimum passing score: 80%</li>
-        <li>Incorrect decisions may result in failure</li>
-        <li>This determines readiness for live training</li>
-      </ul>
-    </div>
+<form id="quizForm"></form>
 
-    <form id="quizForm"></form>
+<div class="lesson-actions">
+<button class="btn btn-blue" type="submit" form="quizForm">Submit</button>
+<a class="btn btn-outline" id="backToLesson">Back to Lesson</a>
+</div>
 
-    <div class="lesson-actions">
-      <button class="btn btn-blue" type="submit" form="quizForm">
-        Submit Evaluation
-      </button>
-
-      <!-- ✅ FIXED BUTTON -->
-      <a class="btn btn-outline" id="backToLesson">
-        Back to Lesson
-      </a>
-    </div>
-
-  </section>
+</section>
 
 </main>
 
@@ -66,60 +56,30 @@
 
 <script type="module">
 
-import {
-  requireLogin,
-  refreshCurrentStudentFromFirestore,
-  getCurrentStudent,
-  setLessonQuizPassed
-} from "./app.js";
-
-requireLogin();
-
-let student;
-
-try {
-  student = await refreshCurrentStudentFromFirestore();
-} catch {
-  student = getCurrentStudent();
-}
-
-// ✅ ALWAYS GET LESSON ID SAFELY
 const params = new URLSearchParams(window.location.search);
 const lessonId = Number(params.get("lesson"));
 
-// 🔴 HARD FIX — PREVENT BROKEN LOAD
 if (!lessonId) {
-  alert("Lesson ID missing — redirecting.");
   window.location.href = "dashboard.html";
 }
 
-// ✅ FIXED BACK BUTTON (NO training/)
 document.getElementById("backToLesson").href =
   `lesson.html?lesson=${lessonId}`;
 
-// 🔵 LOAD LESSON
+// load lesson
 const lesson = window.LESSONS.find(l => l.id === lessonId);
 
-if (!lesson || !lesson.quiz) {
-  document.getElementById("quizForm").innerHTML =
-    "<p>Quiz not found.</p>";
-  throw new Error("Quiz missing from data.js");
-}
-
-// 🔵 SET TITLE
-document.getElementById("quizTitle").textContent =
-  `${lesson.id}. ${lesson.title} — Final Evaluation`;
-
 const form = document.getElementById("quizForm");
+document.getElementById("quizTitle").textContent =
+  `${lesson.id}. ${lesson.title}`;
 
-// 🔵 BUILD QUESTIONS
 lesson.quiz.forEach((q, i) => {
 
   const block = document.createElement("div");
   block.className = "quiz-block";
 
   block.innerHTML = `
-    <h4>${i + 1}. ${q.question}</h4>
+    <h4>${i+1}. ${q.question}</h4>
     ${q.options.map((opt, idx) => `
       <label>
         <input type="radio" name="q${i}" value="${idx}">
@@ -131,30 +91,25 @@ lesson.quiz.forEach((q, i) => {
   form.appendChild(block);
 });
 
-// 🔵 SUBMIT
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   let correct = 0;
 
   lesson.quiz.forEach((q, i) => {
-    const selected = form.querySelector(`input[name="q${i}"]:checked`);
-
-    if (selected && Number(selected.value) === q.answer) {
-      correct++;
-    }
+    const selected = form.querySelector(`input[name=q${i}]:checked`);
+    if (selected && Number(selected.value) === q.answer) correct++;
   });
 
-  const percent = Math.round((correct / lesson.quiz.length) * 100);
+  const score = Math.round((correct / lesson.quiz.length) * 100);
 
-  alert(`Score: ${percent}%`);
+  alert(`Score: ${score}%`);
 
-  if (percent >= 80) {
-    await setLessonQuizPassed(lessonId);
-    alert("PASSED");
+  if (score >= 80) {
+    alert("PASS");
     window.location.href = "dashboard.html";
   } else {
-    alert("FAILED — Review Lesson 8.");
+    alert("FAIL");
   }
 });
 
