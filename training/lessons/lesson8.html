@@ -1,390 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson 8 - Final Capstone Evaluation</title>
-  <link rel="stylesheet" href="../styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8 - Capstone</title>
+<link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark">
-          <img src="../images/bsa-logo.png" alt="BSA logo">
-        </div>
-        <div>
-          <h1>Broussard Shooting Academy</h1>
-          <p>Final Capstone Evaluation</p>
-        </div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="../images/bsa-logo.png">
       </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
-        <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
+      <div>
+        <h1>BSA Training Portal</h1>
+        <p>Final Capstone Evaluation</p>
       </div>
     </div>
-  </header>
+    <div class="top-actions">
+      <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
+    </div>
+  </div>
+</header>
 
-  <main class="container">
-    <section class="panel content-card">
-      <span class="eyebrow">Lesson 8</span>
-      <h2 id="lessonTitle">Final Readiness Capstone</h2>
-      <p id="lessonIntro">
-        This capstone measures judgment, restraint, decision-making, and lawful response under pressure.
-        Read each scenario carefully and choose the safest and most legally sound option.
-      </p>
+<main class="container">
 
-      <div class="callout">
-        <strong>Capstone Rules</strong>
-        <ul>
-          <li>This is a final decision-based evaluation, not a normal quiz.</li>
-          <li>You must score at least <strong id="passScoreLabel">80%</strong> to pass.</li>
-          <li>Certain clearly unlawful deadly-force answers can trigger an automatic fail.</li>
-          <li>Your time, score, attempt count, and results are saved to your student record.</li>
-        </ul>
-      </div>
+<section class="panel content-card">
+  <h2>Final Readiness Evaluation</h2>
 
-      <div class="info-card">
-        <p><strong>Evaluation Areas:</strong> Legal judgment, de-escalation, tactical decision-making, and responsible aftermath actions.</p>
-      </div>
-    </section>
+  <div class="callout">
+    <strong>This is your final validation.</strong>
+    <ul>
+      <li>Minimum passing score: 80%</li>
+      <li>Some answers can automatically fail you</li>
+      <li>Your time and results are tracked</li>
+    </ul>
+  </div>
+</section>
 
-    <section class="panel content-card">
-      <div class="section-head" style="margin-top:0;">
-        <div>
-          <h3 id="scenarioHeading">Scenario 1</h3>
-          <p id="scenarioDomainLine">Domain: —</p>
-        </div>
-        <div class="badge" id="scenarioCountBadge">1 / 1</div>
-      </div>
+<section class="panel content-card">
+  <h3 id="scenarioTitle"></h3>
 
-      <div class="callout">
-        <strong>Gist</strong>
-        <ul id="gistList"></ul>
-      </div>
+  <div class="callout">
+    <ul id="gistList"></ul>
+  </div>
 
-      <div class="info-card">
-        <p><strong>Scenario:</strong> <span id="scenarioText"></span></p>
-      </div>
+  <div class="info-card">
+    <p id="scenarioText"></p>
+  </div>
 
-      <div class="q-list">
-        <div class="question-card">
-          <h4 id="questionText"></h4>
-          <div class="options" id="optionsWrap"></div>
-        </div>
-      </div>
+  <div class="question-card">
+    <h4 id="questionText"></h4>
+    <div id="options"></div>
+  </div>
 
-      <div class="flex-row" style="margin-top:18px;">
-        <button class="btn btn-outline" id="prevBtn" type="button">Previous</button>
-        <button class="btn btn-blue" id="nextBtn" type="button">Next</button>
-        <button class="btn btn-gold hidden" id="submitBtn" type="button">Submit Capstone</button>
-      </div>
+  <div class="lesson-actions">
+    <button class="btn btn-outline" id="prevBtn">Previous</button>
+    <button class="btn btn-blue" id="nextBtn">Next</button>
+    <button class="btn btn-gold hidden" id="submitBtn">Submit</button>
+  </div>
 
-      <div class="notice info" id="selectionNotice" style="margin-top:18px;">
-        Select one answer to continue.
-      </div>
-    </section>
+</section>
 
-    <section class="panel content-card hidden" id="resultsPanel">
-      <h3>Capstone Results</h3>
-      <div class="results-grid">
-        <div class="result-card panel">
-          <small class="muted">Outcome</small>
-          <h2 id="resultStatus" style="margin:6px 0 0;">—</h2>
-        </div>
-        <div class="result-card panel">
-          <small class="muted">Score</small>
-          <h2 id="resultScore" style="margin:6px 0 0;">—</h2>
-        </div>
-      </div>
+<section class="panel content-card hidden" id="results">
+  <h2 id="resultTitle"></h2>
+  <h3 id="resultScore"></h3>
 
-      <div id="resultBanner" class="banner" style="margin-top:18px;"></div>
+  <div class="callout" id="resultMessage"></div>
 
-      <div class="info-card">
-        <p><strong>Automatic Fail Triggered:</strong> <span id="autoFailLabel">No</span></p>
-        <p><strong>Instructor Review Required:</strong> <span id="instructorReviewLabel">No</span></p>
-        <p><strong>Time Spent:</strong> <span id="timeSpentLabel">—</span></p>
-      </div>
+  <a href="../dashboard.html" class="btn btn-light">Return to Dashboard</a>
+</section>
 
-      <div class="section-head">
-        <div>
-          <h3>Scenario Review</h3>
-          <p>Your selections across the capstone.</p>
-        </div>
-      </div>
-      <div id="reviewList"></div>
+</main>
 
-      <div class="flex-row" style="margin-top:18px;">
-        <a class="btn btn-light" href="../dashboard.html">Return to Dashboard</a>
-      </div>
-    </section>
-  </main>
+<script src="../data.js"></script>
 
-  <script src="../data.js"></script>
-  <script type="module">
-    import {
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
-      getCurrentStudent,
-      getLessonProgress,
-      saveStudentProgress,
-      logout
-    } from "../app.js";
+<script type="module">
+import {
+  requireLogin,
+  getCurrentStudent,
+  refreshCurrentStudentFromFirestore,
+  updateStudentProgress
+} from "../app.js";
 
-    requireLogin();
-    let student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+requireLogin();
 
-    const lessonId = 8;
-    const lessonData = window.LESSON8_CAPSTONE;
-    const startTime = Date.now();
+let student = await refreshCurrentStudentFromFirestore() || getCurrentStudent();
 
-    const lessonTitle = document.getElementById("lessonTitle");
-    const lessonIntro = document.getElementById("lessonIntro");
-    const passScoreLabel = document.getElementById("passScoreLabel");
+const lessonId = 8;
+const scenarios = window.LESSON8_CAPSTONE.scenarios;
+const passScore = window.LESSON8_CAPSTONE.passScore;
 
-    const scenarioHeading = document.getElementById("scenarioHeading");
-    const scenarioDomainLine = document.getElementById("scenarioDomainLine");
-    const scenarioCountBadge = document.getElementById("scenarioCountBadge");
-    const gistList = document.getElementById("gistList");
-    const scenarioText = document.getElementById("scenarioText");
-    const questionText = document.getElementById("questionText");
-    const optionsWrap = document.getElementById("optionsWrap");
+let index = 0;
+let answers = {};
+let startTime = Date.now();
 
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const submitBtn = document.getElementById("submitBtn");
-    const selectionNotice = document.getElementById("selectionNotice");
+const el = id => document.getElementById(id);
 
-    const resultsPanel = document.getElementById("resultsPanel");
-    const resultStatus = document.getElementById("resultStatus");
-    const resultScore = document.getElementById("resultScore");
-    const resultBanner = document.getElementById("resultBanner");
-    const autoFailLabel = document.getElementById("autoFailLabel");
-    const instructorReviewLabel = document.getElementById("instructorReviewLabel");
-    const timeSpentLabel = document.getElementById("timeSpentLabel");
-    const reviewList = document.getElementById("reviewList");
+function render() {
+  const s = scenarios[index];
 
-    lessonTitle.textContent = lessonData.title;
-    lessonIntro.textContent = lessonData.intro;
-    passScoreLabel.textContent = `${lessonData.passScore}%`;
+  el("scenarioTitle").textContent = s.title;
+  el("scenarioText").textContent = s.scenario;
+  el("questionText").textContent = s.question;
 
-    let currentIndex = 0;
-    let answers = {};
-    let submitted = false;
+  el("gistList").innerHTML = s.gist.map(g => `<li>${g}</li>`).join("");
 
-    const previousProgress = getLessonProgress(lessonId, student);
-    const priorAttempts = Number(previousProgress?.attempts || 0);
+  el("options").innerHTML = "";
 
-    function renderScenario() {
-      const scenario = lessonData.scenarios[currentIndex];
+  s.options.forEach((o, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.textContent = o.text;
 
-      scenarioHeading.textContent = scenario.title;
-      scenarioDomainLine.textContent = `Domain: ${scenario.domainLabel}`;
-      scenarioCountBadge.textContent = `${currentIndex + 1} / ${lessonData.scenarios.length}`;
+    if (answers[s.id] === i) div.classList.add("selected");
 
-      gistList.innerHTML = "";
-      scenario.gist.forEach((item) => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        gistList.appendChild(li);
-      });
+    div.onclick = () => {
+      answers[s.id] = i;
+      render();
+    };
 
-      scenarioText.textContent = scenario.scenario;
-      questionText.textContent = scenario.question;
-      optionsWrap.innerHTML = "";
+    el("options").appendChild(div);
+  });
 
-      scenario.options.forEach((option, optionIndex) => {
-        const div = document.createElement("div");
-        div.className = "option";
-        div.textContent = option.text;
-        div.dataset.index = String(optionIndex);
+  el("prevBtn").disabled = index === 0;
+  el("nextBtn").classList.toggle("hidden", index === scenarios.length - 1);
+  el("submitBtn").classList.toggle("hidden", index !== scenarios.length - 1);
+}
 
-        if (answers[scenario.id] === optionIndex) {
-          div.classList.add("selected");
-        }
+function calculate() {
+  let score = 0;
+  let autoFail = false;
 
-        div.addEventListener("click", () => {
-          if (submitted) return;
-          optionsWrap.querySelectorAll(".option").forEach((o) => o.classList.remove("selected"));
-          div.classList.add("selected");
-          answers[scenario.id] = optionIndex;
-          selectionNotice.className = "notice ok";
-          selectionNotice.textContent = "Answer selected.";
-        });
+  scenarios.forEach(s => {
+    const selected = s.options[answers[s.id]];
+    if (!selected) return;
 
-        optionsWrap.appendChild(div);
-      });
+    score += selected.weight * (s.weight / 100);
 
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.classList.toggle("hidden", currentIndex === lessonData.scenarios.length - 1);
-      submitBtn.classList.toggle("hidden", currentIndex !== lessonData.scenarios.length - 1);
-
-      selectionNotice.className = "notice info";
-      selectionNotice.textContent = answers[scenario.id] === undefined
-        ? "Select one answer to continue."
-        : "Answer selected.";
+    if (s.critical && selected.autoFail) {
+      autoFail = true;
     }
+  });
 
-    function requireSelectionBeforeAdvance() {
-      const scenario = lessonData.scenarios[currentIndex];
-      if (answers[scenario.id] === undefined) {
-        selectionNotice.className = "notice warn";
-        selectionNotice.textContent = "Choose one answer before continuing.";
-        return false;
-      }
-      return true;
-    }
+  return {
+    score: Math.round(score),
+    passed: !autoFail && score >= passScore,
+    autoFail
+  };
+}
 
-    function calculateResults() {
-      let totalEarned = 0;
-      let totalPossible = 0;
-      let autoFail = false;
-      let instructorReviewRequired = false;
+async function submit() {
+  const time = Math.floor((Date.now() - startTime) / 1000);
+  const result = calculate();
 
-      const scenarioResults = lessonData.scenarios.map((scenario) => {
-        const selectedIndex = answers[scenario.id];
-        const selectedOption = scenario.options[selectedIndex];
-        const optionWeight = Number(selectedOption?.weight || 0);
-        const isCorrect = selectedOption?.correct === true;
-        const optionAutoFail = selectedOption?.autoFail === true;
+  await updateStudentProgress(lessonId, {
+    contentViewed: true,
+    scenarioCompleted: true,
+    quizPassed: result.passed,
+    quizScore: result.score,
+    attempts: (student.progress?.[8]?.attempts || 0) + 1,
+    totalQuizTimeSeconds: time,
+    completedAt: new Date().toISOString(),
 
-        if (scenario.critical && optionAutoFail) {
-          autoFail = true;
-        }
+    // CAPSTONE DATA
+    capstoneCompleted: true,
+    instructorReviewRequired: result.autoFail
+  });
 
-        if (selectedOption?.reviewFlag) {
-          instructorReviewRequired = true;
-        }
+  el("results").classList.remove("hidden");
 
-        totalEarned += optionWeight * (scenario.weight / 100);
-        totalPossible += 100 * (scenario.weight / 100);
+  el("resultTitle").textContent = result.passed ? "PASSED" : "REVIEW REQUIRED";
+  el("resultScore").textContent = result.score + "%";
 
-        return {
-          scenarioId: scenario.id,
-          title: scenario.title,
-          domain: scenario.domain,
-          critical: !!scenario.critical,
-          selected: selectedOption?.text || "",
-          correct: isCorrect,
-          earnedWeight: optionWeight,
-          maxWeight: 100,
-          autoFail: optionAutoFail
-        };
-      });
+  el("resultMessage").textContent = result.passed
+    ? "You passed the final evaluation."
+    : "You must review and retake the capstone.";
+}
 
-      const score = totalPossible > 0 ? Math.round((totalEarned / totalPossible) * 100) : 0;
-      const passed = !autoFail && score >= lessonData.passScore;
+el("nextBtn").onclick = () => { if (answers[scenarios[index].id] !== undefined) { index++; render(); }};
+el("prevBtn").onclick = () => { index--; render(); };
+el("submitBtn").onclick = submit;
 
-      return {
-        score,
-        passed,
-        autoFail,
-        instructorReviewRequired,
-        scenarioResults
-      };
-    }
+render();
+</script>
 
-    function formatSeconds(totalSeconds) {
-      const mins = Math.floor(totalSeconds / 60);
-      const secs = totalSeconds % 60;
-      return `${mins}m ${secs}s`;
-    }
-
-    function renderReview(results, timeSpentSeconds) {
-      resultsPanel.classList.remove("hidden");
-
-      resultStatus.textContent = results.passed ? "Passed" : "Review Required";
-      resultScore.textContent = `${results.score}%`;
-
-      resultBanner.className = results.passed ? "banner pass" : "banner retake";
-      resultBanner.innerHTML = results.passed
-        ? "You passed the capstone. Your student record has been updated."
-        : "You did not pass the capstone. Review the lesson material and retake when ready.";
-
-      autoFailLabel.textContent = results.autoFail ? "Yes" : "No";
-      instructorReviewLabel.textContent = results.instructorReviewRequired ? "Yes" : "No";
-      timeSpentLabel.textContent = formatSeconds(timeSpentSeconds);
-
-      reviewList.innerHTML = "";
-      results.scenarioResults.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = "review-item";
-        div.innerHTML = `
-          <p><strong>${item.title}</strong></p>
-          <p><strong>Domain:</strong> ${item.domain}</p>
-          <p><strong>Your Answer:</strong> ${item.selected}</p>
-          <p><strong>Result:</strong> ${item.correct ? "Correct" : "Needs Review"}</p>
-          <p><strong>Critical Scenario:</strong> ${item.critical ? "Yes" : "No"}</p>
-        `;
-        reviewList.appendChild(div);
-      });
-
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
-
-    async function submitCapstone() {
-      const unanswered = lessonData.scenarios.some((s) => answers[s.id] === undefined);
-      if (unanswered) {
-        selectionNotice.className = "notice warn";
-        selectionNotice.textContent = "Complete all scenarios before submitting.";
-        return;
-      }
-
-      if (submitted) return;
-      submitted = true;
-
-      const timeSpentSeconds = Math.floor((Date.now() - startTime) / 1000);
-      const results = calculateResults();
-
-      if (!student.lessons) student.lessons = {};
-      const existing = student.lessons[lessonId] || {};
-
-      student.lessons[lessonId] = {
-        ...existing,
-        contentViewed: true,
-        scenarioCompleted: true,
-        quizPassed: results.passed,
-        passed: results.passed,
-        score: results.score,
-        bestScore: Math.max(Number(existing.bestScore || 0), results.score),
-        latestScore: results.score,
-        attempts: priorAttempts + 1,
-        startedAt: existing.startedAt || new Date(startTime).toISOString(),
-        completedAt: new Date().toISOString(),
-        timeSpentSeconds,
-        instructorReviewRequired: results.instructorReviewRequired || results.autoFail,
-        autoFailTriggered: results.autoFail,
-        scenarioResults: results.scenarioResults,
-        capstoneCompleted: true
-      };
-
-      await saveStudentProgress(student);
-      renderReview(results, timeSpentSeconds);
-    }
-
-    prevBtn.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        renderScenario();
-      }
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (!requireSelectionBeforeAdvance()) return;
-      if (currentIndex < lessonData.scenarios.length - 1) {
-        currentIndex++;
-        renderScenario();
-      }
-    });
-
-    submitBtn.addEventListener("click", submitCapstone);
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      logout();
-      window.location.href = "../login.html";
-    });
-
-    renderScenario();
-  </script>
 </body>
 </html>
