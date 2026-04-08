@@ -454,71 +454,105 @@ window.LESSONS = [
       }
     ]
   },
-  {
-    id: 8,
-    slug: 'bsa-final-review',
-    title: 'BSA Final Review & Live-Class Prep',
-    estTime: '15 min',
-    summary: 'This custom Broussard Shooting Academy lesson pulls together the online prerequisite and prepares the student for classroom review, legal discussion, practical handling, and the live range qualification.',
-    sections: [
-      {
-        heading: 'What the Online Portion Accomplishes',
-        body: [
-          'The online work prepares students with concepts, vocabulary, and decision-making principles before the live class.',
-          'It does not replace instructor observation, live-fire coaching, or safe range qualification.',
-          'Students should arrive ready to review, ask questions, and apply what they have studied.'
-        ]
-      },
-      {
-        heading: 'What to Bring to Live Class',
-        body: [
-          'Bring required identification, hearing and eye protection, and any equipment listed by the academy.',
-          'Arrive with a safe, teachable mindset and a willingness to slow down when unsure.',
-          'Students should know their own access code, email, and course record if follow-up is needed.'
-        ]
-      },
-      {
-        heading: 'Live-Class Expectations',
-        body: [
-          'The instructor will review safety, legal concepts, handling, and performance standards.',
-          'The live session is where students demonstrate safe conduct, not just memory of quiz answers.',
-          'Successful completion depends on both knowledge and safe practical execution.'
-        ]
-      },
-      {
-        heading: 'Final Readiness Mindset',
-        body: [
-          'The goal is not to look fast or tactical; the goal is to be safe, lawful, and competent.',
-          'Students should review weak areas honestly before class.',
-          'Preparation supports confidence, but humility keeps students safe.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'A student passed the online quizzes but says they do not need the live class anymore. What is the correct response?',
-        choices: [
-          'The online portal fully replaces the instructor-led session',
-          'The live class and range qualification are still required',
-          'Only the certificate matters now',
-          'The live portion is optional for good students'
-        ],
-        answer: 1,
-        explanation: 'The BSA final review makes clear that the online prerequisite does not replace live classroom and range performance.'
-      },
-      {
-        prompt: 'A student is nervous about the live range day and starts rushing through preparation. What is the best advice?',
-        choices: [
-          'Go faster so you can get it over with',
-          'Slow down, review weak areas, and arrive ready to learn safely',
-          'Ignore the online material',
-          'Focus only on equipment, not mindset'
-        ],
-        answer: 1,
-        explanation: 'The final BSA lesson stresses safe preparation, honesty about weak areas, and a teachable mindset.'
-      }
-    ]
-  }
+{
+  id: 8,
+  slug: 'bsa-final-review',
+  title: 'BSA Final Review & Live-Class Prep',
+  estTime: '20 min',
+  summary: 'This final capstone lesson consolidates everything learned throughout the course and prepares students for real-world application, instructor evaluation, and live-fire qualification. This is not review—it is readiness.',
+  sections: [
+    {
+      heading: 'Capstone Mindset: This Is Evaluation',
+      body: [
+        'This is not just another lesson. This is your transition from learning to being evaluated.',
+        'Everything covered so far—awareness, firearm safety, legal understanding, and decision-making—comes together here.',
+        'You are no longer just absorbing information. You are expected to apply it correctly and safely.',
+        'The goal is not perfection—it is safe, controlled, and responsible behavior under supervision.'
+      ]
+    },
+    {
+      heading: 'What the Online Training Actually Did',
+      body: [
+        'The online course built your mental framework—how to think, not just what to do.',
+        'You learned awareness, avoidance, legal boundaries, and firearm handling concepts.',
+        'But knowledge alone is not enough—this must now be demonstrated in real-world conditions.',
+        'The live class verifies that you can safely apply what you learned—not just remember it.'
+      ]
+    },
+    {
+      heading: 'Live Class Reality: What You Will Be Judged On',
+      body: [
+        'You are being evaluated on safety, not speed.',
+        'You are being evaluated on judgment, not confidence.',
+        'You are being evaluated on control, not aggression.',
+        'The instructor is watching how you think, move, and handle the firearm—not just whether you hit the target.'
+      ]
+    },
+    {
+      heading: 'Critical Safety Expectations',
+      body: [
+        'Muzzle discipline must be consistent at all times.',
+        'Trigger discipline must be maintained unless actively engaging.',
+        'You must follow all commands immediately and without hesitation.',
+        'If you are unsure—STOP and ask. That is a sign of control, not weakness.'
+      ]
+    },
+    {
+      heading: 'Mental Readiness Under Stress',
+      body: [
+        'Nervousness is normal—but rushing is dangerous.',
+        'Slow is smooth, smooth is safe.',
+        'Focus on process: grip, stance, sights, trigger—not outcome.',
+        'You are not trying to impress—you are trying to demonstrate safe competence.'
+      ]
+    },
+    {
+      heading: 'Final Preparation Checklist',
+      body: [
+        'Bring all required documents and identification.',
+        'Bring proper eye and ear protection.',
+        'Know your login/email in case verification is needed.',
+        'Review any weak areas before arrival—especially safety and legal concepts.',
+        'Arrive early and mentally prepared—not rushed.'
+      ]
+    }
+  ],
+  scenarios: [
+    {
+      prompt: 'You arrive at the range and feel nervous. Your instinct is to rush through instructions so you don’t hold anyone up. What is the correct response?',
+      choices: [
+        'Move faster so you look confident',
+        'Slow down, listen carefully, and prioritize safety over speed',
+        'Watch others and copy them quickly',
+        'Skip questions to avoid attention'
+      ],
+      answer: 1,
+      explanation: 'The capstone lesson emphasizes controlled, deliberate behavior over speed or appearance.'
+    },
+    {
+      prompt: 'During instruction, you are unsure about a command but think you understand it “well enough.” What should you do?',
+      choices: [
+        'Proceed anyway to avoid slowing the class',
+        'Ask for clarification before acting',
+        'Watch someone else and guess',
+        'Wait until later to fix it'
+      ],
+      answer: 1,
+      explanation: 'Safe students clarify uncertainty immediately. Guessing under live-fire conditions is unacceptable.'
+    },
+    {
+      prompt: 'A student shoots quickly but breaks muzzle discipline slightly between strings. What matters more according to the lesson?',
+      choices: [
+        'Speed and target hits',
+        'Confidence and aggression',
+        'Strict safety and control',
+        'Finishing first'
+      ],
+      answer: 2,
+      explanation: 'Safety violations override performance. Control is the standard—not speed.'
+    }
+  ]
+}
 ];
 
 /* Compatibility layer for pages that expect window.LESSON_CONTENT */
