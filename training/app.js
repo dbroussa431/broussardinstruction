@@ -1,4 +1,3 @@
-
 import { db } from "./firebase-config.js";
 import {
   collection,
@@ -457,6 +456,7 @@ const api = {
   refreshCurrentStudentFromFirestore,
   normalizeStudent,
   cacheStudent,
+  updateStudentProgress,
   setLessonContentViewed,
   setScenarioCompleted,
   recordQuizResult,
@@ -490,6 +490,7 @@ export {
   refreshCurrentStudentFromFirestore,
   normalizeStudent,
   cacheStudent,
+  updateStudentProgress,
   setLessonContentViewed,
   setScenarioCompleted,
   recordQuizResult,
@@ -509,3 +510,4 @@ export {
   clearActiveQuiz,
   submitPurchaseRequest
 };
+
