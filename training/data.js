@@ -456,72 +456,132 @@ window.LESSONS = [
   },
 {
   id: 8,
-  slug: 'final-readiness-evaluation',
-  title: 'Final Readiness Evaluation',
-  estTime: '30–45 min',
-  summary: 'Final capstone evaluation of legal judgment, decision-making, and responsible firearm behavior.',
+  slug: 'louisiana-law-and-mental-health',
+  title: 'Louisiana Law and Mental Health',
+  estTime: '30–40 min',
+  summary: 'This lesson covers Louisiana-specific firearm law, permitless carry updates, legal responsibilities, prohibited locations, and the critical role of mental health awareness, suicide prevention, and responsible firearm storage.',
+
   sections: [
     {
-      heading: 'This Is Your Final Validation',
+      heading: 'Louisiana Carry Law (2024 Update)',
       body: [
-        'This is not another lesson. This is your final evaluation.',
-        'Everything you have learned—safety, law, awareness, and judgment—comes together here.',
-        'You are expected to apply knowledge correctly, not just recognize it.',
-        'Your decisions must reflect real-world responsibility and restraint.'
+        'As of July 4, 2024, Louisiana allows permitless concealed carry for individuals 18 years or older who are not prohibited from possessing a firearm. :contentReference[oaicite:0]{index=0}',
+        'Even without a permit, carriers must still follow the same legal restrictions found in concealed handgun permit laws.',
+        'Certain individuals are prohibited from possessing firearms under state and federal law, including convicted felons, unlawful drug users, and those adjudicated with certain mental health conditions.'
       ]
     },
     {
-      heading: 'Critical Legal Principles',
+      heading: 'Where You CANNOT Carry',
       body: [
-        'Deadly force requires an immediate and serious threat to life.',
-        'Property alone does NOT justify deadly force.',
-        'You are responsible for every decision you make while carrying.',
-        'Avoidance and de-escalation are always preferred when possible.'
+        'Firearms are prohibited in specific locations including:',
+        'Law enforcement buildings, courthouses, prisons, and detention facilities.',
+        'Polling places, schools, government buildings, and airport secure areas.',
+        'Establishments serving alcohol for on-site consumption and permitted events like parades.',
+        'Private property where the owner has restricted firearms.'
       ]
     },
     {
-      heading: 'Decision-Making Under Stress',
+      heading: 'Legal Responsibility While Carrying',
       body: [
-        'Fast decisions are not always correct decisions.',
-        'Control and judgment matter more than speed or confidence.',
-        'If you escalate incorrectly, you own the consequences.',
-        'The safest decision is often to disengage and create distance.'
+        'You must notify law enforcement if approached while carrying.',
+        'You cannot carry while under the influence of alcohol or drugs (.05 BAC or higher is considered under the influence).',
+        'Negligent or unsafe carry can result in criminal penalties, fines, or weapon forfeiture.',
+        'You are responsible for every decision you make while armed.'
+      ]
+    },
+    {
+      heading: 'Use of Force and Legal Consequences',
+      body: [
+        'Deadly force must meet strict legal standards and will be reviewed after the incident.',
+        'Civil and criminal courts evaluate whether your actions were justified.',
+        'You may be protected from liability only if force was legally justified.',
+        'Bad decisions—even if made under stress—can lead to criminal charges.'
+      ]
+    },
+    {
+      heading: 'Mental Health and Suicide Prevention',
+      body: [
+        'Most firearm deaths in the U.S. are suicides, not homicides. :contentReference[oaicite:1]{index=1}',
+        'Suicidal crises are often brief and can occur in minutes.',
+        'Access to a firearm during a crisis greatly increases the likelihood of death.',
+        'Creating time and distance between a person in crisis and a firearm can save lives.'
+      ]
+    },
+    {
+      heading: 'Protecting Yourself and Others',
+      body: [
+        'If someone is struggling, temporarily removing access to firearms can prevent irreversible decisions.',
+        'Safe storage—such as safes, locks, or off-site storage—is critical when risk is present.',
+        '90% of people who survive a suicide attempt do not go on to die by suicide.',
+        'Recognizing warning signs and acting early can save a life.'
+      ]
+    },
+    {
+      heading: 'Responsibility Beyond the Gun',
+      body: [
+        'Carrying a firearm is not just about defense—it includes responsibility for safety, legality, and awareness.',
+        'Good judgment includes knowing when NOT to act.',
+        'Your responsibility includes protecting yourself, your family, and others from harm—including preventable harm.',
+        'True readiness includes both legal knowledge and mental awareness.'
       ]
     }
   ],
+
   scenarios: [
     {
-      prompt: 'You are carrying legally and someone grabs your bag and runs away. They are not threatening you directly. What is the correct response?',
+      prompt: 'You are carrying legally in Louisiana and enter a courthouse. What is the correct action?',
       choices: [
-        'Use deadly force to stop them',
-        'Chase aggressively and confront them',
-        'Create distance and call authorities',
-        'Draw your weapon to intimidate them'
-      ],
-      answer: 2,
-      explanation: 'Property alone does NOT justify deadly force. The correct response is to disengage and report.'
-    },
-    {
-      prompt: 'A situation feels tense, but no weapon or clear threat is present. What should guide your decision?',
-      choices: [
-        'Act immediately to control the situation',
-        'Wait for clear justification before escalating',
-        'Draw your weapon to be safe',
-        'Assume the worst-case scenario'
+        'Continue carrying because permitless carry is allowed',
+        'Secure the firearm before entering',
+        'Conceal it better',
+        'Only remove it if asked'
       ],
       answer: 1,
-      explanation: 'Deadly force requires a clear and immediate threat—not uncertainty or discomfort.'
+      explanation: 'Courthouses are prohibited locations regardless of permit status.'
     },
     {
-      prompt: 'What is the safest and most legally sound response in most uncertain situations?',
+      prompt: 'You are carrying and are stopped by law enforcement. What are you required to do?',
       choices: [
-        'Take control quickly',
-        'Show force early',
-        'Create distance and avoid escalation',
-        'Engage to prevent risk'
+        'Say nothing unless asked',
+        'Immediately notify the officer you are carrying',
+        'Hide the firearm',
+        'Exit the vehicle quickly'
+      ],
+      answer: 1,
+      explanation: 'Louisiana law requires notification when interacting with law enforcement.'
+    },
+    {
+      prompt: 'A friend is going through a serious emotional crisis and has access to firearms. What is the safest response?',
+      choices: [
+        'Do nothing unless they ask for help',
+        'Encourage them to keep the firearm for protection',
+        'Help create distance between them and the firearm temporarily',
+        'Ignore it—it is their responsibility'
       ],
       answer: 2,
-      explanation: 'Avoidance and de-escalation are the safest and most legally defensible actions.'
+      explanation: 'Time and distance during a crisis significantly reduce risk of suicide.'
+    },
+    {
+      prompt: 'Which situation most clearly makes carrying illegal?',
+      choices: [
+        'Carrying while sober in public',
+        'Carrying in a restaurant',
+        'Carrying while under the influence of alcohol',
+        'Carrying with a holster'
+      ],
+      answer: 2,
+      explanation: 'Carrying under the influence is prohibited and illegal.'
+    },
+    {
+      prompt: 'What is the most responsible mindset when carrying a firearm?',
+      choices: [
+        'Use it whenever you feel unsafe',
+        'Avoid problems and act only when legally justified',
+        'Show force early to prevent conflict',
+        'Assume worst-case and act immediately'
+      ],
+      answer: 1,
+      explanation: 'Avoidance, restraint, and legal justification define responsible carry.'
     }
   ]
 }
