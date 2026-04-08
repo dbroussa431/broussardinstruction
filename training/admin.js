@@ -1,18 +1,34 @@
-import { db } from "./firebase-config.js";
+import { db } from "./firebase-config.js?v=4";
 import {
   collection,
   getDocs,
+  addDoc,
   doc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-const body = document.getElementById("tableBody");
+let studentRows = [];
 
-document.getElementById("logoutBtn").onclick = () => {
-  localStorage.removeItem("bsa_admin_auth");
-  window.location.href = "admin-login.html";
-};
+const body = document.getElementById("studentTableBody");
+
+// 🔐 LOGOUT
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("bsa_admin_auth");
+    window.location.href = "admin-login.html";
+  };
+}
+
+// HELPERS
+function normalizePaymentStatus(student) {
+  const s = String(student.paymentStatus || "").toLowerCase();
+  if (["paid", "pending", "waived"].includes(s)) return s;
+  if (student.paid) return "paid";
+  return "pending";
+}
 
 function getProgress(student) {
   return student.completedLessons?.length || 0;
@@ -20,13 +36,13 @@ function getProgress(student) {
 
 function getAttempts(student) {
   return Object.values(student.progress || {})
-    .reduce((a, b) => a + (b.attempts || 0), 0);
+    .reduce((a, b) => a + (b?.attempts || 0), 0);
 }
 
 function getStage(student) {
   const p = student.progress || {};
 
-  if (student.completedLessons?.length === 10) return "Complete";
+  if (student.completedLessons?.length === 10) return "Completed";
   if (Object.values(p).some(x => x.quizPassed)) return "In Progress";
   if (Object.values(p).some(x => x.scenarioCompleted)) return "Quiz Ready";
   if (Object.values(p).some(x => x.contentViewed)) return "Scenario";
@@ -34,23 +50,31 @@ function getStage(student) {
 }
 
 function getFinal(student) {
-  const final = student.progress?.["10"];
-
-  if (!final) return "—";
-
-  if (final.criticalFail) return "CRITICAL FAIL";
-  if (final.quizScore >= 80) return "PASS";
+  const f = student.progress?.["10"];
+  if (!f) return "—";
+  if (f.criticalFail) return "CRITICAL FAIL";
+  if (f.quizScore >= 80) return "PASS";
   return "FAIL";
 }
 
-async function load() {
+function getRevenue(student) {
+  if (normalizePaymentStatus(student) !== "paid") return 0;
+  return Number(student.price || 0);
+}
+
+// LOAD
+async function loadAdminData() {
+
+  body.innerHTML = `<tr><td colspan="15">Loading...</td></tr>`;
 
   const snap = await getDocs(collection(db, "portalStudents"));
 
   let total = 0;
   let pending = 0;
-  let passedFinal = 0;
+  let paid = 0;
+  let revenue = 0;
   let critical = 0;
+  let passedFinal = 0;
 
   let html = "";
 
@@ -61,17 +85,21 @@ async function load() {
 
     total++;
 
-    if (s.paymentStatus !== "paid") pending++;
+    const payStatus = normalizePaymentStatus(s);
+    if (payStatus === "pending") pending++;
+    if (payStatus === "paid") {
+      paid++;
+      revenue += getRevenue(s);
+    }
 
     const final = s.progress?.["10"];
-
     if (final?.criticalFail) critical++;
     if (final?.quizScore >= 80 && !final?.criticalFail) passedFinal++;
 
     html += `
       <tr>
-        <td>${s.name}</td>
-        <td>${s.email}</td>
+        <td>${s.name || "—"}</td>
+        <td>${s.email || "—"}</td>
         <td>${getProgress(s)}/10</td>
         <td>${getStage(s)}</td>
         <td>${getAttempts(s)}</td>
@@ -85,29 +113,33 @@ async function load() {
     `;
   });
 
-  body.innerHTML = html;
+  body.innerHTML = html || `<tr><td colspan="15">No records</td></tr>`;
 
-  document.getElementById("statTotal").textContent = total;
-  document.getElementById("statPending").textContent = pending;
-  document.getElementById("statPassedFinal").textContent = passedFinal;
-  document.getElementById("statCritical").textContent = critical;
+  // STATS (if exist in HTML)
+  if (document.getElementById("statTotal")) {
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statPending").textContent = pending;
+    document.getElementById("statPassedFinal").textContent = passedFinal;
+    document.getElementById("statCritical").textContent = critical;
+  }
 }
 
 // ACTIONS
 window.lock = async (id) => {
   await updateDoc(doc(db, "portalStudents", id), { status: "locked" });
-  load();
+  loadAdminData();
 };
 
 window.unlock = async (id) => {
   await updateDoc(doc(db, "portalStudents", id), { status: "active" });
-  load();
+  loadAdminData();
 };
 
 window.del = async (id) => {
   if (!confirm("Delete student?")) return;
   await deleteDoc(doc(db, "portalStudents", id));
-  load();
+  loadAdminData();
 };
 
-load();
+// INIT
+loadAdminData();
