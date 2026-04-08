@@ -2,151 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson 8 - Final Evaluation</title>
+  <title>Lesson 8 - Louisiana Law and Mental Health</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
-
 <body>
 
-<!-- ✅ CORRECT HEADER STRUCTURE -->
-<header class="topbar">
-  <div class="topbar-inner">
+<div class="container">
+  <header class="header">
+    <h1>BSA Training Portal</h1>
+    <button onclick="window.location.href='../dashboard.html'">Dashboard</button>
+  </header>
 
-    <div class="brand">
-      <div class="brand-mark">
-        <img src="../images/bsa-logo.png" alt="logo">
-      </div>
-      <div>
-        <h1>BSA Training Portal</h1>
-        <p>Final Capstone Evaluation</p>
-      </div>
-    </div>
-
-    <div class="top-actions">
-      <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
-    </div>
-
-  </div>
-</header>
-
-<!-- ✅ MAIN CONTAINER -->
-<main class="container">
-
-  <!-- TITLE PANEL -->
-  <section class="panel">
-    <h2>Final Readiness Evaluation</h2>
-
-    <div class="callout">
-      <strong>This is your final validation.</strong>
-      <ul>
-        <li>Minimum passing score: 80%</li>
-        <li>Some answers can automatically fail you</li>
-        <li>Your time and results are tracked</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- GIST -->
-  <section id="lesson-content" class="panel"></section>
-
-  <!-- SCENARIOS -->
-  <section class="panel">
-    <div id="scenario-container"></div>
-
-    <div class="lesson-actions" style="margin-top:20px;">
-      <button class="btn btn-blue" id="submitBtn">Submit Answers</button>
-    </div>
-  </section>
-
-  <!-- NAV -->
-  <div class="lesson-actions">
-    <a class="btn btn-outline" href="../dashboard.html">Previous</a>
-    <a class="btn btn-blue" href="../dashboard.html">Next</a>
-  </div>
-
-</main>
+  <main id="lesson-container"></main>
+</div>
 
 <script src="../data.js"></script>
-
 <script>
-const lesson = window.LESSONS.find(l => Number(l.id) === 8);
 
-// ======================
-// GIST
-// ======================
+const lessonId = 8;
+const lesson = window.LESSONS.find(l => l.id === lessonId);
 
-const contentEl = document.getElementById("lesson-content");
+const container = document.getElementById('lesson-container');
 
-contentEl.innerHTML = `
-  <div class="pill">SELF-CONTAINED LESSON GIST</div>
-  <h2>${lesson.title}</h2>
-  <p>${lesson.summary}</p>
-`;
+function renderLesson() {
+  if (!lesson) {
+    container.innerHTML = '<p>Lesson not found.</p>';
+    return;
+  }
 
-lesson.sections.forEach(sec => {
-  const block = document.createElement("div");
-  block.style.marginTop = "20px";
-
-  block.innerHTML = `
-    <h3>${sec.heading}</h3>
-    <ul>
-      ${sec.body.map(b => `<li>${b}</li>`).join("")}
-    </ul>
-  `;
-
-  contentEl.appendChild(block);
-});
-
-// ======================
-// SCENARIOS
-// ======================
-
-const container = document.getElementById("scenario-container");
-
-lesson.scenarios.forEach((sc, index) => {
-
-  const div = document.createElement("div");
-  div.style.marginBottom = "20px";
-
-  div.innerHTML = `
-    <div style="margin-bottom:10px;">
-      <strong>Scenario ${index + 1}:</strong> ${sc.prompt}
-    </div>
-
-    <div>
-      ${sc.choices.map((choice, i) => `
-        <label style="display:block; margin:6px 0;">
-          <input type="radio" name="q${index}" value="${i}">
-          ${choice}
-        </label>
-      `).join("")}
+  let html = `
+    <div class="lesson-card">
+      <h2>${lesson.title}</h2>
+      <p>${lesson.summary}</p>
     </div>
   `;
 
-  container.appendChild(div);
-});
+  lesson.sections.forEach(section => {
+    html += `
+      <div class="lesson-card">
+        <h3>${section.heading}</h3>
+        <ul>
+          ${section.body.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  });
 
-// ======================
-// SUBMIT
-// ======================
+  html += `<div class="lesson-card"><h3>Scenarios</h3>`;
 
-document.getElementById("submitBtn").addEventListener("click", () => {
+  lesson.scenarios.forEach((scenario, index) => {
+    html += `
+      <div class="scenario">
+        <p><strong>Scenario ${index + 1}:</strong> ${scenario.prompt}</p>
+        ${scenario.choices.map((choice, i) => `
+          <label>
+            <input type="radio" name="q${index}" value="${i}">
+            ${choice}
+          </label><br>
+        `).join('')}
+      </div>
+    `;
+  });
 
+  html += `
+    <button onclick="submitAnswers()">Submit Answers</button>
+    <div id="results"></div>
+  </div>`;
+
+  container.innerHTML = html;
+}
+
+function submitAnswers() {
   let score = 0;
 
-  lesson.scenarios.forEach((sc, index) => {
-    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+  lesson.scenarios.forEach((scenario, index) => {
+    const selected = document.querySelector(`input[name=\"q${index}\"]:checked`);
 
-    if (selected && Number(selected.value) === sc.answer) {
+    if (selected && parseInt(selected.value) === scenario.answer) {
       score++;
     }
   });
 
   const percent = Math.round((score / lesson.scenarios.length) * 100);
 
-  alert(`Score: ${percent}%`);
-});
+  document.getElementById('results').innerHTML = `
+    <h3>Your Score: ${percent}%</h3>
+    <p>${percent >= 80 ? 'PASS' : 'FAIL'}</p>
+  `;
+}
+
+renderLesson();
+
 </script>
 
 </body>
