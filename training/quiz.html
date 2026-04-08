@@ -11,8 +11,11 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
-      <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p id="quizHeader"></p>
+      </div>
     </div>
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
@@ -24,22 +27,21 @@
 
 <section class="panel content-card" id="quizPanel">
 
-  <span class="eyebrow" id="quizHeader"></span>
   <h2 id="quizTitle"></h2>
-  <p class="muted" id="quizDescription"></p>
+  <p id="quizDescription" class="muted"></p>
 
-  <div id="rereadNotice" class="notice warn hidden" style="margin-bottom:16px"></div>
+  <div id="rereadNotice" class="notice warn hidden"></div>
 
-  <div id="quizWrap" class="q-list"></div>
+  <div id="quizWrap"></div>
 
   <div class="lesson-actions">
-    <button class="btn btn-blue" id="submitQuizBtn" type="button">Submit Quiz</button>
-    <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
+    <button class="btn btn-blue" id="submitQuizBtn">Submit Quiz</button>
+    <a class="btn btn-outline" id="backLessonLink">Back to Lesson</a>
   </div>
 
 </section>
 
-<section id="resultPanel" class="results-grid hidden" style="margin-top:24px"></section>
+<section id="resultPanel" class="hidden"></section>
 
 </main>
 
@@ -65,37 +67,37 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 const reviewMode = new URLSearchParams(window.location.search).get("review") === "1";
-const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-const progress = getLessonProgress(lessonId, student);
 
-// 🔥 FINAL EVAL DETECTION
+const lesson = window.LESSONS.find(l => l.id === lessonId);
+const progress = getLessonProgress(lessonId, student);
 const isFinal = lessonId === 10;
 
-// 🔵 HEADER CONFIG
-document.getElementById("quizHeader").textContent = isFinal
-  ? "FINAL EVALUATION • PASS AT 80% • CRITICAL FAIL ENABLED"
-  : "20 randomized questions • pass at 80%";
-
-document.getElementById("quizDescription").textContent = isFinal
-  ? "This evaluation determines readiness for live training. Critical mistakes result in automatic failure."
-  : "Students can review what they missed after finishing.";
+// HEADER
+document.getElementById("quizHeader").textContent =
+  isFinal ? "FINAL EVALUATION" : "Lesson Quiz";
 
 document.getElementById("quizTitle").textContent =
-  `${lesson.id}. ${lesson.title} — ${isFinal ? "Final Evaluation" : "Quiz"}`;
+  `${lesson.id}. ${lesson.title}`;
 
-document.getElementById("backLessonLink").href = `lesson.html?lesson=${lesson.id}`;
+document.getElementById("quizDescription").textContent =
+  isFinal
+    ? "Critical mistakes result in automatic failure."
+    : "Score 80% or higher to pass.";
 
-// 🔵 ATTEMPTS NOTICE
+document.getElementById("backLessonLink").href =
+  `lesson.html?lesson=${lesson.id}`;
+
+// ATTEMPTS NOTICE
 const attemptCount = getAttemptCount(lessonId, student);
 if (attemptCount >= 1) {
   document.getElementById("rereadNotice").textContent =
     attemptCount >= 2
-      ? "Please re-read before another attempt."
-      : "Below 80% requires retake.";
+      ? "You should re-read the lesson before retrying."
+      : "Score below 80% requires retake.";
   document.getElementById("rereadNotice").classList.remove("hidden");
 }
 
-// 🔴 REVIEW MODE
+// REVIEW MODE
 if (reviewMode && progress.quizDetails) {
   renderResults(progress.quizScore, progress.quizDetails, true, false);
   document.getElementById("quizPanel").classList.add("hidden");
@@ -104,39 +106,34 @@ if (reviewMode && progress.quizDetails) {
   clearActiveQuiz(lessonId);
 
   const startedAt = Date.now();
-  const selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
-  const quizWrap = document.getElementById("quizWrap");
+  const questions = getQuizQuestionsForLesson(lessonId, 20);
+  const wrap = document.getElementById("quizWrap");
 
-  selectedQuestions.forEach((item, idx) => {
+  questions.forEach((q, i) => {
 
-    const card = document.createElement("div");
-    card.className = "question-card";
-    card.innerHTML = `<h4>${idx + 1}. ${item.q}</h4>`;
+    const block = document.createElement("div");
+    block.className = "question-block";
+
+    block.innerHTML = `<h4>${i + 1}. ${q.q}</h4>`;
 
     const options = document.createElement("div");
-    options.className = "options";
 
-    const choices = item.type === "tf" ? ["True", "False"] : item.choices;
+    const choices = q.type === "tf" ? ["True", "False"] : q.choices;
 
-    choices.forEach((choice, i) => {
-      const option = document.createElement("label");
-      option.className = "option";
+    choices.forEach((choice, idx) => {
 
-      option.innerHTML = `
-        <input type="radio" name="q_${idx}" value="${item.type === "tf" ? (i === 0 ? "true" : "false") : i}">
+      const label = document.createElement("label");
+
+      label.innerHTML = `
+        <input type="radio" name="q_${i}" value="${q.type === "tf" ? (idx === 0 ? "true" : "false") : idx}">
         ${choice}
       `;
 
-      option.addEventListener("click", () => {
-        options.querySelectorAll(".option").forEach((el) => el.classList.remove("selected"));
-        option.classList.add("selected");
-      });
-
-      options.appendChild(option);
+      options.appendChild(label);
     });
 
-    card.appendChild(options);
-    quizWrap.appendChild(card);
+    block.appendChild(options);
+    wrap.appendChild(block);
   });
 
   document.getElementById("submitQuizBtn").addEventListener("click", async () => {
@@ -145,99 +142,96 @@ if (reviewMode && progress.quizDetails) {
     let criticalFail = false;
     const details = [];
 
-    selectedQuestions.forEach((item, idx) => {
+    questions.forEach((q, i) => {
 
-      const picked = document.querySelector(`input[name="q_${idx}"]:checked`);
-
+      const selected = document.querySelector(`input[name="q_${i}"]:checked`);
       let isCorrect = false;
-      let yourAnswer = "No answer selected";
+      let yourAnswer = "No answer";
       let correctAnswer = "";
 
-      if (item.type === "tf") {
-        correctAnswer = item.answer ? "True" : "False";
-        if (picked) {
-          yourAnswer = picked.value === "true" ? "True" : "False";
-          isCorrect = String(item.answer) === picked.value;
+      if (q.type === "tf") {
+        correctAnswer = q.answer ? "True" : "False";
+        if (selected) {
+          yourAnswer = selected.value === "true" ? "True" : "False";
+          isCorrect = String(q.answer) === selected.value;
         }
       } else {
-        correctAnswer = item.choices[item.answer];
-        if (picked) {
-          yourAnswer = item.choices[Number(picked.value)];
-          isCorrect = Number(picked.value) === item.answer;
+        correctAnswer = q.choices[q.answer];
+        if (selected) {
+          yourAnswer = q.choices[Number(selected.value)];
+          isCorrect = Number(selected.value) === q.answer;
         }
       }
 
       if (isCorrect) correct++;
-      if (!isCorrect && item.critical) criticalFail = true;
+      if (!isCorrect && q.critical) criticalFail = true;
 
-      details.push({ question: item.q, yourAnswer, correctAnswer, explanation: item.explanation, isCorrect });
+      details.push({
+        question: q.q,
+        yourAnswer,
+        correctAnswer,
+        explanation: q.explanation,
+        isCorrect
+      });
     });
 
-    const score = Math.round((correct / selectedQuestions.length) * 100);
+    const score = Math.round((correct / questions.length) * 100);
     const elapsed = Math.round((Date.now() - startedAt) / 1000);
 
-    // 🔥 FINAL EVALUATION HANDLING
     if (isFinal) {
       await recordFinalEvaluation(lessonId, score, details, elapsed, { criticalFail });
-
-      if (criticalFail) {
-        alert("FAIL — Critical safety violation.");
-        return;
-      }
-
-      if (score >= PASSING_SCORE) {
-        alert(`PASS — ${score}%`);
-      } else {
-        alert(`FAIL — ${score}%`);
-      }
-
     } else {
       await recordQuizResult(lessonId, score, details, elapsed);
     }
 
     renderResults(score, details, false, criticalFail);
-    document.getElementById("resultPanel").scrollIntoView({ behavior: "smooth" });
-
   });
 }
 
-// 🔵 RESULTS
+// RESULTS
 function renderResults(score, details, reviewOnly, criticalFail) {
 
   const passed = score >= PASSING_SCORE && !criticalFail;
-  const resultPanel = document.getElementById("resultPanel");
-  const missed = details.filter((d) => !d.isCorrect);
 
+  const resultPanel = document.getElementById("resultPanel");
   resultPanel.classList.remove("hidden");
+
+  const missed = details.filter(d => !d.isCorrect);
 
   resultPanel.innerHTML = `
     <div class="panel result-card">
+
       <div class="banner ${passed ? "pass" : "retake"}">
-        ${criticalFail ? "CRITICAL FAIL" : passed ? "PASS" : "RETAKE REQUIRED"} • ${score}%
+        ${criticalFail ? "CRITICAL FAIL" : passed ? "PASS" : "FAIL"} — ${score}%
       </div>
 
-      <div class="lesson-actions" style="margin-top:16px;">
+      <div class="lesson-actions">
         ${passed
           ? `<a class="btn btn-blue" href="dashboard.html">Return to Dashboard</a>`
-          : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`
+          : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake</a>`
         }
+
         <a class="btn btn-outline" href="lesson.html?lesson=${lessonId}">Review Lesson</a>
       </div>
+
     </div>
 
     <div class="panel result-card">
-      <h3>Missed Questions</h3>
-      ${missed.length
-        ? missed.map((item) => `
-          <div class="review-item">
-            <p><strong>${item.question}</strong></p>
-            <p>Your answer: ${item.yourAnswer}</p>
-            <p>Correct: ${item.correctAnswer}</p>
-            <p>${item.explanation || ""}</p>
-          </div>
-        `).join("")
-        : "<p>No missed questions.</p>"
+      <h3>Review</h3>
+
+      ${
+        missed.length
+          ? missed.map(m => `
+            <div class="review-item">
+              <p><strong>${m.question}</strong></p>
+              <p>Your Answer: ${m.yourAnswer}</p>
+              <p>Correct: ${m.correctAnswer}</p>
+              <p>${m.explanation || ""}</p>
+            </div>
+          `).join("")
+          : "<p>No missed questions.</p>"
       }
+
     </div>
   `;
 }
