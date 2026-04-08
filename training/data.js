@@ -454,137 +454,216 @@ window.LESSONS = [
       }
     ]
   },
-{
-  id: 8,
-  slug: 'louisiana-law-and-mental-health',
-  title: 'Louisiana Law and Mental Health',
-  estTime: '30–40 min',
-  summary: 'This lesson covers Louisiana-specific firearm law, permitless carry updates, legal responsibilities, prohibited locations, and the critical role of mental health awareness, suicide prevention, and responsible firearm storage.',
-
-  sections: [
-    {
-      heading: 'Louisiana Carry Law (2024 Update)',
-      body: [
-        'As of July 4, 2024, Louisiana allows permitless concealed carry for individuals 18 years or older who are not prohibited from possessing a firearm. :contentReference[oaicite:0]{index=0}',
-        'Even without a permit, carriers must still follow the same legal restrictions found in concealed handgun permit laws.',
-        'Certain individuals are prohibited from possessing firearms under state and federal law, including convicted felons, unlawful drug users, and those adjudicated with certain mental health conditions.'
-      ]
-    },
-    {
-      heading: 'Where You CANNOT Carry',
-      body: [
-        'Firearms are prohibited in specific locations including:',
-        'Law enforcement buildings, courthouses, prisons, and detention facilities.',
-        'Polling places, schools, government buildings, and airport secure areas.',
-        'Establishments serving alcohol for on-site consumption and permitted events like parades.',
-        'Private property where the owner has restricted firearms.'
-      ]
-    },
-    {
-      heading: 'Legal Responsibility While Carrying',
-      body: [
-        'You must notify law enforcement if approached while carrying.',
-        'You cannot carry while under the influence of alcohol or drugs (.05 BAC or higher is considered under the influence).',
-        'Negligent or unsafe carry can result in criminal penalties, fines, or weapon forfeiture.',
-        'You are responsible for every decision you make while armed.'
-      ]
-    },
-    {
-      heading: 'Use of Force and Legal Consequences',
-      body: [
-        'Deadly force must meet strict legal standards and will be reviewed after the incident.',
-        'Civil and criminal courts evaluate whether your actions were justified.',
-        'You may be protected from liability only if force was legally justified.',
-        'Bad decisions—even if made under stress—can lead to criminal charges.'
-      ]
-    },
-    {
-      heading: 'Mental Health and Suicide Prevention',
-      body: [
-        'Most firearm deaths in the U.S. are suicides, not homicides. :contentReference[oaicite:1]{index=1}',
-        'Suicidal crises are often brief and can occur in minutes.',
-        'Access to a firearm during a crisis greatly increases the likelihood of death.',
-        'Creating time and distance between a person in crisis and a firearm can save lives.'
-      ]
-    },
-    {
-      heading: 'Protecting Yourself and Others',
-      body: [
-        'If someone is struggling, temporarily removing access to firearms can prevent irreversible decisions.',
-        'Safe storage—such as safes, locks, or off-site storage—is critical when risk is present.',
-        '90% of people who survive a suicide attempt do not go on to die by suicide.',
-        'Recognizing warning signs and acting early can save a life.'
-      ]
-    },
-    {
-      heading: 'Responsibility Beyond the Gun',
-      body: [
-        'Carrying a firearm is not just about defense—it includes responsibility for safety, legality, and awareness.',
-        'Good judgment includes knowing when NOT to act.',
-        'Your responsibility includes protecting yourself, your family, and others from harm—including preventable harm.',
-        'True readiness includes both legal knowledge and mental awareness.'
-      ]
-    }
-  ],
-
-  scenarios: [
-    {
-      prompt: 'You are carrying legally in Louisiana and enter a courthouse. What is the correct action?',
-      choices: [
-        'Continue carrying because permitless carry is allowed',
-        'Secure the firearm before entering',
-        'Conceal it better',
-        'Only remove it if asked'
-      ],
-      answer: 1,
-      explanation: 'Courthouses are prohibited locations regardless of permit status.'
-    },
-    {
-      prompt: 'You are carrying and are stopped by law enforcement. What are you required to do?',
-      choices: [
-        'Say nothing unless asked',
-        'Immediately notify the officer you are carrying',
-        'Hide the firearm',
-        'Exit the vehicle quickly'
-      ],
-      answer: 1,
-      explanation: 'Louisiana law requires notification when interacting with law enforcement.'
-    },
-    {
-      prompt: 'A friend is going through a serious emotional crisis and has access to firearms. What is the safest response?',
-      choices: [
-        'Do nothing unless they ask for help',
-        'Encourage them to keep the firearm for protection',
-        'Help create distance between them and the firearm temporarily',
-        'Ignore it—it is their responsibility'
-      ],
-      answer: 2,
-      explanation: 'Time and distance during a crisis significantly reduce risk of suicide.'
-    },
-    {
-      prompt: 'Which situation most clearly makes carrying illegal?',
-      choices: [
-        'Carrying while sober in public',
-        'Carrying in a restaurant',
-        'Carrying while under the influence of alcohol',
-        'Carrying with a holster'
-      ],
-      answer: 2,
-      explanation: 'Carrying under the influence is prohibited and illegal.'
-    },
-    {
-      prompt: 'What is the most responsible mindset when carrying a firearm?',
-      choices: [
-        'Use it whenever you feel unsafe',
-        'Avoid problems and act only when legally justified',
-        'Show force early to prevent conflict',
-        'Assume worst-case and act immediately'
-      ],
-      answer: 1,
-      explanation: 'Avoidance, restraint, and legal justification define responsible carry.'
-    }
-  ]
-}
+  {
+    id: 8,
+    slug: 'louisiana-firearm-law',
+    title: 'Louisiana Firearm Law',
+    estTime: '30–40 min',
+    summary: 'This lesson covers Louisiana carry law, restricted locations, notification requirements, impairment restrictions, and legal responsibility before, during, and after carrying a firearm.',
+    sections: [
+      {
+        heading: 'Permitless Carry in Louisiana',
+        body: [
+          'As of July 4, 2024, Louisiana allows permitless concealed carry for eligible individuals 18 years or older who are not prohibited from possessing firearms.',
+          'Permitless carry does not remove legal responsibility or location restrictions.',
+          'Students must understand that lawful possession and lawful carry are not the same as lawful use of force.'
+        ]
+      },
+      {
+        heading: 'Where You Cannot Carry',
+        body: [
+          'Restricted places include courthouses, law enforcement facilities, detention facilities, schools, polling places, and certain government buildings.',
+          'Carry is also restricted in airport secure areas and in places where private property owners prohibit firearms.',
+          'Students must know location law before carrying, not after an incident.'
+        ]
+      },
+      {
+        heading: 'Notification and Law Enforcement Contacts',
+        body: [
+          'When approached by law enforcement while carrying, you must notify the officer that you are armed.',
+          'You must comply with lawful instructions, including temporary disarming when required.',
+          'Failure to handle law-enforcement interaction correctly can create avoidable legal problems.'
+        ]
+      },
+      {
+        heading: 'Alcohol, Drugs, and Negligent Carry',
+        body: [
+          'Carrying while under the influence of alcohol or controlled substances is prohibited.',
+          'Impairment reduces judgment, reaction, and control, even before a person feels visibly intoxicated.',
+          'Unsafe or negligent carry can bring fines, criminal exposure, and possible forfeiture of the firearm.'
+        ]
+      },
+      {
+        heading: 'Use of Force and Legal Review',
+        body: [
+          'Even when a person carries legally, every use-of-force decision can still be reviewed by investigators, prosecutors, and courts.',
+          'Being armed lawfully does not justify threatening behavior, escalation, or reckless choices.',
+          'Responsible carry means avoiding conflict whenever possible and acting only when legally justified.'
+        ]
+      }
+    ],
+    scenarios: [
+      {
+        prompt: 'You are carrying legally in Louisiana and realize you are about to enter a courthouse. What is the correct action?',
+        choices: [
+          'Continue carrying because permitless carry is allowed',
+          'Secure the firearm before entering',
+          'Conceal it better and keep moving',
+          'Only remove it if someone notices'
+        ],
+        answer: 1,
+        explanation: 'Courthouses are prohibited carry locations regardless of permitless carry status.'
+      },
+      {
+        prompt: 'You are carrying and a law enforcement officer approaches you during an official interaction. What are you required to do?',
+        choices: [
+          'Say nothing unless directly asked about weapons',
+          'Immediately notify the officer that you are carrying',
+          'Keep your hands hidden and wait',
+          'Exit the interaction quickly'
+        ],
+        answer: 1,
+        explanation: 'Louisiana law requires notification during official law-enforcement contact.'
+      },
+      {
+        prompt: 'A person is yelling at you in public but has made no threat and shown no weapon. What is the most responsible response?',
+        choices: [
+          'Display your firearm to discourage them',
+          'Escalate first so you stay in control',
+          'Create distance and avoid escalation',
+          'Warn them you are armed'
+        ],
+        answer: 2,
+        explanation: 'Legal carry does not justify force or threats where no immediate deadly threat exists.'
+      }
+    ]
+  },
+  {
+    id: 9,
+    slug: 'mental-readiness-and-responsibility',
+    title: 'Mental Readiness and Responsibility',
+    estTime: '30–40 min',
+    summary: 'This lesson covers trauma response, stress, substance impairment, suicide prevention, warning signs, coping strategies, and the responsibility to protect life by reducing access to lethal means during crises.',
+    sections: [
+      {
+        heading: 'Trauma and Stress Responses',
+        body: [
+          'After traumatic events, people may experience fear, irritability, hypervigilance, guilt, emotional swings, or detachment.',
+          'Stress can affect judgment, memory, sleep, appetite, and emotional control.',
+          'Recognizing these reactions is part of responsible firearm ownership.'
+        ]
+      },
+      {
+        heading: 'Healthy Coping Strategies',
+        body: [
+          'Helpful coping methods include talking to trusted people, engaging support systems, exercise, prayer, reflection, and professional counseling when needed.',
+          'Recovery is not one-size-fits-all; different people respond differently to trauma.',
+          'Ignoring stress does not remove its effect on judgment.'
+        ]
+      },
+      {
+        heading: 'Alcohol, Drugs, and Judgment',
+        body: [
+          'Alcohol and drugs can slow reaction time, impair judgment, increase aggression, and reduce impulse control.',
+          'Mental health stress and substance abuse often overlap.',
+          'A person under emotional strain should not use alcohol or drugs as a coping tool around firearms.'
+        ]
+      },
+      {
+        heading: 'Suicide Prevention and Warning Signs',
+        body: [
+          'Most firearm deaths are suicides, not homicides.',
+          'Warning signs include hopelessness, talking about death, feeling like a burden, isolation, reckless behavior, and dramatic mood changes.',
+          'Talking about suicide does not cause suicide; asking direct questions can open the door to intervention.'
+        ]
+      },
+      {
+        heading: 'Protective Action and Responsibility',
+        body: [
+          'If someone is in crisis, separation from firearms and other lethal means can save a life.',
+          'Never leave a suicidal person alone if risk appears imminent.',
+          'Responsible firearm ownership includes protecting family, friends, and yourself during periods of emotional crisis.'
+        ]
+      }
+    ],
+    scenarios: [
+      {
+        prompt: 'A close friend says they feel trapped, hopeless, and like a burden, and they have access to firearms. What is the best response?',
+        choices: [
+          'Ignore the comment unless they make a direct threat',
+          'Listen, take it seriously, and help reduce access to firearms while getting support',
+          'Tell them not to talk like that again',
+          'Assume they are only venting'
+        ],
+        answer: 1,
+        explanation: 'Hopelessness and burden language are warning signs; support and means reduction are responsible actions.'
+      },
+      {
+        prompt: 'You are emotionally overwhelmed and not thinking clearly after a personal crisis. What is the most responsible decision regarding carry?',
+        choices: [
+          'Carry anyway because your emotions are private',
+          'Drink to calm down and then carry later',
+          'Recognize impairment and avoid carrying until stable',
+          'Carry only if you stay close to home'
+        ],
+        answer: 2,
+        explanation: 'Mental and emotional instability reduce judgment. Responsible carry requires self-awareness and restraint.'
+      },
+      {
+        prompt: 'A family member begins withdrawing, sleeping poorly, and giving away important belongings. What does responsible ownership require?',
+        choices: [
+          'Nothing unless they ask for help',
+          'Take warning signs seriously and reduce access to firearms while seeking help',
+          'Wait to see if it gets worse',
+          'Avoid discussing it because it may upset them'
+        ],
+        answer: 1,
+        explanation: 'These are classic warning signs that require attention, support, and safety planning.'
+      }
+    ]
+  },
+  {
+    id: 10,
+    slug: 'final-evaluation',
+    title: 'Final Evaluation',
+    estTime: '30–45 min',
+    summary: 'This final certification assessment combines Louisiana firearm law, mental readiness, judgment, and responsibility. Critical mistakes result in automatic failure.',
+    sections: [
+      {
+        heading: 'Final Certification Standard',
+        body: [
+          'This evaluation determines readiness for live training.',
+          'You must demonstrate both legal understanding and responsible judgment.',
+          'Certain dangerous answers are marked as critical and cause automatic failure.',
+          'This is not practice — this is validation.'
+        ]
+      }
+    ],
+    scenarios: [
+      {
+        prompt: 'Someone steals your property and runs away. There is no immediate threat to life. What is the correct response?',
+        choices: [
+          'Use deadly force to stop them',
+          'Draw your firearm to intimidate them',
+          'Disengage and call law enforcement',
+          'Chase aggressively and confront them'
+        ],
+        answer: 2,
+        explanation: 'Property alone does not justify deadly force.'
+      },
+      {
+        prompt: 'A close friend is in emotional crisis and has access to firearms. What is the most responsible action?',
+        choices: [
+          'Leave them alone to cool off',
+          'Encourage them to keep a firearm close for security',
+          'Help create separation from firearms and get support',
+          'Avoid involvement because it is personal'
+        ],
+        answer: 2,
+        explanation: 'Crisis intervention and reduced access to lethal means can save lives.'
+      }
+    ]
+  }
 ];
 
 /* Compatibility layer for pages that expect window.LESSON_CONTENT */
@@ -752,25 +831,69 @@ window.QUIZ_BANK = {
     { q: 'Which student best understood Lesson 7?', choices: ['The one who keeps improving from the fundamentals upward', 'The one who thinks advanced equals skipping basics', 'The one who thinks one class is enough forever', 'The one who believes only gear matters'], answer: 0, explanation: 'That best reflects the chapter.' }
   ],
   8: [
-    { q: 'What does the online portion of the BSA course mainly accomplish?', choices: ['It prepares students with concepts and vocabulary before the live class', 'It completely replaces live instruction and range work', 'It exists only for recordkeeping', 'It automatically issues the permit'], answer: 0, explanation: 'The BSA final review treats the online portion as preparation, not replacement.' },
-    { q: 'True or False: Passing the online quizzes means the live classroom and range qualification are no longer required.', type: 'tf', answer: false, explanation: 'Live review and range qualification still matter.' },
-    { q: 'What should a student bring to live class in addition to any required documents?', choices: ['Only confidence', 'The safe, teachable mindset and required equipment listed by the academy', 'Nothing if they scored high online', 'Only a screenshot of the dashboard'], answer: 1, explanation: 'The final BSA prep lesson emphasizes mindset and required equipment.' },
-    { q: 'What is the best attitude heading into the live range session?', choices: ['Try to look fast and tactical', 'Slow down, stay teachable, and focus on safe performance', 'Hide weak areas from the instructor', 'Assume equipment matters more than conduct'], answer: 1, explanation: 'The lesson emphasizes humility, honesty, and safe execution.' },
-    { q: 'True or False: The live portion is where students demonstrate safe conduct, not just memory of quiz answers.', type: 'tf', answer: true, explanation: 'That is central to the BSA final review lesson.' },
-    { q: 'If a student feels weak on one chapter, what should they do before live class?', choices: ['Ignore it and hope for the best', 'Review weak areas honestly before class', 'Skip the live class', 'Only focus on gear'], answer: 1, explanation: 'The final-prep lesson stresses reviewing weak areas before class.' },
-    { q: 'What is the best summary of “online prerequisite complete” ?', choices: ['The student is ready for the next required step, not fully finished', 'The student is fully certified', 'The range is optional now', 'Nothing further is required'], answer: 0, explanation: 'The online portion is a prerequisite, not the whole course.' },
-    { q: 'True or False: Students should know their own email and access code in case the instructor needs to verify records.', type: 'tf', answer: true, explanation: 'The lesson includes practical readiness and record awareness.' },
-    { q: 'Which statement best fits BSA’s live-class expectation?', choices: ['The instructor will review safety, legal issues, handling, and qualification standards', 'Only the online portal matters', 'Students will not handle firearms in the live class', 'The live class is just a formality'], answer: 0, explanation: 'The final review ties live completion to instruction and performance standards.' },
-    { q: 'What should matter more than ego at the live session?', choices: ['Looking experienced', 'Being safe, lawful, and competent', 'Finishing first', 'Using the most expensive equipment'], answer: 1, explanation: 'The lesson makes safety, legality, and competence the priority.' },
-    { q: 'True or False: The online prerequisite can help students arrive more prepared and confident for the live session.', type: 'tf', answer: true, explanation: 'That is one of its main goals.' },
-    { q: 'What is one sign a student understood the BSA final-prep lesson?', choices: ['They know the live portion still matters and they arrive ready to learn', 'They think the quizzes replaced the instructor', 'They focus only on gear', 'They assume the certificate is automatic'], answer: 0, explanation: 'That is the best reflection of the final lesson.' },
-    { q: 'If a student passed every quiz but shows unsafe conduct in live class, what principle from the lesson applies?', choices: ['Quiz scores override unsafe behavior', 'Safe practical conduct still matters for successful completion', 'Only paperwork matters', 'Unsafe conduct is acceptable if the student is confident'], answer: 1, explanation: 'The BSA final review makes safe practical conduct essential.' },
-    { q: 'True or False: Students should arrive ready to ask questions if something remains unclear.', type: 'tf', answer: true, explanation: 'A teachable mindset is part of preparation.' },
-    { q: 'What is the best short summary of Lesson 8?', choices: ['Online study prepares you for the live class, but final completion still requires safe instructor-verified performance', 'The online dashboard is the entire course', 'Live class is optional after passing quizzes', 'Only range speed matters now'], answer: 0, explanation: 'That best captures the custom BSA final lesson.' },
-    { q: 'What should the student do if they are unsure about a procedure during live class?', choices: ['Guess quickly so they do not look inexperienced', 'Slow down and ask for clarification', 'Copy the nearest shooter', 'Ignore the issue'], answer: 1, explanation: 'The lesson values humility and teachability over appearances.' },
-    { q: 'True or False: The final goal is to become safe, lawful, and competent rather than simply to “pass a website.”', type: 'tf', answer: true, explanation: 'That is the guiding mindset of the final lesson.' },
-    { q: 'Which answer best describes what the instructor is verifying in the live phase?', choices: ['Only attendance', 'Safe conduct, understanding, and practical performance', 'Only the email address', 'Only whether the student owns a firearm'], answer: 1, explanation: 'The live portion verifies more than memory.' },
-    { q: 'What is the best final-prep decision if a student is nervous?', choices: ['Rush through everything before class', 'Review, breathe, prepare carefully, and arrive ready to learn', 'Avoid asking questions', 'Skip the range'], answer: 1, explanation: 'Preparation and humility are the correct response.' },
-    { q: 'Which student best understood Lesson 8?', choices: ['The student who knows the online work is preparation for live instructor-led completion', 'The student who thinks the certificate is automatic', 'The student who thinks safety is secondary to speed', 'The student who believes equipment is the whole course'], answer: 0, explanation: 'That best reflects the final BSA lesson.' }
+    { q: 'As of July 4, 2024, who may generally carry concealed without a permit in Louisiana?', choices: ['Any person 18 or older who is not prohibited from possessing a firearm', 'Only people age 21 or older', 'Only people with a concealed handgun permit', 'Only active-duty military'], answer: 0, explanation: 'Louisiana expanded permitless concealed carry to eligible individuals 18 and older who are not otherwise prohibited.' },
+    { q: 'True or False: Permitless carry means there are no location restrictions.', type: 'tf', answer: false, explanation: 'Location restrictions still apply even when a permit is not required.' },
+    { q: 'Which of the following is a prohibited carry location?', choices: ['Public sidewalk', 'Courthouse', 'Private driveway', 'Open parking lot'], answer: 1, explanation: 'Courthouses remain prohibited locations.' },
+    { q: 'When approached by law enforcement while carrying concealed, what must you do?', choices: ['Say nothing unless specifically asked', 'Immediately notify the officer you are carrying', 'Hide the firearm from view', 'Exit the area quickly'], answer: 1, explanation: 'Notification is required during official law-enforcement contact.' },
+    { q: 'At what BAC level is a concealed carrier considered under the influence under the Louisiana restriction discussed in class?', choices: ['.03', '.05', '.08', '.10'], answer: 1, explanation: 'The discussed threshold is .05 BAC.' },
+    { q: 'True or False: Carrying while under the influence is legal if you still feel in control.', type: 'tf', answer: false, explanation: 'Feeling fine does not change the legal restriction.' },
+    { q: 'Which statement best reflects responsible lawful carry?', choices: ['Being armed allows stronger responses in arguments', 'Lawful carry still requires restraint, judgment, and avoidance when possible', 'Once you can carry, any threat may be met with force', 'Permitless carry removes the need to understand the law'], answer: 1, explanation: 'Legal carry requires restraint and judgment, not aggression.' },
+    { q: 'True or False: Private property owners may prohibit concealed carry on their property.', type: 'tf', answer: true, explanation: 'Private property restrictions still matter.' },
+    { q: 'Which place below best fits the carry restrictions discussed in class?', choices: ['Polling place', 'Neighborhood sidewalk', 'Private front yard with permission', 'Open field'], answer: 0, explanation: 'Polling places are among the restricted locations discussed.' },
+    { q: 'What is the best takeaway about legal carry and use of force?', choices: ['If your carry is legal, your use of force is automatically legal', 'Lawful carry status does not automatically justify force', 'A permitless carrier has broader use-of-force rights', 'Use-of-force law only matters after conviction'], answer: 1, explanation: 'Being allowed to carry does not itself justify force.' },
+    { q: 'True or False: Impairment reduces judgment even before a person feels obviously intoxicated.', type: 'tf', answer: true, explanation: 'That is one reason the law restricts carrying while under the influence.' },
+    { q: 'Which response best fits a student who understands Lesson 8?', choices: ['They know legal carry includes restrictions, responsibilities, and consequences', 'They believe permitless carry means freedom from legal review', 'They think restricted places only matter for permit holders', 'They believe notification is optional'], answer: 0, explanation: 'That is the strongest summary of the law lesson.' },
+    { q: 'Why is “where you cannot carry” such an important part of this lesson?', choices: ['Because many violations happen before any force incident ever occurs', 'Because those rules rarely matter', 'Because they only apply to out-of-state visitors', 'Because they matter only for police officers'], answer: 0, explanation: 'A person can create criminal exposure just by carrying in the wrong place.' },
+    { q: 'True or False: Negligent or unsafe carry can produce criminal penalties even without a shooting.', type: 'tf', answer: true, explanation: 'Unsafe or negligent carry itself can lead to legal consequences.' },
+    { q: 'Which is the safest response when unsure whether a location permits carry?', choices: ['Carry anyway and ask later', 'Assume permitless carry overrides the restriction', 'Verify before carrying there', 'Only worry if signage is obvious'], answer: 2, explanation: 'Students should know the law before carrying, not after an incident.' },
+    { q: 'Which statement best matches the lesson’s view of law enforcement interactions?', choices: ['Avoid speaking so you do not incriminate yourself', 'Handle the interaction calmly, notify, and comply with lawful instructions', 'Argue the law immediately roadside', 'Conceal the fact that you are armed'], answer: 1, explanation: 'The lesson stresses lawful, calm compliance in official contacts.' },
+    { q: 'True or False: Restaurants and alcohol-related venues require careful legal attention, not assumptions.', type: 'tf', answer: true, explanation: 'Students must know the difference between lawful and prohibited locations.' },
+    { q: 'What is one core lesson about lawful firearm ownership in Louisiana?', choices: ['Rights and responsibilities must travel together', 'Rights remove the need for continued learning', 'Location law is mostly optional guidance', 'Impairment matters only after a use-of-force event'], answer: 0, explanation: 'The lesson ties legal authority directly to legal responsibility.' },
+    { q: 'A student says, “Because I’m not prohibited, I can carry anywhere.” What is the correct correction?', choices: ['Correct', 'Eligibility to possess a firearm is not the same as permission to carry in every location', 'Only if the gun stays concealed', 'Only if you are over 21'], answer: 1, explanation: 'Possession eligibility does not eliminate location restrictions.' },
+    { q: 'What is the best short summary of Lesson 8?', choices: ['Legal carry in Louisiana requires knowing the law, restricted places, notification duties, and impairment rules', 'Permitless carry ends most legal risk', 'Only use-of-force law matters', 'Carrying is mainly an equipment issue'], answer: 0, explanation: 'That best captures the Louisiana Firearm Law lesson.' }
+  ],
+  9: [
+    { q: 'What is the most common type of firearm death in the U.S. according to the lesson?', choices: ['Homicide', 'Accidental discharge', 'Suicide', 'Unknown cause'], answer: 2, explanation: 'The lesson emphasizes that most firearm deaths are suicides, not homicides.' },
+    { q: 'True or False: Talking about suicide can cause someone to become suicidal.', type: 'tf', answer: false, explanation: 'The lesson teaches that talking openly can support intervention rather than cause harm.' },
+    { q: 'Which is a common emotional response after trauma?', choices: ['Only calmness', 'Fear, irritability, or hypervigilance', 'Perfect judgment', 'No reaction at all in every case'], answer: 1, explanation: 'Trauma can create a wide range of emotional responses, including fear and hypervigilance.' },
+    { q: 'Which is a healthy coping strategy discussed in the lesson?', choices: ['Heavy alcohol use to calm down', 'Ignoring the event completely', 'Talking with trusted support people', 'Increasing nicotine and stimulant use'], answer: 2, explanation: 'Support systems and healthy coping are emphasized.' },
+    { q: 'True or False: Alcohol and drugs can impair judgment, reaction time, and impulse control.', type: 'tf', answer: true, explanation: 'That is a central lesson point.' },
+    { q: 'Which of the following is a warning sign of suicide risk?', choices: ['Giving away important belongings', 'Improved long-term planning only', 'Asking good legal questions', 'Buying range equipment'], answer: 0, explanation: 'Giving away important belongings is a classic warning sign discussed in the lesson.' },
+    { q: 'What is the most responsible action if someone is in crisis and has access to firearms?', choices: ['Leave them alone to cool off', 'Encourage them to keep the firearm close', 'Reduce access to firearms and get support', 'Avoid asking direct questions'], answer: 2, explanation: 'Means reduction and support are responsible interventions.' },
+    { q: 'True or False: A suicidal person who appears calm may still be in serious danger.', type: 'tf', answer: true, explanation: 'Apparent calm does not eliminate risk.' },
+    { q: 'Which statement best reflects the lesson on stress and firearms?', choices: ['Stress has no bearing on carry decisions', 'Stress may reduce judgment and should be taken seriously', 'Stress automatically improves awareness', 'Only physical injury matters'], answer: 1, explanation: 'Stress can reduce judgment and control.' },
+    { q: 'What is one reason substance use is especially dangerous around firearms?', choices: ['It improves confidence', 'It can increase recklessness and reduce judgment', 'It improves verbal de-escalation', 'It removes emotional stress safely'], answer: 1, explanation: 'Substance use increases recklessness and impairs control.' },
+    { q: 'True or False: Never leave a suicidal person alone if danger seems imminent.', type: 'tf', answer: true, explanation: 'That is a direct intervention principle in the lesson.' },
+    { q: 'Which is a protective factor discussed in class?', choices: ['Isolation', 'Strong support systems and purpose for living', 'Greater substance use', 'Avoiding all help'], answer: 1, explanation: 'Connection, support, and purpose can be protective factors.' },
+    { q: 'What is the best response to “They were just venting, so I ignored it” when warning signs are present?', choices: ['That is always fine', 'Warning signs should be taken seriously and addressed', 'It depends only on age', 'It matters only if police are already involved'], answer: 1, explanation: 'The lesson teaches that warning signs deserve serious attention.' },
+    { q: 'True or False: Mental readiness is part of responsible firearm ownership.', type: 'tf', answer: true, explanation: 'The lesson treats emotional stability and judgment as part of responsibility.' },
+    { q: 'Which answer best reflects responsible self-awareness?', choices: ['Carry no matter how unstable you feel', 'Ignore emotional overload if you are legally allowed to carry', 'Recognize when your judgment is compromised and act accordingly', 'Drink first to calm down'], answer: 2, explanation: 'Responsible ownership requires self-awareness and restraint.' },
+    { q: 'Why is means reduction important during a crisis?', choices: ['It creates time and space that may save a life', 'It makes the person angry', 'It is only symbolic', 'It matters only after a suicide attempt'], answer: 0, explanation: 'Reducing access to lethal means during a crisis can save lives.' },
+    { q: 'True or False: Trauma responses can affect people who witnessed or heard about an event, not only direct victims.', type: 'tf', answer: true, explanation: 'The lesson specifically notes that trauma can affect more than direct participants.' },
+    { q: 'Which statement best fits the mental readiness lesson?', choices: ['Mental health has nothing to do with firearms', 'Judgment, coping, and intervention are part of firearm responsibility', 'Only legal statutes matter', 'Trauma always resolves immediately'], answer: 1, explanation: 'The lesson ties mental readiness directly to responsible ownership.' },
+    { q: 'If a person begins isolating, speaking hopelessly, and increasing substance use, what does the lesson suggest?', choices: ['Wait and see', 'Take it seriously, engage support, and reduce access to firearms', 'Avoid asking questions', 'Assume it is just stress'], answer: 1, explanation: 'Those are layered warning signs that require action.' },
+    { q: 'What is the best short summary of Lesson 9?', choices: ['Responsible firearm ownership includes mental readiness, healthy coping, and intervention when warning signs appear', 'Mental health and firearms should be discussed separately', 'Only range safety matters', 'Support systems are optional'], answer: 0, explanation: 'That best captures the mental readiness and responsibility lesson.' }
+  ],
+  10: [
+    { q: 'When is deadly force legally justified?', choices: ['To protect property alone', 'When verbally insulted', 'When facing an immediate serious threat', 'Anytime you feel uneasy'], answer: 2, explanation: 'Deadly force requires an immediate serious threat.', critical: true },
+    { q: 'Carrying while under the influence is:', choices: ['Always acceptable if you feel in control', 'Illegal when impaired', 'Allowed only at home', 'Only a problem after a shooting'], answer: 1, explanation: 'Impairment and carrying do not mix legally or responsibly.', critical: true },
+    { q: 'When approached by law enforcement while carrying, what is required?', choices: ['Say nothing', 'Notify the officer you are carrying', 'Leave immediately', 'Place your hand on the firearm'], answer: 1, explanation: 'Notification is required in official law-enforcement contact.' },
+    { q: 'Which is a prohibited carry location discussed in training?', choices: ['Courthouse', 'Sidewalk', 'Open parking lot', 'Private property with permission'], answer: 0, explanation: 'Courthouses are prohibited carry locations.' },
+    { q: 'Most firearm deaths are:', choices: ['Homicides', 'Accidents', 'Suicides', 'Undetermined'], answer: 2, explanation: 'The training stresses that most firearm deaths are suicides.', critical: true },
+    { q: 'What is the best response when someone in crisis has access to firearms?', choices: ['Ignore it unless they act', 'Reduce access to firearms and get support', 'Tell them to calm down and leave', 'Avoid asking direct questions'], answer: 1, explanation: 'Means reduction and intervention can save lives.', critical: true },
+    { q: 'Property theft alone justifies deadly force.', type: 'tf', answer: false, explanation: 'Property alone does not justify deadly force.', critical: true },
+    { q: 'Talking openly about suicide increases risk and should be avoided.', type: 'tf', answer: false, explanation: 'Talking openly can support intervention.', critical: true },
+    { q: 'Best response under uncertainty and no clear deadly threat:', choices: ['Escalate first', 'Create distance and assess', 'Display your firearm early', 'Take control physically'], answer: 1, explanation: 'Distance and assessment reduce unnecessary escalation.', critical: true },
+    { q: 'A person who is emotionally unstable should still carry if they are legally allowed to do so.', type: 'tf', answer: false, explanation: 'Legal eligibility does not erase responsibility for judgment.', critical: true },
+    { q: 'What matters most in the final evaluation?', choices: ['Speed and confidence', 'Legal knowledge and responsible judgment', 'Expensive gear', 'Aggressive mindset'], answer: 1, explanation: 'The final evaluation measures lawful, responsible judgment.' },
+    { q: 'Which answer best reflects responsible carry?', choices: ['Avoid problems and act only when legally justified', 'Show force early to stay safe', 'Carry anywhere until told otherwise', 'Use fear as your legal standard'], answer: 0, explanation: 'Avoidance and justified action are central to responsible carry.' },
+    { q: 'If you are unsure whether a location allows carry, what should you do?', choices: ['Carry anyway and ask later', 'Verify before carrying there', 'Conceal better', 'Assume permitless carry overrides the rule'], answer: 1, explanation: 'Verify first; don’t guess.' },
+    { q: 'If someone shows strong warning signs of suicide, the best approach is to:', choices: ['Stay silent so you do not upset them', 'Take it seriously, engage support, and reduce access to lethal means', 'Wait for them to bring it up again', 'Assume they are only venting'], answer: 1, explanation: 'The lesson emphasizes action, support, and safety planning.', critical: true },
+    { q: 'Why is this final evaluation different from earlier quizzes?', choices: ['It combines law and mental readiness into one judgment standard', 'It is mainly about equipment preferences', 'It replaces the live training portion', 'It matters only for recordkeeping'], answer: 0, explanation: 'This final assessment combines legal knowledge and responsible judgment.' },
+    { q: 'Stress can reduce judgment and decision quality.', type: 'tf', answer: true, explanation: 'Stress affects perception, memory, and judgment.' },
+    { q: 'The safest response to a non-deadly verbal confrontation is usually:', choices: ['Escalate verbally and physically', 'Create distance and avoid escalation', 'Draw to gain compliance', 'Close distance to dominate'], answer: 1, explanation: 'Avoidance and de-escalation are safer and more lawful.' },
+    { q: 'Responsible ownership includes protecting others from preventable harm during crisis.', type: 'tf', answer: true, explanation: 'Responsibility extends beyond personal defense to intervention and prevention.' },
+    { q: 'Which answer best fits the training standard?', choices: ['Be armed and reactive', 'Be lawful, aware, and responsible', 'Be fast at all costs', 'Be willing to intimidate'], answer: 1, explanation: 'That best reflects the training standard across law and mental readiness.' },
+    { q: 'What is the best short summary of Lesson 10?', choices: ['This is a final validation of lawful judgment, mental readiness, and responsible firearm ownership', 'This is only another quiz', 'This replaces live review', 'This mainly tests memory of definitions'], answer: 0, explanation: 'That best captures the final evaluation.' }
   ]
 };
