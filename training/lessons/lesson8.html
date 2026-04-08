@@ -8,6 +8,7 @@
 </head>
 
 <body>
+
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
@@ -41,6 +42,7 @@
 </section>
 
 <section class="panel content-card">
+
   <h3 id="scenarioTitle"></h3>
 
   <div class="callout">
@@ -108,22 +110,29 @@ function render() {
 
   el("gistList").innerHTML = s.gist.map(g => `<li>${g}</li>`).join("");
 
-  el("options").innerHTML = "";
+  // 🔥 CORRECT OPTIONS STRUCTURE
+  const optionsWrap = document.createElement("div");
+  optionsWrap.className = "options";
 
   s.options.forEach((o, i) => {
     const div = document.createElement("div");
     div.className = "option";
     div.textContent = o.text;
 
-    if (answers[s.id] === i) div.classList.add("selected");
+    if (answers[s.id] === i) {
+      div.classList.add("selected");
+    }
 
     div.onclick = () => {
       answers[s.id] = i;
       render();
     };
 
-    el("options").appendChild(div);
+    optionsWrap.appendChild(div);
   });
+
+  el("options").innerHTML = "";
+  el("options").appendChild(optionsWrap);
 
   el("prevBtn").disabled = index === 0;
   el("nextBtn").classList.toggle("hidden", index === scenarios.length - 1);
@@ -164,8 +173,6 @@ async function submit() {
     attempts: (student.progress?.[8]?.attempts || 0) + 1,
     totalQuizTimeSeconds: time,
     completedAt: new Date().toISOString(),
-
-    // CAPSTONE DATA
     capstoneCompleted: true,
     instructorReviewRequired: result.autoFail
   });
@@ -180,8 +187,18 @@ async function submit() {
     : "You must review and retake the capstone.";
 }
 
-el("nextBtn").onclick = () => { if (answers[scenarios[index].id] !== undefined) { index++; render(); }};
-el("prevBtn").onclick = () => { index--; render(); };
+el("nextBtn").onclick = () => {
+  if (answers[scenarios[index].id] !== undefined) {
+    index++;
+    render();
+  }
+};
+
+el("prevBtn").onclick = () => {
+  index--;
+  render();
+};
+
 el("submitBtn").onclick = submit;
 
 render();
