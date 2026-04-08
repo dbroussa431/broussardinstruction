@@ -1,80 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSA Final Evaluation</title>
-
-<link rel="stylesheet" href="styles.css">
-
-<style>
-/* 🔥 Quiz specific styling */
-.quiz-wrapper {
-  max-width: 900px;
-  margin: auto;
-}
-
-.quiz-block {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 16px;
-  background: #fff;
-}
-
-.quiz-block h4 {
-  margin-bottom: 12px;
-}
-
-.quiz-block label {
-  display: block;
-  margin: 6px 0;
-  cursor: pointer;
-}
-
-.quiz-block input {
-  margin-right: 8px;
-}
-
-.quiz-header {
-  margin-bottom: 20px;
-}
-
-.quiz-header h2 {
-  margin-bottom: 10px;
-}
-
-.callout.warn {
-  background: #fff3cd;
-  border-left: 5px solid #f59e0b;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.quiz-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.quiz-actions .btn {
-  min-width: 160px;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Final Evaluation</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<!-- 🔵 HEADER -->
 <header class="topbar">
   <div class="topbar-inner">
-
     <div class="brand">
-      <div class="brand-mark">
-        <img src="./images/bsa-logo.png">
-      </div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Final Evaluation</p>
@@ -84,22 +22,19 @@
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
     </div>
-
   </div>
 </header>
 
-<!-- 🔵 MAIN -->
 <main class="container">
 
-  <section class="panel content-card quiz-wrapper">
+  <section class="panel content-card">
 
-    <div class="quiz-header">
-      <span class="eyebrow">FINAL EVALUATION</span>
-      <h2 id="quizTitle"></h2>
-      <p class="muted">
-        This evaluation measures legal understanding, decision-making, and responsibility.
-      </p>
-    </div>
+    <span class="eyebrow">FINAL EVALUATION</span>
+    <h2 id="quizTitle"></h2>
+
+    <p class="muted">
+      This evaluation measures legal understanding and responsible decision-making.
+    </p>
 
     <div class="callout warn">
       <strong>This is your final validation.</strong>
@@ -112,11 +47,12 @@
 
     <form id="quizForm"></form>
 
-    <div class="quiz-actions">
+    <div class="lesson-actions">
       <button class="btn btn-blue" type="submit" form="quizForm">
         Submit Evaluation
       </button>
 
+      <!-- ✅ FIXED BUTTON -->
       <a class="btn btn-outline" id="backToLesson">
         Back to Lesson
       </a>
@@ -147,9 +83,17 @@ try {
   student = getCurrentStudent();
 }
 
-const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+// ✅ ALWAYS GET LESSON ID SAFELY
+const params = new URLSearchParams(window.location.search);
+const lessonId = Number(params.get("lesson"));
 
-// 🔴 FIXED BACK BUTTON
+// 🔴 HARD FIX — PREVENT BROKEN LOAD
+if (!lessonId) {
+  alert("Lesson ID missing — redirecting.");
+  window.location.href = "dashboard.html";
+}
+
+// ✅ FIXED BACK BUTTON (NO training/)
 document.getElementById("backToLesson").href =
   `lesson.html?lesson=${lessonId}`;
 
@@ -162,7 +106,7 @@ if (!lesson || !lesson.quiz) {
   throw new Error("Quiz missing from data.js");
 }
 
-// 🔵 TITLE
+// 🔵 SET TITLE
 document.getElementById("quizTitle").textContent =
   `${lesson.id}. ${lesson.title} — Final Evaluation`;
 
@@ -174,22 +118,20 @@ lesson.quiz.forEach((q, i) => {
   const block = document.createElement("div");
   block.className = "quiz-block";
 
-  const optionsHTML = q.options.map((opt, idx) => `
-    <label>
-      <input type="radio" name="q${i}" value="${idx}">
-      ${opt}
-    </label>
-  `).join("");
-
   block.innerHTML = `
     <h4>${i + 1}. ${q.question}</h4>
-    ${optionsHTML}
+    ${q.options.map((opt, idx) => `
+      <label>
+        <input type="radio" name="q${i}" value="${idx}">
+        ${opt}
+      </label>
+    `).join("")}
   `;
 
   form.appendChild(block);
 });
 
-// 🔵 SUBMIT HANDLER
+// 🔵 SUBMIT
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -209,12 +151,11 @@ form.addEventListener("submit", async (e) => {
 
   if (percent >= 80) {
     await setLessonQuizPassed(lessonId);
-    alert("PASSED — Returning to dashboard");
+    alert("PASSED");
     window.location.href = "dashboard.html";
   } else {
-    alert("FAILED — Review Lesson 8 carefully before retrying.");
+    alert("FAILED — Review Lesson 8.");
   }
-
 });
 
 </script>
