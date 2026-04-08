@@ -7,88 +7,174 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
-        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
-      </div>
-      <div class="top-actions">
-        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Scenario Review</p>
       </div>
     </div>
-  </header>
 
-  <main class="container">
-    <section class="panel content-card">
-      <span class="eyebrow">2 short scenarios before the quiz</span>
-      <h2 id="scenarioTitle"></h2>
-      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
-      <div id="scenarioWrap"></div>
-      <div id="scenarioResults" class="hidden"></div>
-      <div class="lesson-actions">
-        <button class="btn btn-blue" id="submitScenarioBtn" type="button">Submit Scenario Review</button>
-        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
+    <div class="top-actions">
+      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+      <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="panel content-card">
+
+    <span class="eyebrow">Scenario-Based Decision Training</span>
+    <h2 id="scenarioTitle"></h2>
+
+    <div class="notice warn small">
+      You must complete all scenarios before moving to the quiz.
+    </div>
+
+    <div id="scenarioWrap"></div>
+
+    <div id="scenarioResults" class="hidden"></div>
+
+    <div class="lesson-actions">
+      <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
+      <a class="btn btn-outline" id="quizLink">Continue to Quiz</a>
+      <a class="btn btn-light" id="backToLesson">Back to Lesson</a>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="data.js"></script>
+
+<script type="module">
+
+import {
+  requireLogin,
+  refreshCurrentStudentFromFirestore,
+  getCurrentStudent,
+  lessonSequenceUnlocked,
+  getScenarioQuestionsForLesson,
+  setScenarioCompleted
+} from "./app.js";
+
+requireLogin();
+
+const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+
+// 🔒 LOCK CHECK
+if (!lessonSequenceUnlocked(lessonId, student)) {
+  window.location.href = "dashboard.html";
+}
+
+// 🔵 LOAD LESSON
+const lesson = window.LESSONS.find(l => l.id === lessonId);
+
+if (!lesson) {
+  document.getElementById("scenarioWrap").innerHTML = "<p>Lesson not found.</p>";
+  throw new Error("Lesson missing");
+}
+
+// 🔧 DETERMINE SCENARIO COUNT
+let scenarioCount = 2;
+if (lessonId === 8 || lessonId === 9) scenarioCount = 3;
+if (lessonId === 10) scenarioCount = 5;
+
+// 🔵 LOAD SCENARIOS
+const scenarios = getScenarioQuestionsForLesson(lesson.id, scenarioCount);
+
+// TITLES / ROUTING
+document.getElementById("scenarioTitle").textContent =
+  `${lesson.id}. ${lesson.title} — Scenario Review`;
+
+document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
+document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
+document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
+
+// BUILD UI
+const wrap = document.getElementById("scenarioWrap");
+
+scenarios.forEach((sc, index) => {
+
+  const block = document.createElement("div");
+  block.className = "scenario-block";
+
+  block.innerHTML = `
+    <div class="scenario-header">Scenario ${index + 1}</div>
+    <p>${sc.prompt}</p>
+  `;
+
+  const options = document.createElement("div");
+  options.className = "scenario-options";
+
+  sc.choices.forEach((choice, i) => {
+
+    const label = document.createElement("label");
+
+    label.innerHTML = `
+      <input type="radio" name="scenario_${index}" value="${i}">
+      ${String.fromCharCode(65 + i)}. ${choice}
+    `;
+
+    options.appendChild(label);
+  });
+
+  block.appendChild(options);
+  wrap.appendChild(block);
+});
+
+// 🔥 SUBMIT LOGIC
+document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
+
+  let correct = 0;
+  let html = "";
+
+  scenarios.forEach((sc, index) => {
+
+    const selected = document.querySelector(`input[name="scenario_${index}"]:checked`);
+    const selectedIndex = selected ? Number(selected.value) : -1;
+
+    const isCorrect = selectedIndex === sc.answer;
+    if (isCorrect) correct++;
+
+    html += `
+      <div class="review-item">
+        <p><strong>Scenario ${index + 1}</strong></p>
+        <p><strong>Your Answer:</strong> ${selectedIndex >= 0 ? sc.choices[selectedIndex] : "No answer selected"}</p>
+        <p><strong>Best Answer:</strong> ${sc.choices[sc.answer]}</p>
+        <p>${sc.explanation}</p>
       </div>
-    </section>
-  </main>
+    `;
+  });
 
-  <script src="data.js"></script>
-  <script type="module">
-    import {
-      requireLogin,
-      refreshCurrentStudentFromFirestore,
-      getCurrentStudent,
-      lessonSequenceUnlocked,
-      getScenarioQuestionsForLesson,
-      setScenarioCompleted
-    } from "./app.js";
+  const score = Math.round((correct / scenarios.length) * 100);
 
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+  const bannerClass = score >= 70 ? "pass" : "retake";
 
-    if (!lessonSequenceUnlocked(lessonId, student)) {
-      window.location.href = "dashboard.html";
-    }
+  const banner = `
+    <div class="banner ${bannerClass}">
+      Score: ${score}% — ${score >= 70 ? "Scenario Complete" : "Review Recommended"}
+    </div>
+  `;
 
-    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-    const scenarios = getScenarioQuestionsForLesson(lesson.id, 2);
+  const resultsBox = document.getElementById("scenarioResults");
+  resultsBox.innerHTML = banner + html;
+  resultsBox.classList.remove("hidden");
 
-    document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
-    document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
-    document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
+  // ✅ Mark complete no matter what (scenarios are training, not gate)
+  await setScenarioCompleted(lesson.id);
 
-    const wrap = document.getElementById("scenarioWrap");
-    scenarios.forEach((sc, index) => {
-      const card = document.createElement("div");
-      card.className = "scenario-card";
-      card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
-      const list = document.createElement("div");
-      list.className = "answer-list";
-      sc.choices.forEach((choice, i) => {
-        const label = document.createElement("label");
-        label.className = "answer-option";
-        label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65+i)}. ${choice}`;
-        list.appendChild(label);
-      });
-      card.appendChild(list);
-      wrap.appendChild(card);
-    });
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
-    document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
-      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
-      scenarios.forEach((sc, index) => {
-        const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
-        const pickedIndex = picked ? Number(picked.value) : -1;
-        html += `<div class="review-item"><p><strong>Scenario ${index + 1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : 'No answer selected'}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
-      });
-      document.getElementById("scenarioResults").innerHTML = html;
-      document.getElementById("scenarioResults").classList.remove("hidden");
-      await setScenarioCompleted(lesson.id);
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    });
-  </script>
+});
+
+</script>
+
 </body>
 </html>
