@@ -7,224 +7,88 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-mark">
-        <img src="./images/bsa-logo.png" alt="BSA logo">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+        <div><h1>Broussard Shooting Academy</h1><p>Scenario Review</p></div>
       </div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Scenario Review</p>
+      <div class="top-actions">
+        <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
       </div>
     </div>
+  </header>
 
-    <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
-    </div>
-  </div>
-</header>
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">2 short scenarios before the quiz</span>
+      <h2 id="scenarioTitle"></h2>
+      <p class="muted">Choose the best answer for each scenario. Explanations appear after you submit.</p>
+      <div id="scenarioWrap"></div>
+      <div id="scenarioResults" class="hidden"></div>
+      <div class="lesson-actions">
+        <button class="btn btn-blue" id="submitScenarioBtn" type="button">Submit Scenario Review</button>
+        <a class="btn btn-outline" id="quizLink" href="#">Continue to Quiz</a>
+      </div>
+    </section>
+  </main>
 
-<main class="container">
+  <script src="data.js"></script>
+  <script type="module">
+    import {
+      requireLogin,
+      refreshCurrentStudentFromFirestore,
+      getCurrentStudent,
+      lessonSequenceUnlocked,
+      getScenarioQuestionsForLesson,
+      setScenarioCompleted
+    } from "./app.js";
 
-  <section class="panel content-card">
+    requireLogin();
+    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+    const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-    <span class="eyebrow">Scenario Evaluation</span>
-
-    <h2 id="scenarioTitle"></h2>
-
-    <p class="muted">
-      Apply judgment, restraint, and legal understanding. This is not about speed — it's about correct decisions.
-    </p>
-
-    <div id="scenarioWrap"></div>
-
-    <div id="scenarioResults" class="hidden"></div>
-
-    <div class="lesson-actions">
-      <button class="btn btn-blue" id="submitScenarioBtn" type="button">
-        Submit Scenario Review
-      </button>
-
-      <a class="btn btn-outline" id="quizLink" href="#">
-        Continue to Quiz
-      </a>
-    </div>
-
-  </section>
-
-</main>
-
-<script src="data.js"></script>
-
-<script type="module">
-
-import {
-  requireLogin,
-  refreshCurrentStudentFromFirestore,
-  getCurrentStudent,
-  lessonSequenceUnlocked,
-  getScenarioQuestionsForLesson,
-  setScenarioCompleted
-} from "./app.js";
-
-requireLogin();
-
-let student = null;
-
-try {
-  student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-} catch (e) {
-  console.error("Student load error:", e);
-  student = getCurrentStudent();
-}
-
-const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-
-// 🔒 LOCK CONTROL
-if (!lessonSequenceUnlocked(lessonId, student)) {
-  window.location.href = "dashboard.html";
-}
-
-// 🔵 LESSON DATA
-const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
-
-// ===============================
-// 🔥 LESSON 8 HARD OVERRIDE
-// ===============================
-
-let scenarios = [];
-
-if (lessonId === 8) {
-
-  scenarios = [
-    {
-      prompt: "You are carrying legally and someone grabs your bag and runs away. There is no direct threat to your life.",
-      choices: [
-        "Use deadly force immediately",
-        "Chase aggressively and confront them",
-        "Create distance and call law enforcement",
-        "Draw your weapon to intimidate"
-      ],
-      answer: 2,
-      explanation: "Property alone does NOT justify deadly force. The correct response is to disengage and notify authorities."
-    },
-    {
-      prompt: "A situation feels tense, but no weapon or clear threat is present.",
-      choices: [
-        "Act immediately to control the situation",
-        "Wait for clear legal justification before escalating",
-        "Draw your weapon to be safe",
-        "Assume the worst-case scenario"
-      ],
-      answer: 1,
-      explanation: "You must have clear justification before escalating. Acting prematurely creates legal and safety risks."
-    },
-    {
-      prompt: "Someone is yelling aggressively but has not threatened harm.",
-      choices: [
-        "Escalate to gain control",
-        "Display your weapon to deter them",
-        "Create distance and avoid escalation",
-        "Physically engage"
-      ],
-      answer: 2,
-      explanation: "Avoidance and de-escalation are always preferred when there is no immediate threat."
+    if (!lessonSequenceUnlocked(lessonId, student)) {
+      window.location.href = "dashboard.html";
     }
-  ];
 
-} else {
+    const lesson = window.LESSONS.find((l) => l.id === lessonId) || window.LESSONS[0];
+    const scenarios = getScenarioQuestionsForLesson(lesson.id, 2);
 
-  // fallback for other lessons
-  scenarios = getScenarioQuestionsForLesson(lesson.id, 2) || [];
+    document.getElementById("scenarioTitle").textContent = `${lesson.id}. ${lesson.title} — Scenario Review`;
+    document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
+    document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
 
-}
+    const wrap = document.getElementById("scenarioWrap");
+    scenarios.forEach((sc, index) => {
+      const card = document.createElement("div");
+      card.className = "scenario-card";
+      card.innerHTML = `<h4>Scenario ${index + 1}</h4><p>${sc.prompt}</p>`;
+      const list = document.createElement("div");
+      list.className = "answer-list";
+      sc.choices.forEach((choice, i) => {
+        const label = document.createElement("label");
+        label.className = "answer-option";
+        label.innerHTML = `<input type="radio" name="scenario_${index}" value="${i}" style="margin-right:8px"> ${String.fromCharCode(65+i)}. ${choice}`;
+        list.appendChild(label);
+      });
+      card.appendChild(list);
+      wrap.appendChild(card);
+    });
 
-// ===============================
-// 🔵 BUILD UI
-// ===============================
-
-document.getElementById("scenarioTitle").textContent =
-  `${lesson.id}. ${lesson.title} — Scenario Review`;
-
-document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
-document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
-
-const wrap = document.getElementById("scenarioWrap");
-
-scenarios.forEach((sc, index) => {
-
-  const card = document.createElement("div");
-  card.className = "scenario-card";
-
-  card.innerHTML = `
-    <h4>Scenario ${index + 1}</h4>
-    <p>${sc.prompt}</p>
-  `;
-
-  const list = document.createElement("div");
-  list.className = "answer-list";
-
-  sc.choices.forEach((choice, i) => {
-    const label = document.createElement("label");
-    label.className = "answer-option";
-
-    label.innerHTML = `
-      <input type="radio" name="scenario_${index}" value="${i}">
-      ${String.fromCharCode(65 + i)}. ${choice}
-    `;
-
-    list.appendChild(label);
-  });
-
-  card.appendChild(list);
-  wrap.appendChild(card);
-
-});
-
-// ===============================
-// 🔵 SUBMIT LOGIC
-// ===============================
-
-document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
-
-  let html = `
-    <div class="banner pass">
-      Scenario review completed. Review your decisions carefully.
-    </div>
-  `;
-
-  scenarios.forEach((sc, index) => {
-
-    const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
-    const pickedIndex = picked ? Number(picked.value) : -1;
-
-    html += `
-      <div class="review-item">
-        <p><strong>Scenario ${index + 1}</strong></p>
-        <p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : "No answer selected"}</p>
-        <p>Correct answer: ${sc.choices[sc.answer]}</p>
-        <p class="muted">${sc.explanation}</p>
-      </div>
-    `;
-  });
-
-  const results = document.getElementById("scenarioResults");
-  results.innerHTML = html;
-  results.classList.remove("hidden");
-
-  await setScenarioCompleted(lesson.id);
-
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth"
-  });
-
-});
-
-</script>
-
+    document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
+      let html = '<div class="banner pass">Scenario review completed. Explanations shown below.</div>';
+      scenarios.forEach((sc, index) => {
+        const picked = document.querySelector(`input[name="scenario_${index}"]:checked`);
+        const pickedIndex = picked ? Number(picked.value) : -1;
+        html += `<div class="review-item"><p><strong>Scenario ${index + 1}</strong></p><p>Your answer: ${pickedIndex >= 0 ? sc.choices[pickedIndex] : 'No answer selected'}</p><p>Best answer: ${sc.choices[sc.answer]}</p><p>${sc.explanation}</p></div>`;
+      });
+      document.getElementById("scenarioResults").innerHTML = html;
+      document.getElementById("scenarioResults").classList.remove("hidden");
+      await setScenarioCompleted(lesson.id);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    });
+  </script>
 </body>
 </html>
