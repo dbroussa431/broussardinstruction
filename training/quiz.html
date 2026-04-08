@@ -6,43 +6,39 @@
   <title>BSA Quiz</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Lesson Quiz</p>
-      </div>
+      <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
     </div>
-    <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-    </div>
+    <a class="btn btn-light" href="dashboard.html">Dashboard</a>
   </div>
 </header>
 
 <main class="container">
 
-  <section class="panel content-card" id="quizPanel">
-    <span class="eyebrow">20 randomized questions • pass at 80%</span>
-    <h2 id="quizTitle"></h2>
+<section class="panel content-card" id="quizPanel">
 
-    <p class="muted">
-      Answer all questions. A score of 80% or higher is required to pass.
-    </p>
+<span class="eyebrow">Final Evaluation • Pass at 80%</span>
+<h2 id="quizTitle"></h2>
 
-    <div id="quizWrap" class="q-list"></div>
+<p class="muted">
+This evaluation measures legal understanding and responsible decision-making.
+</p>
 
-    <div class="lesson-actions">
-      <button class="btn btn-blue" id="submitQuizBtn" type="button">Submit Quiz</button>
-      <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
-    </div>
-  </section>
+<div id="quizWrap"></div>
 
-  <section id="resultPanel" class="results-grid hidden" style="margin-top:24px"></section>
+<div class="lesson-actions">
+<button class="btn btn-blue" id="submitQuizBtn">Submit Quiz</button>
+<a class="btn btn-outline" id="backLessonLink">Back to Lesson</a>
+</div>
+
+</section>
+
+<section id="resultPanel" class="results-grid hidden"></section>
 
 </main>
 
@@ -56,6 +52,7 @@ import {
   refreshCurrentStudentFromFirestore,
   getCurrentStudent,
   getLessonProgress,
+  getAttemptCount,
   getQuizQuestionsForLesson,
   recordQuizResult,
   clearActiveQuiz
@@ -64,53 +61,142 @@ import {
 requireLogin();
 
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-const lesson = window.LESSONS.find(l => l.id === lessonId) || window.LESSONS[0];
 
-document.getElementById("quizTitle").textContent = `${lesson.id}. ${lesson.title} — Quiz`;
-document.getElementById("backLessonLink").href = `lesson.html?lesson=${lesson.id}`;
+const lesson = window.LESSONS.find(l => l.id === lessonId);
 
-clearActiveQuiz(lessonId);
+document.getElementById("quizTitle").textContent =
+  `${lesson.id}. ${lesson.title} — Final Evaluation`;
+
+document.getElementById("backLessonLink").href =
+  `lesson.html?lesson=${lesson.id}`;
+
+// ===============================
+// 🔥 LESSON 8 OVERRIDE (CRITICAL)
+// ===============================
+
+let selectedQuestions = [];
+
+if (lessonId === 8) {
+
+  selectedQuestions = [
+
+    {
+      q: "When is deadly force legally justified?",
+      choices: [
+        "To protect property",
+        "When verbally threatened",
+        "When facing an immediate serious threat",
+        "Anytime you feel unsafe"
+      ],
+      answer: 2,
+      explanation: "Deadly force requires an immediate and serious threat to life."
+    },
+
+    {
+      q: "Carrying under the influence becomes illegal at what BAC?",
+      choices: [".08", ".05", ".10", "Any amount"],
+      answer: 1,
+      explanation: ".05 BAC meets the legal definition of being under the influence."
+    },
+
+    {
+      q: "What is the most common type of firearm death?",
+      choices: ["Homicide", "Accidental", "Suicide", "Unknown"],
+      answer: 2,
+      explanation: "Most firearm deaths are suicides, not homicides."
+    },
+
+    {
+      q: "What is the safest response during uncertainty?",
+      choices: [
+        "Act immediately",
+        "Show force",
+        "Create distance and assess",
+        "Engage quickly"
+      ],
+      answer: 2,
+      explanation: "Distance and assessment reduce unnecessary escalation."
+    },
+
+    {
+      q: "Does property theft justify deadly force?",
+      choices: ["Yes", "No"],
+      answer: 1,
+      explanation: "Deadly force is not justified for property alone."
+    },
+
+    {
+      q: "What is the best response to a mental health crisis involving firearms?",
+      choices: [
+        "Ignore it",
+        "Encourage firearm access",
+        "Create distance from firearms",
+        "Wait for it to pass"
+      ],
+      answer: 2,
+      explanation: "Time and distance significantly reduce risk."
+    },
+
+    {
+      q: "Where is carry prohibited?",
+      choices: [
+        "Public sidewalks",
+        "Courthouses",
+        "Parking lots",
+        "Private homes"
+      ],
+      answer: 1,
+      explanation: "Courthouses are prohibited locations."
+    },
+
+    {
+      q: "When approached by law enforcement while carrying:",
+      choices: [
+        "Say nothing",
+        "Notify immediately",
+        "Hide weapon",
+        "Leave"
+      ],
+      answer: 1,
+      explanation: "You must notify law enforcement."
+    }
+
+  ];
+
+} else {
+
+  clearActiveQuiz(lessonId);
+  selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
+
+}
+
+// ===============================
+// 🔵 RENDER QUIZ
+// ===============================
 
 const quizWrap = document.getElementById("quizWrap");
-const selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
 
-// 🔥 RENDER QUESTIONS (ORIGINAL STYLE)
-selectedQuestions.forEach((item, idx) => {
+selectedQuestions.forEach((q, i) => {
 
   const card = document.createElement("div");
   card.className = "question-card";
 
-  const title = document.createElement("h4");
-  title.textContent = `${idx + 1}. ${item.q}`;
-  card.appendChild(title);
+  card.innerHTML = `<h4>${i + 1}. ${q.q}</h4>`;
 
   const options = document.createElement("div");
-  options.className = "options";
 
-  const choices = item.type === "tf" ? ["True", "False"] : item.choices;
+  q.choices.forEach((choice, j) => {
 
-  choices.forEach((choice, i) => {
+    const label = document.createElement("label");
 
-    const option = document.createElement("label");
-    option.className = "option";
+    label.innerHTML = `
+      <input type="radio" name="q_${i}" value="${j}">
+      ${choice}
+    `;
 
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = `q_${idx}`;
-    input.value = item.type === "tf"
-      ? (i === 0 ? "true" : "false")
-      : i;
-
-    option.appendChild(input);
-    option.append(` ${choice}`);
-
-    option.addEventListener("click", () => {
-      options.querySelectorAll(".option").forEach(el => el.classList.remove("selected"));
-      option.classList.add("selected");
-    });
-
-    options.appendChild(option);
+    options.appendChild(label);
 
   });
 
@@ -119,41 +205,29 @@ selectedQuestions.forEach((item, idx) => {
 
 });
 
-// 🔥 SUBMIT
-document.getElementById("submitQuizBtn").addEventListener("click", async () => {
+// ===============================
+// 🔵 SUBMIT
+// ===============================
+
+document.getElementById("submitQuizBtn").onclick = async () => {
 
   let correct = 0;
   const details = [];
 
-  selectedQuestions.forEach((item, idx) => {
+  selectedQuestions.forEach((q, i) => {
 
-    const picked = document.querySelector(`input[name="q_${idx}"]:checked`);
+    const picked = document.querySelector(`input[name=q_${i}]:checked`);
+    const selected = picked ? Number(picked.value) : -1;
 
-    let isCorrect = false;
-    let yourAnswer = "No answer selected";
-    let correctAnswer = "";
-
-    if (item.type === "tf") {
-      correctAnswer = item.answer ? "True" : "False";
-      if (picked) {
-        yourAnswer = picked.value === "true" ? "True" : "False";
-        isCorrect = String(item.answer) === picked.value;
-      }
-    } else {
-      correctAnswer = item.choices[item.answer];
-      if (picked) {
-        yourAnswer = item.choices[Number(picked.value)];
-        isCorrect = Number(picked.value) === item.answer;
-      }
-    }
+    const isCorrect = selected === q.answer;
 
     if (isCorrect) correct++;
 
     details.push({
-      question: item.q,
-      yourAnswer,
-      correctAnswer,
-      explanation: item.explanation,
+      question: q.q,
+      yourAnswer: selected >= 0 ? q.choices[selected] : "None",
+      correctAnswer: q.choices[q.answer],
+      explanation: q.explanation,
       isCorrect
     });
 
@@ -161,34 +235,31 @@ document.getElementById("submitQuizBtn").addEventListener("click", async () => {
 
   const score = Math.round((correct / selectedQuestions.length) * 100);
 
-  await recordQuizResult(lessonId, score, details, 0);
+  await recordQuizResult(lessonId, score, details);
 
   renderResults(score, details);
 
-});
+};
 
-// 🔥 RESULTS
+// ===============================
+// 🔵 RESULTS
+// ===============================
+
 function renderResults(score, details) {
 
   const passed = score >= PASSING_SCORE;
-  const resultPanel = document.getElementById("resultPanel");
 
-  resultPanel.classList.remove("hidden");
+  const panel = document.getElementById("resultPanel");
 
-  resultPanel.innerHTML = `
-    <div class="panel result-card">
-      <div class="banner ${passed ? "pass" : "retake"}">
-        ${passed ? "PASS" : "RETAKE REQUIRED"} • Score: ${score}%
-      </div>
+  panel.classList.remove("hidden");
 
-      <div class="lesson-actions">
-        ${passed
-          ? `<a class="btn btn-blue" href="lesson.html?lesson=${lessonId + 1}">Next Lesson</a>`
-          : `<a class="btn btn-danger" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>`
-        }
-      </div>
+  panel.innerHTML = `
+    <div class="panel">
+      <h3>${passed ? "PASS" : "FAIL"} — ${score}%</h3>
+      ${passed ? "<p>You are ready.</p>" : "<p>Retake required.</p>"}
     </div>
   `;
+
 }
 
 </script>
