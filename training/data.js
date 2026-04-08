@@ -456,100 +456,72 @@ window.LESSONS = [
   },
 {
   id: 8,
-  slug: 'bsa-final-review',
-  title: 'BSA Final Review & Live-Class Prep',
-  estTime: '20 min',
-  summary: 'This final capstone lesson consolidates everything learned throughout the course and prepares students for real-world application, instructor evaluation, and live-fire qualification. This is not review—it is readiness.',
+  slug: 'final-readiness-evaluation',
+  title: 'Final Readiness Evaluation',
+  estTime: '30–45 min',
+  summary: 'Final capstone evaluation of legal judgment, decision-making, and responsible firearm behavior.',
   sections: [
     {
-      heading: 'Capstone Mindset: This Is Evaluation',
+      heading: 'This Is Your Final Validation',
       body: [
-        'This is not just another lesson. This is your transition from learning to being evaluated.',
-        'Everything covered so far—awareness, firearm safety, legal understanding, and decision-making—comes together here.',
-        'You are no longer just absorbing information. You are expected to apply it correctly and safely.',
-        'The goal is not perfection—it is safe, controlled, and responsible behavior under supervision.'
+        'This is not another lesson. This is your final evaluation.',
+        'Everything you have learned—safety, law, awareness, and judgment—comes together here.',
+        'You are expected to apply knowledge correctly, not just recognize it.',
+        'Your decisions must reflect real-world responsibility and restraint.'
       ]
     },
     {
-      heading: 'What the Online Training Actually Did',
+      heading: 'Critical Legal Principles',
       body: [
-        'The online course built your mental framework—how to think, not just what to do.',
-        'You learned awareness, avoidance, legal boundaries, and firearm handling concepts.',
-        'But knowledge alone is not enough—this must now be demonstrated in real-world conditions.',
-        'The live class verifies that you can safely apply what you learned—not just remember it.'
+        'Deadly force requires an immediate and serious threat to life.',
+        'Property alone does NOT justify deadly force.',
+        'You are responsible for every decision you make while carrying.',
+        'Avoidance and de-escalation are always preferred when possible.'
       ]
     },
     {
-      heading: 'Live Class Reality: What You Will Be Judged On',
+      heading: 'Decision-Making Under Stress',
       body: [
-        'You are being evaluated on safety, not speed.',
-        'You are being evaluated on judgment, not confidence.',
-        'You are being evaluated on control, not aggression.',
-        'The instructor is watching how you think, move, and handle the firearm—not just whether you hit the target.'
-      ]
-    },
-    {
-      heading: 'Critical Safety Expectations',
-      body: [
-        'Muzzle discipline must be consistent at all times.',
-        'Trigger discipline must be maintained unless actively engaging.',
-        'You must follow all commands immediately and without hesitation.',
-        'If you are unsure—STOP and ask. That is a sign of control, not weakness.'
-      ]
-    },
-    {
-      heading: 'Mental Readiness Under Stress',
-      body: [
-        'Nervousness is normal—but rushing is dangerous.',
-        'Slow is smooth, smooth is safe.',
-        'Focus on process: grip, stance, sights, trigger—not outcome.',
-        'You are not trying to impress—you are trying to demonstrate safe competence.'
-      ]
-    },
-    {
-      heading: 'Final Preparation Checklist',
-      body: [
-        'Bring all required documents and identification.',
-        'Bring proper eye and ear protection.',
-        'Know your login/email in case verification is needed.',
-        'Review any weak areas before arrival—especially safety and legal concepts.',
-        'Arrive early and mentally prepared—not rushed.'
+        'Fast decisions are not always correct decisions.',
+        'Control and judgment matter more than speed or confidence.',
+        'If you escalate incorrectly, you own the consequences.',
+        'The safest decision is often to disengage and create distance.'
       ]
     }
   ],
   scenarios: [
     {
-      prompt: 'You arrive at the range and feel nervous. Your instinct is to rush through instructions so you don’t hold anyone up. What is the correct response?',
+      prompt: 'You are carrying legally and someone grabs your bag and runs away. They are not threatening you directly. What is the correct response?',
       choices: [
-        'Move faster so you look confident',
-        'Slow down, listen carefully, and prioritize safety over speed',
-        'Watch others and copy them quickly',
-        'Skip questions to avoid attention'
-      ],
-      answer: 1,
-      explanation: 'The capstone lesson emphasizes controlled, deliberate behavior over speed or appearance.'
-    },
-    {
-      prompt: 'During instruction, you are unsure about a command but think you understand it “well enough.” What should you do?',
-      choices: [
-        'Proceed anyway to avoid slowing the class',
-        'Ask for clarification before acting',
-        'Watch someone else and guess',
-        'Wait until later to fix it'
-      ],
-      answer: 1,
-      explanation: 'Safe students clarify uncertainty immediately. Guessing under live-fire conditions is unacceptable.'
-    },
-    {
-      prompt: 'A student shoots quickly but breaks muzzle discipline slightly between strings. What matters more according to the lesson?',
-      choices: [
-        'Speed and target hits',
-        'Confidence and aggression',
-        'Strict safety and control',
-        'Finishing first'
+        'Use deadly force to stop them',
+        'Chase aggressively and confront them',
+        'Create distance and call authorities',
+        'Draw your weapon to intimidate them'
       ],
       answer: 2,
-      explanation: 'Safety violations override performance. Control is the standard—not speed.'
+      explanation: 'Property alone does NOT justify deadly force. The correct response is to disengage and report.'
+    },
+    {
+      prompt: 'A situation feels tense, but no weapon or clear threat is present. What should guide your decision?',
+      choices: [
+        'Act immediately to control the situation',
+        'Wait for clear justification before escalating',
+        'Draw your weapon to be safe',
+        'Assume the worst-case scenario'
+      ],
+      answer: 1,
+      explanation: 'Deadly force requires a clear and immediate threat—not uncertainty or discomfort.'
+    },
+    {
+      prompt: 'What is the safest and most legally sound response in most uncertain situations?',
+      choices: [
+        'Take control quickly',
+        'Show force early',
+        'Create distance and avoid escalation',
+        'Engage to prevent risk'
+      ],
+      answer: 2,
+      explanation: 'Avoidance and de-escalation are the safest and most legally defensible actions.'
     }
   ]
 }
