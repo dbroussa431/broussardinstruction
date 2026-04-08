@@ -3,128 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson 8 - Final Readiness</title>
+  <title>Lesson 8 - Final Capstone Evaluation</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-mark">
-        <img src="../images/bsa-logo.png" alt="BSA logo">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="../images/bsa-logo.png" alt="BSA logo">
+        </div>
+        <div>
+          <h1>Broussard Shooting Academy</h1>
+          <p>Final Capstone Evaluation</p>
+        </div>
       </div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Final Validation</p>
+      <div class="top-actions">
+        <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
+        <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main class="container">
+  <main class="container">
+    <section class="panel content-card">
+      <span class="eyebrow">Lesson 8</span>
+      <h2 id="lessonTitle">Final Readiness Capstone</h2>
+      <p id="lessonIntro">
+        This capstone measures judgment, restraint, decision-making, and lawful response under pressure.
+        Read each scenario carefully and choose the safest and most legally sound option.
+      </p>
 
-  <!-- TITLE -->
-  <section class="panel">
-    <h2>Lesson 8: Final Readiness Check</h2>
-    <p>This final module reinforces legal judgment and real-world decision-making. Read carefully and respond based on lawful and responsible carry behavior.</p>
-  </section>
-
-  <!-- CHECKPOINT -->
-  <section class="panel">
-
-    <!-- GIST -->
-    <div class="lesson-gist">
-      <h3>Law Checkpoint 2</h3>
-      <ul>
-        <li>Deadly force requires an immediate, serious threat</li>
-        <li>Property alone does NOT justify deadly force</li>
-        <li>Avoid escalation whenever possible</li>
-      </ul>
-    </div>
-
-    <!-- SCENARIO -->
-    <div class="scenario-box">
-      <strong>Scenario:</strong> Someone grabs your property and runs away. They are not threatening you directly.
-    </div>
-
-    <!-- QUESTIONS -->
-    <div class="question-block">
-
-      <!-- Q1 -->
-      <div class="question">
-        <p><strong>1. Is deadly force justified?</strong></p>
-        <label><input type="radio" name="q1"> Yes if the property is valuable</label>
-        <label><input type="radio" name="q1"> Yes if you feel threatened</label>
-        <label><input type="radio" name="q1"> No, property alone is not enough</label>
-        <label><input type="radio" name="q1"> Only at night</label>
+      <div class="callout">
+        <strong>Capstone Rules</strong>
+        <ul>
+          <li>This is a final decision-based evaluation, not a normal quiz.</li>
+          <li>You must score at least <strong id="passScoreLabel">80%</strong> to pass.</li>
+          <li>Certain clearly unlawful deadly-force answers can trigger an automatic fail.</li>
+          <li>Your time, score, attempt count, and results are saved to your student record.</li>
+        </ul>
       </div>
 
-      <!-- Q2 -->
-      <div class="question">
-        <p><strong>2. Deadly force requires:</strong></p>
-        <label><input type="radio" name="q2"> Loss of property</label>
-        <label><input type="radio" name="q2"> Immediate serious threat</label>
-        <label><input type="radio" name="q2"> Verbal conflict</label>
-        <label><input type="radio" name="q2"> Anger</label>
+      <div class="info-card">
+        <p><strong>Evaluation Areas:</strong> Legal judgment, de-escalation, tactical decision-making, and responsible aftermath actions.</p>
+      </div>
+    </section>
+
+    <section class="panel content-card">
+      <div class="section-head" style="margin-top:0;">
+        <div>
+          <h3 id="scenarioHeading">Scenario 1</h3>
+          <p id="scenarioDomainLine">Domain: —</p>
+        </div>
+        <div class="badge" id="scenarioCountBadge">1 / 1</div>
       </div>
 
-      <!-- Q3 -->
-      <div class="question">
-        <p><strong>3. What is the safest and legally sound response?</strong></p>
-        <label><input type="radio" name="q3"> Chase aggressively</label>
-        <label><input type="radio" name="q3"> Draw your weapon immediately</label>
-        <label><input type="radio" name="q3"> Create distance and call authorities</label>
-        <label><input type="radio" name="q3"> Physically engage</label>
+      <div class="callout">
+        <strong>Gist</strong>
+        <ul id="gistList"></ul>
       </div>
 
-    </div>
+      <div class="info-card">
+        <p><strong>Scenario:</strong> <span id="scenarioText"></span></p>
+      </div>
 
-    <!-- ACTION -->
-    <div class="lesson-actions">
-      <button class="btn btn-blue" onclick="submitCheckpoint()">Submit Answers</button>
-    </div>
+      <div class="q-list">
+        <div class="question-card">
+          <h4 id="questionText"></h4>
+          <div class="options" id="optionsWrap"></div>
+        </div>
+      </div>
 
-    <!-- FEEDBACK -->
-    <div id="feedbackBox" class="panel" style="display:none; margin-top:20px;"></div>
+      <div class="flex-row" style="margin-top:18px;">
+        <button class="btn btn-outline" id="prevBtn" type="button">Previous</button>
+        <button class="btn btn-blue" id="nextBtn" type="button">Next</button>
+        <button class="btn btn-gold hidden" id="submitBtn" type="button">Submit Capstone</button>
+      </div>
 
-  </section>
+      <div class="notice info" id="selectionNotice" style="margin-top:18px;">
+        Select one answer to continue.
+      </div>
+    </section>
 
-</main>
+    <section class="panel content-card hidden" id="resultsPanel">
+      <h3>Capstone Results</h3>
+      <div class="results-grid">
+        <div class="result-card panel">
+          <small class="muted">Outcome</small>
+          <h2 id="resultStatus" style="margin:6px 0 0;">—</h2>
+        </div>
+        <div class="result-card panel">
+          <small class="muted">Score</small>
+          <h2 id="resultScore" style="margin:6px 0 0;">—</h2>
+        </div>
+      </div>
 
-<script>
-function submitCheckpoint() {
-  const q1 = document.querySelector('input[name="q1"]:checked');
-  const q2 = document.querySelector('input[name="q2"]:checked');
-  const q3 = document.querySelector('input[name="q3"]:checked');
-  const feedback = document.getElementById("feedbackBox");
+      <div id="resultBanner" class="banner" style="margin-top:18px;"></div>
 
-  if (!q1 || !q2 || !q3) {
-    alert("Please answer all questions.");
-    return;
-  }
+      <div class="info-card">
+        <p><strong>Automatic Fail Triggered:</strong> <span id="autoFailLabel">No</span></p>
+        <p><strong>Instructor Review Required:</strong> <span id="instructorReviewLabel">No</span></p>
+        <p><strong>Time Spent:</strong> <span id="timeSpentLabel">—</span></p>
+      </div>
 
-  let score = 0;
+      <div class="section-head">
+        <div>
+          <h3>Scenario Review</h3>
+          <p>Your selections across the capstone.</p>
+        </div>
+      </div>
+      <div id="reviewList"></div>
 
-  if (q1.parentElement.textContent.includes("No, property alone")) score++;
-  if (q2.parentElement.textContent.includes("Immediate serious threat")) score++;
-  if (q3.parentElement.textContent.includes("Create distance")) score++;
+      <div class="flex-row" style="margin-top:18px;">
+        <a class="btn btn-light" href="../dashboard.html">Return to Dashboard</a>
+      </div>
+    </section>
+  </main>
 
-  feedback.style.display = "block";
+  <script src="../data.js"></script>
+  <script type="module">
+    import {
+      requireLogin,
+      refreshCurrentStudentFromFirestore,
+      getCurrentStudent,
+      getLessonProgress,
+      saveStudentProgress,
+      logout
+    } from "../app.js";
 
-  if (score === 3) {
-    feedback.innerHTML = `
-      <h3>Correct</h3>
-      <p>You demonstrated proper understanding of lawful use of force and de-escalation.</p>
-    `;
-  } else {
-    feedback.innerHTML = `
-      <h3>Review Required</h3>
-      <p>Deadly force is only justified under immediate serious threat. Property alone is not enough, and escalation should be avoided.</p>
-    `;
-  }
-}
-</script>
+    requireLogin();
+    let student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 
+    const lessonId = 8;
+    const lessonData = window.LESSON8_CAPSTONE;
+    const startTime = Date.now();
+
+    const lessonTitle = document.getElementById("lessonTitle");
+    const lessonIntro = document.getElementById("lessonIntro");
+    const passScoreLabel = document.getElementById("passScoreLabel");
+
+    const scenarioHeading = document.getElementById("scenarioHeading");
+    const scenarioDomainLine = document.getElementById("scenarioDomainLine");
+    const scenarioCountBadge = document.getElementById("scenarioCountBadge");
+    const gistList = document.getElementById("gistList");
+    const scenarioText = document.getElementById("scenarioText");
+    const questionText = document.getElementById("questionText");
+    const optionsWrap = document.getElementById("optionsWrap");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const selectionNotice = document.getElementById("selectionNotice");
+
+    const resultsPanel = document.getElementById("resultsPanel");
+    const resultStatus = document.getElementById("resultStatus");
+    const resultScore = document.getElementById("resultScore");
+    const resultBanner = document.getElementById("resultBanner");
+    const autoFailLabel = document.getElementById("autoFailLabel");
+    const instructorReviewLabel = document.getElementById("instructorReviewLabel");
+    const timeSpentLabel = document.getElementById("timeSpentLabel");
+    const reviewList = document.getElementById("reviewList");
+
+    lessonTitle.textContent = lessonData.title;
+    lessonIntro.textContent = lessonData.intro;
+    passScoreLabel.textContent = `${lessonData.passScore}%`;
+
+    let currentIndex = 0;
+    let answers = {};
+    let submitted = false;
+
+    const previousProgress = getLessonProgress(lessonId, student);
+    const priorAttempts = Number(previousProgress?.attempts || 0);
+
+    function renderScenario() {
+      const scenario = lessonData.scenarios[currentIndex];
+
+      scenarioHeading.textContent = scenario.title;
+      scenarioDomainLine.textContent = `Domain: ${scenario.domainLabel}`;
+      scenarioCountBadge.textContent = `${currentIndex + 1} / ${lessonData.scenarios.length}`;
+
+      gistList.innerHTML = "";
+      scenario.gist.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        gistList.appendChild(li);
+      });
+
+      scenarioText.textContent = scenario.scenario;
+      questionText.textContent = scenario.question;
+      optionsWrap.innerHTML = "";
+
+      scenario.options.forEach((option, optionIndex) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.textContent = option.text;
+        div.dataset.index = String(optionIndex);
+
+        if (answers[scenario.id] === optionIndex) {
+          div.classList.add("selected");
+        }
+
+        div.addEventListener("click", () => {
+          if (submitted) return;
+          optionsWrap.querySelectorAll(".option").forEach((o) => o.classList.remove("selected"));
+          div.classList.add("selected");
+          answers[scenario.id] = optionIndex;
+          selectionNotice.className = "notice ok";
+          selectionNotice.textContent = "Answer selected.";
+        });
+
+        optionsWrap.appendChild(div);
+      });
+
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.classList.toggle("hidden", currentIndex === lessonData.scenarios.length - 1);
+      submitBtn.classList.toggle("hidden", currentIndex !== lessonData.scenarios.length - 1);
+
+      selectionNotice.className = "notice info";
+      selectionNotice.textContent = answers[scenario.id] === undefined
+        ? "Select one answer to continue."
+        : "Answer selected.";
+    }
+
+    function requireSelectionBeforeAdvance() {
+      const scenario = lessonData.scenarios[currentIndex];
+      if (answers[scenario.id] === undefined) {
+        selectionNotice.className = "notice warn";
+        selectionNotice.textContent = "Choose one answer before continuing.";
+        return false;
+      }
+      return true;
+    }
+
+    function calculateResults() {
+      let totalEarned = 0;
+      let totalPossible = 0;
+      let autoFail = false;
+      let instructorReviewRequired = false;
+
+      const scenarioResults = lessonData.scenarios.map((scenario) => {
+        const selectedIndex = answers[scenario.id];
+        const selectedOption = scenario.options[selectedIndex];
+        const optionWeight = Number(selectedOption?.weight || 0);
+        const isCorrect = selectedOption?.correct === true;
+        const optionAutoFail = selectedOption?.autoFail === true;
+
+        if (scenario.critical && optionAutoFail) {
+          autoFail = true;
+        }
+
+        if (selectedOption?.reviewFlag) {
+          instructorReviewRequired = true;
+        }
+
+        totalEarned += optionWeight * (scenario.weight / 100);
+        totalPossible += 100 * (scenario.weight / 100);
+
+        return {
+          scenarioId: scenario.id,
+          title: scenario.title,
+          domain: scenario.domain,
+          critical: !!scenario.critical,
+          selected: selectedOption?.text || "",
+          correct: isCorrect,
+          earnedWeight: optionWeight,
+          maxWeight: 100,
+          autoFail: optionAutoFail
+        };
+      });
+
+      const score = totalPossible > 0 ? Math.round((totalEarned / totalPossible) * 100) : 0;
+      const passed = !autoFail && score >= lessonData.passScore;
+
+      return {
+        score,
+        passed,
+        autoFail,
+        instructorReviewRequired,
+        scenarioResults
+      };
+    }
+
+    function formatSeconds(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${mins}m ${secs}s`;
+    }
+
+    function renderReview(results, timeSpentSeconds) {
+      resultsPanel.classList.remove("hidden");
+
+      resultStatus.textContent = results.passed ? "Passed" : "Review Required";
+      resultScore.textContent = `${results.score}%`;
+
+      resultBanner.className = results.passed ? "banner pass" : "banner retake";
+      resultBanner.innerHTML = results.passed
+        ? "You passed the capstone. Your student record has been updated."
+        : "You did not pass the capstone. Review the lesson material and retake when ready.";
+
+      autoFailLabel.textContent = results.autoFail ? "Yes" : "No";
+      instructorReviewLabel.textContent = results.instructorReviewRequired ? "Yes" : "No";
+      timeSpentLabel.textContent = formatSeconds(timeSpentSeconds);
+
+      reviewList.innerHTML = "";
+      results.scenarioResults.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "review-item";
+        div.innerHTML = `
+          <p><strong>${item.title}</strong></p>
+          <p><strong>Domain:</strong> ${item.domain}</p>
+          <p><strong>Your Answer:</strong> ${item.selected}</p>
+          <p><strong>Result:</strong> ${item.correct ? "Correct" : "Needs Review"}</p>
+          <p><strong>Critical Scenario:</strong> ${item.critical ? "Yes" : "No"}</p>
+        `;
+        reviewList.appendChild(div);
+      });
+
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    async function submitCapstone() {
+      const unanswered = lessonData.scenarios.some((s) => answers[s.id] === undefined);
+      if (unanswered) {
+        selectionNotice.className = "notice warn";
+        selectionNotice.textContent = "Complete all scenarios before submitting.";
+        return;
+      }
+
+      if (submitted) return;
+      submitted = true;
+
+      const timeSpentSeconds = Math.floor((Date.now() - startTime) / 1000);
+      const results = calculateResults();
+
+      if (!student.lessons) student.lessons = {};
+      const existing = student.lessons[lessonId] || {};
+
+      student.lessons[lessonId] = {
+        ...existing,
+        contentViewed: true,
+        scenarioCompleted: true,
+        quizPassed: results.passed,
+        passed: results.passed,
+        score: results.score,
+        bestScore: Math.max(Number(existing.bestScore || 0), results.score),
+        latestScore: results.score,
+        attempts: priorAttempts + 1,
+        startedAt: existing.startedAt || new Date(startTime).toISOString(),
+        completedAt: new Date().toISOString(),
+        timeSpentSeconds,
+        instructorReviewRequired: results.instructorReviewRequired || results.autoFail,
+        autoFailTriggered: results.autoFail,
+        scenarioResults: results.scenarioResults,
+        capstoneCompleted: true
+      };
+
+      await saveStudentProgress(student);
+      renderReview(results, timeSpentSeconds);
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderScenario();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (!requireSelectionBeforeAdvance()) return;
+      if (currentIndex < lessonData.scenarios.length - 1) {
+        currentIndex++;
+        renderScenario();
+      }
+    });
+
+    submitBtn.addEventListener("click", submitCapstone);
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      logout();
+      window.location.href = "../login.html";
+    });
+
+    renderScenario();
+  </script>
 </body>
 </html>
