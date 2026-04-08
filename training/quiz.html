@@ -1,44 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Quiz</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSA Final Evaluation</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* 🔥 Quiz specific styling */
+.quiz-wrapper {
+  max-width: 900px;
+  margin: auto;
+}
+
+.quiz-block {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.quiz-block h4 {
+  margin-bottom: 12px;
+}
+
+.quiz-block label {
+  display: block;
+  margin: 6px 0;
+  cursor: pointer;
+}
+
+.quiz-block input {
+  margin-right: 8px;
+}
+
+.quiz-header {
+  margin-bottom: 20px;
+}
+
+.quiz-header h2 {
+  margin-bottom: 10px;
+}
+
+.callout.warn {
+  background: #fff3cd;
+  border-left: 5px solid #f59e0b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.quiz-actions .btn {
+  min-width: 160px;
+}
+</style>
+
 </head>
+
 <body>
 
+<!-- 🔵 HEADER -->
 <header class="topbar">
   <div class="topbar-inner">
+
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
-      <div><h1>Broussard Shooting Academy</h1><p>Lesson Quiz</p></div>
+      <div class="brand-mark">
+        <img src="./images/bsa-logo.png">
+      </div>
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Final Evaluation</p>
+      </div>
     </div>
-    <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+
+    <div class="top-actions">
+      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+    </div>
+
   </div>
 </header>
 
+<!-- 🔵 MAIN -->
 <main class="container">
 
-<section class="panel content-card" id="quizPanel">
+  <section class="panel content-card quiz-wrapper">
 
-<span class="eyebrow">Final Evaluation • Pass at 80%</span>
-<h2 id="quizTitle"></h2>
+    <div class="quiz-header">
+      <span class="eyebrow">FINAL EVALUATION</span>
+      <h2 id="quizTitle"></h2>
+      <p class="muted">
+        This evaluation measures legal understanding, decision-making, and responsibility.
+      </p>
+    </div>
 
-<p class="muted">
-This evaluation measures legal understanding and responsible decision-making.
-</p>
+    <div class="callout warn">
+      <strong>This is your final validation.</strong>
+      <ul>
+        <li>Minimum passing score: 80%</li>
+        <li>Incorrect decisions may result in failure</li>
+        <li>This determines readiness for live training</li>
+      </ul>
+    </div>
 
-<div id="quizWrap"></div>
+    <form id="quizForm"></form>
 
-<div class="lesson-actions">
-<button class="btn btn-blue" id="submitQuizBtn">Submit Quiz</button>
-<a class="btn btn-outline" id="backLessonLink">Back to Lesson</a>
-</div>
+    <div class="quiz-actions">
+      <button class="btn btn-blue" type="submit" form="quizForm">
+        Submit Evaluation
+      </button>
 
-</section>
+      <a class="btn btn-outline" id="backToLesson">
+        Back to Lesson
+      </a>
+    </div>
 
-<section id="resultPanel" class="results-grid hidden"></section>
+  </section>
 
 </main>
 
@@ -47,220 +131,91 @@ This evaluation measures legal understanding and responsible decision-making.
 <script type="module">
 
 import {
-  PASSING_SCORE,
   requireLogin,
   refreshCurrentStudentFromFirestore,
   getCurrentStudent,
-  getLessonProgress,
-  getAttemptCount,
-  getQuizQuestionsForLesson,
-  recordQuizResult,
-  clearActiveQuiz
+  setLessonQuizPassed
 } from "./app.js";
 
 requireLogin();
 
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+let student;
+
+try {
+  student = await refreshCurrentStudentFromFirestore();
+} catch {
+  student = getCurrentStudent();
+}
 
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
+// 🔴 FIXED BACK BUTTON
+document.getElementById("backToLesson").href =
+  `lesson.html?lesson=${lessonId}`;
+
+// 🔵 LOAD LESSON
 const lesson = window.LESSONS.find(l => l.id === lessonId);
 
+if (!lesson || !lesson.quiz) {
+  document.getElementById("quizForm").innerHTML =
+    "<p>Quiz not found.</p>";
+  throw new Error("Quiz missing from data.js");
+}
+
+// 🔵 TITLE
 document.getElementById("quizTitle").textContent =
   `${lesson.id}. ${lesson.title} — Final Evaluation`;
 
-document.getElementById("backLessonLink").href =
-  `lesson.html?lesson=${lesson.id}`;
+const form = document.getElementById("quizForm");
 
-// ===============================
-// 🔥 LESSON 8 OVERRIDE (CRITICAL)
-// ===============================
+// 🔵 BUILD QUESTIONS
+lesson.quiz.forEach((q, i) => {
 
-let selectedQuestions = [];
+  const block = document.createElement("div");
+  block.className = "quiz-block";
 
-if (lessonId === 8) {
+  const optionsHTML = q.options.map((opt, idx) => `
+    <label>
+      <input type="radio" name="q${i}" value="${idx}">
+      ${opt}
+    </label>
+  `).join("");
 
-  selectedQuestions = [
-
-    {
-      q: "When is deadly force legally justified?",
-      choices: [
-        "To protect property",
-        "When verbally threatened",
-        "When facing an immediate serious threat",
-        "Anytime you feel unsafe"
-      ],
-      answer: 2,
-      explanation: "Deadly force requires an immediate and serious threat to life."
-    },
-
-    {
-      q: "Carrying under the influence becomes illegal at what BAC?",
-      choices: [".08", ".05", ".10", "Any amount"],
-      answer: 1,
-      explanation: ".05 BAC meets the legal definition of being under the influence."
-    },
-
-    {
-      q: "What is the most common type of firearm death?",
-      choices: ["Homicide", "Accidental", "Suicide", "Unknown"],
-      answer: 2,
-      explanation: "Most firearm deaths are suicides, not homicides."
-    },
-
-    {
-      q: "What is the safest response during uncertainty?",
-      choices: [
-        "Act immediately",
-        "Show force",
-        "Create distance and assess",
-        "Engage quickly"
-      ],
-      answer: 2,
-      explanation: "Distance and assessment reduce unnecessary escalation."
-    },
-
-    {
-      q: "Does property theft justify deadly force?",
-      choices: ["Yes", "No"],
-      answer: 1,
-      explanation: "Deadly force is not justified for property alone."
-    },
-
-    {
-      q: "What is the best response to a mental health crisis involving firearms?",
-      choices: [
-        "Ignore it",
-        "Encourage firearm access",
-        "Create distance from firearms",
-        "Wait for it to pass"
-      ],
-      answer: 2,
-      explanation: "Time and distance significantly reduce risk."
-    },
-
-    {
-      q: "Where is carry prohibited?",
-      choices: [
-        "Public sidewalks",
-        "Courthouses",
-        "Parking lots",
-        "Private homes"
-      ],
-      answer: 1,
-      explanation: "Courthouses are prohibited locations."
-    },
-
-    {
-      q: "When approached by law enforcement while carrying:",
-      choices: [
-        "Say nothing",
-        "Notify immediately",
-        "Hide weapon",
-        "Leave"
-      ],
-      answer: 1,
-      explanation: "You must notify law enforcement."
-    }
-
-  ];
-
-} else {
-
-  clearActiveQuiz(lessonId);
-  selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
-
-}
-
-// ===============================
-// 🔵 RENDER QUIZ
-// ===============================
-
-const quizWrap = document.getElementById("quizWrap");
-
-selectedQuestions.forEach((q, i) => {
-
-  const card = document.createElement("div");
-  card.className = "question-card";
-
-  card.innerHTML = `<h4>${i + 1}. ${q.q}</h4>`;
-
-  const options = document.createElement("div");
-
-  q.choices.forEach((choice, j) => {
-
-    const label = document.createElement("label");
-
-    label.innerHTML = `
-      <input type="radio" name="q_${i}" value="${j}">
-      ${choice}
-    `;
-
-    options.appendChild(label);
-
-  });
-
-  card.appendChild(options);
-  quizWrap.appendChild(card);
-
-});
-
-// ===============================
-// 🔵 SUBMIT
-// ===============================
-
-document.getElementById("submitQuizBtn").onclick = async () => {
-
-  let correct = 0;
-  const details = [];
-
-  selectedQuestions.forEach((q, i) => {
-
-    const picked = document.querySelector(`input[name=q_${i}]:checked`);
-    const selected = picked ? Number(picked.value) : -1;
-
-    const isCorrect = selected === q.answer;
-
-    if (isCorrect) correct++;
-
-    details.push({
-      question: q.q,
-      yourAnswer: selected >= 0 ? q.choices[selected] : "None",
-      correctAnswer: q.choices[q.answer],
-      explanation: q.explanation,
-      isCorrect
-    });
-
-  });
-
-  const score = Math.round((correct / selectedQuestions.length) * 100);
-
-  await recordQuizResult(lessonId, score, details);
-
-  renderResults(score, details);
-
-};
-
-// ===============================
-// 🔵 RESULTS
-// ===============================
-
-function renderResults(score, details) {
-
-  const passed = score >= PASSING_SCORE;
-
-  const panel = document.getElementById("resultPanel");
-
-  panel.classList.remove("hidden");
-
-  panel.innerHTML = `
-    <div class="panel">
-      <h3>${passed ? "PASS" : "FAIL"} — ${score}%</h3>
-      ${passed ? "<p>You are ready.</p>" : "<p>Retake required.</p>"}
-    </div>
+  block.innerHTML = `
+    <h4>${i + 1}. ${q.question}</h4>
+    ${optionsHTML}
   `;
 
-}
+  form.appendChild(block);
+});
+
+// 🔵 SUBMIT HANDLER
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  let correct = 0;
+
+  lesson.quiz.forEach((q, i) => {
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+
+    if (selected && Number(selected.value) === q.answer) {
+      correct++;
+    }
+  });
+
+  const percent = Math.round((correct / lesson.quiz.length) * 100);
+
+  alert(`Score: ${percent}%`);
+
+  if (percent >= 80) {
+    await setLessonQuizPassed(lessonId);
+    alert("PASSED — Returning to dashboard");
+    window.location.href = "dashboard.html";
+  } else {
+    alert("FAILED — Review Lesson 8 carefully before retrying.");
+  }
+
+});
 
 </script>
 
