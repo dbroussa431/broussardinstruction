@@ -2,98 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson 8 - Louisiana Law and Mental Health</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
 
-<div class="container">
-  <header class="header">
-    <h1>BSA Training Portal</h1>
-    <button onclick="window.location.href='../dashboard.html'">Dashboard</button>
-  </header>
+<header class="topbar">
+  <div class="topbar-inner">
 
-  <main id="lesson-container"></main>
-</div>
-
-<script src="../data.js"></script>
-<script>
-
-const lessonId = 8;
-const lesson = window.LESSONS.find(l => l.id === lessonId);
-
-const container = document.getElementById('lesson-container');
-
-function renderLesson() {
-  if (!lesson) {
-    container.innerHTML = '<p>Lesson not found.</p>';
-    return;
-  }
-
-  let html = `
-    <div class="lesson-card">
-      <h2>${lesson.title}</h2>
-      <p>${lesson.summary}</p>
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="../images/bsa-logo.png">
+      </div>
+      <div>
+        <h1>BSA Training Portal</h1>
+        <p>Lesson Summary</p>
+      </div>
     </div>
-  `;
 
-  lesson.sections.forEach(section => {
-    html += `
-      <div class="lesson-card">
-        <h3>${section.heading}</h3>
-        <ul>
-          ${section.body.map(item => `<li>${item}</li>`).join('')}
-        </ul>
-      </div>
-    `;
-  });
+    <div class="top-actions">
+      <a class="btn btn-light" href="../dashboard.html">Dashboard</a>
+      <a class="btn btn-gold" href="../scenario.html?lesson=8">Continue to Scenarios</a>
+    </div>
 
-  html += `<div class="lesson-card"><h3>Scenarios</h3>`;
+  </div>
+</header>
 
-  lesson.scenarios.forEach((scenario, index) => {
-    html += `
-      <div class="scenario">
-        <p><strong>Scenario ${index + 1}:</strong> ${scenario.prompt}</p>
-        ${scenario.choices.map((choice, i) => `
-          <label>
-            <input type="radio" name="q${index}" value="${i}">
-            ${choice}
-          </label><br>
-        `).join('')}
-      </div>
-    `;
-  });
+<main class="container">
 
-  html += `
-    <button onclick="submitAnswers()">Submit Answers</button>
-    <div id="results"></div>
-  </div>`;
+  <section class="panel hero-main">
 
-  container.innerHTML = html;
-}
+    <span class="pill">SELF-CONTAINED LESSON GIST</span>
 
-function submitAnswers() {
-  let score = 0;
+    <h2>8. Louisiana Law and Mental Health</h2>
 
-  lesson.scenarios.forEach((scenario, index) => {
-    const selected = document.querySelector(`input[name=\"q${index}\"]:checked`);
+    <p>
+      This lesson covers Louisiana-specific firearm law, permitless carry updates,
+      legal responsibilities, prohibited locations, and the critical role of mental
+      health awareness, suicide prevention, and responsible firearm storage.
+    </p>
 
-    if (selected && parseInt(selected.value) === scenario.answer) {
-      score++;
-    }
-  });
+    <!-- SECTION 1 -->
+    <div class="lesson-block">
+      <h3>Louisiana Carry Law (2024 Update)</h3>
+      <ul>
+        <li>Permitless concealed carry is allowed for eligible individuals 18+.</li>
+        <li>All legal restrictions still apply even without a permit.</li>
+        <li>Prohibited persons include felons, unlawful drug users, and certain mental health adjudications.</li>
+      </ul>
+    </div>
 
-  const percent = Math.round((score / lesson.scenarios.length) * 100);
+    <!-- SECTION 2 -->
+    <div class="lesson-block">
+      <h3>Where You CANNOT Carry</h3>
+      <ul>
+        <li>Courthouses, law enforcement buildings, and detention facilities.</li>
+        <li>Schools, polling places, and government buildings.</li>
+        <li>Bars and establishments serving alcohol.</li>
+        <li>Private property where firearms are restricted.</li>
+      </ul>
+    </div>
 
-  document.getElementById('results').innerHTML = `
-    <h3>Your Score: ${percent}%</h3>
-    <p>${percent >= 80 ? 'PASS' : 'FAIL'}</p>
-  `;
-}
+    <!-- SECTION 3 -->
+    <div class="lesson-block">
+      <h3>Legal Responsibility While Carrying</h3>
+      <ul>
+        <li>You must notify law enforcement when approached.</li>
+        <li>Carrying under the influence is illegal.</li>
+        <li>You are responsible for all actions while armed.</li>
+      </ul>
+    </div>
 
-renderLesson();
+    <!-- SECTION 4 -->
+    <div class="lesson-block">
+      <h3>Mental Health and Responsibility</h3>
+      <ul>
+        <li>Most firearm deaths are suicides, not homicides.</li>
+        <li>Crises are often temporary but decisions can be permanent.</li>
+        <li>Creating time and distance saves lives.</li>
+        <li>Safe storage is critical during high-risk periods.</li>
+      </ul>
+    </div>
 
-</script>
+    <!-- SECTION 5 -->
+    <div class="lesson-block">
+      <h3>Decision-Making Under Stress</h3>
+      <ul>
+        <li>Fast decisions are not always correct decisions.</li>
+        <li>Judgment matters more than speed.</li>
+        <li>Escalation has consequences.</li>
+        <li>The safest decision is often to disengage.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <strong>Important:</strong> You must understand BOTH legal requirements and responsible decision-making to pass.
+    </div>
+
+    <div class="lesson-actions">
+      <a class="btn btn-blue" href="../scenario.html?lesson=8">Continue to Scenarios</a>
+      <a class="btn btn-outline" href="../dashboard.html">Back to Dashboard</a>
+    </div>
+
+  </section>
+
+</main>
 
 </body>
 </html>
