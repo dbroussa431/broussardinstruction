@@ -101,7 +101,7 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
-// Header info
+// Header
 document.getElementById("welcomeLine").textContent =
   `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
@@ -150,26 +150,26 @@ window.LESSONS.forEach((lesson) => {
       ${
         status.locked
           ? `<span class="btn btn-blue btn-disabled">Locked</span>`
-          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
+          : `<a class="btn btn-blue" href="training/lesson.html?lesson=${lesson.id}">
                ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
              </a>`
       }
 
       ${
         !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
+          ? `<a class="btn btn-outline" href="training/scenario.html?lesson=${lesson.id}">Open Scenarios</a>`
           : ""
       }
 
       ${
         !status.locked && progress.scenarioCompleted
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">Quiz</a>`
+          ? `<a class="btn btn-outline" href="training/quiz.html?lesson=${lesson.id}">Take Quiz</a>`
           : ""
       }
 
       ${
         progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">Review</a>`
+          ? `<a class="btn btn-outline" href="training/quiz.html?lesson=${lesson.id}&review=1">See Missed Questions</a>`
           : ""
       }
 
