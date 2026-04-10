@@ -11,11 +11,9 @@ import {
 
 let studentRows = [];
 
-const body = document.getElementById("studentTableBody");
-
-// =====================
-// DATE FIXES (CRITICAL)
-// =====================
+// =============================
+// SAFE DATE HANDLING (FIXES INVALID DATE)
+// =============================
 function safeDate(value) {
   if (!value) return null;
 
@@ -49,9 +47,25 @@ function formatNiceDate(value) {
   return date.toLocaleString();
 }
 
-// =====================
-// CORE DATA LOGIC
-// =====================
+// =============================
+// CORE CALCULATIONS
+// =============================
+function totalAttempts(student) {
+  return Object.values(student.progress || {})
+    .reduce((sum, p) => sum + Number(p?.attempts || 0), 0);
+}
+
+function totalQuizTime(student) {
+  return Object.values(student.progress || {})
+    .reduce((sum, p) => sum + Number(p?.totalQuizTimeSeconds || 0), 0);
+}
+
+function formatSeconds(sec = 0) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}m ${s}s`;
+}
+
 function lastActivity(student) {
   const timestamps = Object.values(student.progress || {})
     .map(p => safeDate(p?.lastActivityAt))
@@ -65,77 +79,73 @@ function lastActivity(student) {
     || null;
 }
 
-function totalAttempts(student) {
-  return Object.values(student.progress || {})
-    .reduce((sum, p) => sum + (p?.attempts || 0), 0);
-}
-
-function totalQuizTime(student) {
-  return Object.values(student.progress || {})
-    .reduce((sum, p) => sum + (p?.totalQuizTimeSeconds || 0), 0);
-}
-
-function formatTime(sec = 0) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m}m ${s}s`;
-}
-
-// =====================
-// EMAIL TRACKING
-// =====================
+// =============================
+// EMAIL STATUS COLUMN
+// =============================
 function emailStatus(student) {
   if (!student.lastEmailType) {
-    return `<span class="status-pill">None</span>`;
+    return `<span class="status-pill none">None</span>`;
   }
 
+  let cls = "pending";
+  if (student.lastEmailType === "14-day") cls = "warning";
+  if (student.lastEmailType === "30-day") cls = "danger";
+
   return `
-    <span class="status-pill">
-      ${student.lastEmailType}
-    </span>
-    <br>
-    <small>${formatNiceDate(student.lastEmailSentAt)}</small>
+    <div>
+      <span class="status-pill ${cls}">
+        ${student.lastEmailType}
+      </span>
+      <br>
+      <small>${formatNiceDate(student.lastEmailSentAt)}</small>
+    </div>
   `;
 }
 
-// =====================
-// RENDER
-// =====================
+// =============================
+// RENDER TABLE (FULL)
+// =============================
 function renderRows() {
-  body.innerHTML = studentRows.map(s => `
-    <tr>
-      <td>${s.name || "—"}</td>
-      <td>${s.email || "—"}</td>
-      <td>${s.course || ""}</td>
-      <td>${s.price || 0}</td>
-      <td>${s.paymentMethod || ""}</td>
-      <td>${s.paymentStatus || ""}</td>
-      <td>${s.status || ""}</td>
-      <td>${s.accessCode || ""}</td>
+  const body = document.getElementById("studentTableBody");
 
-      <td>${s.currentLesson || "—"}</td>
-      <td>${s.currentStage || "—"}</td>
+  body.innerHTML = studentRows.length
+    ? studentRows.map(student => `
+      <tr>
+        <td>${student.name || "—"}</td>
+        <td class="cell-wrap">${student.email || "—"}</td>
+        <td>${student.course || ""}</td>
+        <td>${student.price || 0}</td>
+        <td>${student.paymentMethod || ""}</td>
+        <td>${student.paymentStatus || ""}</td>
+        <td>${student.status || ""}</td>
+        <td>${student.accessCode || ""}</td>
 
-      <td>${totalAttempts(s)}</td>
-      <td>${formatTime(totalQuizTime(s))}</td>
+        <td>${student.currentLesson || "—"}</td>
+        <td>${student.currentStage || "—"}</td>
 
-      <td>${s.progressLabel || "—"}</td>
+        <td>${totalAttempts(student)}</td>
+        <td>${formatSeconds(totalQuizTime(student))}</td>
 
-      <td>${formatNiceDate(lastActivity(s))}</td>
+        <td>${student.progressLabel || "—"}</td>
 
-      <td>${emailStatus(s)}</td>
+        <td>${formatNiceDate(lastActivity(student))}</td>
 
-      <td>
-        <button onclick="editStudent('${s.id}')">Edit</button>
-        <button onclick="deleteStudent('${s.id}')">Delete</button>
-      </td>
-    </tr>
-  `).join("");
+        <td>${emailStatus(student)}</td>
+
+        <td>
+          <div class="mini-actions">
+            <button onclick="editStudent('${student.id}')">Edit</button>
+            <button onclick="deleteStudent('${student.id}')">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="17">No student records found.</td></tr>`;
 }
 
-// =====================
-// LOAD DATA (SAFE)
-// =====================
+// =============================
+// LOAD DATA (SAFE + COMPLETE)
+// =============================
 async function loadAdminData() {
   try {
     const snap = await getDocs(collection(db, "portalStudents"));
@@ -148,7 +158,7 @@ async function loadAdminData() {
         name: d.name || "",
         email: d.email || "",
         course: d.course || "",
-        price: d.price || 0,
+        price: Number(d.price || 0),
         paymentMethod: d.paymentMethod || "",
         paymentStatus: d.paymentStatus || "",
         status: d.status || "active",
@@ -169,10 +179,21 @@ async function loadAdminData() {
     renderRows();
 
   } catch (err) {
-    console.error("LOAD ERROR:", err);
-    body.innerHTML = `<tr><td colspan="17">Error loading data</td></tr>`;
+    console.error("ADMIN LOAD ERROR:", err);
+    document.getElementById("studentTableBody").innerHTML =
+      `<tr><td colspan="17">Error loading student records.</td></tr>`;
   }
 }
 
-// =====================
+// =============================
+// DELETE (kept simple)
+// =============================
+window.deleteStudent = async function(id) {
+  if (!confirm("Delete this student?")) return;
+
+  await deleteDoc(doc(db, "portalStudents", id));
+  loadAdminData();
+};
+
+// =============================
 loadAdminData();
