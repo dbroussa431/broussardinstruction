@@ -1,199 +1,180 @@
-import { db } from "./firebase-config.js?v=5";
+// ===============================
+// FIREBASE INIT (make sure config exists in HTML)
+// ===============================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
+  getFirestore,
   collection,
   getDocs,
-  addDoc,
   doc,
-  updateDoc,
-  deleteDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let studentRows = [];
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// =============================
-// SAFE DATE HANDLING (FIXES INVALID DATE)
-// =============================
-function safeDate(value) {
-  if (!value) return null;
+// ===============================
+// HELPERS
+// ===============================
+function formatDate(val) {
+  if (!val) return "None";
 
-  if (typeof value === "string") {
-    const d = new Date(value);
-    return isNaN(d) ? null : d;
+  try {
+    if (val.toDate) return val.toDate().toLocaleString();
+    return new Date(val).toLocaleString();
+  } catch {
+    return "Invalid Date";
   }
+}
 
-  if (value?.toDate) {
-    try { return value.toDate(); } catch { return null; }
+function renderEmailStatus(type, time) {
+  if (!type || type === "None") {
+    return `<span class="badge badge-none">None</span>`;
   }
-
-  return null;
-}
-
-function formatNiceDate(value) {
-  const date = safeDate(value);
-  if (!date) return "—";
-
-  const diff = Date.now() - date.getTime();
-
-  const min = Math.floor(diff / 60000);
-  const hr = Math.floor(diff / 3600000);
-  const day = Math.floor(diff / 86400000);
-
-  if (min < 1) return "Just now";
-  if (min < 60) return `${min} min ago`;
-  if (hr < 24) return `${hr} hr ago`;
-  if (day < 7) return `${day} day(s) ago`;
-
-  return date.toLocaleString();
-}
-
-// =============================
-// CORE CALCULATIONS
-// =============================
-function totalAttempts(student) {
-  return Object.values(student.progress || {})
-    .reduce((sum, p) => sum + Number(p?.attempts || 0), 0);
-}
-
-function totalQuizTime(student) {
-  return Object.values(student.progress || {})
-    .reduce((sum, p) => sum + Number(p?.totalQuizTimeSeconds || 0), 0);
-}
-
-function formatSeconds(sec = 0) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m}m ${s}s`;
-}
-
-function lastActivity(student) {
-  const timestamps = Object.values(student.progress || {})
-    .map(p => safeDate(p?.lastActivityAt))
-    .filter(Boolean)
-    .sort((a,b)=>a-b);
-
-  return timestamps.pop()
-    || safeDate(student.lastLoginAt)
-    || safeDate(student.updatedAt)
-    || safeDate(student.createdAt)
-    || null;
-}
-
-// =============================
-// EMAIL STATUS COLUMN
-// =============================
-function emailStatus(student) {
-  if (!student.lastEmailType) {
-    return `<span class="status-pill none">None</span>`;
-  }
-
-  let cls = "pending";
-  if (student.lastEmailType === "14-day") cls = "warning";
-  if (student.lastEmailType === "30-day") cls = "danger";
 
   return `
     <div>
-      <span class="status-pill ${cls}">
-        ${student.lastEmailType}
-      </span>
-      <br>
-      <small>${formatNiceDate(student.lastEmailSentAt)}</small>
+      <span class="badge badge-${type}">${type}</span>
+      <div style="font-size:11px;color:#666;">
+        ${formatDate(time)}
+      </div>
     </div>
   `;
 }
 
-// =============================
-// RENDER TABLE (FULL)
-// =============================
-function renderRows() {
-  const body = document.getElementById("studentTableBody");
+function mapStudent(docSnap) {
+  const data = docSnap.data() || {};
 
-  body.innerHTML = studentRows.length
-    ? studentRows.map(student => `
-      <tr>
-        <td>${student.name || "—"}</td>
-        <td class="cell-wrap">${student.email || "—"}</td>
-        <td>${student.course || ""}</td>
-        <td>${student.price || 0}</td>
-        <td>${student.paymentMethod || ""}</td>
-        <td>${student.paymentStatus || ""}</td>
-        <td>${student.status || ""}</td>
-        <td>${student.accessCode || ""}</td>
+  return {
+    id: docSnap.id,
+    name: data.name || "—",
+    email: data.email || "—",
+    course: "Louisiana Concealed Carry",
+    price: data.price || 0,
 
-        <td>${student.currentLesson || "—"}</td>
-        <td>${student.currentStage || "—"}</td>
+    paymentMethod: data.paymentMethod || "—",
+    paymentStatus: data.paymentStatus || "—",
+    portalStatus: "active",
 
-        <td>${totalAttempts(student)}</td>
-        <td>${formatSeconds(totalQuizTime(student))}</td>
+    accessCode: data.accessCode || "—",
 
-        <td>${student.progressLabel || "—"}</td>
+    // FIXED DATA MAPPING
+    currentLesson:
+      data.progress ||
+      (Array.isArray(data.completedLessons)
+        ? data.completedLessons.length
+        : 0),
 
-        <td>${formatNiceDate(lastActivity(student))}</td>
+    currentStage: data.stage || "—",
+    attempts: data.attempts || 0,
+    totalTime: data.totalTime || "0m 0s",
+    progress: data.progress || 0,
 
-        <td>${emailStatus(student)}</td>
+    finalEvaluation: data.finalEvaluation || "—",
 
-        <td>
-          <div class="mini-actions">
-            <button onclick="editStudent('${student.id}')">Edit</button>
-            <button onclick="deleteStudent('${student.id}')">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `).join("")
-    : `<tr><td colspan="17">No student records found.</td></tr>`;
+    lastActivity: data.lastLoginAt || null,
+
+    emailType: data.lastEmailType || "None",
+    emailSentAt: data.lastEmailSentAt || null
+  };
 }
 
-// =============================
-// LOAD DATA (SAFE + COMPLETE)
-// =============================
-async function loadAdminData() {
-  try {
-    const snap = await getDocs(collection(db, "portalStudents"));
+// ===============================
+// LOAD DATA
+// ===============================
+async function loadStudents() {
+  const tableBody = document.getElementById("studentTableBody");
+  tableBody.innerHTML = "";
 
-    studentRows = snap.docs.map(docSnap => {
-      const d = docSnap.data() || {};
+  const snapshot = await getDocs(collection(db, "portalStudents"));
 
-      return {
-        id: docSnap.id,
-        name: d.name || "",
-        email: d.email || "",
-        course: d.course || "",
-        price: Number(d.price || 0),
-        paymentMethod: d.paymentMethod || "",
-        paymentStatus: d.paymentStatus || "",
-        status: d.status || "active",
-        accessCode: d.accessCode || "",
+  let totalStudents = 0;
+  let paidStudents = 0;
+  let revenue = 0;
 
-        progress: d.progress || {},
+  snapshot.forEach((docSnap) => {
+    const student = mapStudent(docSnap);
 
-        lastLoginAt: d.lastLoginAt || null,
-        updatedAt: d.updatedAt || null,
-        createdAt: d.createdAt || null,
+    totalStudents++;
 
-        // EMAIL TRACKING
-        lastEmailType: d.lastEmailType || null,
-        lastEmailSentAt: d.lastEmailSentAt || null
-      };
+    if (student.paymentStatus === "paid") {
+      paidStudents++;
+      revenue += student.price || 0;
+    }
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${student.name}</td>
+      <td>${student.email}</td>
+      <td>${student.course}</td>
+      <td>$${student.price}</td>
+
+      <td>${student.paymentMethod}</td>
+      <td>${student.paymentStatus}</td>
+      <td>${student.portalStatus}</td>
+
+      <td>${student.accessCode}</td>
+
+      <td>${student.currentLesson}</td>
+      <td>${student.currentStage}</td>
+
+      <td>${student.attempts}</td>
+      <td>${student.totalTime}</td>
+
+      <td>${student.progress}</td>
+
+      <td>${student.finalEvaluation}</td>
+
+      <td>${formatDate(student.lastActivity)}</td>
+
+      <td>${renderEmailStatus(student.emailType, student.emailSentAt)}</td>
+
+      <td>
+        <button class="edit-btn" data-id="${student.id}">Edit</button>
+        <button class="delete-btn" data-id="${student.id}">Delete</button>
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+
+  // ===============================
+  // UPDATE DASHBOARD STATS
+  // ===============================
+  document.getElementById("totalStudents").innerText = totalStudents;
+  document.getElementById("paidStudents").innerText = paidStudents;
+  document.getElementById("revenueCollected").innerText = `$${revenue}`;
+
+  attachEvents();
+}
+
+// ===============================
+// BUTTON EVENTS
+// ===============================
+function attachEvents() {
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const id = e.target.dataset.id;
+
+      if (!confirm("Delete this student?")) return;
+
+      await deleteDoc(doc(db, "portalStudents", id));
+      loadStudents();
     });
+  });
 
-    renderRows();
-
-  } catch (err) {
-    console.error("ADMIN LOAD ERROR:", err);
-    document.getElementById("studentTableBody").innerHTML =
-      `<tr><td colspan="17">Error loading student records.</td></tr>`;
-  }
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      alert("Edit coming soon for ID: " + id);
+    });
+  });
 }
 
-// =============================
-// DELETE (kept simple)
-// =============================
-window.deleteStudent = async function(id) {
-  if (!confirm("Delete this student?")) return;
-
-  await deleteDoc(doc(db, "portalStudents", id));
-  loadAdminData();
-};
-
-// =============================
-loadAdminData();
+// ===============================
+// INIT
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  loadStudents();
+});
