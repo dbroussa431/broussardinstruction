@@ -1,216 +1,753 @@
-// ==============================
-// FIREBASE IMPORT
-// ==============================
 import { db } from "./firebase-config.js";
 import {
   collection,
   getDocs,
   addDoc,
+  updateDoc,
   deleteDoc,
-  doc
+  doc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-// ==============================
-// GLOBAL STATE
-// ==============================
-let students = [];
+let allStudents = [];
+let filteredStudents = [];
+let editingId = null;
 
-// ==============================
-// INIT
-// ==============================
-document.addEventListener("DOMContentLoaded", () => {
-  loadStudents();
+// ---------- DOM ----------
+const els = {
+  tableBody: document.getElementById("studentTableBody"),
+  statTotalStudents: document.getElementById("statTotalStudents"),
+  statPendingPayments: document.getElementById("statPendingPayments"),
+  statPaidStudents: document.getElementById("statPaidStudents"),
+  statRevenue: document.getElementById("statRevenue"),
+  statPassedFinal: document.getElementById("statPassedFinal"),
+  statCritical: document.getElementById("statCritical"),
 
-  document.getElementById("refreshBtn").addEventListener("click", loadStudents);
-  document.getElementById("exportBtn").addEventListener("click", exportCSV);
-  document.getElementById("addStudentBtn").addEventListener("click", openModal);
-  document.getElementById("closeModalBtn").addEventListener("click", closeModal);
-  document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
-  document.getElementById("studentFormWrap").addEventListener("submit", saveStudent);
-});
+  addStudentBtn: document.getElementById("addStudentBtn"),
+  refreshBtn: document.getElementById("refreshBtn"),
+  exportBtn: document.getElementById("exportBtn"),
+  logoutBtn: document.getElementById("logoutBtn"),
 
-// ==============================
-// LOAD STUDENTS
-// ==============================
-async function loadStudents() {
-  const tbody = document.getElementById("studentTableBody");
-  tbody.innerHTML = `<tr><td colspan="16">Loading student records...</td></tr>`;
+  searchInput: document.getElementById("searchInput"),
+  paymentFilter: document.getElementById("paymentFilter"),
+  portalFilter: document.getElementById("portalFilter"),
+  sortBy: document.getElementById("sortBy"),
+  applyFiltersBtn: document.getElementById("applyFiltersBtn"),
+  clearFiltersBtn: document.getElementById("clearFiltersBtn"),
 
-  try {
-    const snapshot = await getDocs(collection(db, "portalStudents"));
+  studentModal: document.getElementById("studentModal"),
+  studentFormWrap: document.getElementById("studentFormWrap"),
+  modalTitle: document.getElementById("modalTitle"),
+  closeModalBtn: document.getElementById("closeModalBtn"),
+  cancelModalBtn: document.getElementById("cancelModalBtn"),
+  modalMessage: document.getElementById("modalMessage"),
 
-    students = [];
+  studentName: document.getElementById("studentName"),
+  studentEmail: document.getElementById("studentEmail"),
+  studentCourse: document.getElementById("studentCourse"),
+  studentPrice: document.getElementById("studentPrice"),
+  studentPaymentMethod: document.getElementById("studentPaymentMethod"),
+  studentPaymentStatus: document.getElementById("studentPaymentStatus"),
+  studentPortalStatus: document.getElementById("studentPortalStatus"),
+  studentTier: document.getElementById("studentTier"),
+  generatedCode: document.getElementById("generatedCode"),
+  regenCodeBtn: document.getElementById("regenCodeBtn"),
+  saveStudentBtn: document.getElementById("saveStudentBtn")
+};
 
-    snapshot.forEach((docSnap) => {
-      students.push({
-        id: docSnap.id,
-        ...docSnap.data()
-      });
-    });
-
-    renderTable();
-    updateStats();
-
-  } catch (err) {
-    console.error("LOAD ERROR:", err);
-    tbody.innerHTML = `<tr><td colspan="16">Error loading data</td></tr>`;
-  }
+// ---------- Helpers ----------
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
-// ==============================
-// RENDER TABLE
-// ==============================
-function renderTable() {
-  const tbody = document.getElementById("studentTableBody");
+function normalizeText(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
 
-  if (students.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="16">No students found</td></tr>`;
+function safeDate(value) {
+  if (!value) return null;
+
+  if (typeof value?.toDate === "function") {
+    try {
+      return value.toDate();
+    } catch {
+      return null;
+    }
+  }
+
+  if (value instanceof Date) return value;
+
+  if (typeof value === "string" || typeof value === "number") {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  return null;
+}
+
+function formatNiceDate(value) {
+  const date = safeDate(value);
+  if (!date) return "—";
+
+  const diff = Date.now() - date.getTime();
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diff < minute) return "Just now";
+  if (diff < hour) return `${Math.floor(diff / minute)} min ago`;
+  if (diff < day) return `${Math.floor(diff / hour)} hr ago`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)} day(s) ago`;
+
+  return date.toLocaleString();
+}
+
+function formatFullDate(value) {
+  const date = safeDate(value);
+  return date ? date.toLocaleString() : "—";
+}
+
+function currency(value) {
+  return `$${Number(value || 0).toLocaleString()}`;
+}
+
+function generateAccessCode(tier = "FULL", name = "") {
+  const prefix = `BSA-${tier}`;
+  const cleanName = (name || "STUDENT")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 4) || "STUD";
+
+  const random = Math.floor(1000 + Math.random() * 9000);
+  return `${prefix}-${cleanName}-${random}`;
+}
+
+function showModalMessage(message, isOk = true) {
+  if (!els.modalMessage) return;
+  els.modalMessage.textContent = message;
+  els.modalMessage.classList.remove("hidden", "ok", "bad");
+  els.modalMessage.classList.add(isOk ? "ok" : "bad");
+}
+
+function clearModalMessage() {
+  if (!els.modalMessage) return;
+  els.modalMessage.textContent = "";
+  els.modalMessage.classList.add("hidden");
+  els.modalMessage.classList.remove("ok", "bad");
+}
+
+function getTotalLessons() {
+  const candidates = [
+    window.lessonContent,
+    window.lessonData,
+    window.lessons,
+    window.courseLessons,
+    window.trainingLessons
+  ];
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate) && candidate.length) return candidate.length;
+  }
+
+  if (window.BSA_LESSON_COUNT && Number(window.BSA_LESSON_COUNT) > 0) {
+    return Number(window.BSA_LESSON_COUNT);
+  }
+
+  return 10;
+}
+
+function getProgressObject(student) {
+  return student.progress && typeof student.progress === "object" ? student.progress : {};
+}
+
+function getCompletedLessons(student) {
+  return Array.isArray(student.completedLessons) ? student.completedLessons : [];
+}
+
+function getLessonNumbers(student) {
+  const fromProgress = Object.keys(getProgressObject(student))
+    .map((k) => Number(k))
+    .filter((n) => Number.isFinite(n));
+
+  const fromCompleted = getCompletedLessons(student)
+    .map((n) => Number(n))
+    .filter((n) => Number.isFinite(n));
+
+  return [...new Set([...fromProgress, ...fromCompleted])].sort((a, b) => a - b);
+}
+
+function getCurrentLessonNumber(student) {
+  if (Number.isFinite(Number(student.currentLessonNumber))) {
+    return Number(student.currentLessonNumber);
+  }
+
+  if (typeof student.currentLesson === "string") {
+    const match = student.currentLesson.match(/(\d+)/);
+    if (match) return Number(match[1]);
+  }
+
+  const lessonNumbers = getLessonNumbers(student);
+  if (!lessonNumbers.length) return null;
+
+  const completed = new Set(getCompletedLessons(student).map(Number));
+  const firstIncomplete = lessonNumbers.find((n) => !completed.has(n));
+  return firstIncomplete || lessonNumbers[lessonNumbers.length - 1];
+}
+
+function getCurrentLessonLabel(student) {
+  const n = getCurrentLessonNumber(student);
+  return n ? `Lesson ${n}` : "—";
+}
+
+function getCurrentStage(student) {
+  if (student.currentStage) return String(student.currentStage);
+  if (student.stage) return String(student.stage);
+
+  const lessonNum = getCurrentLessonNumber(student);
+  if (!lessonNum) return "—";
+
+  const p = getProgressObject(student)[lessonNum] || {};
+  if (student.finalEvaluationStatus) return String(student.finalEvaluationStatus);
+  if (student.finalEvaluation) return String(student.finalEvaluation);
+
+  if (p.completedAt) return "Completed";
+  if (p.attempts > 0) return "Quiz Started";
+  if (p.contentViewed) return "Content Viewed";
+
+  const completedCount = getCompletedLessons(student).length;
+  if (completedCount > 0) return "In Progress";
+
+  return "Not Started";
+}
+
+function totalAttempts(student) {
+  if (Number.isFinite(Number(student.attempts))) return Number(student.attempts);
+
+  return Object.values(getProgressObject(student)).reduce((sum, p) => {
+    return sum + Number(p?.attempts || 0);
+  }, 0);
+}
+
+function totalQuizTimeSeconds(student) {
+  if (Number.isFinite(Number(student.totalQuizTimeSeconds))) {
+    return Number(student.totalQuizTimeSeconds);
+  }
+
+  if (Number.isFinite(Number(student.totalTimeSeconds))) {
+    return Number(student.totalTimeSeconds);
+  }
+
+  return Object.values(getProgressObject(student)).reduce((sum, p) => {
+    return sum
+      + Number(p?.totalQuizTimeSeconds || 0)
+      + Number(p?.quizTimeSeconds || 0)
+      + Number(p?.timeSpentSeconds || 0);
+  }, 0);
+}
+
+function formatSeconds(seconds = 0) {
+  const s = Math.max(0, Number(seconds || 0));
+  const hours = Math.floor(s / 3600);
+  const minutes = Math.floor((s % 3600) / 60);
+  const secs = s % 60;
+
+  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+  return `${minutes}m ${secs}s`;
+}
+
+function progressLabel(student) {
+  if (Number.isFinite(Number(student.progressPercent))) {
+    return `${Number(student.progressPercent)}%`;
+  }
+
+  const completed = getCompletedLessons(student).length;
+  const total = getTotalLessons();
+
+  if (!completed && !Object.keys(getProgressObject(student)).length) return "—";
+  return `${completed}/${total}`;
+}
+
+function getFinalEvaluationLabel(student) {
+  const value = normalizeText(student.finalEvaluationStatus || student.finalEvaluation);
+
+  if (!value) return "None";
+  if (value.includes("pass")) return "Passed";
+  if (value.includes("fail")) return "Failed";
+  if (value.includes("critical")) return "Critical";
+
+  return student.finalEvaluationStatus || student.finalEvaluation || "None";
+}
+
+function lastActivity(student) {
+  const progressDates = Object.values(getProgressObject(student))
+    .map((p) => safeDate(p?.lastActivityAt || p?.completedAt))
+    .filter(Boolean)
+    .sort((a, b) => a - b);
+
+  return (
+    progressDates.pop()
+    || safeDate(student.lastLoginAt)
+    || safeDate(student.updatedAt)
+    || safeDate(student.createdAt)
+    || null
+  );
+}
+
+function getPortalStatus(student) {
+  return student.portalStatus || student.status || "active";
+}
+
+function getPaymentStatus(student) {
+  if (student.paymentStatus) return String(student.paymentStatus).toLowerCase();
+  if (student.paid === true) return "paid";
+  return "pending";
+}
+
+function isPaid(student) {
+  return getPaymentStatus(student) === "paid" || student.paid === true;
+}
+
+function getLastEmailType(student) {
+  if (student.lastEmailType) return student.lastEmailType;
+  if (student.inactiveEmailSent30) return "30-day";
+  if (student.inactiveEmailSent14) return "14-day";
+  if (student.inactiveEmailSent7) return "7-day";
+  return "None";
+}
+
+function emailStatusHtml(student) {
+  const type = getLastEmailType(student);
+  const sentAt = student.lastEmailSentAt;
+
+  let cls = "none";
+  if (type === "7-day") cls = "pending";
+  if (type === "14-day") cls = "warning";
+  if (type === "30-day") cls = "danger";
+
+  return `
+    <div class="email-status-wrap">
+      <span class="status-pill ${cls}">${escapeHtml(type)}</span>
+      <small>${escapeHtml(formatFullDate(sentAt))}</small>
+    </div>
+  `;
+}
+
+function badgeClassForValue(value) {
+  const v = normalizeText(value);
+  if (!v || v === "none") return "none";
+  if (["active", "passed", "paid"].includes(v)) return v;
+  if (["locked", "critical", "failed", "danger"].includes(v)) return v;
+  if (["pending", "warning"].includes(v)) return v;
+  if (v === "waived") return "waived";
+  return "none";
+}
+
+function badgeHtml(value) {
+  const label = value || "None";
+  return `<span class="status-pill ${badgeClassForValue(label)}">${escapeHtml(label)}</span>`;
+}
+
+function studentForEdit(id) {
+  return allStudents.find((s) => s.id === id) || null;
+}
+
+// ---------- Render ----------
+function renderStats(rows) {
+  const totalStudents = rows.length;
+  const pendingPayments = rows.filter((s) => getPaymentStatus(s) === "pending").length;
+  const paidStudents = rows.filter((s) => isPaid(s)).length;
+  const revenue = rows
+    .filter((s) => isPaid(s))
+    .reduce((sum, s) => sum + Number(s.price || 0), 0);
+
+  const passedFinal = rows.filter((s) => normalizeText(getFinalEvaluationLabel(s)).includes("pass")).length;
+  const critical = rows.filter((s) => normalizeText(getFinalEvaluationLabel(s)).includes("critical")).length;
+
+  els.statTotalStudents.textContent = totalStudents;
+  els.statPendingPayments.textContent = pendingPayments;
+  els.statPaidStudents.textContent = paidStudents;
+  els.statRevenue.textContent = currency(revenue);
+  els.statPassedFinal.textContent = passedFinal;
+  els.statCritical.textContent = critical;
+}
+
+function renderRows(rows) {
+  if (!rows.length) {
+    els.tableBody.innerHTML = `<tr><td colspan="17">No student records found.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = students.map(s => `
-    <tr>
-      <td>${s.name || "-"}</td>
-      <td>${s.email || "-"}</td>
-      <td>${s.course || "Louisiana Concealed Carry"}</td>
-      <td>$${s.price || 0}</td>
-      <td>${s.paymentMethod || "-"}</td>
-      <td>${formatStatus(s.paymentStatus)}</td>
-      <td>${formatStatus(s.portalStatus)}</td>
-      <td>${s.accessCode || "-"}</td>
-      <td>${s.currentLesson || "-"}</td>
-      <td>${s.currentStage || "-"}</td>
-      <td>${s.attempts || 0}</td>
-      <td>${formatTime(s.totalTime)}</td>
-      <td>${formatProgress(s.progress)}</td>
-      <td>${formatStatus(s.finalStatus)}</td>
-      <td>${formatDate(s.lastLoginAt)}</td>
-      <td>
-        <button onclick="deleteStudent('${s.id}')">Delete</button>
-      </td>
-    </tr>
-  `).join("");
+  els.tableBody.innerHTML = rows.map((s) => {
+    const portalStatus = getPortalStatus(s);
+    const paymentStatus = getPaymentStatus(s);
+    const finalEval = getFinalEvaluationLabel(s);
+    const isLocked = normalizeText(portalStatus) === "locked";
+
+    return `
+      <tr>
+        <td class="cell-wrap">${escapeHtml(s.name || "—")}</td>
+        <td class="cell-wrap">${escapeHtml(s.email || "—")}</td>
+        <td class="cell-wrap">${escapeHtml(s.course || "Louisiana Concealed Carry")}</td>
+        <td>${escapeHtml(String(Number(s.price || 0)))}</td>
+        <td>${escapeHtml(s.paymentMethod || "—")}</td>
+        <td>${badgeHtml(paymentStatus)}</td>
+        <td>${badgeHtml(portalStatus)}</td>
+        <td class="cell-wrap">${escapeHtml(s.accessCode || "—")}</td>
+        <td>${escapeHtml(getCurrentLessonLabel(s))}</td>
+        <td>${escapeHtml(getCurrentStage(s))}</td>
+        <td>${totalAttempts(s)}</td>
+        <td>${formatSeconds(totalQuizTimeSeconds(s))}</td>
+        <td>${escapeHtml(progressLabel(s))}</td>
+        <td>${badgeHtml(finalEval)}</td>
+        <td>
+          <div class="cell-small">${escapeHtml(formatNiceDate(lastActivity(s)))}</div>
+          <div class="cell-small">${escapeHtml(formatFullDate(lastActivity(s)))}</div>
+        </td>
+        <td>${emailStatusHtml(s)}</td>
+        <td>
+          <div class="mini-actions">
+            <button class="btn btn-outline" data-action="edit" data-id="${s.id}" type="button">Edit</button>
+            <button class="btn btn-outline" data-action="regen" data-id="${s.id}" type="button">Regen</button>
+            <button class="btn ${isLocked ? "btn-light" : "btn-outline"}" data-action="toggle-lock" data-id="${s.id}" type="button">${isLocked ? "Unlock" : "Lock"}</button>
+            <button class="btn btn-outline" data-action="delete" data-id="${s.id}" type="button">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
-// ==============================
-// STATS
-// ==============================
-function updateStats() {
-  document.getElementById("statTotalStudents").innerText = students.length;
+function applyFiltersAndSort() {
+  const search = normalizeText(els.searchInput.value);
+  const paymentFilter = els.paymentFilter.value;
+  const portalFilter = els.portalFilter.value;
+  const sortBy = els.sortBy.value;
 
-  const paid = students.filter(s => s.paymentStatus === "paid").length;
-  const pending = students.filter(s => s.paymentStatus === "pending").length;
+  filteredStudents = [...allStudents].filter((s) => {
+    const haystack = [
+      s.name,
+      s.email,
+      s.accessCode,
+      s.course
+    ].map(normalizeText).join(" ");
 
-  const revenue = students.reduce((sum, s) => {
-    return sum + (s.paymentStatus === "paid" ? (s.price || 0) : 0);
-  }, 0);
+    const paymentMatch = paymentFilter === "all" || getPaymentStatus(s) === paymentFilter;
+    const portalMatch = portalFilter === "all" || normalizeText(getPortalStatus(s)) === portalFilter;
+    const searchMatch = !search || haystack.includes(search);
 
-  document.getElementById("statPaidStudents").innerText = paid;
-  document.getElementById("statPendingPayments").innerText = pending;
-  document.getElementById("statRevenue").innerText = `$${revenue}`;
+    return paymentMatch && portalMatch && searchMatch;
+  });
+
+  filteredStudents.sort((a, b) => {
+    if (sortBy === "name") {
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    }
+
+    if (sortBy === "progress") {
+      return getCompletedLessons(b).length - getCompletedLessons(a).length;
+    }
+
+    const aDate = safeDate(a.createdAt)?.getTime() || 0;
+    const bDate = safeDate(b.createdAt)?.getTime() || 0;
+    return bDate - aDate;
+  });
+
+  renderStats(filteredStudents);
+  renderRows(filteredStudents);
 }
 
-// ==============================
-// SAVE STUDENT
-// ==============================
-async function saveStudent(e) {
-  e.preventDefault();
-
-  const student = {
-    name: document.getElementById("studentName").value,
-    email: document.getElementById("studentEmail").value,
-    course: document.getElementById("studentCourse").value,
-    price: Number(document.getElementById("studentPrice").value),
-    paymentMethod: document.getElementById("studentPaymentMethod").value,
-    paymentStatus: document.getElementById("studentPaymentStatus").value,
-    portalStatus: document.getElementById("studentPortalStatus").value,
-    accessCode: document.getElementById("generatedCode").value,
-    createdAt: new Date(),
-    lastLoginAt: new Date()
-  };
+// ---------- Data ----------
+async function loadStudents() {
+  els.tableBody.innerHTML = `<tr><td colspan="17">Loading student records...</td></tr>`;
 
   try {
-    await addDoc(collection(db, "portalStudents"), student);
-    closeModal();
-    loadStudents();
-  } catch (err) {
-    console.error("SAVE ERROR:", err);
+    const snap = await getDocs(collection(db, "portalStudents"));
+    allStudents = snap.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data()
+    }));
+
+    applyFiltersAndSort();
+  } catch (error) {
+    console.error("LOAD ERROR:", error);
+    els.tableBody.innerHTML = `<tr><td colspan="17">Error loading student records.</td></tr>`;
   }
 }
 
-// ==============================
-// DELETE
-// ==============================
-window.deleteStudent = async function(id) {
-  if (!confirm("Delete student?")) return;
-
-  await deleteDoc(doc(db, "portalStudents", id));
-  loadStudents();
-};
-
-// ==============================
-// EXPORT CSV
-// ==============================
-function exportCSV() {
-  let csv = "Name,Email,Course,Price\n";
-
-  students.forEach(s => {
-    csv += `${s.name},${s.email},${s.course},${s.price}\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "students.csv";
-  a.click();
+// ---------- Modal ----------
+function openAddModal() {
+  editingId = null;
+  els.modalTitle.textContent = "Add Student";
+  els.studentFormWrap.reset();
+  els.studentCourse.value = "Louisiana Concealed Carry";
+  els.studentPrice.value = 150;
+  els.studentPaymentMethod.value = "PayPal";
+  els.studentPaymentStatus.value = "pending";
+  els.studentPortalStatus.value = "active";
+  els.studentTier.value = "FULL";
+  els.generatedCode.value = generateAccessCode(els.studentTier.value, els.studentName.value);
+  clearModalMessage();
+  els.studentModal.showModal();
 }
 
-// ==============================
-// MODAL
-// ==============================
-function openModal() {
-  document.getElementById("studentModal").showModal();
+function openEditModal(student) {
+  editingId = student.id;
+  els.modalTitle.textContent = "Edit Student";
+  els.studentName.value = student.name || "";
+  els.studentEmail.value = student.email || "";
+  els.studentCourse.value = student.course || "Louisiana Concealed Carry";
+  els.studentPrice.value = Number(student.price || 0);
+  els.studentPaymentMethod.value = student.paymentMethod || "PayPal";
+  els.studentPaymentStatus.value = getPaymentStatus(student);
+  els.studentPortalStatus.value = getPortalStatus(student);
+
+  const tierMatch = String(student.accessCode || "").match(/^BSA-([A-Z]+)-/);
+  els.studentTier.value = tierMatch?.[1] || "FULL";
+  els.generatedCode.value = student.accessCode || generateAccessCode(els.studentTier.value, student.name || "");
+  clearModalMessage();
+  els.studentModal.showModal();
 }
 
 function closeModal() {
-  document.getElementById("studentModal").close();
+  els.studentModal.close();
+  clearModalMessage();
 }
 
-// ==============================
-// FORMATTERS
-// ==============================
-function formatDate(ts) {
-  if (!ts) return "—";
+// ---------- Actions ----------
+async function saveStudent(event) {
+  event.preventDefault();
+  clearModalMessage();
+
+  const payload = {
+    name: els.studentName.value.trim(),
+    email: els.studentEmail.value.trim(),
+    course: els.studentCourse.value.trim() || "Louisiana Concealed Carry",
+    price: Number(els.studentPrice.value || 0),
+    paymentMethod: els.studentPaymentMethod.value,
+    paymentStatus: els.studentPaymentStatus.value,
+    portalStatus: els.studentPortalStatus.value,
+    status: els.studentPortalStatus.value,
+    accessCode: els.generatedCode.value.trim() || generateAccessCode(els.studentTier.value, els.studentName.value),
+    updatedAt: serverTimestamp()
+  };
 
   try {
-    const date = ts.toDate ? ts.toDate() : new Date(ts);
-    return date.toLocaleString();
-  } catch {
-    return "—";
+    if (editingId) {
+      await updateDoc(doc(db, "portalStudents", editingId), payload);
+      showModalMessage("Student updated.");
+    } else {
+      await addDoc(collection(db, "portalStudents"), {
+        ...payload,
+        createdAt: serverTimestamp(),
+        completedLessons: [],
+        progress: {},
+        paid: payload.paymentStatus === "paid",
+        lastLoginAt: null,
+        lastEmailType: null,
+        lastEmailSentAt: null,
+        inactiveEmailSent7: false,
+        inactiveEmailSent14: false,
+        inactiveEmailSent30: false
+      });
+      showModalMessage("Student added.");
+    }
+
+    await loadStudents();
+    setTimeout(closeModal, 450);
+  } catch (error) {
+    console.error("SAVE ERROR:", error);
+    showModalMessage(`Save failed: ${error.message}`, false);
   }
 }
 
-function formatTime(seconds) {
-  if (!seconds) return "0m";
+async function deleteStudent(id) {
+  if (!window.confirm("Delete this student? This cannot be undone.")) return;
 
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-
-  return `${m}m ${s}s`;
+  try {
+    await deleteDoc(doc(db, "portalStudents", id));
+    await loadStudents();
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    alert(`Delete failed: ${error.message}`);
+  }
 }
 
-function formatProgress(p) {
-  if (!p) return "—";
+async function toggleLockStudent(id) {
+  const student = studentForEdit(id);
+  if (!student) return;
 
-  if (typeof p === "number") return `${p}/10`;
+  const locked = normalizeText(getPortalStatus(student)) === "locked";
+  const nextStatus = locked ? "active" : "locked";
 
-  return "—";
+  try {
+    await updateDoc(doc(db, "portalStudents", id), {
+      portalStatus: nextStatus,
+      status: nextStatus,
+      updatedAt: serverTimestamp()
+    });
+    await loadStudents();
+  } catch (error) {
+    console.error("LOCK ERROR:", error);
+    alert(`Lock update failed: ${error.message}`);
+  }
 }
 
-function formatStatus(s) {
-  if (!s) return "None";
+async function regenStudentCode(id) {
+  const student = studentForEdit(id);
+  if (!student) return;
 
-  return `<span class="status-pill ${s}">${s}</span>`;
+  const tierMatch = String(student.accessCode || "").match(/^BSA-([A-Z]+)-/);
+  const tier = tierMatch?.[1] || "FULL";
+  const newCode = generateAccessCode(tier, student.name || "");
+
+  try {
+    await updateDoc(doc(db, "portalStudents", id), {
+      accessCode: newCode,
+      updatedAt: serverTimestamp()
+    });
+    await loadStudents();
+  } catch (error) {
+    console.error("REGEN ERROR:", error);
+    alert(`Code regeneration failed: ${error.message}`);
+  }
 }
+
+function exportCsv() {
+  const rows = filteredStudents.length ? filteredStudents : allStudents;
+  const header = [
+    "Name",
+    "Email",
+    "Course",
+    "Price",
+    "Payment Method",
+    "Payment Status",
+    "Portal Status",
+    "Access Code",
+    "Current Lesson",
+    "Current Stage",
+    "Attempts",
+    "Total Quiz Time",
+    "Progress",
+    "Final Evaluation",
+    "Last Activity",
+    "Email Status",
+    "Email Sent At"
+  ];
+
+  const csvRows = [
+    header.join(","),
+    ...rows.map((s) => [
+      csvSafe(s.name),
+      csvSafe(s.email),
+      csvSafe(s.course || "Louisiana Concealed Carry"),
+      csvSafe(Number(s.price || 0)),
+      csvSafe(s.paymentMethod || ""),
+      csvSafe(getPaymentStatus(s)),
+      csvSafe(getPortalStatus(s)),
+      csvSafe(s.accessCode || ""),
+      csvSafe(getCurrentLessonLabel(s)),
+      csvSafe(getCurrentStage(s)),
+      csvSafe(totalAttempts(s)),
+      csvSafe(formatSeconds(totalQuizTimeSeconds(s))),
+      csvSafe(progressLabel(s)),
+      csvSafe(getFinalEvaluationLabel(s)),
+      csvSafe(formatFullDate(lastActivity(s))),
+      csvSafe(getLastEmailType(s)),
+      csvSafe(formatFullDate(s.lastEmailSentAt))
+    ].join(","))
+  ];
+
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "bsa-students.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function csvSafe(value) {
+  const str = String(value ?? "");
+  return `"${str.replaceAll('"', '""')}"`;
+}
+
+// ---------- Events ----------
+function bindEvents() {
+  els.addStudentBtn?.addEventListener("click", openAddModal);
+  els.refreshBtn?.addEventListener("click", loadStudents);
+  els.exportBtn?.addEventListener("click", exportCsv);
+  els.closeModalBtn?.addEventListener("click", closeModal);
+  els.cancelModalBtn?.addEventListener("click", closeModal);
+  els.studentFormWrap?.addEventListener("submit", saveStudent);
+
+  els.regenCodeBtn?.addEventListener("click", () => {
+    els.generatedCode.value = generateAccessCode(els.studentTier.value, els.studentName.value);
+  });
+
+  els.studentName?.addEventListener("input", () => {
+    if (!editingId) {
+      els.generatedCode.value = generateAccessCode(els.studentTier.value, els.studentName.value);
+    }
+  });
+
+  els.studentTier?.addEventListener("change", () => {
+    if (!editingId) {
+      els.generatedCode.value = generateAccessCode(els.studentTier.value, els.studentName.value);
+    }
+  });
+
+  els.applyFiltersBtn?.addEventListener("click", applyFiltersAndSort);
+  els.clearFiltersBtn?.addEventListener("click", () => {
+    els.searchInput.value = "";
+    els.paymentFilter.value = "all";
+    els.portalFilter.value = "all";
+    els.sortBy.value = "newest";
+    applyFiltersAndSort();
+  });
+
+  els.searchInput?.addEventListener("input", applyFiltersAndSort);
+  els.paymentFilter?.addEventListener("change", applyFiltersAndSort);
+  els.portalFilter?.addEventListener("change", applyFiltersAndSort);
+  els.sortBy?.addEventListener("change", applyFiltersAndSort);
+
+  els.logoutBtn?.addEventListener("click", () => {
+    localStorage.removeItem("bsa_admin_auth");
+    window.location.href = "admin-login.html";
+  });
+
+  els.tableBody?.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+
+    const { action, id } = button.dataset;
+
+    if (action === "edit") {
+      const student = studentForEdit(id);
+      if (student) openEditModal(student);
+      return;
+    }
+
+    if (action === "regen") {
+      await regenStudentCode(id);
+      return;
+    }
+
+    if (action === "toggle-lock") {
+      await toggleLockStudent(id);
+      return;
+    }
+
+    if (action === "delete") {
+      await deleteStudent(id);
+    }
+  });
+}
+
+// ---------- Start ----------
+bindEvents();
+loadStudents();
