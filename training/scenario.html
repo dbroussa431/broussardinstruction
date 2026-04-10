@@ -53,7 +53,6 @@
 <script src="data.js"></script>
 
 <script type="module">
-
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -63,17 +62,37 @@ import {
   setScenarioCompleted
 } from "./app.js";
 
+import {
+  initTracking,
+  trackManualActivity,
+  logStage,
+  stopTracking
+} from "./tracking.js";
+
 requireLogin();
 
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-// 🔒 LOCK CHECK
-if (!lessonSequenceUnlocked(lessonId, student)) {
-  window.location.href = "dashboard.html";
+if (!student) {
+  window.location.href = "index.html";
+  throw new Error("Student session missing");
 }
 
-// 🔵 LOAD LESSON
+// TRACKING START
+try {
+  initTracking(student.id, lessonId);
+  await logStage("Scenario Started");
+} catch (error) {
+  console.error("Scenario tracking init failed:", error);
+}
+
+// LOCK CHECK
+if (!lessonSequenceUnlocked(lessonId, student)) {
+  window.location.href = "dashboard.html";
+  throw new Error("Scenario access blocked");
+}
+
 const lesson = window.LESSONS.find(l => l.id === lessonId);
 
 if (!lesson) {
@@ -81,12 +100,12 @@ if (!lesson) {
   throw new Error("Lesson missing");
 }
 
-// 🔧 DETERMINE SCENARIO COUNT
+// DETERMINE SCENARIO COUNT
 let scenarioCount = 2;
 if (lessonId === 8 || lessonId === 9) scenarioCount = 3;
 if (lessonId === 10) scenarioCount = 5;
 
-// 🔵 LOAD SCENARIOS
+// LOAD SCENARIOS
 const scenarios = getScenarioQuestionsForLesson(lesson.id, scenarioCount);
 
 // TITLES / ROUTING
@@ -101,7 +120,6 @@ document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`
 const wrap = document.getElementById("scenarioWrap");
 
 scenarios.forEach((sc, index) => {
-
   const block = document.createElement("div");
   block.className = "scenario-block";
 
@@ -114,7 +132,6 @@ scenarios.forEach((sc, index) => {
   options.className = "scenario-options";
 
   sc.choices.forEach((choice, i) => {
-
     const label = document.createElement("label");
 
     label.innerHTML = `
@@ -129,14 +146,12 @@ scenarios.forEach((sc, index) => {
   wrap.appendChild(block);
 });
 
-// 🔥 SUBMIT LOGIC
+// SUBMIT LOGIC
 document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
-
   let correct = 0;
   let html = "";
 
   scenarios.forEach((sc, index) => {
-
     const selected = document.querySelector(`input[name="scenario_${index}"]:checked`);
     const selectedIndex = selected ? Number(selected.value) : -1;
 
@@ -154,7 +169,6 @@ document.getElementById("submitScenarioBtn").addEventListener("click", async () 
   });
 
   const score = Math.round((correct / scenarios.length) * 100);
-
   const bannerClass = score >= 70 ? "pass" : "retake";
 
   const banner = `
@@ -167,13 +181,42 @@ document.getElementById("submitScenarioBtn").addEventListener("click", async () 
   resultsBox.innerHTML = banner + html;
   resultsBox.classList.remove("hidden");
 
-  // ✅ Mark complete no matter what (scenarios are training, not gate)
   await setScenarioCompleted(lesson.id);
 
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  try {
+    await logStage("Scenario Completed");
+  } catch (error) {
+    console.error("Scenario completion tracking failed:", error);
+  }
 
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 });
 
+// ACTIVITY THROTTLE
+let activityThrottle = false;
+
+async function handleActivityPing() {
+  if (activityThrottle) return;
+  activityThrottle = true;
+
+  try {
+    await trackManualActivity();
+  } catch (error) {
+    console.error("Manual scenario activity failed:", error);
+  }
+
+  setTimeout(() => {
+    activityThrottle = false;
+  }, 15000);
+}
+
+["click", "keydown", "scroll", "touchstart"].forEach((eventName) => {
+  window.addEventListener(eventName, handleActivityPing, { passive: true });
+});
+
+window.addEventListener("beforeunload", () => {
+  stopTracking();
+});
 </script>
 
 </body>
