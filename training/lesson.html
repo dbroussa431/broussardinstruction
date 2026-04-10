@@ -27,16 +27,12 @@
 
 <main class="container lesson-layout">
 
-  <!-- SIDEBAR -->
   <aside class="panel sidebar">
     <h3 id="sideTitle">Lesson</h3>
     <div id="sideSections"></div>
-
     <div id="lessonWarning" class="notice warn small hidden"></div>
-
   </aside>
 
-  <!-- MAIN CONTENT -->
   <section class="panel content-card">
 
     <span class="eyebrow" id="lessonTypeLabel"></span>
@@ -63,7 +59,6 @@
 <script src="data.js"></script>
 
 <script type="module">
-
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -72,6 +67,14 @@ import {
   isLessonAllowedByTier,
   setLessonContentViewed
 } from "./app.js";
+
+import {
+  initTracking,
+  trackLessonView,
+  trackManualActivity,
+  logStage,
+  stopTracking
+} from "./tracking.js";
 
 requireLogin();
 
@@ -86,12 +89,16 @@ try {
 
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 
-// 🔒 ACCESS CONTROL
-if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
-  window.location.href = "dashboard.html";
+if (!student) {
+  window.location.href = "index.html";
+  throw new Error("Student session missing");
 }
 
-// 🔵 LOAD LESSON
+if (!isLessonAllowedByTier(lessonId, student.tier) || !lessonSequenceUnlocked(lessonId, student)) {
+  window.location.href = "dashboard.html";
+  throw new Error("Lesson access blocked");
+}
+
 const lesson = window.LESSONS.find((l) => l.id === lessonId);
 
 if (!lesson) {
@@ -99,29 +106,40 @@ if (!lesson) {
   throw new Error("Lesson missing from data.js");
 }
 
-// Mark viewed
+// --------------------
+// TRACKING START
+// --------------------
+try {
+  initTracking(student.id, lessonId);
+  await trackLessonView();
+  await logStage("Lesson Opened");
+} catch (error) {
+  console.error("Lesson tracking init failed:", error);
+}
+
+// Mark lesson content viewed in your app logic too
 await setLessonContentViewed(lesson.id);
 
-// 🔥 TYPE DETECTION
+// --------------------
+// UI TYPE DETECTION
+// --------------------
 const isLaw = lessonId === 8;
 const isMental = lessonId === 9;
 const isFinal = lessonId === 10;
 
-// 🔵 HEADER LABEL
 let typeLabel = "Core Training Lesson";
-
 if (isLaw) typeLabel = "Louisiana Law Instruction";
 if (isMental) typeLabel = "Mental Readiness Training";
 if (isFinal) typeLabel = "Final Evaluation Preparation";
 
 document.getElementById("lessonTypeLabel").textContent = typeLabel;
-
-// 🔵 TITLES
 document.getElementById("lessonTitle").textContent = `${lesson.id}. ${lesson.title}`;
 document.getElementById("lessonSummary").textContent = lesson.summary;
 document.getElementById("sideTitle").textContent = lesson.title;
 
-// 🔥 WARNING SYSTEM
+// --------------------
+// WARNING SYSTEM
+// --------------------
 const warningBox = document.getElementById("lessonWarning");
 
 if (isLaw) {
@@ -139,34 +157,32 @@ if (isFinal) {
   warningBox.classList.remove("hidden");
 }
 
-// 🔥 CALLOUT
+// --------------------
+// CALLOUT
+// --------------------
 const callout = document.getElementById("lessonCallout");
 
 if (isFinal) {
   callout.innerHTML = "<strong>Final Standard:</strong> You must apply law and judgment correctly to pass.";
 }
 
-// 🔵 BUILD CONTENT
+// --------------------
+// BUILD LESSON CONTENT
+// --------------------
 const side = document.getElementById("sideSections");
 const content = document.getElementById("lessonContent");
 
 lesson.sections.forEach((section, idx) => {
-
   const anchor = `sec${idx + 1}`;
 
-  // Sidebar link
   const link = document.createElement("a");
   link.href = `#${anchor}`;
   link.textContent = section.heading;
-
   if (idx === 0) link.classList.add("active");
-
   side.appendChild(link);
 
-  // Section block
   const wrap = document.createElement("section");
   wrap.id = anchor;
-
   wrap.innerHTML = `<h3>${section.heading}</h3>`;
 
   const ul = document.createElement("ul");
@@ -181,10 +197,39 @@ lesson.sections.forEach((section, idx) => {
   content.appendChild(wrap);
 });
 
-// 🔵 BUTTONS
+// --------------------
+// BUTTONS
+// --------------------
 document.getElementById("toScenarioTop").href = `scenario.html?lesson=${lesson.id}`;
 document.getElementById("toScenarioBottom").href = `scenario.html?lesson=${lesson.id}`;
 
+// --------------------
+// ACTIVITY THROTTLE
+// --------------------
+let activityThrottle = false;
+
+async function handleActivityPing() {
+  if (activityThrottle) return;
+  activityThrottle = true;
+
+  try {
+    await trackManualActivity();
+  } catch (error) {
+    console.error("Manual lesson activity failed:", error);
+  }
+
+  setTimeout(() => {
+    activityThrottle = false;
+  }, 15000);
+}
+
+["click", "keydown", "scroll", "touchstart"].forEach((eventName) => {
+  window.addEventListener(eventName, handleActivityPing, { passive: true });
+});
+
+window.addEventListener("beforeunload", () => {
+  stopTracking();
+});
 </script>
 
 </body>
