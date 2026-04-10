@@ -1,184 +1,178 @@
 import { db } from "./firebase-config.js";
 import {
   doc,
+  getDoc,
   updateDoc,
-  increment,
   serverTimestamp,
-  getDoc
+  increment,
+  arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-// =========================
-// SESSION TRACKING STATE
-// =========================
+let trackingState = {
+  studentId: null,
+  lessonNumber: null,
+  timerHandle: null,
+  startedAtMs: null,
+  lastTickMs: null
+};
 
-let sessionStart = Date.now();
-let currentLesson = null;
-let studentId = null;
-let lessonStartTime = null;
-
-// =========================
-// INIT TRACKING
-// =========================
-
-export function initTracking(userId, lessonNumber) {
-  studentId = userId;
-  currentLesson = lessonNumber;
-
-  sessionStart = Date.now();
-  lessonStartTime = Date.now();
-
-  trackActivity(); // initial ping
-
-  console.log("Tracking started:", userId, lessonNumber);
+function validStudentAndLesson() {
+  return !!trackingState.studentId && Number.isFinite(Number(trackingState.lessonNumber));
 }
 
-// =========================
-// TRACK GENERAL ACTIVITY
-// =========================
+export function initTracking(studentId, lessonNumber) {
+  trackingState.studentId = studentId || null;
+  trackingState.lessonNumber = Number(lessonNumber);
+  trackingState.startedAtMs = Date.now();
+  trackingState.lastTickMs = Date.now();
 
-export async function trackActivity() {
-  if (!studentId) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-
-    await updateDoc(studentRef, {
-      lastLoginAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Activity tracking failed:", err);
+  if (!validStudentAndLesson()) {
+    console.warn("Tracking not initialized: missing studentId or lessonNumber.");
+    return;
   }
-}
 
-// =========================
-// TRACK LESSON VIEW
-// =========================
-
-export async function trackLessonView() {
-  if (!studentId || !currentLesson) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-
-    await updateDoc(studentRef, {
-      [`progress.${currentLesson}.contentViewed`]: true,
-      [`progress.${currentLesson}.lastActivityAt`]: serverTimestamp(),
-      lastLoginAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Lesson view tracking failed:", err);
+  if (trackingState.timerHandle) {
+    clearInterval(trackingState.timerHandle);
   }
-}
 
-// =========================
-// TRACK QUIZ START
-// =========================
-
-export async function trackQuizStart() {
-  if (!studentId || !currentLesson) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-
-    await updateDoc(studentRef, {
-      [`progress.${currentLesson}.attempts`]: increment(1),
-      [`progress.${currentLesson}.lastActivityAt`]: serverTimestamp(),
-      lastLoginAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Quiz start tracking failed:", err);
-  }
-}
-
-// =========================
-// TRACK QUIZ TIME
-// =========================
-
-export async function trackQuizTime(seconds) {
-  if (!studentId || !currentLesson) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-
-    await updateDoc(studentRef, {
-      [`progress.${currentLesson}.quizTimeSeconds`]: increment(seconds),
-      totalQuizTimeSeconds: increment(seconds),
-      lastLoginAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Quiz time tracking failed:", err);
-  }
-}
-
-// =========================
-// TRACK LESSON COMPLETE
-// =========================
-
-export async function trackLessonComplete() {
-  if (!studentId || !currentLesson) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-    const studentSnap = await getDoc(studentRef);
-    const data = studentSnap.data();
-
-    const completedLessons = data.completedLessons || [];
-
-    if (!completedLessons.includes(currentLesson)) {
-      completedLessons.push(currentLesson);
+  trackingState.timerHandle = setInterval(async () => {
+    try {
+      await trackTimeSlice();
+    } catch (error) {
+      console.error("Tracking interval failed:", error);
     }
+  }, 15000);
+}
 
-    await updateDoc(studentRef, {
-      completedLessons: completedLessons,
-      currentLessonNumber: currentLesson + 1,
-      [`progress.${currentLesson}.completedAt`]: serverTimestamp(),
-      [`progress.${currentLesson}.lastActivityAt`]: serverTimestamp(),
-      lastLoginAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Lesson complete tracking failed:", err);
+export function stopTracking() {
+  if (trackingState.timerHandle) {
+    clearInterval(trackingState.timerHandle);
+    trackingState.timerHandle = null;
   }
 }
 
-// =========================
-// TRACK FINAL EVALUATION
-// =========================
-
-export async function trackFinalResult(result) {
-  if (!studentId) return;
-
-  try {
-    const studentRef = doc(db, "portalStudents", studentId);
-
-    await updateDoc(studentRef, {
-      finalEvaluationStatus: result,
-      lastLoginAt: serverTimestamp()
-    });
-
-  } catch (err) {
-    console.error("Final result tracking failed:", err);
-  }
+async function getStudentDocRef() {
+  if (!trackingState.studentId) return null;
+  return doc(db, "portalStudents", trackingState.studentId);
 }
 
-// =========================
-// AUTO TIME TRACKER
-// =========================
-
-setInterval(() => {
-  if (!studentId || !lessonStartTime) return;
+async function trackTimeSlice() {
+  if (!validStudentAndLesson()) return;
 
   const now = Date.now();
-  const seconds = Math.floor((now - lessonStartTime) / 1000);
+  const elapsedSeconds = Math.max(1, Math.floor((now - trackingState.lastTickMs) / 1000));
+  trackingState.lastTickMs = now;
 
-  if (seconds >= 10) {
-    trackQuizTime(seconds);
-    lessonStartTime = now;
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    lastLoginAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    currentLessonNumber: trackingState.lessonNumber,
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp(),
+    [`progress.${trackingState.lessonNumber}.totalQuizTimeSeconds`]: increment(elapsedSeconds),
+    totalQuizTimeSeconds: increment(elapsedSeconds)
+  });
+}
+
+export async function trackLessonView() {
+  if (!validStudentAndLesson()) return;
+
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    lastLoginAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    currentLessonNumber: trackingState.lessonNumber,
+    [`progress.${trackingState.lessonNumber}.contentViewed`]: true,
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp()
+  });
+}
+
+export async function trackQuizStart() {
+  if (!validStudentAndLesson()) return;
+
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    lastLoginAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    currentLessonNumber: trackingState.lessonNumber,
+    [`progress.${trackingState.lessonNumber}.attempts`]: increment(1),
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp()
+  });
+}
+
+export async function trackLessonComplete() {
+  if (!validStudentAndLesson()) return;
+
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  const snap = await getDoc(studentRef);
+  const data = snap.exists() ? (snap.data() || {}) : {};
+  const completedLessons = Array.isArray(data.completedLessons) ? [...data.completedLessons] : [];
+
+  if (!completedLessons.includes(trackingState.lessonNumber)) {
+    completedLessons.push(trackingState.lessonNumber);
+    completedLessons.sort((a, b) => Number(a) - Number(b));
   }
 
-}, 10000);
+  await updateDoc(studentRef, {
+    completedLessons,
+    updatedAt: serverTimestamp(),
+    lastLoginAt: serverTimestamp(),
+    currentLessonNumber: trackingState.lessonNumber + 1,
+    [`progress.${trackingState.lessonNumber}.completedAt`]: serverTimestamp(),
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp()
+  });
+}
+
+export async function trackFinalResult(result) {
+  if (!trackingState.studentId) return;
+
+  const safeResult = String(result || "").trim().toLowerCase();
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    finalEvaluationStatus: safeResult || "unknown",
+    updatedAt: serverTimestamp(),
+    lastLoginAt: serverTimestamp()
+  });
+}
+
+export async function logStage(stageLabel) {
+  if (!validStudentAndLesson()) return;
+
+  const safeStage = String(stageLabel || "").trim();
+  if (!safeStage) return;
+
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    currentStage: safeStage,
+    updatedAt: serverTimestamp(),
+    lastLoginAt: serverTimestamp(),
+    [`progress.${trackingState.lessonNumber}.stage`]: safeStage,
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp()
+  });
+}
+
+export async function trackManualActivity() {
+  if (!validStudentAndLesson()) return;
+
+  const studentRef = await getStudentDocRef();
+  if (!studentRef) return;
+
+  await updateDoc(studentRef, {
+    updatedAt: serverTimestamp(),
+    lastLoginAt: serverTimestamp(),
+    currentLessonNumber: trackingState.lessonNumber,
+    [`progress.${trackingState.lessonNumber}.lastActivityAt`]: serverTimestamp()
+  });
+}
