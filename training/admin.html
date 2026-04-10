@@ -109,11 +109,12 @@
 
     .admin-table {
       width: 100%;
-      min-width: 1850px;
+      min-width: 1980px;
       border-collapse: collapse;
       background: #fff;
       border-radius: 16px;
       overflow: hidden;
+      table-layout: fixed;
     }
 
     .admin-table thead th {
@@ -124,6 +125,7 @@
       padding: 14px 12px;
       border-bottom: 0;
       line-height: 1.2;
+      white-space: normal;
     }
 
     .admin-table td {
@@ -131,6 +133,8 @@
       border-bottom: 1px solid #dde4ef;
       vertical-align: top;
       background: #fff;
+      color: #1f2f4d;
+      font-size: .92rem;
     }
 
     .admin-table tbody tr:hover td {
@@ -141,6 +145,34 @@
       overflow-wrap: anywhere;
       word-break: break-word;
     }
+
+    .cell-center {
+      text-align: center;
+    }
+
+    .cell-small {
+      font-size: .84rem;
+      color: #5f6f88;
+      line-height: 1.35;
+    }
+
+    .col-name { width: 150px; }
+    .col-email { width: 190px; }
+    .col-course { width: 150px; }
+    .col-price { width: 70px; }
+    .col-pay-method { width: 110px; }
+    .col-pay-status { width: 110px; }
+    .col-portal { width: 100px; }
+    .col-code { width: 110px; }
+    .col-lesson { width: 100px; }
+    .col-stage { width: 110px; }
+    .col-attempts { width: 85px; }
+    .col-time { width: 115px; }
+    .col-progress { width: 95px; }
+    .col-final { width: 120px; }
+    .col-activity { width: 150px; }
+    .col-email-status { width: 145px; }
+    .col-actions { width: 180px; }
 
     .mini-actions {
       display: flex;
@@ -166,6 +198,7 @@
       border: 1px solid #dbe2ee;
       background: #f5f8fd;
       color: #31425e;
+      min-width: 62px;
     }
 
     .status-pill.active,
@@ -178,13 +211,15 @@
 
     .status-pill.locked,
     .status-pill.critical,
-    .status-pill.failed {
+    .status-pill.failed,
+    .status-pill.danger {
       background: #fff1f0;
       border-color: #f0cdca;
       color: #9f2a24;
     }
 
-    .status-pill.pending {
+    .status-pill.pending,
+    .status-pill.warning {
       background: #fff7e5;
       border-color: #f0d897;
       color: #8a6400;
@@ -194,6 +229,23 @@
       background: #eef2fb;
       border-color: #d6def0;
       color: #37558f;
+    }
+
+    .status-pill.none {
+      background: #f4f6fa;
+      border-color: #dde4ef;
+      color: #5a6983;
+    }
+
+    .email-status-wrap {
+      display: grid;
+      gap: 4px;
+    }
+
+    .email-status-wrap small {
+      color: #65748c;
+      font-size: .78rem;
+      line-height: 1.25;
     }
 
     .admin-modal {
@@ -303,7 +355,7 @@
         <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
         <div>
           <h1>BSA Admin Dashboard</h1>
-          <p>Student progress, timing, payment, code management, and final evaluation tracking</p>
+          <p>Student progress, timing, payment, code management, final evaluation tracking, and email status.</p>
         </div>
       </div>
       <div class="top-actions">
@@ -385,7 +437,7 @@
       <div class="admin-table-head">
         <div>
           <h2>Student Records</h2>
-          <p>Payment, code, timing, stage, progress, and final evaluation status.</p>
+          <p>Payment, portal access, progress, activity, and inactive-email visibility.</p>
         </div>
         <div class="instructor-meta">
           <strong>Instructor:</strong> David A. Broussard, Sr.<br>
@@ -397,26 +449,27 @@
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Course</th>
-              <th>Price</th>
-              <th>Payment Method</th>
-              <th>Payment Status</th>
-              <th>Portal Status</th>
-              <th>Access Code</th>
-              <th>Current Lesson</th>
-              <th>Current Stage</th>
-              <th>Attempts</th>
-              <th>Total Quiz Time</th>
-              <th>Progress</th>
-              <th>Final Evaluation</th>
-              <th>Last Activity</th>
-              <th>Actions</th>
+              <th class="col-name">Name</th>
+              <th class="col-email">Email</th>
+              <th class="col-course">Course</th>
+              <th class="col-price">Price</th>
+              <th class="col-pay-method">Payment Method</th>
+              <th class="col-pay-status">Payment Status</th>
+              <th class="col-portal">Portal Status</th>
+              <th class="col-code">Access Code</th>
+              <th class="col-lesson">Current Lesson</th>
+              <th class="col-stage">Current Stage</th>
+              <th class="col-attempts">Attempts</th>
+              <th class="col-time">Total Quiz Time</th>
+              <th class="col-progress">Progress</th>
+              <th class="col-final">Final Evaluation</th>
+              <th class="col-activity">Last Activity</th>
+              <th class="col-email-status">Email Status</th>
+              <th class="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody id="studentTableBody">
-            <tr><td colspan="16">Loading student records...</td></tr>
+            <tr><td colspan="17">Loading student records...</td></tr>
           </tbody>
         </table>
       </div>
@@ -457,6 +510,7 @@
             <option value="PayPal">PayPal</option>
             <option value="Direct">Direct</option>
             <option value="Waived">Waived</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
