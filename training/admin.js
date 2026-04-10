@@ -1,180 +1,216 @@
-// ===============================
-// FIREBASE INIT (make sure config exists in HTML)
-// ===============================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+// ==============================
+// FIREBASE IMPORT
+// ==============================
+import { db } from "./firebase-config.js";
 import {
-  getFirestore,
   collection,
   getDocs,
-  doc,
-  deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  addDoc,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// ==============================
+// GLOBAL STATE
+// ==============================
+let students = [];
 
-// ===============================
-// HELPERS
-// ===============================
-function formatDate(val) {
-  if (!val) return "None";
-
-  try {
-    if (val.toDate) return val.toDate().toLocaleString();
-    return new Date(val).toLocaleString();
-  } catch {
-    return "Invalid Date";
-  }
-}
-
-function renderEmailStatus(type, time) {
-  if (!type || type === "None") {
-    return `<span class="badge badge-none">None</span>`;
-  }
-
-  return `
-    <div>
-      <span class="badge badge-${type}">${type}</span>
-      <div style="font-size:11px;color:#666;">
-        ${formatDate(time)}
-      </div>
-    </div>
-  `;
-}
-
-function mapStudent(docSnap) {
-  const data = docSnap.data() || {};
-
-  return {
-    id: docSnap.id,
-    name: data.name || "—",
-    email: data.email || "—",
-    course: "Louisiana Concealed Carry",
-    price: data.price || 0,
-
-    paymentMethod: data.paymentMethod || "—",
-    paymentStatus: data.paymentStatus || "—",
-    portalStatus: "active",
-
-    accessCode: data.accessCode || "—",
-
-    // FIXED DATA MAPPING
-    currentLesson:
-      data.progress ||
-      (Array.isArray(data.completedLessons)
-        ? data.completedLessons.length
-        : 0),
-
-    currentStage: data.stage || "—",
-    attempts: data.attempts || 0,
-    totalTime: data.totalTime || "0m 0s",
-    progress: data.progress || 0,
-
-    finalEvaluation: data.finalEvaluation || "—",
-
-    lastActivity: data.lastLoginAt || null,
-
-    emailType: data.lastEmailType || "None",
-    emailSentAt: data.lastEmailSentAt || null
-  };
-}
-
-// ===============================
-// LOAD DATA
-// ===============================
-async function loadStudents() {
-  const tableBody = document.getElementById("studentTableBody");
-  tableBody.innerHTML = "";
-
-  const snapshot = await getDocs(collection(db, "portalStudents"));
-
-  let totalStudents = 0;
-  let paidStudents = 0;
-  let revenue = 0;
-
-  snapshot.forEach((docSnap) => {
-    const student = mapStudent(docSnap);
-
-    totalStudents++;
-
-    if (student.paymentStatus === "paid") {
-      paidStudents++;
-      revenue += student.price || 0;
-    }
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${student.name}</td>
-      <td>${student.email}</td>
-      <td>${student.course}</td>
-      <td>$${student.price}</td>
-
-      <td>${student.paymentMethod}</td>
-      <td>${student.paymentStatus}</td>
-      <td>${student.portalStatus}</td>
-
-      <td>${student.accessCode}</td>
-
-      <td>${student.currentLesson}</td>
-      <td>${student.currentStage}</td>
-
-      <td>${student.attempts}</td>
-      <td>${student.totalTime}</td>
-
-      <td>${student.progress}</td>
-
-      <td>${student.finalEvaluation}</td>
-
-      <td>${formatDate(student.lastActivity)}</td>
-
-      <td>${renderEmailStatus(student.emailType, student.emailSentAt)}</td>
-
-      <td>
-        <button class="edit-btn" data-id="${student.id}">Edit</button>
-        <button class="delete-btn" data-id="${student.id}">Delete</button>
-      </td>
-    `;
-
-    tableBody.appendChild(row);
-  });
-
-  // ===============================
-  // UPDATE DASHBOARD STATS
-  // ===============================
-  document.getElementById("totalStudents").innerText = totalStudents;
-  document.getElementById("paidStudents").innerText = paidStudents;
-  document.getElementById("revenueCollected").innerText = `$${revenue}`;
-
-  attachEvents();
-}
-
-// ===============================
-// BUTTON EVENTS
-// ===============================
-function attachEvents() {
-  document.querySelectorAll(".delete-btn").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
-      const id = e.target.dataset.id;
-
-      if (!confirm("Delete this student?")) return;
-
-      await deleteDoc(doc(db, "portalStudents", id));
-      loadStudents();
-    });
-  });
-
-  document.querySelectorAll(".edit-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const id = e.target.dataset.id;
-      alert("Edit coming soon for ID: " + id);
-    });
-  });
-}
-
-// ===============================
+// ==============================
 // INIT
-// ===============================
+// ==============================
 document.addEventListener("DOMContentLoaded", () => {
   loadStudents();
+
+  document.getElementById("refreshBtn").addEventListener("click", loadStudents);
+  document.getElementById("exportBtn").addEventListener("click", exportCSV);
+  document.getElementById("addStudentBtn").addEventListener("click", openModal);
+  document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+  document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
+  document.getElementById("studentFormWrap").addEventListener("submit", saveStudent);
 });
+
+// ==============================
+// LOAD STUDENTS
+// ==============================
+async function loadStudents() {
+  const tbody = document.getElementById("studentTableBody");
+  tbody.innerHTML = `<tr><td colspan="16">Loading student records...</td></tr>`;
+
+  try {
+    const snapshot = await getDocs(collection(db, "portalStudents"));
+
+    students = [];
+
+    snapshot.forEach((docSnap) => {
+      students.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
+    });
+
+    renderTable();
+    updateStats();
+
+  } catch (err) {
+    console.error("LOAD ERROR:", err);
+    tbody.innerHTML = `<tr><td colspan="16">Error loading data</td></tr>`;
+  }
+}
+
+// ==============================
+// RENDER TABLE
+// ==============================
+function renderTable() {
+  const tbody = document.getElementById("studentTableBody");
+
+  if (students.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="16">No students found</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = students.map(s => `
+    <tr>
+      <td>${s.name || "-"}</td>
+      <td>${s.email || "-"}</td>
+      <td>${s.course || "Louisiana Concealed Carry"}</td>
+      <td>$${s.price || 0}</td>
+      <td>${s.paymentMethod || "-"}</td>
+      <td>${formatStatus(s.paymentStatus)}</td>
+      <td>${formatStatus(s.portalStatus)}</td>
+      <td>${s.accessCode || "-"}</td>
+      <td>${s.currentLesson || "-"}</td>
+      <td>${s.currentStage || "-"}</td>
+      <td>${s.attempts || 0}</td>
+      <td>${formatTime(s.totalTime)}</td>
+      <td>${formatProgress(s.progress)}</td>
+      <td>${formatStatus(s.finalStatus)}</td>
+      <td>${formatDate(s.lastLoginAt)}</td>
+      <td>
+        <button onclick="deleteStudent('${s.id}')">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+// ==============================
+// STATS
+// ==============================
+function updateStats() {
+  document.getElementById("statTotalStudents").innerText = students.length;
+
+  const paid = students.filter(s => s.paymentStatus === "paid").length;
+  const pending = students.filter(s => s.paymentStatus === "pending").length;
+
+  const revenue = students.reduce((sum, s) => {
+    return sum + (s.paymentStatus === "paid" ? (s.price || 0) : 0);
+  }, 0);
+
+  document.getElementById("statPaidStudents").innerText = paid;
+  document.getElementById("statPendingPayments").innerText = pending;
+  document.getElementById("statRevenue").innerText = `$${revenue}`;
+}
+
+// ==============================
+// SAVE STUDENT
+// ==============================
+async function saveStudent(e) {
+  e.preventDefault();
+
+  const student = {
+    name: document.getElementById("studentName").value,
+    email: document.getElementById("studentEmail").value,
+    course: document.getElementById("studentCourse").value,
+    price: Number(document.getElementById("studentPrice").value),
+    paymentMethod: document.getElementById("studentPaymentMethod").value,
+    paymentStatus: document.getElementById("studentPaymentStatus").value,
+    portalStatus: document.getElementById("studentPortalStatus").value,
+    accessCode: document.getElementById("generatedCode").value,
+    createdAt: new Date(),
+    lastLoginAt: new Date()
+  };
+
+  try {
+    await addDoc(collection(db, "portalStudents"), student);
+    closeModal();
+    loadStudents();
+  } catch (err) {
+    console.error("SAVE ERROR:", err);
+  }
+}
+
+// ==============================
+// DELETE
+// ==============================
+window.deleteStudent = async function(id) {
+  if (!confirm("Delete student?")) return;
+
+  await deleteDoc(doc(db, "portalStudents", id));
+  loadStudents();
+};
+
+// ==============================
+// EXPORT CSV
+// ==============================
+function exportCSV() {
+  let csv = "Name,Email,Course,Price\n";
+
+  students.forEach(s => {
+    csv += `${s.name},${s.email},${s.course},${s.price}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "students.csv";
+  a.click();
+}
+
+// ==============================
+// MODAL
+// ==============================
+function openModal() {
+  document.getElementById("studentModal").showModal();
+}
+
+function closeModal() {
+  document.getElementById("studentModal").close();
+}
+
+// ==============================
+// FORMATTERS
+// ==============================
+function formatDate(ts) {
+  if (!ts) return "—";
+
+  try {
+    const date = ts.toDate ? ts.toDate() : new Date(ts);
+    return date.toLocaleString();
+  } catch {
+    return "—";
+  }
+}
+
+function formatTime(seconds) {
+  if (!seconds) return "0m";
+
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+
+  return `${m}m ${s}s`;
+}
+
+function formatProgress(p) {
+  if (!p) return "—";
+
+  if (typeof p === "number") return `${p}/10`;
+
+  return "—";
+}
+
+function formatStatus(s) {
+  if (!s) return "None";
+
+  return `<span class="status-pill ${s}">${s}</span>`;
+}
