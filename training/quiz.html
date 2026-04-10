@@ -56,7 +56,6 @@
 <script src="data.js"></script>
 
 <script type="module">
-
 import {
   PASSING_SCORE,
   requireLogin,
@@ -70,11 +69,40 @@ import {
   clearActiveQuiz
 } from "./app.js";
 
+import {
+  initTracking,
+  trackQuizStart,
+  trackLessonComplete,
+  trackFinalResult,
+  trackManualActivity,
+  logStage,
+  stopTracking
+} from "./tracking.js";
+
 requireLogin();
 
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
 const lesson = window.LESSONS.find(l => l.id === lessonId);
+
+if (!student) {
+  window.location.href = "index.html";
+  throw new Error("Student session missing");
+}
+
+if (!lesson) {
+  document.getElementById("quizWrap").innerHTML = "<p>Quiz lesson not found.</p>";
+  throw new Error("Quiz lesson missing");
+}
+
+// TRACKING START
+try {
+  initTracking(student.id, lessonId);
+  await trackQuizStart();
+  await logStage("Quiz Started");
+} catch (error) {
+  console.error("Quiz tracking init failed:", error);
+}
 
 document.getElementById("quizTitle").textContent =
   `${lesson.id}. ${lesson.title} — Final Evaluation`;
@@ -94,7 +122,6 @@ const selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
 const quizWrap = document.getElementById("quizWrap");
 
 selectedQuestions.forEach((q, index) => {
-
   const card = document.createElement("div");
   card.className = "scenario-card";
 
@@ -109,7 +136,6 @@ selectedQuestions.forEach((q, index) => {
     : q.choices;
 
   choices.forEach((choice, i) => {
-
     const label = document.createElement("label");
     label.className = "answer-option";
 
@@ -118,9 +144,15 @@ selectedQuestions.forEach((q, index) => {
       <span>${choice}</span>
     `;
 
-    label.addEventListener("click", () => {
+    label.addEventListener("click", async () => {
       answers.querySelectorAll(".answer-option").forEach(el => el.classList.remove("selected"));
       label.classList.add("selected");
+
+      try {
+        await trackManualActivity();
+      } catch (error) {
+        console.error("Quiz answer activity failed:", error);
+      }
     });
 
     answers.appendChild(label);
@@ -132,13 +164,11 @@ selectedQuestions.forEach((q, index) => {
 });
 
 document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-
   let correct = 0;
   let criticalFail = false;
   const details = [];
 
   selectedQuestions.forEach((q, index) => {
-
     const picked = document.querySelector(`input[name="q${index}"]:checked`);
 
     let isCorrect = false;
@@ -169,11 +199,18 @@ document.getElementById("submitQuizBtn").addEventListener("click", async () => {
 
   await recordFinalEvaluation(lessonId, score, details, 0, { criticalFail });
 
+  try {
+    await trackFinalResult(score >= PASSING_SCORE && !criticalFail ? "passed" : "failed");
+    await trackLessonComplete();
+    await logStage("Quiz Completed");
+  } catch (error) {
+    console.error("Final quiz tracking failed:", error);
+  }
+
   renderResults(score, details, criticalFail);
 });
 
 function renderResults(score, details, criticalFail) {
-
   const panel = document.getElementById("resultPanel");
   panel.classList.remove("hidden");
 
@@ -193,6 +230,31 @@ function renderResults(score, details, criticalFail) {
   `;
 }
 
+// ACTIVITY THROTTLE
+let activityThrottle = false;
+
+async function handleActivityPing() {
+  if (activityThrottle) return;
+  activityThrottle = true;
+
+  try {
+    await trackManualActivity();
+  } catch (error) {
+    console.error("Manual quiz activity failed:", error);
+  }
+
+  setTimeout(() => {
+    activityThrottle = false;
+  }, 15000);
+}
+
+["click", "keydown", "scroll", "touchstart"].forEach((eventName) => {
+  window.addEventListener(eventName, handleActivityPing, { passive: true });
+});
+
+window.addEventListener("beforeunload", () => {
+  stopTracking();
+});
 </script>
 
 </body>
