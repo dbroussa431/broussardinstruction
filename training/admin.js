@@ -187,13 +187,13 @@ function getCourseStatus(student) {
   const completed = getCompletedCount(student);
   const total = getTotalLessons();
 
-  if (completed >= total) return "COMPLETE";
-  if (completed === 0 && !Object.keys(getProgressObject(student)).length) return "NOT STARTED";
-  return "IN PROGRESS";
+  if (completed >= total) return "Complete";
+  if (completed === 0 && !Object.keys(getProgressObject(student)).length) return "Not Started";
+  return "In Progress";
 }
 
 function isCourseComplete(student) {
-  return getCourseStatus(student) === "COMPLETE";
+  return normalizeText(getCourseStatus(student)) === "complete";
 }
 
 function getLessonNumbers(student) {
@@ -237,10 +237,10 @@ function getCurrentLessonNumber(student) {
 }
 
 function getCurrentLessonLabel(student) {
-  const status = getCourseStatus(student);
+  const status = normalizeText(getCourseStatus(student));
 
-  if (status === "COMPLETE") return "Course Complete";
-  if (status === "NOT STARTED") return "Not Started";
+  if (status === "complete") return "Course Complete";
+  if (status === "not started") return "Not Started";
 
   const n = getCurrentLessonNumber(student);
   return n ? `Lesson ${n}` : "—";
@@ -252,9 +252,9 @@ function getCurrentStage(student) {
   if (finalEval.includes("critical")) return "Critical";
   if (finalEval.includes("fail")) return "Failed";
 
-  const status = getCourseStatus(student);
-  if (status === "COMPLETE") return "Completed";
-  if (status === "NOT STARTED") return "Not Started";
+  const status = normalizeText(getCourseStatus(student));
+  if (status === "complete") return "Completed";
+  if (status === "not started") return "Not Started";
 
   if (student.currentStage) return String(student.currentStage);
   if (student.stage) return String(student.stage);
@@ -376,7 +376,8 @@ function isPaid(student) {
   return getPaymentStatus(student) === "paid" || student.paid === true;
 }
 
-function getLastEmailType(student) {
+// ---------- Email Tracking / Due Logic ----------
+function getDueEmailType(student) {
   const last = lastActivity(student);
 
   if (!last) return "7-day";
@@ -391,25 +392,100 @@ function getLastEmailType(student) {
 
   return "None";
 }
- 
-function emailStatusHtml(student) {
-  const type = getLastEmailType(student);
- const sentAt =
-  student.lastEmailSentAt ||
-  student.lastEmail7At ||
-  student.lastEmail14At ||
-  student.lastEmail30At ||
-  lastActivity(student);
 
-  let cls = "none";
-  if (type === "7-day") cls = "pending";
-  if (type === "14-day") cls = "warning";
-  if (type === "30-day") cls = "danger";
+function getLastLoggedEmailType(student) {
+  if (student.lastEmailType) return String(student.lastEmailType);
+  if (student.lastEmail30At) return "30-day";
+  if (student.lastEmail14At) return "14-day";
+  if (student.lastEmail7At) return "7-day";
+  if (student.lastEmailSentAt) return "sent";
+  return "None";
+}
+
+function getLastLoggedEmailDate(student) {
+  return (
+    student.lastEmailSentAt ||
+    student.lastEmail30At ||
+    student.lastEmail14At ||
+    student.lastEmail7At ||
+    null
+  );
+}
+
+function getEmailStatusDisplay(student) {
+  const dueType = getDueEmailType(student);
+  const loggedType = getLastLoggedEmailType(student);
+  const loggedDate = getLastLoggedEmailDate(student);
+
+  if (loggedType !== "None" && loggedType !== "sent") {
+    const dueRank = emailTypeRank(dueType);
+    const loggedRank = emailTypeRank(loggedType);
+
+    if (loggedRank >= dueRank) {
+      return {
+        type: loggedType,
+        cls: emailTypeClass(loggedType),
+        label: loggedType,
+        subLabel: loggedDate ? `Sent ${formatFullDate(loggedDate)}` : "Sent"
+      };
+    }
+  }
+
+  if (dueType !== "None") {
+    const dueDate =
+      lastActivity(student) ||
+      student.createdAt ||
+      null;
+
+    return {
+      type: dueType,
+      cls: emailTypeClass(dueType),
+      label: dueType,
+      subLabel: dueDate ? `Due from ${formatFullDate(dueDate)}` : "Due now"
+    };
+  }
+
+  return {
+    type: "None",
+    cls: "none",
+    label: "None",
+    subLabel: "No email due"
+  };
+}
+
+function emailTypeRank(type) {
+  const t = normalizeText(type);
+  if (t === "7-day") return 1;
+  if (t === "14-day") return 2;
+  if (t === "30-day") return 3;
+  return 0;
+}
+
+function emailTypeClass(type) {
+  const t = normalizeText(type);
+  if (t === "7-day") return "pending";
+  if (t === "14-day") return "warning";
+  if (t === "30-day") return "danger";
+  return "none";
+}
+
+function getNextLoggableEmailType(student) {
+  const dueType = getDueEmailType(student);
+  const loggedType = getLastLoggedEmailType(student);
+
+  if (dueType === "None") return null;
+  if (emailTypeRank(loggedType) >= emailTypeRank(dueType)) return null;
+
+  return dueType;
+}
+
+function emailStatusHtml(student) {
+  const display = getEmailStatusDisplay(student);
 
   return `
     <div class="email-status-wrap">
-      <span class="status-pill ${cls}">${escapeHtml(type)}</span>
-      <small>${escapeHtml(formatFullDate(sentAt))}</small>
+      <span class="status-pill ${escapeHtml(display.cls)}">${escapeHtml(display.label)}</span>
+      <small>${escapeHtml(display.subLabel)}</small>
     </div>
   `;
 }
@@ -470,6 +546,7 @@ function renderRows(rows) {
     const finalEval = getFinalEvaluationLabel(s);
     const courseStatus = getCourseStatus(s);
     const isLocked = normalizeText(portalStatus) === "locked";
+    const loggableType = getNextLoggableEmailType(s);
 
     return `
       <tr>
@@ -498,6 +575,7 @@ function renderRows(rows) {
             <button class="btn btn-outline" data-action="edit" data-id="${s.id}" type="button">Edit</button>
             <button class="btn btn-outline" data-action="regen" data-id="${s.id}" type="button">Regen</button>
             <button class="btn ${isLocked ? "btn-light" : "btn-outline"}" data-action="toggle-lock" data-id="${s.id}" type="button">${isLocked ? "Unlock" : "Lock"}</button>
+            <button class="btn btn-outline" data-action="log-email" data-id="${s.id}" type="button" ${loggableType ? "" : "disabled"}>${loggableType ? `Log ${loggableType}` : "No Email Due"}</button>
             <button class="btn btn-outline" data-action="delete" data-id="${s.id}" type="button">Delete</button>
           </div>
         </td>
@@ -594,7 +672,7 @@ function openEditModal(student) {
   if (els.studentName) els.studentName.value = student.name || "";
   if (els.studentEmail) els.studentEmail.value = student.email || "";
   if (els.studentCourse) els.studentCourse.value = student.course || "Louisiana Concealed Carry";
-  if (els.studentPrice) els.studentPrice.value = Number(s.price || 0);
+  if (els.studentPrice) els.studentPrice.value = Number(student.price || 0);
   if (els.studentPaymentMethod) els.studentPaymentMethod.value = student.paymentMethod || "PayPal";
   if (els.studentPaymentStatus) els.studentPaymentStatus.value = getPaymentStatus(student);
   if (els.studentPortalStatus) els.studentPortalStatus.value = getPortalStatus(student);
@@ -656,6 +734,9 @@ async function saveStudent(event) {
         lastLoginAt: null,
         lastEmailType: null,
         lastEmailSentAt: null,
+        lastEmail7At: null,
+        lastEmail14At: null,
+        lastEmail30At: null,
         inactiveEmailSent7: false,
         inactiveEmailSent14: false,
         inactiveEmailSent30: false
@@ -723,6 +804,46 @@ async function regenStudentCode(id) {
   }
 }
 
+async function logEmailForStudent(id) {
+  const student = studentForEdit(id);
+  if (!student) return;
+
+  const dueType = getNextLoggableEmailType(student);
+  if (!dueType) {
+    alert("No new email is due for this student.");
+    return;
+  }
+
+  const payload = {
+    lastEmailType: dueType,
+    lastEmailSentAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  };
+
+  if (dueType === "7-day") {
+    payload.lastEmail7At = serverTimestamp();
+    payload.inactiveEmailSent7 = true;
+  }
+
+  if (dueType === "14-day") {
+    payload.lastEmail14At = serverTimestamp();
+    payload.inactiveEmailSent14 = true;
+  }
+
+  if (dueType === "30-day") {
+    payload.lastEmail30At = serverTimestamp();
+    payload.inactiveEmailSent30 = true;
+  }
+
+  try {
+    await updateDoc(doc(db, "portalStudents", id), payload);
+    await loadStudents();
+  } catch (error) {
+    console.error("EMAIL LOG ERROR:", error);
+    alert(`Email log failed: ${error.message}`);
+  }
+}
+
 function exportCsv() {
   const rows = filteredStudents.length ? filteredStudents : allStudents;
   const header = [
@@ -742,8 +863,11 @@ function exportCsv() {
     "Course Status",
     "Final Evaluation",
     "Last Activity",
-    "Email Status",
-    "Email Sent At"
+    "Email Due/Status",
+    "Last Email Logged At",
+    "Last Email 7 At",
+    "Last Email 14 At",
+    "Last Email 30 At"
   ];
 
   const csvRows = [
@@ -765,8 +889,11 @@ function exportCsv() {
       csvSafe(getCourseStatus(s)),
       csvSafe(getFinalEvaluationLabel(s)),
       csvSafe(formatFullDate(lastActivity(s))),
-      csvSafe(getLastEmailType(s)),
-      csvSafe(formatFullDate(s.lastEmailSentAt))
+      csvSafe(getEmailStatusDisplay(s).label),
+      csvSafe(formatFullDate(getLastLoggedEmailDate(s))),
+      csvSafe(formatFullDate(s.lastEmail7At)),
+      csvSafe(formatFullDate(s.lastEmail14At)),
+      csvSafe(formatFullDate(s.lastEmail30At))
     ].join(","))
   ];
 
@@ -858,6 +985,11 @@ function bindEvents() {
 
     if (action === "toggle-lock") {
       await toggleLockStudent(id);
+      return;
+    }
+
+    if (action === "log-email") {
+      await logEmailForStudent(id);
       return;
     }
 
