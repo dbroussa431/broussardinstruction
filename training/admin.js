@@ -56,7 +56,18 @@ const els = {
 };
 
 // ---------- Helpers ----------
-const normalizeText = (v) => String(v ?? "").trim().toLowerCase();
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalizeText(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
 
 function safeDate(value) {
   if (!value) return null;
@@ -65,12 +76,39 @@ function safeDate(value) {
   return isNaN(d) ? null : d;
 }
 
+function formatNiceDate(value) {
+  const date = safeDate(value);
+  if (!date) return "—";
+  const diff = Date.now() - date.getTime();
+  const minute = 60000, hour = 3600000, day = 86400000;
+  if (diff < minute) return "Just now";
+  if (diff < hour) return `${Math.floor(diff / minute)} min ago`;
+  if (diff < day) return `${Math.floor(diff / hour)} hr ago`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)} day(s) ago`;
+  return date.toLocaleString();
+}
+
+function formatFullDate(value) {
+  const date = safeDate(value);
+  return date ? date.toLocaleString() : "—";
+}
+
+function currency(value) {
+  return `$${Number(value || 0).toLocaleString()}`;
+}
+
+// ---------- LESSON / PROGRESS ----------
+
 function getTotalLessons() {
   return window.BSA_LESSON_COUNT || 10;
 }
 
+function getProgressObject(student) {
+  return student.progress || {};
+}
+
 function getCompletedLessons(student) {
-  return Array.isArray(student.completedLessons) ? student.completedLessons : [];
+  return (student.completedLessons || []).map(Number);
 }
 
 function getCompletedCount(student) {
@@ -81,6 +119,7 @@ function getCompletedCount(student) {
 function getCourseStatus(student) {
   const completed = getCompletedCount(student);
   const total = getTotalLessons();
+
   if (completed >= total) return "COMPLETE";
   if (completed === 0) return "NOT STARTED";
   return "IN PROGRESS";
@@ -93,15 +132,13 @@ function getCurrentLessonNumber(student) {
 
   if (completed >= total) return null;
 
-  const progress = student.progress || {};
-  const keys = Object.keys(progress).map(Number).sort((a,b)=>a-b);
-
-  if (!keys.length) return 1;
+  const lessons = Object.keys(getProgressObject(student)).map(Number).sort((a,b)=>a-b);
+  if (!lessons.length) return 1;
 
   const completedSet = new Set(getCompletedLessons(student));
-  const next = keys.find(n => !completedSet.has(n));
+  const next = lessons.find(n => !completedSet.has(n));
 
-  return next || keys[keys.length - 1];
+  return next || lessons[lessons.length - 1];
 }
 
 function getCurrentLessonLabel(student) {
@@ -113,50 +150,20 @@ function getCurrentLessonLabel(student) {
 }
 
 // 🔥 FIXED
-function totalAttempts(student) {
-  if (student.attempts) return student.attempts;
-
-  let total = 0;
-  Object.values(student.progress || {}).forEach(p => {
-    total += Number(p?.attempts || 0);
-  });
-
-  return total;
-}
-
-// 🔥 FIXED
-function totalQuizTimeSeconds(student) {
-  if (student.totalQuizTimeSeconds) return student.totalQuizTimeSeconds;
-  if (student.totalTimeSeconds) return student.totalTimeSeconds;
-  if (student.totalOnlineMinutes) return student.totalOnlineMinutes * 60;
-
-  let total = 0;
-  Object.values(student.progress || {}).forEach(p => {
-    total += Number(p?.totalQuizTimeSeconds || 0);
-    total += Number(p?.quizTimeSeconds || 0);
-    total += Number(p?.timeSpentSeconds || 0);
-  });
-
-  return total;
-}
-
-function formatTime(sec) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m}m ${s}s`;
-}
-
-// 🔥 FIXED
 function progressLabel(student) {
   const completed = getCompletedCount(student);
   const total = getTotalLessons();
+
   if (completed === 0) return "—";
   return `${completed}/${total}`;
 }
 
 // 🔥 FIXED
 function getPaymentStatus(student) {
-  if (student.paymentStatus) return student.paymentStatus;
+  const raw = normalizeText(student.paymentStatus);
+  if (raw === "paid") return "paid";
+  if (raw === "waived") return "waived";
+  if (raw === "pending") return "pending";
   if (student.paid === true) return "paid";
   return "pending";
 }
@@ -165,56 +172,61 @@ function isPaid(student) {
   return getPaymentStatus(student) === "paid";
 }
 
-// ---------- Render ----------
-function renderStats(rows) {
+function totalAttempts(student) {
+  if (student.attempts) return student.attempts;
+
+  return Object.values(getProgressObject(student))
+    .reduce((sum,p)=> sum + Number(p?.attempts || 0),0);
+}
+
+function totalQuizTimeSeconds(student) {
+  if (student.totalQuizTimeSeconds) return student.totalQuizTimeSeconds;
+
+  return Object.values(getProgressObject(student))
+    .reduce((sum,p)=> sum + Number(p?.quizTimeSeconds || 0),0);
+}
+
+function formatSeconds(sec){
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return `${m}m ${s}s`;
+}
+
+// ---------- RENDER ----------
+
+function renderStats(rows){
   els.statTotalStudents.textContent = rows.length;
   els.statPaidStudents.textContent = rows.filter(isPaid).length;
-  els.statPendingPayments.textContent = rows.filter(s => !isPaid(s)).length;
+  els.statPendingPayments.textContent = rows.filter(s=>!isPaid(s)).length;
 
-  const revenue = rows
-    .filter(isPaid)
-    .reduce((sum, s) => sum + Number(s.price || 0), 0);
+  const revenue = rows.filter(isPaid)
+    .reduce((sum,s)=> sum + Number(s.price||0),0);
 
   els.statRevenue.textContent = `$${revenue}`;
 }
 
-function renderRows(rows) {
-  if (!rows.length) {
-    els.tableBody.innerHTML = `<tr><td colspan="10">No data</td></tr>`;
-    return;
-  }
-
-  els.tableBody.innerHTML = rows.map(s => `
+function renderRows(rows){
+  els.tableBody.innerHTML = rows.map(s=>`
     <tr>
-      <td>${s.name || ""}</td>
-      <td>${s.email || ""}</td>
-      <td>${s.course || ""}</td>
-      <td>${s.price || 0}</td>
-      <td>${s.paymentMethod || ""}</td>
-      <td>${getPaymentStatus(s)}</td>
-      <td>${s.portalStatus || "active"}</td>
-      <td>${s.accessCode || ""}</td>
+      <td>${s.name||""}</td>
+      <td>${s.email||""}</td>
       <td>${getCurrentLessonLabel(s)}</td>
       <td>${totalAttempts(s)}</td>
-      <td>${formatTime(totalQuizTimeSeconds(s))}</td>
+      <td>${formatSeconds(totalQuizTimeSeconds(s))}</td>
       <td>${progressLabel(s)}</td>
       <td>${getCourseStatus(s)}</td>
     </tr>
   `).join("");
 }
 
-function applyFiltersAndSort() {
-  filteredStudents = [...allStudents];
-  renderStats(filteredStudents);
-  renderRows(filteredStudents);
+// ---------- DATA ----------
+
+async function loadStudents(){
+  const snap = await getDocs(collection(db,"portalStudents"));
+  allStudents = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderStats(allStudents);
+  renderRows(allStudents);
 }
 
-// ---------- Data ----------
-async function loadStudents() {
-  const snap = await getDocs(collection(db, "portalStudents"));
-  allStudents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  applyFiltersAndSort();
-}
-
-// ---------- Start ----------
+// ---------- START ----------
 loadStudents();
