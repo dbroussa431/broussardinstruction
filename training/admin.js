@@ -379,7 +379,7 @@ function isPaid(student) {
 function getLastEmailType(student) {
   const last = lastActivity(student);
 
-  if (!last) return "7-day"; // baseline
+  if (!last) return "7-day";
 
   const diffDays = Math.floor(
     (Date.now() - last.getTime()) / (1000 * 60 * 60 * 24)
@@ -390,7 +390,9 @@ function getLastEmailType(student) {
   if (diffDays >= 7) return "7-day";
 
   return "None";
-} {
+}
+ 
+{
   if (student.lastEmailType) return student.lastEmailType;
   if (student.inactiveEmailSent30) return "30-day";
   if (student.inactiveEmailSent14) return "14-day";
