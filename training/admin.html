@@ -109,7 +109,7 @@
 
     .admin-table {
       width: 100%;
-      min-width: 1980px;
+      min-width: 2120px;
       border-collapse: collapse;
       background: #fff;
       border-radius: 16px;
@@ -135,6 +135,8 @@
       background: #fff;
       color: #1f2f4d;
       font-size: .92rem;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .admin-table tbody tr:hover td {
@@ -157,20 +159,21 @@
     }
 
     .col-name { width: 150px; }
-    .col-email { width: 190px; }
-    .col-course { width: 150px; }
+    .col-email { width: 240px; }
+    .col-course { width: 210px; }
     .col-price { width: 70px; }
     .col-pay-method { width: 110px; }
     .col-pay-status { width: 110px; }
     .col-portal { width: 100px; }
-    .col-code { width: 110px; }
-    .col-lesson { width: 100px; }
-    .col-stage { width: 110px; }
+    .col-code { width: 120px; }
+    .col-lesson { width: 120px; }
+    .col-stage { width: 120px; }
     .col-attempts { width: 85px; }
     .col-time { width: 115px; }
     .col-progress { width: 95px; }
+    .col-course-status { width: 120px; }
     .col-final { width: 120px; }
-    .col-activity { width: 150px; }
+    .col-activity { width: 160px; }
     .col-email-status { width: 145px; }
     .col-actions { width: 180px; }
 
@@ -462,6 +465,7 @@
               <th class="col-attempts">Attempts</th>
               <th class="col-time">Total Quiz Time</th>
               <th class="col-progress">Progress</th>
+              <th class="col-course-status">Course Status</th>
               <th class="col-final">Final Evaluation</th>
               <th class="col-activity">Last Activity</th>
               <th class="col-email-status">Email Status</th>
@@ -469,7 +473,7 @@
             </tr>
           </thead>
           <tbody id="studentTableBody">
-            <tr><td colspan="17">Loading student records...</td></tr>
+            <tr><td colspan="18">Loading student records...</td></tr>
           </tbody>
         </table>
       </div>
@@ -566,6 +570,6 @@
 
   <script src="./data.js"></script>
   <script type="module" src="./firebase-config.js"></script>
-  <script type="module" src="./admin.js?v=6"></script>
+  <script type="module" src="./admin.js?v=7"></script>
 </body>
 </html>
