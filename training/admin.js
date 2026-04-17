@@ -392,14 +392,6 @@ function getLastEmailType(student) {
   return "None";
 }
  
-{
-  if (student.lastEmailType) return student.lastEmailType;
-  if (student.inactiveEmailSent30) return "30-day";
-  if (student.inactiveEmailSent14) return "14-day";
-  if (student.inactiveEmailSent7) return "7-day";
-  return "None";
-}
-
 function emailStatusHtml(student) {
   const type = getLastEmailType(student);
  const sentAt =
