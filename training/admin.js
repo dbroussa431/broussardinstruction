@@ -400,7 +400,12 @@ function getLastEmailType(student) {
 
 function emailStatusHtml(student) {
   const type = getLastEmailType(student);
-  const sentAt = student.lastEmailSentAt;
+ const sentAt =
+  student.lastEmailSentAt ||
+  student.lastEmail7At ||
+  student.lastEmail14At ||
+  student.lastEmail30At ||
+  lastActivity(student);
 
   let cls = "none";
   if (type === "7-day") cls = "pending";
