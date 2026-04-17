@@ -996,3 +996,50 @@ input[type="radio"] {
 .question-card + .question-card {
   margin-top: 12px;
 }
+/* ================================
+   BSA UI UPGRADE — SAFE OVERRIDES
+================================ */
+
+/* 🔵 Fix status pill sizing */
+.status-pill {
+  white-space: nowrap !important;
+  width: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
+  line-height: 1 !important;
+}
+
+/* 🔵 Clean course status appearance */
+.status-pill {
+  font-weight: 700;
+}
+
+/* 🔵 Email status layout */
+.email-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.email-status-wrap small {
+  font-size: 11px;
+  color: var(--muted, #6b7280);
+}
+
+/* 🔵 Visual tiers for email */
+.status-pill.pending {
+  background: #fff3da !important;
+  color: #8a6400 !important;
+}
+
+.status-pill.warning {
+  background: #ffe8cc !important;
+  color: #a15c00 !important;
+}
+
+.status-pill.danger {
+  background: #fde4e2 !important;
+  color: #a52a2a !important;
+}
