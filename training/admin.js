@@ -805,6 +805,7 @@ async function regenStudentCode(id) {
 }
 
 async function logEmailForStudent(id) {
+  console.log("🔥 BUTTON CLICKED", id);
   const student = studentForEdit(id);
   if (!student) return;
 
