@@ -575,6 +575,7 @@ function renderRows(rows) {
             <button class="btn btn-outline" data-action="edit" data-id="${s.id}" type="button">Edit</button>
             <button class="btn btn-outline" data-action="regen" data-id="${s.id}" type="button">Regen</button>
             <button class="btn ${isLocked ? "btn-light" : "btn-outline"}" data-action="toggle-lock" data-id="${s.id}" type="button">${isLocked ? "Unlock" : "Lock"}</button>
+            const isCompleted = getCourseStatus(s) === "Complete";
             <button class="btn btn-outline" data-action="log-email" data-id="${s.id}" type="button" ${loggableType ? "" : "disabled"}>${loggableType ? `Log ${loggableType}` : "No Email Due"}</button>
             <button class="btn btn-outline" data-action="delete" data-id="${s.id}" type="button">Delete</button>
           </div>
