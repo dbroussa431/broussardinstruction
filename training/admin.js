@@ -806,42 +806,60 @@ async function regenStudentCode(id) {
 
 async function logEmailForStudent(id) {
   console.log("🔥 BUTTON CLICKED", id);
+
   const student = studentForEdit(id);
   if (!student) return;
 
-  const dueType = getNextLoggableEmailType(student);
-  if (!dueType) {
-    alert("No new email is due for this student.");
+  const type = getNextLoggableEmailType(student);
+  if (!type) {
+    alert("No email is due for this student.");
     return;
   }
 
-  const payload = {
-    lastEmailType: dueType,
-    lastEmailSentAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  };
-
-  if (dueType === "7-day") {
-    payload.lastEmail7At = serverTimestamp();
-    payload.inactiveEmailSent7 = true;
-  }
-
-  if (dueType === "14-day") {
-    payload.lastEmail14At = serverTimestamp();
-    payload.inactiveEmailSent14 = true;
-  }
-
-  if (dueType === "30-day") {
-    payload.lastEmail30At = serverTimestamp();
-    payload.inactiveEmailSent30 = true;
-  }
-
   try {
-    await updateDoc(doc(db, "portalStudents", id), payload);
+    console.log("📡 Sending request to Firebase...");
+
+    const response = await fetch(
+      "https://us-central1-bsa-training-admin.cloudfunctions.net/sendManualEmail",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: student.email,
+          name: student.name,
+          type: type,
+          studentId: student.id
+        })
+      }
+    );
+
+    console.log("📡 Response status:", response.status);
+
+    const text = await response.text();
+    console.log("📡 Raw response:", text);
+
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch {
+      throw new Error("Invalid JSON response from server");
+    }
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to send email");
+    }
+
+    console.log("✅ Email sent:", result);
+
+    alert(`${type} email sent successfully`);
+
     await loadStudents();
+
   } catch (error) {
-    console.error("EMAIL LOG ERROR:", error);
-    alert(`Email log failed: ${error.message}`);
+    console.error("❌ Manual send error:", error);
+    alert("Failed to send email: " + error.message);
   }
 }
 
