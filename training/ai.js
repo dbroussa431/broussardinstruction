@@ -51,41 +51,127 @@ async function fakeAIResponse(q) {
   let scenario = "";
 
   // === LESSON 1 EXAMPLE (expand this later) ===
-  if (question.includes("condition white")) {
-    answer = "Condition White means you are unaware and not paying attention.";
-    why = "This is dangerous because you won’t recognize threats early enough to respond.";
-    where = "Lesson 1 – Awareness Levels";
-    scenario = "Example: Walking through a parking lot while staring at your phone.";
+  const lessonMap = [
+
+  // === AWARENESS LEVELS ===
+  {
+    keywords: ["condition white", "unaware", "not paying attention"],
+    answer: "Condition White means you are unaware and not paying attention.",
+    why: "You cannot recognize danger early, which removes your ability to avoid or prepare.",
+    where: "Lesson 1 – Awareness Levels",
+    example: "Walking through a parking lot while looking at your phone."
+  },
+
+  {
+    keywords: ["condition yellow", "aware", "alert"],
+    answer: "Condition Yellow is a relaxed state of awareness.",
+    why: "You are alert enough to notice changes in your environment without being stressed.",
+    where: "Lesson 1 – Awareness Levels",
+    example: "Scanning entrances, exits, and people while in public."
+  },
+
+  {
+    keywords: ["condition orange", "potential threat", "suspicious"],
+    answer: "Condition Orange means you have identified a potential threat.",
+    why: "You begin preparing a response if the situation escalates.",
+    where: "Lesson 1 – Awareness Levels",
+    example: "Someone acting unusually and moving toward you."
+  },
+
+  {
+    keywords: ["condition red", "attack", "immediate threat"],
+    answer: "Condition Red means action is required because the threat is real.",
+    why: "At this point, hesitation can be dangerous — you must act.",
+    where: "Lesson 1 – Awareness Levels",
+    example: "An attacker approaches aggressively — you move, escape, or defend."
+  },
+
+
+  // === AVOIDANCE & ROUTE CHOICE ===
+  {
+    keywords: ["avoid danger", "avoidance", "best defense"],
+    answer: "The best defensive decision is often the one that avoids the encounter entirely.",
+    why: "Avoiding a situation removes the need to react under pressure.",
+    where: "Lesson 1 – Avoidance and Route Choice",
+    example: "Choosing a well-lit path instead of a dark shortcut."
+  },
+
+  {
+    keywords: ["route", "safe route", "where to go"],
+    answer: "Route selection means choosing paths that maximize safety and visibility.",
+    why: "Better routes give you more options and reduce risk.",
+    where: "Lesson 1 – Avoidance and Route Choice",
+    example: "Parking near entrances instead of isolated areas."
+  },
+
+  {
+    keywords: ["isolated area", "dark area", "shortcut"],
+    answer: "Avoid isolated or low-light areas whenever possible.",
+    why: "These environments reduce visibility and increase vulnerability.",
+    where: "Lesson 1 – Avoidance and Route Choice",
+    example: "Cutting through an empty alley instead of walking around."
+  },
+
+
+  // === ENVIRONMENTAL ADVANTAGES ===
+  {
+    keywords: ["cover", "concealment", "barriers"],
+    answer: "Environmental advantages include cover, concealment, barriers, and escape routes.",
+    why: "Using your environment gives you a tactical advantage before force is needed.",
+    where: "Lesson 1 – Environmental Advantages",
+    example: "Positioning yourself near an exit or behind a solid object."
+  },
+
+  {
+    keywords: ["escape route", "exit"],
+    answer: "An escape route is a planned way to leave a situation safely.",
+    why: "Knowing your exits reduces hesitation during a threat.",
+    where: "Lesson 1 – Environmental Advantages",
+    example: "Noticing multiple exits when entering a building."
+  },
+
+  {
+    keywords: ["low light", "dark"],
+    answer: "Low-light environments increase risk.",
+    why: "They limit your ability to see threats and react early.",
+    where: "Lesson 1 – Environmental Advantages",
+    example: "Poorly lit parking lots or streets."
+  },
+
+
+  // === HABITS ===
+  {
+    keywords: ["daily habits", "routine", "safety habits"],
+    answer: "Daily habits include locking doors, setting alarms, and staying aware.",
+    why: "Consistent habits reduce the chance of preventable mistakes.",
+    where: "Lesson 1 – Home and Daily Habits",
+    example: "Always locking your vehicle and checking surroundings before exiting."
+  },
+
+  {
+    keywords: ["mental rehearsal", "practice thinking"],
+    answer: "Mental rehearsal is thinking through situations before they happen.",
+    why: "It prepares your brain to act quickly under stress.",
+    where: "Lesson 1 – Home and Daily Habits",
+    example: "Thinking through what you would do if someone approached aggressively."
+  },
+
+  {
+    keywords: ["preparedness", "paranoia"],
+    answer: "Preparedness is not paranoia — it is disciplined awareness.",
+    why: "You are not expecting danger everywhere, but you are ready if it happens.",
+    where: "Lesson 1 – Home and Daily Habits",
+    example: "Being aware in public without acting fearful."
   }
 
-  else if (question.includes("condition yellow")) {
-    answer = "Condition Yellow is relaxed awareness — alert but not paranoid.";
-    why = "It allows you to notice potential threats early without stress.";
-    where = "Lesson 1 – Awareness Levels";
-    scenario = "Example: Scanning your surroundings while walking into a store.";
-  }
-
-  else if (question.includes("condition orange")) {
-    answer = "Condition Orange means you identified a potential threat.";
-    why = "You begin preparing a response if the threat becomes real.";
-    where = "Lesson 1 – Awareness Levels";
-    scenario = "Example: Someone acting suspicious and moving toward you.";
-  }
-
-  else if (question.includes("condition red")) {
-    answer = "Condition Red means action is required — the threat is real.";
-    why = "At this point, you must act to protect yourself.";
-    where = "Lesson 1 – Awareness Levels";
-    scenario = "Example: An attacker approaches aggressively — you move, escape, or defend.";
-  }
-
+];
   // === DEFAULT FALLBACK ===
-  else {
-    answer = "That’s a good question.";
-    why = "Based on your training, focus on awareness, avoidance, and decision-making.";
-    where = "Review Lessons 1–7 for core concepts, or 8–10 for applied scenarios.";
-    scenario = "";
-  }
+ return formatResponse({
+  answer: "I don’t see that directly in Lesson 1.",
+  why: "This lesson focuses on awareness, avoidance, and environmental decision-making.",
+  where: "Review Lesson 1 sections: Awareness, Routes, Environment, and Habits",
+  example: "Try asking about awareness levels, routes, or daily safety habits."
+});
 
   // === FORMAT RESPONSE (your structure 🔥) ===
   return `
