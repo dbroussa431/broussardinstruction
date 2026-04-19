@@ -55,6 +55,23 @@
   </section>
 
 </main>
+   <!-- AI Assistant Button -->
+<button id="aiToggleBtn">💬 Ask Instructor</button>
+
+<!-- AI Chat Panel -->
+<div id="aiPanel" class="hidden">
+  <div id="aiHeader">
+    <span>BSA Instructor</span>
+    <button id="aiClose">✖</button>
+  </div>
+
+  <div id="aiMessages"></div>
+
+  <div id="aiInputArea">
+    <input id="aiInput" type="text" placeholder="Ask a question..." />
+    <button id="aiSend">Send</button>
+  </div>
+</div>
 
 <script src="data.js"></script>
 
@@ -231,23 +248,7 @@ window.addEventListener("beforeunload", () => {
   stopTracking();
 });
 
-  <!-- AI Assistant Button -->
-<button id="aiToggleBtn">💬 Ask Instructor</button>
-
-<!-- AI Chat Panel -->
-<div id="aiPanel" class="hidden">
-  <div id="aiHeader">
-    <span>BSA Instructor</span>
-    <button id="aiClose">✖</button>
-  </div>
-
-  <div id="aiMessages"></div>
-
-  <div id="aiInputArea">
-    <input id="aiInput" type="text" placeholder="Ask a question..." />
-    <button id="aiSend">Send</button>
-  </div>
-</div>
+ 
 </script>
 
 </body>
