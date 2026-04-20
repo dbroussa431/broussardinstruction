@@ -764,9 +764,10 @@ window.LESSONS = [
         ],
         answer: 1,
         explanation: 'The source material frames continuing education as a logical next step.'
-      }
-    ]
-  {
+    }
+  ]
+},
+{
   id: 7,
   slug: 'continued-development',
   title: 'Continued Development and Responsibility',
