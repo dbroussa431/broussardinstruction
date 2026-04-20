@@ -1,69 +1,106 @@
 window.LESSONS = [
-  {
-    id: 1,
-    slug: 'personal-protection-plan',
-    title: 'Developing a Personal Protection Plan',
-    estTime: '18 min',
-    summary: 'This lesson covers awareness levels, avoidance, route selection, environmental advantages, alarm habits, and mental rehearsal so students can recognize danger earlier and make safer choices before force becomes necessary.',
-    sections: [
-      {
-        heading: 'Awareness Levels',
-        body: [
-          'Condition White is distracted and unaware; Condition Yellow is calm, alert awareness in public.',
-          'Condition Orange means you have identified a possible threat and are preparing a response.',
-          'Condition Red means the trigger has been met and you are taking action such as retreating, taking cover, or responding to a deadly threat.'
-        ]
-      },
-      {
-        heading: 'Avoidance and Route Choice',
-        body: [
-          'Avoid bad routes, isolated spots, and unnecessary shortcuts that reduce your options.',
-          'Awareness gives you time to change direction, move toward light and people, or leave before a problem becomes a crisis.',
-          'The best defensive decision is often the one that prevents the encounter from happening at all.'
-        ]
-      },
-      {
-        heading: 'Environmental Advantages',
-        body: [
-          'Cover, concealment, barriers, and escape routes can work in your favor if you identify them early.',
-          'Low-light isolated areas generally increase risk rather than helping you.',
-          'Simple planning—like parking in better areas and keeping your head up—can dramatically improve safety.'
-        ]
-      },
-      {
-        heading: 'Home and Daily Habits',
-        body: [
-          'The course ties awareness to real habits, including locking doors, setting alarms, and reducing routine mistakes.',
-          'Students should practice mental rehearsal away from the range so decisions become more available under stress.',
-          'Preparedness is not paranoia; it is disciplined attention that creates better options.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'You are walking to your car after dark and notice a man changing direction to mirror your path while glancing around the lot. What is the best first decision?',
-        choices: [
-          'Keep walking normally so you do not look nervous',
-          'Move toward light, other people, and a safer route while staying alert',
-          'Draw immediately because he might be dangerous',
-          'Stop in place and wait to see if he comes closer'
-        ],
-        answer: 1,
-        explanation: 'The lesson emphasizes early movement, route choice, and avoidance instead of waiting passively or escalating too early.'
-      },
-      {
-        prompt: 'Your car is parked at the end of a dark alley behind a building. Which response best matches the lesson?',
-        choices: [
-          'Proceed quickly and assume the alley is safe',
-          'Walk down the alley if a companion is with you',
-          'Take another route to your car even if it is less convenient',
-          'Unholster before entering the alley'
-        ],
-        answer: 2,
-        explanation: 'The book-backed lesson teaches that route choice and avoidance create safer options before force is ever on the table.'
-      }
-    ]
-  },
+ {
+  id: 1,
+  slug: 'personal-protection-plan',
+  title: 'Developing a Personal Protection Plan',
+  estTime: '18 min',
+  summary: 'This lesson teaches awareness, avoidance, and decision-making. The goal is not to win confrontations — the goal is to avoid them entirely. Students learn how to recognize danger early, move intelligently, and apply the “No Be There” principle to stay out of trouble before it starts.',
+
+  sections: [
+    {
+      heading: 'The Real Goal of Personal Protection',
+      body: [
+        'Most people think self-defense is about fighting. It is not.',
+        'Self-defense is about avoiding the fight entirely.',
+        'If you are a law-abiding citizen, your goal is not to win confrontations. Your goal is to stay out of them.',
+        'The earlier you recognize a problem, the more options you have.',
+        'The later you recognize it, the fewer options remain.',
+        'Good decisions happen early, not in the middle of chaos.'
+      ]
+    },
+    {
+      heading: 'Awareness Levels',
+      body: [
+        'Condition White is unaware and distracted. This is where most people get caught off guard.',
+        'Condition Yellow is calm awareness. You are alert, not paranoid.',
+        'Condition Orange means you have identified something that may become a threat.',
+        'Condition Red means a decision point has been reached and action is required.',
+        'Most of your life should be lived in Condition Yellow when in public.',
+        'You are not looking for trouble — you are simply paying attention.'
+      ]
+    },
+    {
+      heading: 'The “No Be There” Principle',
+      body: [
+        'The most important concept in this course is simple: do not be there.',
+        'You do not need to confirm a threat to make a decision.',
+        'If something feels wrong, that is enough.',
+        'You do not move closer. You do not wait. You do not investigate.',
+        'You leave. You create distance. You change direction.',
+        'Avoidance is not weakness. Avoidance is control.',
+        'Most people get into trouble because they stay too long or ignore early warning signs.',
+        'Your best decision is often the one that removes you from the situation entirely.'
+      ]
+    },
+    {
+      heading: 'Avoidance and Route Selection',
+      body: [
+        'Bad routes create bad outcomes.',
+        'Dark areas, isolated spaces, and tight environments reduce your options.',
+        'Good route selection keeps you near light, people, and exits.',
+        'You should always be thinking about where you would go if something changed.',
+        'Convenience should never override safety.',
+        'The safest path is not always the shortest path.'
+      ]
+    },
+    {
+      heading: 'Environmental Awareness and Positioning',
+      body: [
+        'Your environment can work for you or against you.',
+        'Barriers, distance, and movement are advantages if used early.',
+        'Low-light and isolation generally increase risk.',
+        'Positioning yourself correctly early removes the need for force later.',
+        'You are not reacting to danger — you are staying ahead of it.'
+      ]
+    },
+    {
+      heading: 'Daily Habits That Prevent Problems',
+      body: [
+        'Most problems are preventable with simple habits.',
+        'Stay off your phone when moving through public spaces.',
+        'Pay attention when entering and exiting locations.',
+        'Lock doors, use lighting, and control access points at home.',
+        'Mental rehearsal prepares you to make decisions faster under stress.',
+        'Preparedness is not fear — it is discipline.'
+      ]
+    }
+  ],
+
+  scenarios: [
+    {
+      prompt: 'You are walking to your car at night and notice someone adjusting their path to match yours. Something feels off, but you are not sure if it is a real threat. What is the best decision?',
+      choices: [
+        'Continue walking normally until you are sure',
+        'Move closer to confirm what they are doing',
+        'Change direction and move toward light and people',
+        'Stop and watch them more closely'
+      ],
+      answer: 2,
+      explanation: 'You do not need confirmation to act. The correct decision is to leave early and avoid the situation entirely. This is the “No Be There” principle.'
+    },
+    {
+      prompt: 'Your car is parked in a dark, isolated area behind a building. You realize there are better-lit routes available, but they take longer. What is the best choice?',
+      choices: [
+        'Take the shortcut to save time',
+        'Proceed quickly and hope nothing happens',
+        'Take the safer, well-lit route instead',
+        'Enter the area with your hand on your weapon'
+      ],
+      answer: 2,
+      explanation: 'The lesson is not about managing risk once you are in danger. It is about avoiding the risk entirely. The correct decision is not to be there.'
+    }
+  ]
+}
   {
     id: 2,
     slug: 'firearm-basics',
