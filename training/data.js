@@ -100,7 +100,7 @@ window.LESSONS = [
       explanation: 'The lesson is not about managing risk once you are in danger. It is about avoiding the risk entirely. The correct decision is not to be there.'
     }
   ]
-}
+},
   {
     id: 2,
     slug: 'firearm-basics',
