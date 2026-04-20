@@ -211,70 +211,124 @@ window.LESSONS = [
   ]
 },
   {
-    id: 3,
-    slug: 'shooting-fundamentals',
-    title: 'Self-Defense Shooting Fundamentals',
-    estTime: '20 min',
-    summary: 'This lesson covers the Isosceles stance, target focus, flash sight picture, grip, trigger control, and practical defensive accuracy under stress.',
-    sections: [
-      {
-        heading: 'Body Position and Stance',
-        body: [
-          'The Isosceles stance places both arms out toward the target and fits the body’s natural tendency to square up to a threat.',
-          'A stable stance improves recoil control, balance, and consistency.',
-          'Defensive shooting still depends on accountable hits, not speed alone.'
-        ]
-      },
-      {
-        heading: 'Visual Focus and Sights',
-        body: [
-          'Under threat, the eyes are often pulled toward the attacker or the weapon in the attacker’s hands.',
-          'A flash sight picture means seeing enough of the sights to make an acceptable hit quickly.',
-          'The goal is practical sight confirmation, not perfect bullseye precision in every moment.'
-        ]
-      },
-      {
-        heading: 'Grip and Trigger',
-        body: [
-          'Grip supports recoil control and keeps the handgun stable during the shot.',
-          'The break point is the point where the firearm actually fires.',
-          'Trigger control should not disturb the alignment of the gun.'
-        ]
-      },
-      {
-        heading: 'Practice Development',
-        body: [
-          'Students should build consistent fundamentals before trying to chase advanced speed.',
-          'Dry practice and repetition help reinforce clean mechanics.',
-          'Good shooting starts with repeatable basics.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'A threat appears suddenly at close range and your eyes are drawn to the attacker’s hands. What visual challenge from the lesson is happening?',
-        choices: [
-          'Perfect front-sight focus',
-          'Natural target fixation under stress',
-          'Loss of hearing only',
-          'A magazine-related malfunction'
-        ],
-        answer: 1,
-        explanation: 'The lesson teaches that the eyes often lock onto the attacker or weapon under stress.'
-      },
-      {
-        prompt: 'A new student wants to skip stance, grip, and trigger work and go straight to speed drills. What is the better instruction?',
-        choices: [
-          'Speed will create fundamentals automatically',
-          'Advanced drills should come before basics',
-          'Build clean mechanics first, then add speed',
-          'Stance and grip only matter for competition'
-        ],
-        answer: 2,
-        explanation: 'The fundamentals lesson stresses building sound shooting mechanics before advanced speed work.'
-      }
-    ]
-  },
+  id: 3,
+  slug: 'shooting-fundamentals',
+  title: 'Shooting Fundamentals and Control',
+  estTime: '24 min',
+  summary: 'This lesson teaches the physical fundamentals of shooting: grip, stance, sight alignment, and trigger control. These skills build consistency and control, but must always be paired with judgment and responsibility. Accuracy without decision-making is not enough.',
+
+  sections: [
+    {
+      heading: 'Why Fundamentals Matter',
+      body: [
+        'Shooting fundamentals are the foundation of accuracy and control.',
+        'Without them, even a well-functioning firearm becomes ineffective.',
+        'Grip, stance, sight alignment, and trigger control all work together.',
+        'However, skill alone is not enough.',
+        'You must combine skill with judgment and responsibility.',
+        'The goal is not just to shoot well — it is to make correct decisions under stress.'
+      ]
+    },
+    {
+      heading: 'Grip and Control',
+      body: [
+        'A proper grip allows you to control the firearm during recoil.',
+        'Both hands should work together to stabilize the firearm.',
+        'Your grip should be firm, but not tense.',
+        'Inconsistent grip leads to inconsistent shots.',
+        'Control of the firearm begins before the trigger is ever pressed.'
+      ]
+    },
+    {
+      heading: 'Stance and Positioning',
+      body: [
+        'Your stance provides balance and stability.',
+        'Common stances include Isosceles and Weaver.',
+        'Your weight should be slightly forward to manage recoil.',
+        'Your stance should allow movement, not lock you in place.',
+        'In real-world situations, perfect stance is less important than stability and mobility.'
+      ]
+    },
+    {
+      heading: 'Sight Alignment and Sight Picture',
+      body: [
+        'Sight alignment refers to how the front and rear sights line up.',
+        'Sight picture refers to placing those aligned sights on the target.',
+        'Your focus should remain on the front sight.',
+        'Small errors in alignment create large errors downrange.',
+        'Accuracy begins with consistent visual focus.'
+      ]
+    },
+    {
+      heading: 'Trigger Control',
+      body: [
+        'Trigger control is one of the most important shooting skills.',
+        'The trigger should be pressed straight to the rear.',
+        'Jerking or slapping the trigger causes missed shots.',
+        'The goal is a smooth, controlled press without disturbing alignment.',
+        'Good trigger control separates consistent shooters from inconsistent ones.'
+      ]
+    },
+    {
+      heading: 'Follow-Through and Reset',
+      body: [
+        'Follow-through means maintaining control after the shot is fired.',
+        'Do not immediately relax after firing.',
+        'Allow the firearm to cycle and reset while maintaining alignment.',
+        'Prepare for the next shot if needed.',
+        'Control does not stop when the shot breaks.'
+      ]
+    },
+    {
+      heading: 'Practice and Muscle Memory',
+      body: [
+        'Skill is built through consistent, correct repetition.',
+        'Dry fire practice allows you to improve without live ammunition.',
+        'Simple drills, like trigger press exercises, build control.',
+        'Bad habits repeated become permanent habits.',
+        'Practice must be deliberate, not careless.',
+        'You are building responses that will appear under stress.'
+      ]
+    },
+    {
+      heading: 'Reality: Skill vs Decision Making',
+      body: [
+        'Being able to shoot accurately does not mean you should shoot.',
+        'Skill does not replace judgment.',
+        'In a real-world situation, your first goal is still avoidance.',
+        'If you can leave, you leave.',
+        'If you can avoid, you avoid.',
+        'Shooting is a last resort, not a solution.',
+        'Fundamentals prepare you for the worst-case scenario — not everyday decisions.'
+      ]
+    }
+  ],
+
+  scenarios: [
+    {
+      prompt: 'You are highly trained and confident in your shooting ability. You notice a situation developing that could become dangerous. What is the correct mindset?',
+      choices: [
+        'Prepare to use your firearm immediately',
+        'Move closer to better assess the situation',
+        'Create distance and avoid involvement',
+        'Stay and observe until you are certain'
+      ],
+      answer: 2,
+      explanation: 'Skill does not change the goal. The correct decision is still to avoid the situation entirely when possible.'
+    },
+    {
+      prompt: 'During practice, you notice your shots are inconsistent. What is the most likely cause?',
+      choices: [
+        'The firearm is unreliable',
+        'External conditions only',
+        'Issues with grip or trigger control',
+        'Lack of ammunition power'
+      ],
+      answer: 2,
+      explanation: 'Most inconsistency comes from fundamentals, especially grip and trigger control.'
+    }
+  ]
+},
   {
     id: 4,
     slug: 'legal-use-of-force',
