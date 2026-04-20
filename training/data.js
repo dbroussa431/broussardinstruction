@@ -210,123 +210,170 @@ window.LESSONS = [
     }
   ]
 },
-  {
+{
   id: 3,
   slug: 'shooting-fundamentals',
-  title: 'Shooting Fundamentals and Control',
-  estTime: '24 min',
-  summary: 'This lesson teaches the physical fundamentals of shooting: grip, stance, sight alignment, and trigger control. These skills build consistency and control, but must always be paired with judgment and responsibility. Accuracy without decision-making is not enough.',
+  title: 'Shooting Fundamentals and Practical Application',
+  estTime: '26 min',
+
+  summary: 'This lesson teaches the physical fundamentals of shooting—grip, stance, sight alignment, and trigger control—along with real-world application. These skills improve control and accuracy, but must always be paired with judgment. The goal is not just to shoot well, but to avoid needing to shoot at all.',
 
   sections: [
+
     {
-      heading: 'Why Fundamentals Matter',
+      heading: 'The Purpose of Fundamentals',
       body: [
-        'Shooting fundamentals are the foundation of accuracy and control.',
-        'Without them, even a well-functioning firearm becomes ineffective.',
-        'Grip, stance, sight alignment, and trigger control all work together.',
+        'Shooting fundamentals create consistency and control.',
+        'Grip, stance, sight alignment, and trigger control must work together.',
+        'Without fundamentals, accuracy becomes unpredictable.',
         'However, skill alone is not enough.',
-        'You must combine skill with judgment and responsibility.',
-        'The goal is not just to shoot well — it is to make correct decisions under stress.'
+        'The goal is not just to shoot well — it is to make correct decisions under stress.',
+        'Fundamentals prepare you for the worst-case scenario, not everyday life.'
       ]
     },
+
     {
       heading: 'Grip and Control',
       body: [
-        'A proper grip allows you to control the firearm during recoil.',
-        'Both hands should work together to stabilize the firearm.',
-        'Your grip should be firm, but not tense.',
-        'Inconsistent grip leads to inconsistent shots.',
-        'Control of the firearm begins before the trigger is ever pressed.'
+        'A proper grip controls recoil and stabilizes the firearm.',
+        'Both hands should work together to manage movement.',
+        'Your grip should be firm, but not overly tense.',
+        'Inconsistent grip leads to inconsistent results.',
+        'Control of the firearm begins before the trigger is pressed.'
       ]
     },
+
     {
-      heading: 'Stance and Positioning',
+      heading: 'Stance and Movement',
       body: [
         'Your stance provides balance and stability.',
         'Common stances include Isosceles and Weaver.',
-        'Your weight should be slightly forward to manage recoil.',
-        'Your stance should allow movement, not lock you in place.',
-        'In real-world situations, perfect stance is less important than stability and mobility.'
+        'Your weight should be slightly forward for better recoil control.',
+        'In real-world situations, mobility matters more than perfect form.',
+        'You must be able to move, not just stand and shoot.'
       ]
     },
+
     {
-      heading: 'Sight Alignment and Sight Picture',
+      heading: 'Sight Alignment and Target Focus',
       body: [
-        'Sight alignment refers to how the front and rear sights line up.',
-        'Sight picture refers to placing those aligned sights on the target.',
+        'Sight alignment is the relationship between front and rear sights.',
+        'Sight picture is placing those sights onto the target.',
         'Your focus should remain on the front sight.',
-        'Small errors in alignment create large errors downrange.',
-        'Accuracy begins with consistent visual focus.'
+        'Small alignment errors create large misses at distance.',
+        'In high stress situations, visual focus becomes more difficult.'
       ]
     },
+
     {
       heading: 'Trigger Control',
       body: [
         'Trigger control is one of the most important shooting skills.',
         'The trigger should be pressed straight to the rear.',
         'Jerking or slapping the trigger causes missed shots.',
-        'The goal is a smooth, controlled press without disturbing alignment.',
-        'Good trigger control separates consistent shooters from inconsistent ones.'
+        'The goal is a smooth, controlled press.',
+        'Consistency in trigger control creates consistency in results.'
       ]
     },
+
     {
       heading: 'Follow-Through and Reset',
       body: [
-        'Follow-through means maintaining control after the shot is fired.',
+        'Follow-through means maintaining control after the shot.',
         'Do not immediately relax after firing.',
-        'Allow the firearm to cycle and reset while maintaining alignment.',
-        'Prepare for the next shot if needed.',
-        'Control does not stop when the shot breaks.'
+        'Allow the firearm to cycle and reset properly.',
+        'Prepare for a second shot if necessary.',
+        'Control continues even after the shot breaks.'
       ]
     },
+
     {
-      heading: 'Practice and Muscle Memory',
+      heading: 'Practice and Building Skill',
       body: [
-        'Skill is built through consistent, correct repetition.',
-        'Dry fire practice allows you to improve without live ammunition.',
-        'Simple drills, like trigger press exercises, build control.',
-        'Bad habits repeated become permanent habits.',
-        'Practice must be deliberate, not careless.',
+        'Skill is built through repetition and consistency.',
+        'Dry fire practice allows safe skill development without ammunition.',
+        'Simple drills improve trigger control and alignment.',
+        'Bad repetition builds bad habits.',
+        'Practice must be deliberate and controlled.',
         'You are building responses that will appear under stress.'
       ]
     },
+
     {
-      heading: 'Reality: Skill vs Decision Making',
+      heading: 'Gear and Equipment Reality',
       body: [
-        'Being able to shoot accurately does not mean you should shoot.',
+        'Equipment can help, but it does not replace skill.',
+        'Lasers, optics, and lights are tools — not solutions.',
+        'Holsters must be secure, accessible, and safe.',
+        'Weapon-mounted lights improve identification in low light.',
+        'Accessories should support your ability, not compensate for poor fundamentals.',
+        'The more complex your setup, the more training it requires.'
+      ]
+    },
+
+    {
+      heading: 'Application Under Stress',
+      body: [
+        'Under stress, fine motor skills degrade.',
+        'Vision narrows and reaction time changes.',
+        'You will not rise to the occasion — you will fall to your level of training.',
+        'This is why fundamentals must be consistent.',
+        'You must train for reality, not just the range.'
+      ]
+    },
+
+    {
+      heading: 'Reality: Skill vs Judgment',
+      body: [
+        'Being able to shoot does not mean you should shoot.',
         'Skill does not replace judgment.',
-        'In a real-world situation, your first goal is still avoidance.',
+        'Avoidance is always your first option.',
         'If you can leave, you leave.',
         'If you can avoid, you avoid.',
-        'Shooting is a last resort, not a solution.',
-        'Fundamentals prepare you for the worst-case scenario — not everyday decisions.'
+        'The firearm is a last resort, not a solution.',
+        'The goal is still “No Be There.”'
       ]
     }
   ],
 
   scenarios: [
+
     {
-      prompt: 'You are highly trained and confident in your shooting ability. You notice a situation developing that could become dangerous. What is the correct mindset?',
+      prompt: 'You have trained extensively and feel confident in your shooting ability. You notice a situation that could become dangerous. What is the correct decision?',
       choices: [
         'Prepare to use your firearm immediately',
-        'Move closer to better assess the situation',
-        'Create distance and avoid involvement',
+        'Move closer to get a better view',
+        'Create distance and leave the area',
         'Stay and observe until you are certain'
       ],
       answer: 2,
-      explanation: 'Skill does not change the goal. The correct decision is still to avoid the situation entirely when possible.'
+      explanation: 'Skill does not change the goal. The correct decision is still to avoid the situation entirely.'
     },
+
     {
-      prompt: 'During practice, you notice your shots are inconsistent. What is the most likely cause?',
+      prompt: 'Your shots are inconsistent during practice. What is the most likely issue?',
       choices: [
-        'The firearm is unreliable',
+        'The firearm is malfunctioning',
         'External conditions only',
-        'Issues with grip or trigger control',
-        'Lack of ammunition power'
+        'Problems with grip or trigger control',
+        'The ammunition is incorrect'
       ],
       answer: 2,
       explanation: 'Most inconsistency comes from fundamentals, especially grip and trigger control.'
+    },
+
+    {
+      prompt: 'You rely heavily on a laser sight for aiming. What is the risk?',
+      choices: [
+        'It improves accuracy in all situations',
+        'It replaces the need for fundamentals',
+        'It may fail or not be visible when needed',
+        'It makes training easier'
+      ],
+      answer: 2,
+      explanation: 'Equipment can fail. Fundamentals must always be the foundation.'
     }
+
   ]
 },
   {
