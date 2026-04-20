@@ -1,5 +1,5 @@
 // =====================================================================
-// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 3.0)
+// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 4.0)
 // =====================================================================
 
 if (!window.BSA_AI_LOADED) {
@@ -9,7 +9,7 @@ if (!window.BSA_AI_LOADED) {
     // -----------------------------------------------------------------
     // CONSTANTS + DOM
     // -----------------------------------------------------------------
-    const LABELS = { instructor: "BSA David Teacher", user: "You" };
+    const LABELS = { instructor: "BSA Instructor", user: "You" };
     const CSS = { hidden: "hidden" };
 
     const aiBtn = document.getElementById("aiToggleBtn");
@@ -19,7 +19,6 @@ if (!window.BSA_AI_LOADED) {
     const aiInput = document.getElementById("aiInput");
     const aiMessages = document.getElementById("aiMessages");
 
-    // Optional existing clear button
     let aiClear = document.getElementById("aiClear");
 
     // -----------------------------------------------------------------
@@ -27,11 +26,14 @@ if (!window.BSA_AI_LOADED) {
     // -----------------------------------------------------------------
     const pagePath = window.location.pathname.toLowerCase();
     const isQuizPage = pagePath.includes("quiz.html");
+    const isLessonPage = pagePath.includes("lesson.html");
+    const isDashboardPage = pagePath.includes("dashboard.html");
+    const isScenarioPage = pagePath.includes("scenario");
     const currentLessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
     const currentLesson = getLessonById(currentLessonId);
 
     // -----------------------------------------------------------------
-    // SHORT-TERM MEMORY
+    // MEMORY
     // -----------------------------------------------------------------
     let conversationMemory = [];
 
@@ -84,9 +86,7 @@ if (!window.BSA_AI_LOADED) {
 
       try {
         const response = await instructorAI(question);
-
         rememberConversation(question, response);
-
         replaceMessage(id, renderInstructor(response));
       } catch (err) {
         console.error("AI error:", err);
@@ -96,7 +96,7 @@ if (!window.BSA_AI_LOADED) {
           why: "Unexpected processing error.",
           where: currentLesson ? currentLesson.title : "General course review",
           example: "Try a shorter question tied to the lesson material.",
-          followUp: "What part of the lesson were you trying to understand?"
+          followUp: "What specific part were you trying to understand?"
         });
 
         rememberConversation(question, fallback);
@@ -165,9 +165,7 @@ if (!window.BSA_AI_LOADED) {
     }
 
     function clearChat() {
-      const ok = window.confirm("Clear this conversation?");
-      if (!ok) return;
-
+      if (!window.confirm("Clear this conversation?")) return;
       aiMessages.innerHTML = "";
       conversationMemory = [];
       addInstructorMessage(getWelcomeMessage());
@@ -176,7 +174,6 @@ if (!window.BSA_AI_LOADED) {
     function ensureClearButton() {
       if (aiClear) return;
 
-      // Try common header container first
       const header =
         aiPanel?.querySelector(".ai-header") ||
         aiPanel?.querySelector(".ai-panel-header") ||
@@ -236,8 +233,8 @@ if (!window.BSA_AI_LOADED) {
 
         const currentTokens = tokenize(q);
         const prevTokens = tokenize(prevQ);
-
         const overlap = currentTokens.filter((t) => prevTokens.includes(t));
+
         if (overlap.length >= 2) {
           return "This connects to what you asked a moment ago. ";
         }
@@ -247,15 +244,133 @@ if (!window.BSA_AI_LOADED) {
     }
 
     // -----------------------------------------------------------------
+    // PROGRESS / STAGE AWARENESS
+    // -----------------------------------------------------------------
+    function getCourseStats() {
+      const lessons = Array.isArray(window.LESSONS) ? window.LESSONS : [];
+      const totalLessons = lessons.length;
+
+      let completed = 0;
+      let currentIndex = 0;
+
+      for (let i = 0; i < lessons.length; i++) {
+        const lesson = lessons[i];
+        if (isLessonCompleted(lesson)) completed++;
+        if (Number(lesson.id) === Number(currentLessonId)) currentIndex = i + 1;
+      }
+
+      if (!currentIndex && currentLesson) {
+        currentIndex = lessons.findIndex((l) => Number(l.id) === Number(currentLesson.id)) + 1;
+      }
+
+      return {
+        totalLessons,
+        completed,
+        currentIndex,
+        remaining: Math.max(totalLessons - completed, 0)
+      };
+    }
+
+    function isLessonCompleted(lesson) {
+      if (!lesson) return false;
+
+      if (lesson.completed === true) return true;
+      if (lesson.passed === true) return true;
+      if (typeof lesson.status === "string" && lesson.status.toLowerCase().includes("pass")) return true;
+      if (typeof lesson.score === "number" && lesson.score >= 80) return true;
+
+      return false;
+    }
+
+    function getProgressPhase() {
+      const stats = getCourseStats();
+
+      if (isDashboardPage && !currentLesson) return "dashboard";
+      if (isScenarioPage) return "scenario";
+      if (!stats.totalLessons) return "general";
+
+      const ratio = stats.completed / stats.totalLessons;
+
+      if (ratio >= 0.85) return "final";
+      if (ratio >= 0.5) return "mid";
+      if (ratio > 0) return "early";
+
+      return currentLesson ? "current_lesson" : "general";
+    }
+
+    function getProgressMessage() {
+      const stats = getCourseStats();
+      const phase = getProgressPhase();
+
+      if (phase === "dashboard") {
+        if (stats.completed > 0) {
+          return `You have completed ${stats.completed} of ${stats.totalLessons} lessons.`;
+        }
+        return "You are on the student dashboard.";
+      }
+
+      if (phase === "scenario") {
+        return currentLesson
+          ? `You are working through scenario material for ${escapeHtml(currentLesson.title)}.`
+          : "You are in scenario review.";
+      }
+
+      if (currentLesson) {
+        if (phase === "final") {
+          return `You are in ${escapeHtml(currentLesson.title)} and you are in the late stage of the course. Focus on judgment, consistency, and clean review.`;
+        }
+
+        if (phase === "mid") {
+          return `You are in ${escapeHtml(currentLesson.title)} and already have a good amount of course progress behind you. Tie this lesson back to the earlier fundamentals.`;
+        }
+
+        if (phase === "early" || phase === "current_lesson") {
+          return `You are in ${escapeHtml(currentLesson.title)}. Stay focused on the core concept before trying to stack advanced ideas on top of it.`;
+        }
+      }
+
+      return "You are in the course review area.";
+    }
+
+    function getProgressAwareFollowUp() {
+      const phase = getProgressPhase();
+
+      if (phase === "final") {
+        const prompts = [
+          "How does this connect to judgment under pressure?",
+          "What mistake would show a weak understanding here?",
+          "Could you explain this clearly without using course buzzwords?",
+          "How does this tie back to lawful responsibility?"
+        ];
+        return prompts[Math.floor(Math.random() * prompts.length)];
+      }
+
+      if (phase === "mid") {
+        const prompts = [
+          "How does this connect back to earlier lessons?",
+          "Where have you seen this principle already show up?",
+          "What changes once stress gets added to this?",
+          "What part of this is most likely to be misunderstood?"
+        ];
+        return prompts[Math.floor(Math.random() * prompts.length)];
+      }
+
+      const prompts = [
+        "What is the core idea in plain language?",
+        "What changes if you notice the problem earlier?",
+        "Where would this matter in real life?",
+        "What is the risk if you ignore this?"
+      ];
+      return prompts[Math.floor(Math.random() * prompts.length)];
+    }
+
+    // -----------------------------------------------------------------
     // WELCOME MESSAGE
     // -----------------------------------------------------------------
     function getWelcomeMessage() {
-      const lessonLabel = currentLesson
-        ? `You are in ${escapeHtml(currentLesson.title)}.`
-        : "You are on the student dashboard.";
+      const progressLine = getProgressMessage();
 
       return `
-        <b>${LABELS.instructor}</b><br><br>
         Ask me about:
         <ul style="margin:8px 0 0 18px;padding:0;">
           <li>what a concept means</li>
@@ -264,7 +379,7 @@ if (!window.BSA_AI_LOADED) {
           <li>a simple example or scenario if it helps</li>
         </ul>
         <br>
-        ${lessonLabel}<br><br>
+        ${progressLine}<br><br>
         <b>Important:</b> I teach, explain, and review — not give quiz answers.
       `;
     }
@@ -335,12 +450,14 @@ if (!window.BSA_AI_LOADED) {
     }
 
     function formatSocialResponse(type) {
+      const progressLine = getProgressMessage();
+
       if (type === "greeting") {
-        return `Hey. I’m here to help you work through the training. Ask me about something from your lesson.`;
+        return `Hey. I’m here to help you work through the training.<br><br><b>Current focus:</b> ${progressLine}`;
       }
 
       if (type === "help") {
-        return `I can explain concepts, break down scenarios, and point you back to the right part of the course. Keep it tied to the training and I’ll walk you through it.`;
+        return `I can explain concepts, break down scenarios, and point you back to the right part of the course.<br><br><b>Current focus:</b> ${progressLine}`;
       }
 
       if (type === "thanks") {
@@ -366,24 +483,25 @@ if (!window.BSA_AI_LOADED) {
       ].some((p) => q.includes(p));
     }
 
-    function getRandomFollowUp() {
-      const prompts = [
-        "What changes if you notice the problem earlier?",
-        "Where would this matter in real life?",
-        "What is the risk if you ignore this?",
-        "How would you explain this in plain language?",
-        "What part of this would matter most under stress?"
-      ];
-      return prompts[Math.floor(Math.random() * prompts.length)];
-    }
-
     function maybePrefixInstructorTone(text) {
-      const prefixes = [
+      const phase = getProgressPhase();
+
+      let prefixes = [
         "Pay attention to this — ",
         "This part matters — ",
         "Don’t miss this — ",
         ""
       ];
+
+      if (phase === "final") {
+        prefixes = [
+          "Lock this in — ",
+          "This has to be solid — ",
+          "Be clear on this — ",
+          ""
+        ];
+      }
+
       const pick = prefixes[Math.floor(Math.random() * prefixes.length)];
       return `${pick}${text}`;
     }
@@ -394,35 +512,29 @@ if (!window.BSA_AI_LOADED) {
     async function instructorAI(raw) {
       const question = normalize(raw);
 
-      // Social layer
       const social = detectSocialIntent(question);
       if (social) return formatSocialResponse(social);
 
-      // Hard block for direct quiz answer requests
       if (looksLikeQuizAnswerRequest(question)) return formatBlockedResponse();
 
-      // Struggle / confusion detection
       if (detectStruggle(question)) {
-        const struggleAnswer = formatResponse({
+        return formatResponse({
           answer: "Alright — slow it down. You do not need to solve everything at once.",
           why: "People get lost when they stack too many ideas together instead of locking onto the core concept first.",
           where: currentLesson ? currentLesson.title : "Go back to the current lesson summary",
-          example: "Take one concept, define it plainly, then connect it to the scenario.",
+          example: "Take one concept, define it plainly, then connect it to the situation.",
           followUp: "Which single part is the one giving you trouble?"
         });
-        return struggleAnswer;
       }
 
       const contextBridge = buildContextBridge(question);
 
-      // Direct map
       const direct = findDirectConceptResponse(question);
       if (direct) {
         direct.answer = maybePrefixInstructorTone(contextBridge + direct.answer);
         return formatResponse(direct);
       }
 
-      // Search by lesson content
       const sectionMatch = findBestSectionMatch(question);
       if (sectionMatch) {
         const response = buildSectionResponse(sectionMatch, question);
@@ -430,20 +542,17 @@ if (!window.BSA_AI_LOADED) {
         return formatResponse(response);
       }
 
-      // Scenario logic
       if (looksLikeScenarioQuestion(question)) {
         const scenario = findScenarioResponse(question, contextBridge);
         if (scenario) return scenario;
       }
 
-      // Quiz concept (teaching only)
       const quizConcept = findQuizConceptMatch(question);
       if (quizConcept) {
         quizConcept.answer = maybePrefixInstructorTone(contextBridge + quizConcept.answer);
         return formatResponse(quizConcept);
       }
 
-      // Semantic search
       const semantic = semanticSearch(question);
       if (semantic) {
         return formatResponse({
@@ -454,22 +563,18 @@ if (!window.BSA_AI_LOADED) {
         });
       }
 
-      // Final fallback
       return formatResponse({
         answer: maybePrefixInstructorTone(
-          contextBridge +
-            "That question does not line up cleanly with a specific section yet."
+          contextBridge + "That question does not line up cleanly with a specific section yet."
         ),
         why: "I stay inside the certified course material so the explanation stays accurate and on track.",
-        where:
-          "Review the core lessons: awareness, law, aftermath, readiness, and responsibility.",
-        example:
-          "Use a key term from the lesson or chapter summary and I can usually narrow it down fast."
+        where: "Review the core lessons: awareness, law, aftermath, readiness, and responsibility.",
+        example: "Use a key term from the lesson or chapter summary and I can usually narrow it down fast."
       });
     }
 
     // -----------------------------------------------------------------
-    // DIRECT MAP for FAST ANSWERS
+    // DIRECT MAP
     // -----------------------------------------------------------------
     function findDirectConceptResponse(q) {
       const map = [
@@ -528,7 +633,7 @@ if (!window.BSA_AI_LOADED) {
     }
 
     // -----------------------------------------------------------------
-    // CORE SEARCH HELPERS
+    // LESSON HELPERS
     // -----------------------------------------------------------------
     function getLessonById(id) {
       return Array.isArray(window.LESSONS)
@@ -684,7 +789,7 @@ if (!window.BSA_AI_LOADED) {
     }
 
     // -----------------------------------------------------------------
-    // SEMANTIC SMART SEARCH
+    // SEMANTIC SEARCH
     // -----------------------------------------------------------------
     function semanticSearch(q) {
       const tokens = tokenize(q);
@@ -727,7 +832,7 @@ if (!window.BSA_AI_LOADED) {
     // FORMAT HELPERS
     // -----------------------------------------------------------------
     function formatResponse({ answer, why, where, example, followUp }) {
-      const prompt = followUp || getRandomFollowUp();
+      const prompt = followUp || getProgressAwareFollowUp();
 
       return `
         ${answer}<br><br>
@@ -743,7 +848,7 @@ if (!window.BSA_AI_LOADED) {
         I’m not going to give you a direct quiz or test answer.<br><br>
         <b>Why it matters:</b> Understanding the concept matters more than memorizing a choice.<br><br>
         <b>Go back to:</b> Review the lesson tied to that question, or ask me to explain the concept behind it.<br><br>
-        <b>Think about this:</b> What is the rule or principle the question is really testing?
+        <b>Think about this:</b> What principle is that question actually testing?
       `;
     }
 
@@ -752,103 +857,39 @@ if (!window.BSA_AI_LOADED) {
     // -----------------------------------------------------------------
     (function injectStyles() {
       if (document.getElementById("aiChatBubbleStyles")) return;
-
       const s = document.createElement("style");
       s.id = "aiChatBubbleStyles";
       s.textContent = `
-        .ai-msg-row{
-          display:flex;
-          margin:10px 0;
-          width:100%;
-          animation:fadeIn .2s ease-in;
-        }
-
+        .ai-msg-row{display:flex;margin:10px 0;width:100%;}
         .ai-msg-row-user{justify-content:flex-end;}
         .ai-msg-row-instructor{justify-content:flex-start;}
-
-        .ai-msg{
-          max-width:88%;
-          border-radius:14px;
-          padding:10px 12px;
-          line-height:1.45;
-          box-shadow:0 2px 8px rgba(0,0,0,.06);
-          font-size:14px;
-        }
-
-        .ai-msg-user{
-          background:#1e3a8a;
-          color:#fff;
-          border-bottom-right-radius:4px;
-        }
-
-        .ai-msg-instructor{
-          background:linear-gradient(180deg,#f8fbff,#eef4ff);
-          color:#142033;
-          border:1px solid #d9e0ec;
-          border-bottom-left-radius:4px;
-        }
-
-        .ai-msg-label{
-          font-size:11px;
-          font-weight:700;
-          text-transform:uppercase;
-          letter-spacing:.04em;
-          margin-bottom:6px;
-          opacity:.82;
-        }
-
+        .ai-msg{max-width:88%;border-radius:14px;padding:10px 12px;
+          line-height:1.45;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:14px;}
+        .ai-msg-user{background:#1e3a8a;color:#fff;border-bottom-right-radius:4px;}
+        .ai-msg-instructor{background:#f8fbff;color:#142033;border:1px solid #d9e0ec;border-bottom-left-radius:4px;}
+        .ai-msg-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;opacity:.82;}
         .ai-msg-user .ai-msg-label{color:rgba(255,255,255,.88);}
         .ai-msg-instructor .ai-msg-label{color:#1f468c;}
-
-        .ai-msg-body{
-          white-space:normal;
-          word-break:break-word;
-        }
-
-        .thinking{
-          font-style:italic;
-          opacity:.72;
-        }
-
-        .thinking::after{
-          content:'';
-          display:inline-block;
-          width:1ch;
-          animation:dots 1.2s steps(4,end) infinite;
-        }
+        .ai-msg-body{white-space:normal;word-break:break-word;}
+        .thinking::after{content:'';display:inline-block;width:1ch;animation:dots 1.2s steps(4,end) infinite;}
+        @keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...';}}
 
         .ai-clear-btn{
-          margin-left:8px;
-          padding:6px 10px;
-          border:1px solid #cfd8e6;
+          margin-left:auto;
+          padding:6px 12px;
+          border:1px solid #cfd6e3;
           background:#ffffff;
-          color:#1b2b44;
+          color:#19376d;
           border-radius:8px;
-          cursor:pointer;
           font-size:12px;
           font-weight:600;
-          transition:background .15s ease,border-color .15s ease,transform .15s ease;
+          cursor:pointer;
         }
 
         .ai-clear-btn:hover{
-          background:#f4f8ff;
-          border-color:#aebed8;
-          transform:translateY(-1px);
-        }
-
-        @keyframes dots{
-          0%,20%{content:'';}
-          40%{content:'.';}
-          60%{content:'..';}
-          80%,100%{content:'...';}
-        }
-
-        @keyframes fadeIn{
-          from{opacity:0;transform:translateY(4px);}
-          to{opacity:1;transform:translateY(0);}
+          background:#f5f8ff;
         }
       `;
-
       document.head.appendChild(s);
     })();
   })();
