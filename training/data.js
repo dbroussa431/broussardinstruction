@@ -838,7 +838,7 @@ window.LESSONS = [
     }
 
   ]
-}},
+},
   {
     id: 8,
     slug: 'louisiana-firearm-law',
