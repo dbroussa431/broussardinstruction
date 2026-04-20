@@ -213,149 +213,135 @@ window.LESSONS = [
 {
   id: 3,
   slug: 'shooting-fundamentals',
-  title: 'Shooting Fundamentals and Practical Application',
-  estTime: '26 min',
+  title: 'Shooting Fundamentals',
+  estTime: '25 min',
 
-  summary: 'This lesson teaches the physical fundamentals of shooting—grip, stance, sight alignment, and trigger control—along with real-world application. These skills improve control and accuracy, but must always be paired with judgment. The goal is not just to shoot well, but to avoid needing to shoot at all.',
+  summary: 'This lesson covers the core mechanics of shooting: grip, stance, sight alignment, and trigger control. These fundamentals create consistency and control, but skill must always be paired with judgment. The goal is not just accuracy — it is responsible application.',
 
   sections: [
 
     {
-      heading: 'The Purpose of Fundamentals',
+      heading: 'Why Fundamentals Matter',
       body: [
-        'Shooting fundamentals create consistency and control.',
-        'Grip, stance, sight alignment, and trigger control must work together.',
-        'Without fundamentals, accuracy becomes unpredictable.',
-        'However, skill alone is not enough.',
-        'The goal is not just to shoot well — it is to make correct decisions under stress.',
-        'Fundamentals prepare you for the worst-case scenario, not everyday life.'
+        'Fundamentals are the foundation of all shooting.',
+        'Without them, accuracy is inconsistent and unreliable.',
+        'Under stress, you will fall back to your level of training.',
+        'You do not rise to the occasion — you default to your habits.',
+        'This is why correct repetition matters.'
       ]
     },
 
     {
-      heading: 'Grip and Control',
+      heading: 'Grip: Control Starts Here',
       body: [
-        'A proper grip controls recoil and stabilizes the firearm.',
-        'Both hands should work together to manage movement.',
-        'Your grip should be firm, but not overly tense.',
-        'Inconsistent grip leads to inconsistent results.',
-        'Control of the firearm begins before the trigger is pressed.'
+        'Grip controls recoil and stabilizes the firearm.',
+        'Both hands must work together as a unit.',
+        'A weak or inconsistent grip causes inconsistent shots.',
+        'Firm, consistent pressure is key — not excessive tension.',
+        'Control begins before the trigger is ever pressed.'
       ]
     },
 
     {
-      heading: 'Stance and Movement',
+      heading: 'Stance and Balance',
       body: [
-        'Your stance provides balance and stability.',
-        'Common stances include Isosceles and Weaver.',
-        'Your weight should be slightly forward for better recoil control.',
-        'In real-world situations, mobility matters more than perfect form.',
-        'You must be able to move, not just stand and shoot.'
+        'Your stance supports stability and movement.',
+        'Weight should be slightly forward to manage recoil.',
+        'Perfect stance matters less than mobility in real life.',
+        'You must be able to move, not just stand still.',
+        'Real situations are dynamic — not a shooting lane.'
       ]
     },
 
     {
-      heading: 'Sight Alignment and Target Focus',
+      heading: 'Sight Alignment and Focus',
       body: [
         'Sight alignment is the relationship between front and rear sights.',
         'Sight picture is placing those sights onto the target.',
-        'Your focus should remain on the front sight.',
-        'Small alignment errors create large misses at distance.',
-        'In high stress situations, visual focus becomes more difficult.'
+        'Focus should remain on the front sight.',
+        'Small alignment errors become large misses over distance.',
+        'Under stress, vision narrows — making this harder.'
       ]
     },
 
     {
       heading: 'Trigger Control',
       body: [
-        'Trigger control is one of the most important shooting skills.',
-        'The trigger should be pressed straight to the rear.',
-        'Jerking or slapping the trigger causes missed shots.',
-        'The goal is a smooth, controlled press.',
-        'Consistency in trigger control creates consistency in results.'
+        'Trigger control is one of the most critical skills.',
+        'Press the trigger straight to the rear.',
+        'Jerking or slapping causes missed shots.',
+        'Smooth, consistent pressure creates consistent results.',
+        'Every shot should feel the same.'
       ]
     },
 
     {
-      heading: 'Follow-Through and Reset',
+      heading: 'Follow-Through',
       body: [
-        'Follow-through means maintaining control after the shot.',
-        'Do not immediately relax after firing.',
+        'The shot is not over when the trigger breaks.',
+        'Maintain control after firing.',
         'Allow the firearm to cycle and reset properly.',
-        'Prepare for a second shot if necessary.',
-        'Control continues even after the shot breaks.'
+        'Prepare for additional shots if needed.',
+        'Control continues beyond the shot.'
       ]
     },
 
     {
-      heading: 'Practice and Building Skill',
+      heading: 'Practice and Muscle Memory',
       body: [
-        'Skill is built through repetition and consistency.',
-        'Dry fire practice allows safe skill development without ammunition.',
-        'Simple drills improve trigger control and alignment.',
-        'Bad repetition builds bad habits.',
-        'Practice must be deliberate and controlled.',
-        'You are building responses that will appear under stress.'
+        'Skill is built through repetition.',
+        'Dry fire practice allows safe skill development.',
+        'Bad repetition creates bad habits.',
+        'Consistency is more important than speed.',
+        'You are building responses for stress situations.'
       ]
     },
 
     {
-      heading: 'Gear and Equipment Reality',
+      heading: 'Equipment Reality',
       body: [
-        'Equipment can help, but it does not replace skill.',
+        'Equipment does not replace skill.',
         'Lasers, optics, and lights are tools — not solutions.',
-        'Holsters must be secure, accessible, and safe.',
-        'Weapon-mounted lights improve identification in low light.',
-        'Accessories should support your ability, not compensate for poor fundamentals.',
-        'The more complex your setup, the more training it requires.'
+        'Holsters must be safe and secure.',
+        'Accessories should support fundamentals, not replace them.',
+        'The more gear you add, the more training it requires.'
       ]
     },
 
     {
-      heading: 'Application Under Stress',
+      heading: 'Reality Check: Skill vs Judgment',
       body: [
-        'Under stress, fine motor skills degrade.',
-        'Vision narrows and reaction time changes.',
-        'You will not rise to the occasion — you will fall to your level of training.',
-        'This is why fundamentals must be consistent.',
-        'You must train for reality, not just the range.'
-      ]
-    },
-
-    {
-      heading: 'Reality: Skill vs Judgment',
-      body: [
-        'Being able to shoot does not mean you should shoot.',
-        'Skill does not replace judgment.',
-        'Avoidance is always your first option.',
+        'Being skilled does not mean you should use force.',
+        'Avoidance is always the priority.',
         'If you can leave, you leave.',
         'If you can avoid, you avoid.',
-        'The firearm is a last resort, not a solution.',
-        'The goal is still “No Be There.”'
+        'The firearm is a last resort.',
+        '“No Be There” still applies — always.'
       ]
     }
+
   ],
 
   scenarios: [
 
     {
-      prompt: 'You have trained extensively and feel confident in your shooting ability. You notice a situation that could become dangerous. What is the correct decision?',
+      prompt: 'You have strong shooting skills. You notice a situation becoming tense nearby. What is the correct action?',
       choices: [
-        'Prepare to use your firearm immediately',
-        'Move closer to get a better view',
-        'Create distance and leave the area',
-        'Stay and observe until you are certain'
+        'Move closer to evaluate',
+        'Prepare to draw immediately',
+        'Create distance and leave',
+        'Stay and observe closely'
       ],
       answer: 2,
-      explanation: 'Skill does not change the goal. The correct decision is still to avoid the situation entirely.'
+      explanation: 'Skill does not override judgment. Avoidance is always the correct first choice.'
     },
 
     {
-      prompt: 'Your shots are inconsistent during practice. What is the most likely issue?',
+      prompt: 'Your shots are inconsistent during practice. What is the most likely cause?',
       choices: [
-        'The firearm is malfunctioning',
-        'External conditions only',
-        'Problems with grip or trigger control',
+        'The firearm is defective',
+        'Environmental conditions only',
+        'Grip or trigger control issues',
         'The ammunition is incorrect'
       ],
       answer: 2,
@@ -363,84 +349,170 @@ window.LESSONS = [
     },
 
     {
-      prompt: 'You rely heavily on a laser sight for aiming. What is the risk?',
+      prompt: 'You rely heavily on a laser for aiming. What is the risk?',
       choices: [
-        'It improves accuracy in all situations',
         'It replaces the need for fundamentals',
-        'It may fail or not be visible when needed',
-        'It makes training easier'
+        'It always improves accuracy',
+        'It may fail or not be visible',
+        'It guarantees faster shooting'
       ],
       answer: 2,
-      explanation: 'Equipment can fail. Fundamentals must always be the foundation.'
+      explanation: 'Equipment can fail. Fundamentals must always be your foundation.'
     }
 
   ]
 },
   {
-    id: 4,
-    slug: 'legal-use-of-force',
-    title: 'The Legal Use of Force',
-    estTime: '24 min',
-    summary: 'This lesson introduces the reasonable person test, reasonable force, deadly force, the innocent party rule, prosecutor review, castle doctrine, and the important difference between defending life and defending property.',
-    sections: [
-      {
-        heading: 'Reasonableness',
-        body: [
-          'Use-of-force decisions are judged after the fact by legal standards, not by bravado or internet opinion.',
-          'Reasonable force is the minimum level of force required to stop the threat.',
-          'A prosecutor will consider whether a jury would likely see the force as reasonable under the facts.'
-        ]
-      },
-      {
-        heading: 'Deadly Force and Innocence',
-        body: [
-          'Deadly force can be legally analyzed even if the attacker survives.',
-          'The innocent party concept generally means you did not start or unlawfully escalate the confrontation.',
-          'Every force decision can be scrutinized carefully after the event.'
-        ]
-      },
-      {
-        heading: 'Investigation and Background',
-        body: [
-          'Statements, texts, social media, substance use, and prior behavior may become part of an investigation.',
-          'Students should understand that a self-defense claim is not automatically accepted without review.',
-          'The aftermath begins immediately.'
-        ]
-      },
-      {
-        heading: 'Home Versus Property',
-        body: [
-          'Castle doctrine is the general term for laws that lower the threshold in some home-defense settings.',
-          'Most states distinguish sharply between defense of person and defense of property.',
-          'Property alone does not usually justify deadly force.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'Someone is stealing a package from your porch and running away. No one is under immediate threat of death or serious bodily harm. What best matches the lesson?',
-        choices: [
-          'Deadly force is justified because it is your property',
-          'Property and life are treated the same in most states',
-          'Deadly force is generally not justified for property alone',
-          'A firearm should always be displayed in a property crime'
-        ],
-        answer: 2,
-        explanation: 'The lesson repeatedly distinguishes defense of life from defense of property.'
-      },
-      {
-        prompt: 'After a defensive incident, a student says, “My friends think I was justified, so I’m legally fine.” What is the best correction?',
-        choices: [
-          'That is how the reasonable person test works',
-          'Friends and forums are not the legal standard; prosecutors and juries review the facts',
-          'Only caliber determines whether force was reasonable',
-          'If the attacker lived, deadly force rules do not apply'
-        ],
-        answer: 1,
-        explanation: 'The lesson teaches that legal reasonableness is not decided by friends or online opinion.'
-      }
-    ]
-  },
+  id: 4,
+  slug: 'legal-use-of-force',
+  title: 'Legal Use of Force and Aftermath',
+  estTime: '30–40 min',
+
+  summary: 'This lesson explains when force may be legally justified, what happens during and after a defensive incident, and the serious consequences that follow. The focus is not just survival, but making lawful, responsible decisions before, during, and after an encounter.',
+
+  sections: [
+
+    {
+      heading: 'The Reality of Use of Force',
+      body: [
+        'Using force is a life-altering event.',
+        'Even when justified, there are consequences.',
+        'Legal, financial, emotional, and social impacts follow.',
+        'This is not a win — it is survival.',
+        'Avoidance is always the preferred outcome.'
+      ]
+    },
+
+    {
+      heading: 'When Is Force Justified?',
+      body: [
+        'Force is only justified when facing an immediate threat.',
+        'You must reasonably believe serious harm or death is imminent.',
+        'Your actions must be proportional to the threat.',
+        'You must not be the aggressor.',
+        'Every decision will be judged after the fact.'
+      ]
+    },
+
+    {
+      heading: 'The Decision Timeline',
+      body: [
+        'Violent encounters happen quickly.',
+        'Decisions are made in seconds.',
+        'Hesitation or poor judgment can have lasting consequences.',
+        'Preparation helps guide decisions under stress.',
+        'You must think before the moment happens.'
+      ]
+    },
+
+    {
+      heading: 'Physiological Effects Under Stress',
+      body: [
+        'Heart rate increases dramatically.',
+        'Vision narrows (tunnel vision).',
+        'Hearing may be diminished.',
+        'Fine motor skills degrade.',
+        'Time perception may be distorted.'
+      ]
+    },
+
+    {
+      heading: 'After the Threat Ends',
+      body: [
+        'The situation is not over when the threat stops.',
+        'You must assess safety and surroundings.',
+        'Call 911 as soon as possible.',
+        'Provide only necessary information.',
+        'Remain calm and cooperative.'
+      ]
+    },
+
+    {
+      heading: 'Interaction with Law Enforcement',
+      body: [
+        'Expect to be treated as part of the investigation.',
+        'Keep your hands visible and follow instructions.',
+        'Do not make detailed statements under stress.',
+        'Identify yourself and request legal counsel if needed.',
+        'Everything you say can be used in court.'
+      ]
+    },
+
+    {
+      heading: 'Legal and Financial Consequences',
+      body: [
+        'Even justified use of force may result in arrest.',
+        'Legal defense can be expensive.',
+        'Civil lawsuits may follow.',
+        'Your life may change permanently.',
+        'This is why avoidance is critical.'
+      ]
+    },
+
+    {
+      heading: 'Emotional and Psychological Aftermath',
+      body: [
+        'Stress and emotional impact are common.',
+        'You may experience doubt or second-guessing.',
+        'Sleep disruption and anxiety may occur.',
+        'Support systems are important.',
+        'You must prepare mentally for the aftermath.'
+      ]
+    },
+
+    {
+      heading: 'Final Principle: Responsibility',
+      body: [
+        'Owning a firearm carries responsibility.',
+        'Having the ability to use force does not mean you should.',
+        'Avoid conflict whenever possible.',
+        '“No Be There” is still your first strategy.',
+        'With great power comes great responsibility.'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You are in a situation that feels uncomfortable but not immediately dangerous. What should you do?',
+      choices: [
+        'Prepare to use force immediately',
+        'Stay and observe closely',
+        'Leave the area and create distance',
+        'Engage to figure out intent'
+      ],
+      answer: 2,
+      explanation: 'Avoidance is always the best option when possible. You are not required to stay.'
+    },
+
+    {
+      prompt: 'After a defensive incident, what is your first priority?',
+      choices: [
+        'Leave the scene immediately',
+        'Call 911 and report the situation',
+        'Post about it online',
+        'Talk to witnesses in detail'
+      ],
+      answer: 1,
+      explanation: 'Calling 911 establishes your role as the reporting party and begins the legal process correctly.'
+    },
+
+    {
+      prompt: 'During police interaction after an incident, what is the best approach?',
+      choices: [
+        'Explain everything in detail immediately',
+        'Remain calm and follow instructions',
+        'Refuse to speak entirely',
+        'Argue your case on the spot'
+      ],
+      answer: 1,
+      explanation: 'Remain calm, comply, and avoid detailed statements under stress.'
+    }
+
+  ]
+},
   {
     id: 5,
     slug: 'violent-encounters-aftermath',
