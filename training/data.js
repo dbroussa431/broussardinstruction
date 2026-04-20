@@ -101,71 +101,115 @@ window.LESSONS = [
     }
   ]
 },
-  {
-    id: 2,
-    slug: 'firearm-basics',
-    title: 'Self-Defense Firearm Basics',
-    estTime: '20 min',
-    summary: 'This lesson covers clearance checks, chambers, magazine wells, action types, revolver versus semi-automatic controls, ammunition basics, and foundational platform knowledge for safe defensive gun handling.',
-    sections: [
-      {
-        heading: 'Clearing and Verification',
-        body: [
-          'A firearm is not “clear” just because someone says so or because the magazine was removed.',
-          'Students should visually and physically verify both the chamber and the feeding source area.',
-          'Safe handling begins with personally confirming the condition of the firearm.'
-        ]
-      },
-      {
-        heading: 'Platform and Controls',
-        body: [
-          'Revolvers and semi-automatics use different controls, loading systems, and operating cycles.',
-          'Students should understand the role of the cylinder release, slide, chamber, and magazine before using a handgun defensively.',
-          'Action type affects trigger press, feel, and handling.'
-        ]
-      },
-      {
-        heading: 'Ammunition Basics',
-        body: [
-          'A cartridge includes the projectile, case, primer, and powder charge.',
-          'Correct ammunition selection matters; wrong or damaged ammunition can create dangerous malfunctions.',
-          'Rimfire and centerfire are different ignition systems and should not be treated as interchangeable.'
-        ]
-      },
-      {
-        heading: 'Mindset for New Gun Owners',
-        body: [
-          'Students should not guess when handling an unfamiliar firearm or magazine.',
-          'Learning the platform before loading is part of safe defensive ownership.',
-          'Safe gun handling means slowing down when you are uncertain.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'A friend hands you a pistol and says, “It’s unloaded.” What should you do first?',
-        choices: [
-          'Accept the statement and set your grip',
-          'Point it in a safe direction and perform a proper clearance check',
-          'Rack the slide and press the trigger',
-          'Hand it to another person to verify'
-        ],
-        answer: 1,
-        explanation: 'The lesson is clear: you personally verify the firearm’s condition before doing anything else.'
-      },
-      {
-        prompt: 'You find a loose magazine in a range bag and are not certain it belongs to your pistol. What is the safest decision?',
-        choices: [
-          'Force it into the gun and test it',
-          'Load one round only and see if it works',
-          'Verify compatibility before attempting to use it',
-          'Use it if the caliber on the box is close'
-        ],
-        answer: 2,
-        explanation: 'The firearm-basics lesson emphasizes compatibility, correct platform knowledge, and avoiding guesswork.'
-      }
-    ]
-  },
+    {
+  id: 2,
+  slug: 'firearm-basics',
+  title: 'Firearm Basics and Responsibility',
+  estTime: '22 min',
+  summary: 'This lesson explains how firearms work, how to handle them safely, and the responsibility that comes with carrying one. The focus is not just mechanics — it is understanding that a firearm is a last-resort tool, not a solution to poor decisions.',
+
+  sections: [
+    {
+      heading: 'The Reality of Carrying a Firearm',
+      body: [
+        'It is better to have a firearm and not need it than to need one and not have it.',
+        'But that does not mean you should ever look for a reason to use it.',
+        'Carrying a firearm does not give you more authority. It gives you more responsibility.',
+        'You are now accountable for every decision at a higher level.',
+        'The goal is not to use the firearm. The goal is to never need it.',
+        'This is why the “No Be There” principle still applies, even when armed.'
+      ]
+    },
+    {
+      heading: 'Universal Safety Rules',
+      body: [
+        'Always treat every firearm as if it is loaded.',
+        'Never point a firearm at anything you are not willing to destroy.',
+        'Keep your finger off the trigger until you have made the decision to shoot.',
+        'Be sure of your target and what is beyond it.',
+        'These rules are always in effect — no exceptions.',
+        'Most accidents happen when people believe the rules do not apply in that moment.'
+      ]
+    },
+    {
+      heading: 'How a Firearm Works',
+      body: [
+        'A firearm is a mechanical system that fires a cartridge.',
+        'When the trigger is pressed, it releases a firing mechanism that strikes the primer.',
+        'The primer ignites powder, creating pressure that pushes the bullet down the barrel.',
+        'Semi-automatic firearms cycle automatically, ejecting the casing and loading a new round.',
+        'Understanding how the firearm works helps you understand both function and failure.'
+      ]
+    },
+    {
+      heading: 'Ammunition Basics',
+      body: [
+        'A cartridge consists of a case, primer, powder, and bullet.',
+        'Different calibers behave differently in recoil, penetration, and performance.',
+        'Not all ammunition is appropriate for self-defense.',
+        'Overpenetration is a real risk — what is behind your target matters.',
+        'You are responsible for every round that leaves the firearm.'
+      ]
+    },
+    {
+      heading: 'Malfunctions and Limitations',
+      body: [
+        'Firearms are mechanical devices and can fail.',
+        'Common malfunctions include failure to fire, failure to feed, and failure to eject.',
+        'Nothing works perfectly all the time.',
+        'This is why your plan should never depend entirely on the firearm.',
+        'Avoidance and positioning matter more than equipment.'
+      ]
+    },
+    {
+      heading: 'Safe Handling and Storage',
+      body: [
+        'Safe handling prevents accidents.',
+        'Safe storage prevents unauthorized access.',
+        'Firearms must be secured when not in use.',
+        'A firearm left unsecured becomes a liability.',
+        'Responsibility continues even when the firearm is not in your hand.'
+      ]
+    },
+    {
+      heading: 'When NOT to Use a Firearm',
+      body: [
+        'A firearm is not used to investigate, intimidate, or solve uncertainty.',
+        'You do not use a firearm because something feels off.',
+        'You use distance, awareness, and movement first.',
+        'If you can leave, you leave.',
+        'If you can avoid, you avoid.',
+        'If a firearm becomes necessary, the situation has already escalated to a critical level.',
+        'Your responsibility is to prevent reaching that point whenever possible.'
+      ]
+    }
+  ],
+
+  scenarios: [
+    {
+      prompt: 'You hear a noise outside your home late at night. You are unsure what caused it. What is the best decision?',
+      choices: [
+        'Go outside with your firearm to investigate',
+        'Stay inside, secure your position, and observe safely',
+        'Immediately confront the situation outside',
+        'Ignore it completely'
+      ],
+      answer: 1,
+      explanation: 'A firearm is not used to investigate uncertainty. The correct decision is to remain in a position of safety and avoid unnecessary risk.'
+    },
+    {
+      prompt: 'You notice a suspicious person in a parking lot while carrying a firearm. What is the correct approach?',
+      choices: [
+        'Approach carefully with your firearm ready',
+        'Use your firearm to control the situation',
+        'Create distance and leave the area',
+        'Stay and observe until you are sure'
+      ],
+      answer: 2,
+      explanation: 'The firearm is not the solution. The correct decision is to leave early and avoid the situation entirely.'
+    }
+  ]
+},
   {
     id: 3,
     slug: 'shooting-fundamentals',
