@@ -525,6 +525,38 @@ if (!window.BSA_AI_LOADED) {
           example: "Take one concept, define it plainly, then connect it to the situation.",
           followUp: "Which single part is the one giving you trouble?"
         });
+
+        function applyInstructorTone(answer) {
+  const toneOpeners = [
+    "Good question.",
+    "Here’s how I want you to think about this.",
+    "This is important.",
+    "Let me simplify this for you.",
+  ];
+
+  const closerLines = [
+    "Don’t overcomplicate it.",
+    "Keep it simple and stay in control.",
+    "Think about it before you act.",
+    "This is where people make mistakes."
+  ];
+
+  let result = answer;
+
+  // Add human-style opener (30% chance)
+  if (Math.random() < 0.3) {
+    const opener = toneOpeners[Math.floor(Math.random() * toneOpeners.length)];
+    result = "<b>" + opener + "</b><br><br>" + result;
+  }
+
+  // Add grounded closer (30% chance)
+  if (Math.random() < 0.3) {
+    const closer = closerLines[Math.floor(Math.random() * closerLines.length)];
+    result += "<br><br><i>" + closer + "</i>";
+  }
+
+  return result;
+}
       }
 
       const contextBridge = buildContextBridge(question);
