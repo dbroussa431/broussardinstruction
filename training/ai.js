@@ -574,6 +574,34 @@ if (!window.BSA_AI_LOADED) {
     }
 
     // -----------------------------------------------------------------
+// BSA PHILOSOPHY LOCK
+// -----------------------------------------------------------------
+const BSA_PHILOSOPHY = {
+  core: "Avoid the problem whenever possible. The firearm is a last resort.",
+  noBeThere: "If something feels wrong, you do not wait to confirm it. You leave.",
+  responsibility: "Carrying a firearm increases responsibility, not authority.",
+  escalation: "If a firearm is needed, something has already gone very wrong."
+};
+
+function applyPhilosophy(answer) {
+  // Light-touch reinforcement (not every response)
+  const inserts = [
+    "Remember — the goal is to avoid needing the firearm.",
+    "This ties back to the idea of not being there in the first place.",
+    "The firearm is not the plan — it is the last option.",
+    "Responsibility means knowing when not to act."
+  ];
+
+  // 40% chance to reinforce tone
+  if (Math.random() < 0.4) {
+    const line = inserts[Math.floor(Math.random() * inserts.length)];
+    return answer + "<br><br><i>" + line + "</i>";
+  }
+
+  return answer;
+}
+    
+    // -----------------------------------------------------------------
     // DIRECT MAP
     // -----------------------------------------------------------------
     function findDirectConceptResponse(q) {
