@@ -1,10 +1,7 @@
 // =====================================================================
-// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 2.0)
+// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 3.0)
 // =====================================================================
 
-// ---------------------------------------------------------------------
-// SINGLE-LOAD GUARD
-// ---------------------------------------------------------------------
 if (!window.BSA_AI_LOADED) {
   window.BSA_AI_LOADED = true;
 
@@ -22,6 +19,9 @@ if (!window.BSA_AI_LOADED) {
     const aiInput = document.getElementById("aiInput");
     const aiMessages = document.getElementById("aiMessages");
 
+    // Optional existing clear button
+    let aiClear = document.getElementById("aiClear");
+
     // -----------------------------------------------------------------
     // PAGE + CONTEXT
     // -----------------------------------------------------------------
@@ -29,6 +29,11 @@ if (!window.BSA_AI_LOADED) {
     const isQuizPage = pagePath.includes("quiz.html");
     const currentLessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
     const currentLesson = getLessonById(currentLessonId);
+
+    // -----------------------------------------------------------------
+    // SHORT-TERM MEMORY
+    // -----------------------------------------------------------------
+    let conversationMemory = [];
 
     // -----------------------------------------------------------------
     // GUARD: DISABLE ON QUIZ PAGES
@@ -45,6 +50,8 @@ if (!window.BSA_AI_LOADED) {
     function initAI() {
       if (!aiBtn || !aiPanel || !aiClose || !aiSend || !aiInput || !aiMessages) return;
 
+      ensureClearButton();
+
       aiBtn.addEventListener("click", () => {
         aiPanel.classList.toggle(CSS.hidden);
         if (!aiPanel.classList.contains(CSS.hidden) && aiMessages.children.length === 0) {
@@ -53,9 +60,12 @@ if (!window.BSA_AI_LOADED) {
       });
 
       aiClose.addEventListener("click", () => aiPanel.classList.add(CSS.hidden));
-
       aiSend.addEventListener("click", handleAISend);
-      aiInput.addEventListener("keypress", (e) => e.key === "Enter" && handleAISend());
+      aiInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") handleAISend();
+      });
+
+      aiClear?.addEventListener("click", clearChat);
     }
     initAI();
 
@@ -74,22 +84,26 @@ if (!window.BSA_AI_LOADED) {
 
       try {
         const response = await instructorAI(question);
+
+        rememberConversation(question, response);
+
         replaceMessage(id, renderInstructor(response));
       } catch (err) {
         console.error("AI error:", err);
-        replaceMessage(
-          id,
-          renderInstructor(
-            formatResponse({
-              answer: "I hit a problem while building that response.",
-              why: "Unexpected processing error.",
-              where: currentLesson ? currentLesson.title : "General course review",
-              example: "Try a shorter question referencing lesson material.",
-            })
-          )
-        );
+
+        const fallback = formatResponse({
+          answer: "I hit a problem while building that response.",
+          why: "Unexpected processing error.",
+          where: currentLesson ? currentLesson.title : "General course review",
+          example: "Try a shorter question tied to the lesson material.",
+          followUp: "What part of the lesson were you trying to understand?"
+        });
+
+        rememberConversation(question, fallback);
+        replaceMessage(id, renderInstructor(fallback));
       } finally {
         aiSend.disabled = false;
+        aiInput.focus();
       }
     }
 
@@ -107,6 +121,7 @@ if (!window.BSA_AI_LOADED) {
     function renderInstructor(html) {
       return renderMessage(LABELS.instructor, html, "instructor");
     }
+
     function renderUser(html) {
       return renderMessage(LABELS.user, escapeHtml(html), "user");
     }
@@ -149,6 +164,38 @@ if (!window.BSA_AI_LOADED) {
       aiMessages.scrollTop = aiMessages.scrollHeight;
     }
 
+    function clearChat() {
+      const ok = window.confirm("Clear this conversation?");
+      if (!ok) return;
+
+      aiMessages.innerHTML = "";
+      conversationMemory = [];
+      addInstructorMessage(getWelcomeMessage());
+    }
+
+    function ensureClearButton() {
+      if (aiClear) return;
+
+      // Try common header container first
+      const header =
+        aiPanel?.querySelector(".ai-header") ||
+        aiPanel?.querySelector(".ai-panel-header") ||
+        aiPanel?.firstElementChild;
+
+      aiClear = document.createElement("button");
+      aiClear.id = "aiClear";
+      aiClear.type = "button";
+      aiClear.textContent = "Clear";
+      aiClear.className = "ai-clear-btn";
+      aiClear.title = "Clear chat";
+
+      if (header) {
+        header.appendChild(aiClear);
+      } else if (aiPanel) {
+        aiPanel.insertBefore(aiClear, aiPanel.firstChild);
+      }
+    }
+
     function escapeHtml(v) {
       return String(v ?? "")
         .replaceAll("&", "&amp;")
@@ -156,6 +203,47 @@ if (!window.BSA_AI_LOADED) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    // -----------------------------------------------------------------
+    // MEMORY HELPERS
+    // -----------------------------------------------------------------
+    function rememberConversation(userText, aiText) {
+      conversationMemory.push({
+        user: userText,
+        ai: aiText,
+        time: Date.now()
+      });
+
+      if (conversationMemory.length > 10) {
+        conversationMemory.shift();
+      }
+    }
+
+    function getRecentContext() {
+      return conversationMemory.slice(-3);
+    }
+
+    function buildContextBridge(question) {
+      const recent = getRecentContext();
+      if (!recent.length) return "";
+
+      const q = normalize(question);
+
+      for (let i = recent.length - 1; i >= 0; i--) {
+        const prev = recent[i];
+        const prevQ = normalize(prev.user);
+
+        const currentTokens = tokenize(q);
+        const prevTokens = tokenize(prevQ);
+
+        const overlap = currentTokens.filter((t) => prevTokens.includes(t));
+        if (overlap.length >= 2) {
+          return "This connects to what you asked a moment ago. ";
+        }
+      }
+
+      return "";
     }
 
     // -----------------------------------------------------------------
@@ -177,7 +265,8 @@ if (!window.BSA_AI_LOADED) {
         </ul>
         <br>
         ${lessonLabel}<br><br>
-        <b>Important:</b> I teach, explain, and review — not give quiz answers.`;
+        <b>Important:</b> I teach, explain, and review — not give quiz answers.
+      `;
     }
 
     // -----------------------------------------------------------------
@@ -196,8 +285,11 @@ if (!window.BSA_AI_LOADED) {
 
     function scoreTextAgainstQuestion(tokens, text) {
       const hay = normalize(text);
+      if (!tokens.length) return 0;
+
       let score = 0;
       let hits = 0;
+
       for (const t of tokens) {
         if (hay.includes(t)) {
           hits++;
@@ -207,6 +299,7 @@ if (!window.BSA_AI_LOADED) {
           if (hay.includes(stem)) score += 2;
         }
       }
+
       return (score / tokens.length) * (1 + hits / 10);
     }
 
@@ -217,6 +310,10 @@ if (!window.BSA_AI_LOADED) {
         "correct answer",
         "which option is right",
         "what letter is right",
+        "tell me the answer",
+        "just give me the answer",
+        "what is the answer",
+        "what's the answer"
       ];
       return patterns.some((p) => q.includes(p));
     }
@@ -225,51 +322,149 @@ if (!window.BSA_AI_LOADED) {
       return ["scenario", "what if ", "if someone", "suppose"].some((p) => q.includes(p));
     }
 
+    function detectSocialIntent(q) {
+      const greetings = ["hello", "hi", "hey", "good morning", "good afternoon"];
+      const help = ["help", "can you help", "what can you do"];
+      const thanks = ["thanks", "thank you", "appreciate it"];
+
+      if (greetings.some((g) => q === g || q.startsWith(g))) return "greeting";
+      if (help.some((h) => q.includes(h))) return "help";
+      if (thanks.some((t) => q.includes(t))) return "thanks";
+
+      return null;
+    }
+
+    function formatSocialResponse(type) {
+      if (type === "greeting") {
+        return `Hey. I’m here to help you work through the training. Ask me about something from your lesson.`;
+      }
+
+      if (type === "help") {
+        return `I can explain concepts, break down scenarios, and point you back to the right part of the course. Keep it tied to the training and I’ll walk you through it.`;
+      }
+
+      if (type === "thanks") {
+        return `Good. Keep going — that’s how this sticks.`;
+      }
+
+      return `Ask me about the lesson material and I’ll help you work through it.`;
+    }
+
+    function detectStruggle(q) {
+      return [
+        "i dont get",
+        "i don't get",
+        "still confused",
+        "confused",
+        "doesn't make sense",
+        "does not make sense",
+        "still dont",
+        "still don't",
+        "what do you mean",
+        "im lost",
+        "i'm lost"
+      ].some((p) => q.includes(p));
+    }
+
+    function getRandomFollowUp() {
+      const prompts = [
+        "What changes if you notice the problem earlier?",
+        "Where would this matter in real life?",
+        "What is the risk if you ignore this?",
+        "How would you explain this in plain language?",
+        "What part of this would matter most under stress?"
+      ];
+      return prompts[Math.floor(Math.random() * prompts.length)];
+    }
+
+    function maybePrefixInstructorTone(text) {
+      const prefixes = [
+        "Pay attention to this — ",
+        "This part matters — ",
+        "Don’t miss this — ",
+        ""
+      ];
+      const pick = prefixes[Math.floor(Math.random() * prefixes.length)];
+      return `${pick}${text}`;
+    }
+
     // -----------------------------------------------------------------
     // MAIN AI CORE
     // -----------------------------------------------------------------
     async function instructorAI(raw) {
       const question = normalize(raw);
 
+      // Social layer
+      const social = detectSocialIntent(question);
+      if (social) return formatSocialResponse(social);
+
+      // Hard block for direct quiz answer requests
       if (looksLikeQuizAnswerRequest(question)) return formatBlockedResponse();
 
+      // Struggle / confusion detection
+      if (detectStruggle(question)) {
+        const struggleAnswer = formatResponse({
+          answer: "Alright — slow it down. You do not need to solve everything at once.",
+          why: "People get lost when they stack too many ideas together instead of locking onto the core concept first.",
+          where: currentLesson ? currentLesson.title : "Go back to the current lesson summary",
+          example: "Take one concept, define it plainly, then connect it to the scenario.",
+          followUp: "Which single part is the one giving you trouble?"
+        });
+        return struggleAnswer;
+      }
+
+      const contextBridge = buildContextBridge(question);
+
+      // Direct map
       const direct = findDirectConceptResponse(question);
-      if (direct) return formatResponse(direct);
+      if (direct) {
+        direct.answer = maybePrefixInstructorTone(contextBridge + direct.answer);
+        return formatResponse(direct);
+      }
 
       // Search by lesson content
       const sectionMatch = findBestSectionMatch(question);
-      if (sectionMatch) return formatSectionResponse(sectionMatch, question);
+      if (sectionMatch) {
+        const response = buildSectionResponse(sectionMatch, question);
+        response.answer = maybePrefixInstructorTone(contextBridge + response.answer);
+        return formatResponse(response);
+      }
 
       // Scenario logic
       if (looksLikeScenarioQuestion(question)) {
-        const scenario = findScenarioResponse(question);
+        const scenario = findScenarioResponse(question, contextBridge);
         if (scenario) return scenario;
       }
 
       // Quiz concept (teaching only)
       const quizConcept = findQuizConceptMatch(question);
-      if (quizConcept) return formatResponse(quizConcept);
+      if (quizConcept) {
+        quizConcept.answer = maybePrefixInstructorTone(contextBridge + quizConcept.answer);
+        return formatResponse(quizConcept);
+      }
 
-      // New semantic search layer
+      // Semantic search
       const semantic = semanticSearch(question);
       if (semantic) {
         return formatResponse({
-          answer: semantic.text,
-          why: "This line most closely matches your phrasing in the training material.",
+          answer: maybePrefixInstructorTone(contextBridge + semantic.text),
+          why: "This line is the closest match to what you asked inside the course material.",
           where: semantic.where,
-          example: "Review that section for context and related points.",
+          example: "Go back to that section and read the lines around it so the full point stays clear."
         });
       }
 
       // Final fallback
       return formatResponse({
-        answer:
-          "That question doesn’t exactly match a section heading or quiz concept yet.",
-        why: "I stay within this certified course content to keep answers accurate.",
+        answer: maybePrefixInstructorTone(
+          contextBridge +
+            "That question does not line up cleanly with a specific section yet."
+        ),
+        why: "I stay inside the certified course material so the explanation stays accurate and on track.",
         where:
-          "Review core lessons 1–10: awareness, law, aftermath, readiness, and responsibility.",
+          "Review the core lessons: awareness, law, aftermath, readiness, and responsibility.",
         example:
-          "Try referencing a key term from your lesson or chapter summary for a deeper answer.",
+          "Use a key term from the lesson or chapter summary and I can usually narrow it down fast."
       });
     }
 
@@ -281,56 +476,54 @@ if (!window.BSA_AI_LOADED) {
         {
           test: ["condition yellow"],
           r: {
-            answer: "Condition Yellow is calm, relaxed awareness in public.",
-            why: "It keeps you observant without tension, giving time to avoid problems early.",
-            where: "Lesson 1 → Awareness Levels",
-            example: "Scanning exits and people calmly while shopping.",
-          },
+            answer: "Condition Yellow means you are relaxed — but paying attention.",
+            why: "It gives you time to notice problems early instead of being surprised by them.",
+            where: "Lesson 1 → Awareness Levels",
+            example: "You are in a store, calm, but still noticing exits, people, and changes around you."
+          }
         },
         {
           test: ["condition white"],
           r: {
-            answer: "Condition White means unaware and distracted.",
-            why: "Unawareness removes early options for avoidance.",
-            where: "Lesson 1 → Awareness Levels",
-            example: "Walking while texting and not noticing surroundings.",
-          },
+            answer: "Condition White means you are unaware and mentally checked out.",
+            why: "If you are not paying attention, you lose time and options.",
+            where: "Lesson 1 → Awareness Levels",
+            example: "Walking while distracted and failing to notice what is happening around you."
+          }
         },
         {
           test: ["castle doctrine"],
           r: {
-            answer:
-              "Castle Doctrine covers laws reducing force thresholds inside one’s home.",
-            why: "It applies to home defense but still demands lawful judgment.",
-            where: "Lesson 4 → Home Versus Property",
-            example:
-              "Defense of life ≠ defense of property; law differentiates them.",
-          },
+            answer: "Castle Doctrine deals with how the law may lower certain force thresholds inside the home.",
+            why: "It still requires lawful judgment. It is not a free pass to act without thinking.",
+            where: "Lesson 4 → Home Versus Property",
+            example: "Defense of life and defense of property are not the same thing under the law."
+          }
         },
         {
           test: ["permitless carry"],
           r: {
-            answer:
-              "Louisiana allows permitless carry for eligible adults 18+ who are not prohibited.",
-            why: "Permitless status changes paperwork, not your lawful responsibility.",
-            where: "Lesson 8 → Permitless Carry in Louisiana",
-            example:
-              "Carrying legally still requires following location and impairment laws.",
-          },
+            answer: "Louisiana allows permitless carry for eligible adults who are not prohibited from possessing firearms.",
+            why: "That changes permit requirements. It does not remove your responsibility to know the law and act responsibly.",
+            where: "Lesson 8 → Permitless Carry in Louisiana",
+            example: "You may be able to carry lawfully and still violate the law if you ignore restricted places or impairment rules."
+          }
         },
         {
           test: ["most firearm deaths"],
           r: {
-            answer:
-              "Most firearm deaths in the U.S. are suicides, not homicides.",
-            why: "Understanding that directs focus toward prevention and mental readiness.",
-            where: "Lesson 9 → Suicide Prevention and Warning Signs",
-            example:
-              "Recognizing crisis language and securing access saves lives.",
-          },
-        },
+            answer: "Most firearm deaths in the United States are suicides, not homicides.",
+            why: "That matters because prevention, warning signs, and temporary separation from firearms can save lives.",
+            where: "Lesson 9 → Suicide Prevention and Warning Signs",
+            example: "Recognizing crisis language early can matter more than people think."
+          }
+        }
       ];
-      for (const m of map) if (m.test.some((p) => q.includes(p))) return m.r;
+
+      for (const m of map) {
+        if (m.test.some((p) => q.includes(p))) return m.r;
+      }
+
       return null;
     }
 
@@ -345,69 +538,87 @@ if (!window.BSA_AI_LOADED) {
 
     function getSearchableLessons() {
       const arr = Array.isArray(window.LESSONS) ? window.LESSONS : [];
+
       if (currentLessonId) {
         const cur = arr.find((l) => Number(l.id) === Number(currentLessonId));
         const others = arr.filter((l) => Number(l.id) !== Number(currentLessonId));
         return cur ? [cur, ...others] : arr;
       }
+
       return arr;
     }
 
     function findBestSectionMatch(question) {
       const tokens = tokenize(question);
       let best = null;
+
       for (const lesson of getSearchableLessons()) {
         for (const s of lesson.sections || []) {
           const text = [s.heading, ...(s.body || [])].join(" ");
           const score = scoreTextAgainstQuestion(tokens, text);
-          if (!best || score > best.score)
+
+          if (!best || score > best.score) {
             best = { lesson, section: s, score };
+          }
         }
       }
+
       return best && best.score > 0.45 ? best : null;
     }
 
-    function formatSectionResponse(match, question) {
+    function buildSectionResponse(match, question) {
       const { lesson, section } = match;
       const answer =
-        pickBestLine(section.body, question) || section.body?.[0] || lesson.summary;
-      return formatResponse({
+        pickBestLine(section.body || [], question) ||
+        section.body?.[0] ||
+        lesson.summary ||
+        "That section covers the concept you are asking about.";
+
+      return {
         answer,
         why: buildWhy(section, lesson),
         where: `${lesson.title} → ${section.heading}`,
-        example: buildExampleFromLesson(lesson, section),
-      });
+        example: buildExampleFromLesson(lesson, section)
+      };
     }
 
     function pickBestLine(lines, q) {
       const t = tokenize(q);
       let top = { line: null, score: 0 };
-      for (const line of lines) {
+
+      for (const line of lines || []) {
         const s = scoreTextAgainstQuestion(t, line);
         if (s > top.score) top = { line, score: s };
       }
+
       return top.line;
     }
 
     function buildWhy(section, lesson) {
-      const all = section.body.join(" ").toLowerCase();
-      if (all.includes("avoid")) return "Avoidance works because prevention beats reaction.";
-      if (all.includes("aware")) return "Awareness expands choices and reaction time.";
-      if (all.includes("verify")) return "Verification ensures personal safety responsibility.";
-      if (all.includes("stress")) return "Understanding stress improves post‑event judgment.";
-      if (lesson.title.toLowerCase().includes("law"))
-        return "Legal standards center on reasonableness and necessity.";
-      return "Concept clarity improves safer, lawful decision‑making.";
+      const all = (section.body || []).join(" ").toLowerCase();
+
+      if (all.includes("avoid")) return "Avoidance matters because prevention beats reaction.";
+      if (all.includes("aware")) return "Awareness gives you more time, more choices, and better judgment.";
+      if (all.includes("verify")) return "Verification matters because safety depends on what you personally confirm.";
+      if (all.includes("stress")) return "Understanding stress helps you make better decisions before, during, and after an event.";
+      if ((lesson.title || "").toLowerCase().includes("law")) {
+        return "Legal questions turn on reasonableness, necessity, and judgment.";
+      }
+
+      return "Understanding the concept clearly leads to safer and more lawful decisions.";
     }
 
     function buildExampleFromLesson(lesson, section) {
-      const t = (lesson.title + section.heading).toLowerCase();
-      if (t.includes("law")) return "Example: deciding only when force is truly justified.";
-      if (t.includes("firearm")) return "Example: personal chamber check before handling.";
-      if (t.includes("awareness")) return "Example: noticing early and changing direction.";
-      if (t.includes("suicide") || t.includes("mental"))
-        return "Example: separating firearms during emotional crisis.";
-      return "Example: apply the same reasoning from training in real‑world context.";
+      const t = `${lesson.title} ${section.heading}`.toLowerCase();
+
+      if (t.includes("law")) return "Think about whether force is truly justified — not just emotionally understandable.";
+      if (t.includes("firearm")) return "Think about what you personally verified before handling the firearm.";
+      if (t.includes("awareness")) return "Think about what changes when you notice the issue early instead of late.";
+      if (t.includes("suicide") || t.includes("mental")) {
+        return "Think about how temporary separation and early intervention can change the outcome.";
+      }
+
+      return "Take the same principle and apply it to a real-world situation without adding extra assumptions.";
     }
 
     // -----------------------------------------------------------------
@@ -417,20 +628,27 @@ if (!window.BSA_AI_LOADED) {
       const tokens = tokenize(q);
       const bank = window.QUIZ_BANK || {};
       let best = { score: 0 };
+
       for (const [lid, set] of Object.entries(bank)) {
-        for (const it of set) {
+        for (const it of set || []) {
           const base = [it.q, it.explanation].join(" ");
           const s = scoreTextAgainstQuestion(tokens, base);
-          if (s > best.score) best = { score: s, item: it, lessonId: lid };
+
+          if (s > best.score) {
+            best = { score: s, item: it, lessonId: lid };
+          }
         }
       }
+
       if (best.score < 0.4) return null;
+
       const lesson = getLessonById(best.lessonId);
+
       return {
         answer: stripQuizTone(best.item.q),
-        why: best.item.explanation || "Covered in quiz explanation.",
+        why: best.item.explanation || "This is a core concept covered in the quiz material.",
         where: lesson ? lesson.title : `Lesson ${best.lessonId}`,
-        example: best.item.critical ? "Critical concept—appears in final evaluation." : "",
+        example: best.item.critical ? "This is a critical concept. Make sure you understand why it works, not just what it says." : ""
       };
     }
 
@@ -438,22 +656,30 @@ if (!window.BSA_AI_LOADED) {
       return String(q || "").replace(/^true or false:\s*/i, "");
     }
 
-    function findScenarioResponse(q) {
+    function findScenarioResponse(q, contextBridge = "") {
       const t = tokenize(q);
       let best = { score: 0 };
+
       for (const lesson of getSearchableLessons()) {
         for (const sc of lesson.scenarios || []) {
           const text = `${sc.prompt} ${sc.explanation}`;
           const score = scoreTextAgainstQuestion(t, text);
-          if (score > best.score) best = { score, lesson, sc };
+
+          if (score > best.score) {
+            best = { score, lesson, sc };
+          }
         }
       }
+
       if (best.score < 0.4) return null;
+
       return formatResponse({
-        answer: "Training points toward the safer, responsible response.",
+        answer: maybePrefixInstructorTone(
+          contextBridge + "Training points you toward the safer and more responsible response."
+        ),
         why: best.sc.explanation,
         where: `${best.lesson.title} → Scenario Review`,
-        example: best.sc.prompt,
+        example: best.sc.prompt
       });
     }
 
@@ -463,42 +689,62 @@ if (!window.BSA_AI_LOADED) {
     function semanticSearch(q) {
       const tokens = tokenize(q);
       let best = { score: 0 };
+
       for (const lesson of window.LESSONS || []) {
         for (const sec of lesson.sections || []) {
           for (const line of sec.body || []) {
             const s = scoreTextAgainstQuestion(tokens, line);
-            if (s > best.score)
-              best = { score: s, text: line, where: `${lesson.title} → ${sec.heading}` };
+
+            if (s > best.score) {
+              best = {
+                score: s,
+                text: line,
+                where: `${lesson.title} → ${sec.heading}`
+              };
+            }
           }
         }
       }
+
       for (const [lid, qs] of Object.entries(window.QUIZ_BANK || {})) {
-        for (const item of qs) {
+        for (const item of qs || []) {
           const s = scoreTextAgainstQuestion(tokens, [item.q, item.explanation].join(" "));
           if (s > best.score) {
             const lesson = getLessonById(lid);
             best = {
               score: s,
               text: item.explanation || item.q,
-              where: lesson ? `${lesson.title} (quiz concept)` : `Lesson ${lid}`,
+              where: lesson ? `${lesson.title} (quiz concept)` : `Lesson ${lid}`
             };
           }
         }
       }
+
       return best.score > 0.35 ? best : null;
     }
 
     // -----------------------------------------------------------------
     // FORMAT HELPERS
     // -----------------------------------------------------------------
-    function formatResponse({ answer, why, where, example }) {
-      return `<b>Answer:</b> ${answer}<br><br><b>Why:</b> ${why}<br><br><b>Where to find it:</b> ${where}${
-        example ? `<br><br><b>Example:</b> ${example}` : ""
-      }`;
+    function formatResponse({ answer, why, where, example, followUp }) {
+      const prompt = followUp || getRandomFollowUp();
+
+      return `
+        ${answer}<br><br>
+        <b>Why it matters:</b> ${why}<br><br>
+        <b>Go back to:</b> ${where}
+        ${example ? `<br><br><b>Example:</b> ${example}` : ""}
+        <br><br><b>Think about this:</b> ${prompt}
+      `;
     }
 
     function formatBlockedResponse() {
-      return `<b>Answer:</b> I can’t provide direct quiz or test answers.<br><br><b>Why:</b> Understanding beats memorization.<br><br><b>Where:</b> Check the relevant lesson or ask for the concept behind it.`;
+      return `
+        I’m not going to give you a direct quiz or test answer.<br><br>
+        <b>Why it matters:</b> Understanding the concept matters more than memorizing a choice.<br><br>
+        <b>Go back to:</b> Review the lesson tied to that question, or ask me to explain the concept behind it.<br><br>
+        <b>Think about this:</b> What is the rule or principle the question is really testing?
+      `;
     }
 
     // -----------------------------------------------------------------
@@ -506,23 +752,103 @@ if (!window.BSA_AI_LOADED) {
     // -----------------------------------------------------------------
     (function injectStyles() {
       if (document.getElementById("aiChatBubbleStyles")) return;
+
       const s = document.createElement("style");
       s.id = "aiChatBubbleStyles";
       s.textContent = `
-        .ai-msg-row{display:flex;margin:10px 0;width:100%;}
+        .ai-msg-row{
+          display:flex;
+          margin:10px 0;
+          width:100%;
+          animation:fadeIn .2s ease-in;
+        }
+
         .ai-msg-row-user{justify-content:flex-end;}
         .ai-msg-row-instructor{justify-content:flex-start;}
-        .ai-msg{max-width:88%;border-radius:14px;padding:10px 12px;
-          line-height:1.45;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:14px;}
-        .ai-msg-user{background:#1e3a8a;color:#fff;border-bottom-right-radius:4px;}
-        .ai-msg-instructor{background:#f8fbff;color:#142033;border:1px solid #d9e0ec;border-bottom-left-radius:4px;}
-        .ai-msg-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;opacity:.82;}
+
+        .ai-msg{
+          max-width:88%;
+          border-radius:14px;
+          padding:10px 12px;
+          line-height:1.45;
+          box-shadow:0 2px 8px rgba(0,0,0,.06);
+          font-size:14px;
+        }
+
+        .ai-msg-user{
+          background:#1e3a8a;
+          color:#fff;
+          border-bottom-right-radius:4px;
+        }
+
+        .ai-msg-instructor{
+          background:linear-gradient(180deg,#f8fbff,#eef4ff);
+          color:#142033;
+          border:1px solid #d9e0ec;
+          border-bottom-left-radius:4px;
+        }
+
+        .ai-msg-label{
+          font-size:11px;
+          font-weight:700;
+          text-transform:uppercase;
+          letter-spacing:.04em;
+          margin-bottom:6px;
+          opacity:.82;
+        }
+
         .ai-msg-user .ai-msg-label{color:rgba(255,255,255,.88);}
         .ai-msg-instructor .ai-msg-label{color:#1f468c;}
-        .ai-msg-body{white-space:normal;word-break:break-word;}
-        .thinking::after{content:'';display:inline-block;width:1ch;animation:dots 1.2s steps(4,end) infinite;}
-        @keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...';}}
+
+        .ai-msg-body{
+          white-space:normal;
+          word-break:break-word;
+        }
+
+        .thinking{
+          font-style:italic;
+          opacity:.72;
+        }
+
+        .thinking::after{
+          content:'';
+          display:inline-block;
+          width:1ch;
+          animation:dots 1.2s steps(4,end) infinite;
+        }
+
+        .ai-clear-btn{
+          margin-left:8px;
+          padding:6px 10px;
+          border:1px solid #cfd8e6;
+          background:#ffffff;
+          color:#1b2b44;
+          border-radius:8px;
+          cursor:pointer;
+          font-size:12px;
+          font-weight:600;
+          transition:background .15s ease,border-color .15s ease,transform .15s ease;
+        }
+
+        .ai-clear-btn:hover{
+          background:#f4f8ff;
+          border-color:#aebed8;
+          transform:translateY(-1px);
+        }
+
+        @keyframes dots{
+          0%,20%{content:'';}
+          40%{content:'.';}
+          60%{content:'..';}
+          80%,100%{content:'...';}
+        }
+
+        @keyframes fadeIn{
+          from{opacity:0;transform:translateY(4px);}
+          to{opacity:1;transform:translateY(0);}
+        }
       `;
+
       document.head.appendChild(s);
     })();
   })();
