@@ -767,78 +767,7 @@ window.LESSONS = [
     }
   ]
 },
-{
-  id: 7,
-  slug: 'continued-development',
-  title: 'Continued Development and Responsibility',
-  estTime: '20 min',
 
-  summary: 'This lesson reinforces that training is ongoing. Skill must be maintained, judgment must remain sharp, and responsibility never ends. The goal is long-term awareness, not short-term performance.',
-
-  sections: [
-
-    {
-      heading: 'Training Never Ends',
-      body: [
-        'Skills fade without use.',
-        'Consistent practice maintains performance.',
-        'Training should evolve over time.',
-        'You are responsible for staying prepared.',
-        'Complacency leads to mistakes.'
-      ]
-    },
-
-    {
-      heading: 'Mindset Over Mechanics',
-      body: [
-        'Your mindset matters more than your skill.',
-        'Avoidance remains your primary tool.',
-        'Situational awareness must continue daily.',
-        'Good decisions prevent bad outcomes.',
-        'Your goal is to never need your firearm.'
-      ]
-    },
-
-    {
-      heading: 'Responsibility',
-      body: [
-        'Owning a firearm carries ongoing responsibility.',
-        'Your actions affect others.',
-        'You must remain disciplined and controlled.',
-        'This is not temporary — it is a lifestyle.',
-        'You are accountable for every decision.'
-      ]
-    },
-
-    {
-      heading: 'Final Principle',
-      body: [
-        'It is better to have a firearm and not need it.',
-        'Than to need one and not have it.',
-        'But even more important:',
-        'Avoid needing it at all.',
-        '“No Be There.”'
-      ]
-    }
-
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You have completed training and feel confident. What is the correct mindset going forward?',
-      choices: [
-        'You are fully prepared and finished',
-        'Training is no longer necessary',
-        'Continue practicing and maintaining awareness',
-        'Rely only on your equipment'
-      ],
-      answer: 2,
-      explanation: 'Training and awareness must continue over time.'
-    }
-
-  ]
-},
   {
     id: 8,
     slug: 'louisiana-firearm-law',
