@@ -514,135 +514,194 @@ window.LESSONS = [
   ]
 },
   {
-    id: 5,
-    slug: 'violent-encounters-aftermath',
-    title: 'Violent Encounters and the Aftermath',
-    estTime: '18 min',
-    summary: 'This lesson covers fight-or-flight responses, the amygdala, thalamus filtering, adrenaline, reaction under stress, and proper behavior immediately after a defensive use-of-force event.',
-    sections: [
-      {
-        heading: 'Stress Physiology',
-        body: [
-          'The body’s fight-or-flight response can begin rapidly and affect perception, memory, and coordination.',
-          'The amygdala and adrenaline responses shape reactions under threat.',
-          'The thalamus can prioritize sensory information in ways that narrow what you notice.'
-        ]
-      },
-      {
-        heading: 'Training and Decision Making',
-        body: [
-          'Training helps, but it does not eliminate the need for awareness and judgment.',
-          'Drawing a firearm does not automatically require firing it.',
-          'Students should understand both tactical and physiological realities.'
-        ]
-      },
-      {
-        heading: 'Immediate Aftermath',
-        body: [
-          'If someone is injured, calling 911 is the first call.',
-          'Do not disturb evidence or the scene after a defensive incident.',
-          'Stress can affect memory and communication, so students should be cautious, calm, and deliberate.'
-        ]
-      },
-      {
-        heading: 'Responsible Conduct',
-        body: [
-          'Do not assume you should explain everything in detail immediately while flooded with stress.',
-          'Preserving the scene and summoning help are part of responsible action.',
-          'Post-incident conduct can matter just as much as pre-incident judgment.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'After a defensive shooting, the threat is down and someone is injured. What is the first call the lesson says you should make?',
-        choices: [
-          'Your family',
-          'Your lawyer',
-          '911',
-          'Your friends so they can explain what happened'
-        ],
-        answer: 2,
-        explanation: 'The course specifically identifies 911 as the first call when someone is injured.'
-      },
-      {
-        prompt: 'At the scene after a defensive incident, what is the best course of action?',
-        choices: [
-          'Collect empty casings before police arrive',
-          'Move dropped equipment so the scene looks cleaner',
-          'Leave the scene and return later',
-          'Avoid disturbing the scene and wait for responding authorities'
-        ],
-        answer: 3,
-        explanation: 'The lesson stresses preserving the scene and not disturbing evidence.'
-      }
-    ]
-  },
+  id: 5,
+  slug: 'applied-skills-training',
+  title: 'Applied Skills and Training',
+  estTime: '28 min',
+
+  summary: 'This lesson focuses on applying shooting fundamentals through structured training. Drills, repetition, and consistency build performance under stress. Training prepares you for worst-case scenarios, but does not replace judgment or responsibility.',
+
+  sections: [
+
+    {
+      heading: 'Why Training Matters',
+      body: [
+        'Shooting is a perishable skill.',
+        'Without practice, performance declines.',
+        'Training builds consistency and confidence.',
+        'Under stress, you default to your level of training.',
+        'Preparation must happen before the moment.'
+      ]
+    },
+
+    {
+      heading: 'Deliberate Practice',
+      body: [
+        'Practice must be intentional, not random.',
+        'Focus on fundamentals during every repetition.',
+        'Speed comes from consistency, not rushing.',
+        'Train correctly — not just frequently.',
+        'Bad practice builds bad habits.'
+      ]
+    },
+
+    {
+      heading: 'Dry Fire Training',
+      body: [
+        'Dry fire allows safe repetition without ammunition.',
+        'It improves trigger control and sight alignment.',
+        'It reinforces proper grip and mechanics.',
+        'Consistency is more important than volume.',
+        'Always follow safety rules during dry fire.'
+      ]
+    },
+
+    {
+      heading: 'Range Training',
+      body: [
+        'Live fire confirms your training.',
+        'Focus on accuracy before speed.',
+        'Use structured drills to measure progress.',
+        'Understand your limitations.',
+        'Train with purpose, not ego.'
+      ]
+    },
+
+    {
+      heading: 'Training Under Stress',
+      body: [
+        'Real situations involve stress and pressure.',
+        'Heart rate and adrenaline affect performance.',
+        'Simple, repeatable skills perform best under stress.',
+        'Complicated techniques often fail.',
+        'Train for reality, not perfection.'
+      ]
+    },
+
+    {
+      heading: 'Reality Check',
+      body: [
+        'Training prepares you for worst-case scenarios.',
+        'It does not mean you should seek them out.',
+        'Avoidance is still the priority.',
+        '“No Be There” remains your first decision.',
+        'Training is preparation — not permission.'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You want to improve quickly at shooting. What is the best approach?',
+      choices: [
+        'Shoot as fast as possible every time',
+        'Focus on consistent fundamentals',
+        'Buy better equipment',
+        'Only train occasionally'
+      ],
+      answer: 1,
+      explanation: 'Consistency in fundamentals builds real skill, not speed alone.'
+    },
+
+    {
+      prompt: 'Why is dry fire training valuable?',
+      choices: [
+        'It replaces live fire entirely',
+        'It builds repetition safely',
+        'It is only for beginners',
+        'It makes shooting easier automatically'
+      ],
+      answer: 1,
+      explanation: 'Dry fire builds consistent habits without the need for ammunition.'
+    }
+
+  ]
+},
   {
-    id: 6,
-    slug: 'gear-and-gadgets',
-    title: 'Gear and Gadgets',
-    estTime: '16 min',
-    summary: 'This lesson covers practical carry equipment such as holsters, retention levels, flashlights, and lasers, along with their advantages, limitations, and training implications.',
-    sections: [
-      {
-        heading: 'Holsters',
-        body: [
-          'Holsters must secure the firearm, protect the trigger guard, and support consistent access.',
-          'Different designs serve different carry positions and needs.',
-          'Retention levels matter, especially when carrying in public or in more dynamic environments.'
-        ]
-      },
-      {
-        heading: 'Lights and Lasers',
-        body: [
-          'A quality flashlight is useful for identifying what you are seeing before making decisions.',
-          'Lasers can help in awkward positions and during target-focused shooting, but they are not a substitute for training.',
-          'No device removes the need for fundamentals.'
-        ]
-      },
-      {
-        heading: 'Training Mindset',
-        body: [
-          'Students should train with the gear they actually plan to use.',
-          'Equipment should solve a real problem, not just look tactical.',
-          'The best gear is reliable, practical, and supported by practice.'
-        ]
-      },
-      {
-        heading: 'Limitations',
-        body: [
-          'Lights, lasers, and retention systems each have strengths and weaknesses.',
-          'Technology can assist performance, but it cannot replace judgment or marksmanship.',
-          'Confidence should come from skill, not gadgets alone.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'A student says, “I have a laser now, so I do not need to train with sights anymore.” What is the best correction?',
-        choices: [
-          'Correct, lasers replace all other alignment methods',
-          'Lasers help, but they do not eliminate the need for other aiming methods and training',
-          'Lasers are only decorative',
-          'A laser guarantees hits'
-        ],
-        answer: 1,
-        explanation: 'The lesson teaches that lasers are helpful tools, not total replacements for fundamentals.'
-      },
-      {
-        prompt: 'You want a holster for pocket carry. Which holster style from the lesson is specifically designed for that use?',
-        choices: [
-          'Paddle holster',
-          'Pocket holster',
-          'Belt slide only',
-          'Shoulder rig'
-        ],
-        answer: 1,
-        explanation: 'The source material specifically names the pocket holster for that role.'
-      }
-    ]
-  },
+  id: 6,
+  slug: 'gear-and-application',
+  title: 'Gear and Practical Application',
+  estTime: '22 min',
+
+  summary: 'This lesson covers the practical use of equipment such as holsters, lights, and accessories. Proper gear supports performance, but does not replace skill or judgment. Simplicity and reliability are key.',
+
+  sections: [
+
+    {
+      heading: 'Gear is a Tool',
+      body: [
+        'Equipment supports your ability.',
+        'It does not replace skill.',
+        'More gear does not equal better performance.',
+        'Reliability matters more than complexity.',
+        'Simple systems are easier to manage under stress.'
+      ]
+    },
+
+    {
+      heading: 'Holsters and Carry',
+      body: [
+        'Holsters must securely retain the firearm.',
+        'They must allow safe and consistent access.',
+        'Trigger coverage is critical.',
+        'Comfort affects consistency of carry.',
+        'Practice your draw safely and correctly.'
+      ]
+    },
+
+    {
+      heading: 'Lights and Identification',
+      body: [
+        'You must identify a threat before acting.',
+        'Weapon-mounted lights assist in low light.',
+        'Handheld lights offer flexibility.',
+        'Never assume — always confirm.',
+        'Misidentification has serious consequences.'
+      ]
+    },
+
+    {
+      heading: 'Accessories and Optics',
+      body: [
+        'Optics can improve sighting speed.',
+        'Lasers may assist in certain conditions.',
+        'Every addition requires training.',
+        'Complexity increases failure points.',
+        'You must train with what you carry.'
+      ]
+    },
+
+    {
+      heading: 'Reality Check',
+      body: [
+        'Gear does not make decisions for you.',
+        'You are responsible for every action.',
+        'Avoid situations whenever possible.',
+        '“No Be There” still applies.',
+        'Tools support judgment — they do not replace it.'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You are unsure of what you are seeing in low light. What is the correct action?',
+      choices: [
+        'Assume the worst and act immediately',
+        'Identify before acting',
+        'Move closer quickly',
+        'Draw without confirming'
+      ],
+      answer: 1,
+      explanation: 'You must positively identify a threat before taking action.'
+    }
+
+  ]
+},
   {
     id: 7,
     slug: 'basic-and-advanced-skills',
@@ -707,7 +766,78 @@ window.LESSONS = [
         explanation: 'The source material frames continuing education as a logical next step.'
       }
     ]
-  },
+  {
+  id: 7,
+  slug: 'continued-development',
+  title: 'Continued Development and Responsibility',
+  estTime: '20 min',
+
+  summary: 'This lesson reinforces that training is ongoing. Skill must be maintained, judgment must remain sharp, and responsibility never ends. The goal is long-term awareness, not short-term performance.',
+
+  sections: [
+
+    {
+      heading: 'Training Never Ends',
+      body: [
+        'Skills fade without use.',
+        'Consistent practice maintains performance.',
+        'Training should evolve over time.',
+        'You are responsible for staying prepared.',
+        'Complacency leads to mistakes.'
+      ]
+    },
+
+    {
+      heading: 'Mindset Over Mechanics',
+      body: [
+        'Your mindset matters more than your skill.',
+        'Avoidance remains your primary tool.',
+        'Situational awareness must continue daily.',
+        'Good decisions prevent bad outcomes.',
+        'Your goal is to never need your firearm.'
+      ]
+    },
+
+    {
+      heading: 'Responsibility',
+      body: [
+        'Owning a firearm carries ongoing responsibility.',
+        'Your actions affect others.',
+        'You must remain disciplined and controlled.',
+        'This is not temporary — it is a lifestyle.',
+        'You are accountable for every decision.'
+      ]
+    },
+
+    {
+      heading: 'Final Principle',
+      body: [
+        'It is better to have a firearm and not need it.',
+        'Than to need one and not have it.',
+        'But even more important:',
+        'Avoid needing it at all.',
+        '“No Be There.”'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You have completed training and feel confident. What is the correct mindset going forward?',
+      choices: [
+        'You are fully prepared and finished',
+        'Training is no longer necessary',
+        'Continue practicing and maintaining awareness',
+        'Rely only on your equipment'
+      ],
+      answer: 2,
+      explanation: 'Training and awareness must continue over time.'
+    }
+
+  ]
+}},
   {
     id: 8,
     slug: 'louisiana-firearm-law',
