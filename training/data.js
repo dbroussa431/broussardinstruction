@@ -1047,7 +1047,138 @@ window.LESSONS = [
         explanation: 'Crisis intervention and reduced access to lethal means can save lives.'
       }
     ]
-  }
+  {,
+   {
+  id: 10,
+  slug: 'bsa-doctrine',
+  title: 'Final Doctrine: Responsibility Over Everything',
+  estTime: '15 min',
+
+  summary: 'This final lesson defines the core philosophy of Broussard Shooting Academy. Owning a firearm is not about power — it is about responsibility, discipline, and avoiding situations where force is ever needed.',
+
+  sections: [
+
+    {
+      heading: 'The Truth About Firearms',
+      body: [
+        'A firearm is a tool — nothing more, nothing less.',
+        'It does not make you safer by itself.',
+        'It does not make you stronger by itself.',
+        'It only amplifies your decisions.',
+        'Good decisions keep you safe. Bad decisions make things worse.'
+      ]
+    },
+
+    {
+      heading: 'The BSA Principle',
+      body: [
+        'You have probably heard:',
+        '“It is better to have a firearm and not need it, than need it and not have it.”',
+        'That is true.',
+        'But it is incomplete.',
+        'The real goal is this:',
+        'Avoid ever needing it in the first place.'
+      ]
+    },
+
+    {
+      heading: 'No Be There',
+      body: [
+        'This is your primary strategy.',
+        'Do not go where problems happen.',
+        'Do not stay where problems are developing.',
+        'Do not insert yourself into situations that can escalate.',
+        'Distance and avoidance solve more problems than force ever will.',
+        'If you are not there, you cannot be part of the problem.'
+      ]
+    },
+
+    {
+      heading: 'Responsibility',
+      body: [
+        'Owning a firearm is a serious responsibility.',
+        'Every decision you make matters.',
+        'Every action has consequences.',
+        'You are accountable for what happens before, during, and after any situation.',
+        'This responsibility does not turn off — ever.'
+      ]
+    },
+
+    {
+      heading: 'The Reality of Use',
+      body: [
+        'Using a firearm in defense is a last resort.',
+        'There are no clean outcomes.',
+        'There are no easy answers.',
+        'Even when justified, the consequences are real and lasting.',
+        'That is why avoidance must always come first.'
+      ]
+    },
+
+    {
+      heading: 'The Mindset',
+      body: [
+        'You are not looking for conflict.',
+        'You are not trying to prove anything.',
+        'You are not trying to win.',
+        'You are trying to go home safely.',
+        'That is success.'
+      ]
+    },
+
+    {
+      heading: 'The Responsibility Quote',
+      body: [
+        '“With great power comes great responsibility.”',
+        'That is not a movie line here.',
+        'That is real life.',
+        'You now carry something that can permanently change lives.',
+        'Your job is to make sure it never has to.'
+      ]
+    },
+
+    {
+      heading: 'Final Thought',
+      body: [
+        'Skill matters.',
+        'Training matters.',
+        'Equipment matters.',
+        'But none of it matters more than your decisions.',
+        'And the best decision you can make is:',
+        '“No Be There.”'
+      ]
+    }
+
+  ],
+
+  scenarios: [
+
+    {
+      prompt: 'You notice a situation beginning to escalate in a public place. What is the best action?',
+      choices: [
+        'Stay and watch what happens',
+        'Move closer to understand the situation',
+        'Leave the area and create distance',
+        'Prepare to intervene immediately'
+      ],
+      answer: 2,
+      explanation: 'Avoidance is always the safest and most responsible option.'
+    },
+
+    {
+      prompt: 'What is the true goal of carrying a firearm?',
+      choices: [
+        'To be prepared to use it',
+        'To defend yourself if needed',
+        'To avoid situations where it is ever needed',
+        'To feel safer'
+      ],
+      answer: 2,
+      explanation: 'The ultimate goal is to avoid needing to use force at all.'
+    }
+
+  ]
+},
 ];
 
 /* Compatibility layer for pages that expect window.LESSON_CONTENT */
