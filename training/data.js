@@ -1007,48 +1007,6 @@ window.LESSONS = [
       }
     ]
   },
-  {
-    id: 10,
-    slug: 'final-evaluation',
-    title: 'Final Evaluation',
-    estTime: '30–45 min',
-    summary: 'This final certification assessment combines Louisiana firearm law, mental readiness, judgment, and responsibility. Critical mistakes result in automatic failure.',
-    sections: [
-      {
-        heading: 'Final Certification Standard',
-        body: [
-          'This evaluation determines readiness for live training.',
-          'You must demonstrate both legal understanding and responsible judgment.',
-          'Certain dangerous answers are marked as critical and cause automatic failure.',
-          'This is not practice — this is validation.'
-        ]
-      }
-    ],
-    scenarios: [
-      {
-        prompt: 'Someone steals your property and runs away. There is no immediate threat to life. What is the correct response?',
-        choices: [
-          'Use deadly force to stop them',
-          'Draw your firearm to intimidate them',
-          'Disengage and call law enforcement',
-          'Chase aggressively and confront them'
-        ],
-        answer: 2,
-        explanation: 'Property alone does not justify deadly force.'
-      },
-      {
-        prompt: 'A close friend is in emotional crisis and has access to firearms. What is the most responsible action?',
-        choices: [
-          'Leave them alone to cool off',
-          'Encourage them to keep a firearm close for security',
-          'Help create separation from firearms and get support',
-          'Avoid involvement because it is personal'
-        ],
-        answer: 2,
-        explanation: 'Crisis intervention and reduced access to lethal means can save lives.'
-    }
-  ]
-},
 {
   id: 10,
   slug: 'bsa-doctrine',
