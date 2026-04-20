@@ -1045,10 +1045,10 @@ window.LESSONS = [
         ],
         answer: 2,
         explanation: 'Crisis intervention and reduced access to lethal means can save lives.'
-      }
-    ]
-  {,
-   {
+    }
+  ]
+},
+{
   id: 10,
   slug: 'bsa-doctrine',
   title: 'Final Doctrine: Responsibility Over Everything',
