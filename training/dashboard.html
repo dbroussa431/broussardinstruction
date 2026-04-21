@@ -5,101 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
-
-  <style>
-    /* ===== AI PANEL (CLEAN PREMIUM) ===== */
-
-    .ai-trigger {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #1d3557;
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 24px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      z-index: 999;
-    }
-
-    .ai-panel {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 320px;
-      height: 420px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 999;
-    }
-
-    .ai-header {
-      background: #1d3557;
-      color: white;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .ai-title {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .ai-sub {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .ai-close {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .ai-body {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
-      font-size: 13px;
-    }
-
-    .ai-message {
-      background: #f1f3f5;
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    .ai-input-row {
-      display: flex;
-      border-top: 1px solid #eee;
-    }
-
-    .ai-input-row input {
-      flex: 1;
-      border: none;
-      padding: 10px;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .ai-input-row button {
-      background: #c89b2c;
-      border: none;
-      padding: 10px 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
 </head>
 
 <body>
@@ -116,7 +21,7 @@
 
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-light" href="#">Live Review & Range</a>
+      <a class="btn btn-light" href="#live-range">Live Review & Range</a>
       <button class="btn btn-gold" id="logoutBtn">Logout</button>
     </div>
   </div>
@@ -133,12 +38,23 @@
         Complete each lesson, pass each quiz (80%+), complete scenarios,
         and pass the <strong>Final Evaluation</strong> before live training.
       </p>
+
+      <div class="meta-row">
+        <span class="pill">10 Lessons</span>
+        <span class="pill">20-Question Quizzes</span>
+        <span class="pill">2 Scenarios Per Lesson</span>
+        <span class="pill">Final Evaluation Required</span>
+      </div>
     </div>
 
     <div class="panel hero-side">
+
       <div class="stat-card">
         <small>Overall Progress</small>
         <strong id="progressLabel"></strong>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
       </div>
 
       <div class="stat-card">
@@ -150,94 +66,154 @@
         <small>Account</small>
         <strong id="studentEmailLabel"></strong>
       </div>
+
     </div>
   </section>
 
-  <h3>Lesson Dashboard</h3>
-  <section id="lessonGrid"></section>
+  <div class="section-head">
+    <h3>Lesson Dashboard</h3>
+    <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
+  </div>
+
+  <section class="lesson-grid" id="lessonGrid"></section>
 
 </main>
 
-<!-- ===== AI SYSTEM (ONLY ONE) ===== -->
+<!-- ✅ CLEAN AI SYSTEM (CONNECTED TO ai.js) -->
 
-<div class="ai-panel" id="aiPanel">
+<button id="aiToggleBtn" class="ai-trigger">Ask Instructor</button>
+
+<div id="aiPanel" class="ai-panel hidden">
   <div class="ai-header">
-    <div>
-      <div class="ai-title">Instructor Guidance</div>
-      <div class="ai-sub">BSA Training Assistant</div>
-    </div>
-    <button class="ai-close" onclick="toggleAI()">×</button>
+    <span>Instructor Guidance</span>
+    <button id="aiClose">×</button>
   </div>
 
-  <div class="ai-body" id="aiMessages">
-    <div class="ai-message">
-      Ask a question about your training or lessons.
-    </div>
-  </div>
+  <div id="aiMessages" class="ai-body"></div>
 
   <div class="ai-input-row">
-    <input id="aiInput" placeholder="Ask your instructor..." />
-    <button onclick="sendAI()">Send</button>
+    <input id="aiInput" type="text" placeholder="Ask your instructor..." />
+    <button id="aiSend">Send</button>
   </div>
 </div>
 
-<button class="ai-trigger" onclick="toggleAI()">
-  Ask Instructor
-</button>
-
 <script src="data.js"></script>
+<script src="ai.js"></script>
 
 <script type="module">
+
 import {
   requireLogin,
+  refreshCurrentStudentFromFirestore,
   getCurrentStudent,
   overallProgress,
+  allLessonsComplete,
+  getLessonProgress,
+  lessonStatus,
   logout
 } from "./app.js";
 
 requireLogin();
 
-const student = getCurrentStudent();
+const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
+// Header
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training.`;
+  `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
+document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+
+// Progress
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
+document.getElementById("progressBar").style.width = `${prog.percent}%`;
+
+// Status
 document.getElementById("studentStatus").textContent =
-  prog.passed === prog.total ? "Cleared for Live Range" : "In Progress";
+  allLessonsComplete(student)
+    ? "Online Prerequisite Completed – Cleared for Live Range"
+    : "In Progress";
 
-document.getElementById("studentEmailLabel").textContent =
-  student?.email || "—";
+// LESSON BUILD (RESTORED)
+const grid = document.getElementById("lessonGrid");
 
+window.LESSONS.forEach((lesson) => {
+
+  const status = lessonStatus(lesson.id, student);
+  const progress = getLessonProgress(lesson.id, student);
+  const isFinal = lesson.id === 10;
+
+  const card = document.createElement("article");
+  card.className = "panel lesson-card";
+
+  card.innerHTML = `
+    <div class="lesson-top">
+      <div style="display:flex;gap:12px;">
+        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
+          ${isFinal ? '★' : lesson.id}
+        </div>
+        <div>
+          <h4>${lesson.title}</h4>
+          <p>${lesson.summary}</p>
+        </div>
+      </div>
+      <span class="status ${status.className}">${status.label}</span>
+    </div>
+
+    <div class="lesson-meta">
+      <span class="chip">Time: ${lesson.estTime}</span>
+      <span class="chip">Quiz</span>
+      <span class="chip">Scenarios</span>
+      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
+      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
+    </div>
+
+    <div class="lesson-actions">
+
+      ${
+        status.locked
+          ? `<span class="btn btn-blue btn-disabled">Locked</span>`
+          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
+               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+             </a>`
+      }
+
+      ${
+        !status.locked && progress.contentViewed
+          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
+          : ""
+      }
+
+      ${
+        !status.locked && progress.scenarioCompleted
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
+               ${isFinal ? "Start Evaluation" : "Take Quiz"}
+             </a>`
+          : ""
+      }
+
+      ${
+        progress.quizPassed
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
+               Review Answers
+             </a>`
+          : ""
+      }
+
+    </div>
+  `;
+
+  grid.appendChild(card);
+});
+
+// Logout
 document.getElementById("logoutBtn").onclick = () => {
   logout();
   window.location.href = "login.html";
 };
-</script>
 
-<script>
-function toggleAI() {
-  const panel = document.getElementById("aiPanel");
-  panel.style.display =
-    panel.style.display === "flex" ? "none" : "flex";
-}
-
-function sendAI() {
-  const input = document.getElementById("aiInput");
-  const messages = document.getElementById("aiMessages");
-
-  if (!input.value.trim()) return;
-
-  const msg = document.createElement("div");
-  msg.className = "ai-message";
-  msg.textContent = input.value;
-
-  messages.appendChild(msg);
-  input.value = "";
-}
 </script>
 
 </body>
