@@ -5,9 +5,13 @@
 
     const current = getCurrentStudent();
     if (current && current.accessCode && current.status === 'active') {
-      window.location.href = 'dashboard.html';
-      return;
+    if (sessionStorage.getItem("bsaConfirmed") === "true") {
+        window.location.href = "dashboard.html";
+    } else {
+        window.location.href = "confirmation.html";
     }
+    return;
+}
 
     const form = document.getElementById('loginForm') || document.querySelector('form');
     const accessCode = document.getElementById('accessCode') || document.querySelector('input[type="text"], input[type="password"], input[name="accessCode"]');
