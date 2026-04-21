@@ -5,22 +5,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ===== AI PANEL (CLEAN PREMIUM) ===== */
+
+    .ai-trigger {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1d3557;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+
+    .ai-panel {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 320px;
+      height: 420px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .ai-header {
+      background: #1d3557;
+      color: white;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ai-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .ai-sub {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .ai-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .ai-body {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+
+    .ai-message {
+      background: #f1f3f5;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .ai-input-row {
+      display: flex;
+      border-top: 1px solid #eee;
+    }
+
+    .ai-input-row input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .ai-input-row button {
+      background: #c89b2c;
+      border: none;
+      padding: 10px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Private Student Portal • Online Prerequisite Training</p>
       </div>
     </div>
+
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-      <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
+      <a class="btn btn-light" href="#">Live Review & Range</a>
+      <button class="btn btn-gold" id="logoutBtn">Logout</button>
     </div>
   </div>
 </header>
@@ -36,217 +133,33 @@
         Complete each lesson, pass each quiz (80%+), complete scenarios,
         and pass the <strong>Final Evaluation</strong> before live training.
       </p>
-
-      <div class="meta-row">
-        <span class="pill">10 Lessons</span>
-        <span class="pill">20-Question Quizzes</span>
-        <span class="pill">2 Scenarios Per Lesson</span>
-        <span class="pill">Final Evaluation Required</span>
-      </div>
     </div>
 
     <div class="panel hero-side">
-
       <div class="stat-card">
         <small>Overall Progress</small>
-        <strong id="progressLabel">0 / 10 Lessons Passed</strong>
-        <div class="progress-wrap">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
+        <strong id="progressLabel"></strong>
       </div>
 
       <div class="stat-card">
         <small>Status</small>
-        <strong id="studentStatus">In Progress</strong>
+        <strong id="studentStatus"></strong>
       </div>
 
       <div class="stat-card">
         <small>Account</small>
-        <strong id="studentEmailLabel">—</strong>
+        <strong id="studentEmailLabel"></strong>
       </div>
-
     </div>
   </section>
 
-  <div class="section-head">
-    <h3>Lesson Dashboard</h3>
-    <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
-  </div>
-
-  <section class="lesson-grid" id="lessonGrid"></section>
-
-  <section class="next-step panel" id="live-range">
-    <h3>Final Step: Live Review & Range Qualification</h3>
-
-    <p>
-      You must complete all lessons, including:
-    </p>
-
-    <ul>
-      <li>Lessons 1–7 (Core Training)</li>
-      <li>Lesson 8 (Louisiana Law)</li>
-      <li>Lesson 9 (Mental Readiness)</li>
-      <li><strong>Lesson 10 (Final Evaluation)</strong></li>
-    </ul>
-
-    <p>
-      ⚠️ <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
-    </p>
-
-    <p>
-      Once complete, your status becomes:
-      <strong>Online Prerequisite Completed – Cleared for Live Range</strong>
-    </p>
-
-  </section>
+  <h3>Lesson Dashboard</h3>
+  <section id="lessonGrid"></section>
 
 </main>
 
-   <!-- AI Assistant Button -->
-<button id="aiToggleBtn">💬 Ask Instructor</button>
+<!-- ===== AI SYSTEM (ONLY ONE) ===== -->
 
-<!-- AI Chat Panel -->
-<div id="aiPanel" class="hidden">
-  <div id="aiHeader">
-    <span>BSA Instructor</span>
-    <button id="aiClose">✖</button>
-  </div>
-
-  <div id="aiMessages"></div>
-
-  <div id="aiInputArea">
-    <input id="aiInput" type="text" placeholder="Ask a question..." />
-    <button id="aiSend">Send</button>
-  </div>
-</div>
-
-<script src="data.js"></script>
-<script src="ai.js"></script>
-
-<script type="module">
-
-import {
-  requireLogin,
-  refreshCurrentStudentFromFirestore,
-  getCurrentStudent,
-  overallProgress,
-  allLessonsComplete,
-  getLessonProgress,
-  lessonStatus,
-  logout
-} from "./app.js";
-
-requireLogin();
-
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-const prog = overallProgress(student);
-
-// Header Info
-document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training and complete your certification path.`;
-
-document.getElementById("studentEmailLabel").textContent = student?.email || "—";
-
-// Progress
-document.getElementById("progressLabel").textContent =
-  `${prog.passed} / ${prog.total} Lessons Passed`;
-
-document.getElementById("progressBar").style.width = `${prog.percent}%`;
-
-// Status
-const complete = allLessonsComplete(student);
-
-document.getElementById("studentStatus").textContent =
-  complete
-    ? "Online Prerequisite Completed – Cleared for Live Range"
-    : "In Progress";
-
-// Build Lesson Cards
-const grid = document.getElementById("lessonGrid");
-
-window.LESSONS.forEach((lesson) => {
-
-  const status = lessonStatus(lesson.id, student);
-  const progress = getLessonProgress(lesson.id, student);
-
-  const isFinal = lesson.id === 10;
-
-  const card = document.createElement("article");
-  card.className = "panel lesson-card";
-
-  card.innerHTML = `
-    <div class="lesson-top">
-      <div style="display:flex;gap:12px;">
-        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
-          ${isFinal ? '★' : lesson.id}
-        </div>
-        <div>
-          <h4>${lesson.title}</h4>
-          <p>${lesson.summary}</p>
-        </div>
-      </div>
-      <span class="status ${status.className}">${status.label}</span>
-    </div>
-
-    <div class="lesson-meta">
-      <span class="chip">Time: ${lesson.estTime}</span>
-      <span class="chip">Quiz</span>
-      <span class="chip">Scenarios</span>
-      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
-      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
-    </div>
-
-    <div class="lesson-actions">
-
-      ${
-        status.locked
-          ? `<span class="btn btn-blue btn-disabled">Locked</span>`
-          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
-               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
-             </a>`
-      }
-
-      ${
-        !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
-          : ""
-      }
-
-      ${
-        !status.locked && progress.scenarioCompleted
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
-               ${isFinal ? "Start Evaluation" : "Take Quiz"}
-             </a>`
-          : ""
-      }
-
-      ${
-        progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-               Review Answers
-             </a>`
-          : ""
-      }
-
-    </div>
-  `;
-
-  grid.appendChild(card);
-});
-
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  logout();
-  window.location.href = "login.html";
-});
-
- 
-  
-</script>
-
-</main>
-
-<!-- AI PANEL -->
 <div class="ai-panel" id="aiPanel">
   <div class="ai-header">
     <div>
@@ -258,12 +171,12 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 
   <div class="ai-body" id="aiMessages">
     <div class="ai-message">
-      Ask a question about your training, lessons, or decisions.
+      Ask a question about your training or lessons.
     </div>
   </div>
 
   <div class="ai-input-row">
-    <input type="text" id="aiInput" placeholder="Ask your instructor..." />
+    <input id="aiInput" placeholder="Ask your instructor..." />
     <button onclick="sendAI()">Send</button>
   </div>
 </div>
@@ -272,11 +185,58 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   Ask Instructor
 </button>
 
+<script src="data.js"></script>
+
+<script type="module">
+import {
+  requireLogin,
+  getCurrentStudent,
+  overallProgress,
+  logout
+} from "./app.js";
+
+requireLogin();
+
+const student = getCurrentStudent();
+const prog = overallProgress(student);
+
+document.getElementById("welcomeLine").textContent =
+  `${student?.name || "Student"}, continue your training.`;
+
+document.getElementById("progressLabel").textContent =
+  `${prog.passed} / ${prog.total} Lessons Passed`;
+
+document.getElementById("studentStatus").textContent =
+  prog.passed === prog.total ? "Cleared for Live Range" : "In Progress";
+
+document.getElementById("studentEmailLabel").textContent =
+  student?.email || "—";
+
+document.getElementById("logoutBtn").onclick = () => {
+  logout();
+  window.location.href = "login.html";
+};
+</script>
+
 <script>
 function toggleAI() {
   const panel = document.getElementById("aiPanel");
   panel.style.display =
     panel.style.display === "flex" ? "none" : "flex";
+}
+
+function sendAI() {
+  const input = document.getElementById("aiInput");
+  const messages = document.getElementById("aiMessages");
+
+  if (!input.value.trim()) return;
+
+  const msg = document.createElement("div");
+  msg.className = "ai-message";
+  msg.textContent = input.value;
+
+  messages.appendChild(msg);
+  input.value = "";
 }
 </script>
 
