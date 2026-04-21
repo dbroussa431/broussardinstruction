@@ -244,5 +244,41 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   
 </script>
 
+</main>
+
+<!-- AI PANEL -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-header">
+    <div>
+      <div class="ai-title">Instructor Guidance</div>
+      <div class="ai-sub">BSA Training Assistant</div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()">×</button>
+  </div>
+
+  <div class="ai-body" id="aiMessages">
+    <div class="ai-message">
+      Ask a question about your training, lessons, or decisions.
+    </div>
+  </div>
+
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="Ask your instructor..." />
+    <button onclick="sendAI()">Send</button>
+  </div>
+</div>
+
+<button class="ai-trigger" onclick="toggleAI()">
+  Ask Instructor
+</button>
+
+<script>
+function toggleAI() {
+  const panel = document.getElementById("aiPanel");
+  panel.style.display =
+    panel.style.display === "flex" ? "none" : "flex";
+}
+</script>
+
 </body>
 </html>
