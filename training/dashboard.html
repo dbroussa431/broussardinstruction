@@ -18,25 +18,25 @@
 <link rel="stylesheet" href="styles.css">
 
 <style>
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #eef2f7 0%, #f4f6f8 120px);
+  background: #f4f6f8;
   color: #243245;
 }
 
+/* HEADER */
 .topbar {
   background: #1d3f7a;
   color: white;
   padding: 16px 24px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
 }
 
 .topbar-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .brand {
@@ -46,30 +46,24 @@ body {
 }
 
 .brand-mark {
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   background: white;
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .brand-mark img {
   width: 70%;
 }
 
+/* LAYOUT */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 24px;
-}
-
-.panel {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 .hero {
@@ -84,6 +78,13 @@ body {
   }
 }
 
+.panel {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* LESSON GRID */
 .lesson-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
@@ -91,32 +92,63 @@ body {
   margin-top: 20px;
 }
 
-.lesson-card h4 {
-  margin: 0;
+/* LESSON CARD */
+.lesson-card {
+  position: relative;
 }
 
+.lesson-card h4 {
+  margin: 0 0 8px 0;
+}
+
+/* STATUS BADGE (FIX) */
+.status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* COLORS */
+.passed {
+  background: #d4edda;
+  color: #1e7e34;
+}
+
+.inprogress {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.locked {
+  background: #e2e3e5;
+  color: #6c757d;
+}
+
+/* LESSON NUMBER */
 .lesson-num {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: #1d3f7a;
   color: white;
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
-.final-lesson {
-  background: #c89b2c;
-}
-
+/* BUTTONS */
 .btn {
   padding: 10px;
   border-radius: 8px;
-  border: none;
-  cursor: pointer;
   text-align: center;
   display: inline-block;
+  cursor: pointer;
+  border: none;
 }
 
 .btn-blue {
@@ -142,17 +174,6 @@ body {
   gap: 8px;
 }
 
-.status {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #eef2f7;
-}
-
-.locked {
-  background: #ddd;
-}
-
 </style>
 
 </head>
@@ -166,8 +187,8 @@ body {
         <img src="./images/bsa-logo.png">
       </div>
       <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Student Training Dashboard</p>
+        <h2>Broussard Shooting Academy</h2>
+        <small>Student Training Dashboard</small>
       </div>
     </div>
     <button class="btn btn-blue" id="logoutBtn">Logout</button>
@@ -177,20 +198,18 @@ body {
 <main class="container">
 
 <section class="hero">
+  <div class="panel">
+    <h2 id="welcomeLine"></h2>
+    <p>
+      Complete each lesson, pass each quiz, complete scenarios, and pass the final evaluation before live training.
+    </p>
+  </div>
 
-<div class="panel">
-<h2 id="welcomeLine"></h2>
-<p>
-Complete each lesson, pass each quiz, complete scenarios, and pass the final evaluation before live training.
-</p>
-</div>
-
-<div class="panel">
-<p><strong id="progressLabel"></strong></p>
-<p id="studentStatus"></p>
-<p id="studentEmailLabel"></p>
-</div>
-
+  <div class="panel">
+    <p><strong id="progressLabel"></strong></p>
+    <p id="studentStatus"></p>
+    <p id="studentEmailLabel"></p>
+  </div>
 </section>
 
 <h3>Lesson Dashboard</h3>
@@ -248,19 +267,25 @@ window.LESSONS.forEach((lesson) => {
   const card = document.createElement("article");
   card.className = "panel lesson-card";
 
+  const statusClass = locked
+    ? "locked"
+    : progress.quizPassed
+    ? "passed"
+    : "inprogress";
+
+  const statusText = locked
+    ? "Locked"
+    : progress.quizPassed
+    ? "Passed"
+    : "In Progress";
+
   card.innerHTML = `
-    <div style="display:flex;justify-content:space-between;">
-      <div style="display:flex;gap:10px;">
-        <div class="lesson-num">${lesson.id}</div>
-        <div>
-          <h4>${lesson.title}</h4>
-          <p>${lesson.summary}</p>
-        </div>
-      </div>
-      <span class="status ${locked ? 'locked' : status.className}">
-        ${locked ? "Locked" : status.label}
-      </span>
-    </div>
+    <span class="status-badge ${statusClass}">${statusText}</span>
+
+    <div class="lesson-num">${lesson.id}</div>
+
+    <h4>${lesson.title}</h4>
+    <p>${lesson.summary}</p>
 
     <div class="lesson-actions">
 
@@ -284,14 +309,6 @@ window.LESSONS.forEach((lesson) => {
         !locked && progress.scenarioCompleted
           ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
               Take Quiz
-            </a>`
-          : ""
-      }
-
-      ${
-        progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-              Review
             </a>`
           : ""
       }
