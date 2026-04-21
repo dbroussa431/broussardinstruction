@@ -1385,3 +1385,37 @@ input[type="radio"] {
   font-weight: 600;
   cursor: pointer;
 }
+.ai-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.ai-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.ai-close span::before,
+.ai-close span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  background: white;
+  transform-origin: center;
+}
+
+.ai-close span::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.ai-close span::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
