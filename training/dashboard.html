@@ -18,9 +18,9 @@
       position: fixed;
       right: 24px;
       bottom: 84px;
-      width: 320px;
+      width: 340px;
       max-width: calc(100vw - 24px);
-      height: 420px;
+      height: 430px;
       background: #ffffff;
       border-radius: 14px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
@@ -31,7 +31,7 @@
     }
 
     .ai-panel.hidden {
-      display: none;
+      display: none !important;
     }
 
     .ai-header {
@@ -44,8 +44,16 @@
       font-weight: 600;
     }
 
-    .ai-header span {
-      display: inline-block;
+    .ai-header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ai-header-title small {
+      font-size: 11px;
+      opacity: 0.8;
+      font-weight: 500;
     }
 
     .ai-close {
@@ -57,6 +65,7 @@
       cursor: pointer;
       position: relative;
       transition: background 0.2s ease;
+      flex-shrink: 0;
     }
 
     .ai-close:hover {
@@ -88,6 +97,30 @@
       overflow-y: auto;
       padding: 14px;
       background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-message {
+      max-width: 88%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      line-height: 1.45;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .ai-message.bot {
+      align-self: flex-start;
+      background: #e9eef5;
+      color: #1f2937;
+    }
+
+    .ai-message.user {
+      align-self: flex-end;
+      background: #1d3557;
+      color: #ffffff;
     }
 
     .ai-input-row {
@@ -108,6 +141,11 @@
       outline: none;
     }
 
+    .ai-input-row input:focus {
+      border-color: #1d3557;
+      box-shadow: 0 0 0 3px rgba(29, 53, 87, 0.12);
+    }
+
     .ai-input-row button {
       border: none;
       border-radius: 8px;
@@ -116,6 +154,7 @@
       color: #111827;
       font-weight: 700;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     @media (max-width: 640px) {
@@ -139,7 +178,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Private Student Portal • Online Prerequisite Training</p>
@@ -149,7 +188,7 @@
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
       <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-      <button class="btn btn-gold" id="logoutBtn">Logout</button>
+      <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
     </div>
   </div>
 </header>
@@ -175,7 +214,6 @@
     </div>
 
     <div class="panel hero-side">
-
       <div class="stat-card">
         <small>Overall Progress</small>
         <strong id="progressLabel"></strong>
@@ -193,7 +231,6 @@
         <small>Account</small>
         <strong id="studentEmailLabel"></strong>
       </div>
-
     </div>
   </section>
 
@@ -210,13 +247,23 @@
 
 <div id="aiPanel" class="ai-panel hidden" aria-hidden="true">
   <div class="ai-header">
-    <span>Instructor Guidance</span>
+    <div class="ai-header-title">
+      <span>Instructor Guidance</span>
+      <small>BSA Training Assistant</small>
+    </div>
     <button class="ai-close" id="aiClose" type="button" aria-label="Close panel">
       <span></span>
     </button>
   </div>
 
-  <div id="aiMessages" class="ai-body"></div>
+  <div id="aiMessages" class="ai-body">
+    <div class="ai-message bot">
+      Ask a question about your training, lessons, or decisions.
+    </div>
+    <div class="ai-message bot">
+      I teach, explain, and review. I do not give quiz answers.
+    </div>
+  </div>
 
   <div class="ai-input-row">
     <input id="aiInput" type="text" placeholder="Ask your instructor..." />
@@ -225,7 +272,6 @@
 </div>
 
 <script src="data.js"></script>
-<script src="ai.js"></script>
 
 <script type="module">
 import {
@@ -338,10 +384,14 @@ document.getElementById("logoutBtn").onclick = () => {
   const aiToggleBtn = document.getElementById("aiToggleBtn");
   const aiPanel = document.getElementById("aiPanel");
   const aiClose = document.getElementById("aiClose");
+  const aiInput = document.getElementById("aiInput");
+  const aiSend = document.getElementById("aiSend");
+  const aiMessages = document.getElementById("aiMessages");
 
   function openAI() {
     aiPanel.classList.remove("hidden");
     aiPanel.setAttribute("aria-hidden", "false");
+    aiInput.focus();
   }
 
   function closeAI() {
@@ -350,15 +400,76 @@ document.getElementById("logoutBtn").onclick = () => {
   }
 
   function toggleAI() {
-    aiPanel.classList.toggle("hidden");
     const isHidden = aiPanel.classList.contains("hidden");
-    aiPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
+    if (isHidden) {
+      openAI();
+    } else {
+      closeAI();
+    }
+  }
+
+  function appendMessage(text, role) {
+    const msg = document.createElement("div");
+    msg.className = `ai-message ${role}`;
+    msg.textContent = text;
+    aiMessages.appendChild(msg);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+  }
+
+  function buildReply(question) {
+    const q = question.toLowerCase();
+
+    if (q.includes("quiz") || q.includes("answer")) {
+      return "I can explain concepts and help you review, but I do not provide quiz answers.";
+    }
+
+    if (q.includes("scenario")) {
+      return "Focus on what the scenario is testing: awareness, judgment, and responsible decision-making before force is ever needed.";
+    }
+
+    if (q.includes("lesson 1") || q.includes("no be there")) {
+      return "Lesson 1 centers on awareness, avoidance, and staying out of trouble before it starts. The goal is not to win confrontations. The goal is to avoid them.";
+    }
+
+    if (q.includes("responsibility") || q.includes("lesson 2")) {
+      return "Lesson 2 emphasizes that carrying a firearm is a responsibility, not a shortcut. Good decisions come before mechanics.";
+    }
+
+    if (q.includes("law") || q.includes("lesson 8")) {
+      return "Lesson 8 focuses on Louisiana firearm law, restricted locations, notification requirements, and legal responsibility before, during, and after carrying.";
+    }
+
+    if (q.includes("mental") || q.includes("lesson 9")) {
+      return "Lesson 9 covers trauma response, stress, warning signs, coping strategies, and the responsibility to protect life by reducing access to lethal means during crises.";
+    }
+
+    return "I can help explain a concept, why it matters, where to review it, or walk through a simple example. I do not give quiz answers.";
+  }
+
+  function sendAI() {
+    const question = aiInput.value.trim();
+    if (!question) return;
+
+    appendMessage(question, "user");
+    aiInput.value = "";
+
+    const reply = buildReply(question);
+    appendMessage(reply, "bot");
   }
 
   window.toggleAI = toggleAI;
+  window.sendAI = sendAI;
 
   aiToggleBtn.addEventListener("click", toggleAI);
   aiClose.addEventListener("click", closeAI);
+  aiSend.addEventListener("click", sendAI);
+
+  aiInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendAI();
+    }
+  });
 })();
 </script>
 
