@@ -325,6 +325,39 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href = "login.html";
 });
 </script>
+<script type="module">
+import { askAssistant } from "./teacher-assistant.js";
 
+const chat = document.getElementById("aiChat");
+const input = document.getElementById("aiInput");
+const btn = document.getElementById("aiSend");
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "ai-msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+btn.addEventListener("click", async () => {
+  const question = input.value.trim();
+  if (!question) return;
+
+  addMessage(question, "ai-user");
+  input.value = "";
+
+  try {
+    const response = await askAssistant(question);
+    addMessage(response, "ai-bot");
+  } catch {
+    addMessage("Assistant unavailable.", "ai-bot");
+  }
+});
+
+input.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") btn.click();
+});
+</script>
 </body>
 </html>
