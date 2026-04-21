@@ -106,18 +106,27 @@
 <button id="aiToggleBtn">💬 Ask Instructor</button>
 
 <!-- AI Chat Panel -->
-<div id="aiPanel" class="hidden">
-  <div id="aiHeader">
-    <span>BSA Instructor</span>
-    <button id="aiClose">✖</button>
+<div id="aiPanel" class="ai-panel hidden">
+
+  <div class="ai-header">
+    <div>
+      <div class="ai-title">Instructor Guidance</div>
+      <div class="ai-sub">BSA Training Assistant</div>
+    </div>
+    <button id="aiClose" class="ai-close">✕</button>
   </div>
 
-  <div id="aiMessages"></div>
+  <div id="aiMessages" class="ai-messages">
+    <div class="ai-msg ai-msg-ai">
+      Ask a question about your training, lessons, or decisions.
+    </div>
+  </div>
 
-  <div id="aiInputArea">
-    <input id="aiInput" type="text" placeholder="Ask a question..." />
+  <div class="ai-input">
+    <input id="aiInput" type="text" placeholder="Ask your instructor..." />
     <button id="aiSend">Send</button>
   </div>
+
 </div>
 
 <script src="data.js"></script>
