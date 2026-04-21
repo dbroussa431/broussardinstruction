@@ -1,273 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<script>
-(function () {
-  if (!sessionStorage.getItem("bsaConfirmed")) {
-    window.location.href = "confirmation.html";
-  }
-})();
-</script>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSA Student Dashboard</title>
-
-<link rel="stylesheet" href="styles.css">
-
-<style>
-
-:root {
-  --bg: #020617;
-  --panel: #0f172a;
-  --card: #111827;
-  --card-elevated: #1f2937;
-  --text: #f9fafb;
-  --muted: #94a3b8;
-  --gold: #f59e0b;
-  --green: #22c55e;
-  --border: rgba(255,255,255,0.06);
-}
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #020617 0%, #0b1220 100%);
-  color: var(--text);
-}
-
-/* ===== LAYOUT ===== */
-.wrap {
-  width: min(1100px, 92%);
-  margin: 0 auto;
-  padding: 28px 0 60px;
-}
-
-/* ===== TOPBAR ===== */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-}
-
-.brand img {
-  width: 52px;
-  height: 52px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 4px;
-}
-
-/* ===== NAV ===== */
-.nav a {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  transition: 0.2s;
-}
-
-.nav a:hover {
-  background: rgba(255,255,255,0.08);
-}
-
-/* ===== HERO ===== */
-.hero {
-  background: linear-gradient(145deg, #0f172a, #1e293b);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 26px;
-  margin-bottom: 24px;
-
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.hero h2 {
-  font-size: 1.5rem;
-  margin-bottom: 12px;
-}
-
-.hero p {
-  color: var(--muted);
-}
-
-/* ===== STATS ===== */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 16px;
-  margin: 24px 0;
-}
-
-.stat {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-
-  /* subtle elevation */
-  box-shadow: inset 0 0 0 1px var(--border),
-              0 10px 20px rgba(0,0,0,0.3);
-}
-
-.stat .label {
-  color: var(--muted);
-}
-
-.stat .value {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-/* ===== PANEL ===== */
-.panel {
-  background: var(--panel);
-  border-radius: 20px;
-  padding: 22px;
-
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.panel h3 {
-  margin-bottom: 16px;
-}
-
-/* ===== LESSON GRID ===== */
-.lessons {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 16px;
-}
-
-/* ===== CARD ===== */
-.lesson-card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 18px;
-
-  box-shadow: inset 0 0 0 1px var(--border),
-              0 14px 28px rgba(0,0,0,0.35);
-
-  transition: 0.2s;
-}
-
-.lesson-card:hover {
-  transform: translateY(-3px);
-}
-
-/* ===== TITLE ===== */
-.lesson-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-/* ===== BADGE ===== */
-.badge {
-  font-size: 0.75rem;
-  background: rgba(255,255,255,0.05);
-}
-
-/* ===== BUTTONS ===== */
-.btn {
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-/* PRIMARY (dominant) */
-.btn-primary {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #111;
-
-  box-shadow: 0 6px 16px rgba(245,158,11,0.4);
-}
-
-/* SECONDARY (subtle) */
-.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--border);
-}
-
-/* ===== LOCKED STATE ===== */
-.lesson-locked {
-  opacity: 0.45;
-}
-
-.lesson-locked .btn {
-  pointer-events: none;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 800px) {
-  .stats,
-  .lessons {
-    grid-template-columns: 1fr;
-  }
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSA Student Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark">
-        <img src="./images/bsa-logo.png">
-      </div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Private Student Portal • Online Prerequisite Training</p>
       </div>
     </div>
-
     <div class="top-actions">
-      <a class="btn btn-light" href="#">Dashboard</a>
+      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
       <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-      <button class="btn btn-gold" id="logoutBtn">Logout</button>
+      <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
     </div>
   </div>
 </header>
 
 <main class="container">
 
-<section class="hero">
-  <div class="hero-main">
-    <span class="eyebrow">ONLINE TRAINING PROGRESSION</span>
-    <h2 id="welcomeLine"></h2>
+  <section class="hero">
+    <div class="panel hero-main">
+      <span class="eyebrow">Online prerequisite completed in stages</span>
+      <h2 id="welcomeLine"></h2>
+
+      <p>
+        Complete each lesson, pass each quiz (80%+), complete scenarios,
+        and pass the <strong>Final Evaluation</strong> before live training.
+      </p>
+
+      <div class="meta-row">
+        <span class="pill">10 Lessons</span>
+        <span class="pill">20-Question Quizzes</span>
+        <span class="pill">2 Scenarios Per Lesson</span>
+        <span class="pill">Final Evaluation Required</span>
+      </div>
+    </div>
+
+    <div class="panel hero-side">
+
+      <div class="stat-card">
+        <small>Overall Progress</small>
+        <strong id="progressLabel">0 / 10 Lessons Passed</strong>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <small>Status</small>
+        <strong id="studentStatus">In Progress</strong>
+      </div>
+
+      <div class="stat-card">
+        <small>Account</small>
+        <strong id="studentEmailLabel">—</strong>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h3>Lesson Dashboard</h3>
+    <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
+  </div>
+
+  <section class="lesson-grid" id="lessonGrid"></section>
+
+  <section class="next-step panel" id="live-range">
+    <h3>Final Step: Live Review & Range Qualification</h3>
 
     <p>
-      Complete lessons, pass quizzes, complete scenarios,
-      and pass the <strong>Final Evaluation</strong>.
+      You must complete all lessons, including:
     </p>
-  </div>
 
-  <div class="hero-side">
-    <div class="stat-card">
-      <small>Progress</small>
-      <strong id="progressLabel"></strong>
-    </div>
+    <ul>
+      <li>Lessons 1–7 (Core Training)</li>
+      <li>Lesson 8 (Louisiana Law)</li>
+      <li>Lesson 9 (Mental Readiness)</li>
+      <li><strong>Lesson 10 (Final Evaluation)</strong></li>
+    </ul>
 
-    <div class="stat-card">
-      <small>Status</small>
-      <strong id="studentStatus"></strong>
-    </div>
+    <p>
+      ⚠️ <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
+    </p>
 
-    <div class="stat-card">
-      <small>Account</small>
-      <strong id="studentEmailLabel"></strong>
-    </div>
-  </div>
-</section>
+    <p>
+      Once complete, your status becomes:
+      <strong>Online Prerequisite Completed – Cleared for Live Range</strong>
+    </p>
 
-<h3 style="margin-top:30px;">Lesson Dashboard</h3>
-
-<section class="lesson-grid" id="lessonGrid"></section>
+  </section>
 
 </main>
 
-<button id="aiToggleBtn">Ask Instructor</button>
+   <!-- AI Assistant Button -->
+<button id="aiToggleBtn">💬 Ask Instructor</button>
+
+<!-- AI Chat Panel -->
+<div id="aiPanel" class="hidden">
+  <div id="aiHeader">
+    <span>BSA Instructor</span>
+    <button id="aiClose">✖</button>
+  </div>
+
+  <div id="aiMessages"></div>
+
+  <div id="aiInputArea">
+    <input id="aiInput" type="text" placeholder="Ask a question..." />
+    <button id="aiSend">Send</button>
+  </div>
+</div>
 
 <script src="data.js"></script>
 <script src="ai.js"></script>
@@ -290,20 +141,27 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
+// Header Info
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training.`;
+  `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
-// INFO
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+
+// Progress
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
+document.getElementById("progressBar").style.width = `${prog.percent}%`;
+
+// Status
+const complete = allLessonsComplete(student);
+
 document.getElementById("studentStatus").textContent =
-  allLessonsComplete(student)
-    ? "Cleared for Live Range"
+  complete
+    ? "Online Prerequisite Completed – Cleared for Live Range"
     : "In Progress";
 
-// LESSONS
+// Build Lesson Cards
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
@@ -311,54 +169,79 @@ window.LESSONS.forEach((lesson) => {
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
 
+  const isFinal = lesson.id === 10;
+
   const card = document.createElement("article");
-  card.className = "lesson-card";
+  card.className = "panel lesson-card";
 
   card.innerHTML = `
     <div class="lesson-top">
-      <div style="display:flex;gap:10px;">
-        <div class="lesson-num">${lesson.id}</div>
+      <div style="display:flex;gap:12px;">
+        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
+          ${isFinal ? '★' : lesson.id}
+        </div>
         <div>
           <h4>${lesson.title}</h4>
           <p>${lesson.summary}</p>
         </div>
       </div>
-      <span class="status">${status.label}</span>
+      <span class="status ${status.className}">${status.label}</span>
     </div>
 
     <div class="lesson-meta">
-      <span class="chip">${lesson.estTime}</span>
+      <span class="chip">Time: ${lesson.estTime}</span>
+      <span class="chip">Quiz</span>
+      <span class="chip">Scenarios</span>
+      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
+      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
     </div>
 
     <div class="lesson-actions">
+
       ${
         status.locked
           ? `<span class="btn btn-blue btn-disabled">Locked</span>`
           : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
-              ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
-            </a>`
+               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+             </a>`
+      }
+
+      ${
+        !status.locked && progress.contentViewed
+          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
+          : ""
       }
 
       ${
         !status.locked && progress.scenarioCompleted
           ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
-              Take Quiz
-            </a>`
+               ${isFinal ? "Start Evaluation" : "Take Quiz"}
+             </a>`
           : ""
       }
+
+      ${
+        progress.quizPassed
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
+               Review Answers
+             </a>`
+          : ""
+      }
+
     </div>
   `;
 
   grid.appendChild(card);
 });
 
-// LOGOUT
+// Logout
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  sessionStorage.removeItem("bsaConfirmed");
   logout();
   window.location.href = "login.html";
 });
 
+ 
+  
 </script>
 
 </body>
