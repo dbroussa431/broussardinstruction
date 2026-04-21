@@ -86,7 +86,9 @@
 <div id="aiPanel" class="ai-panel hidden">
   <div class="ai-header">
     <span>Instructor Guidance</span>
-    <button id="aiClose">×</button>
+    <button class="ai-close" onclick="toggleAI()" aria-label="Close panel">
+  <span></span>
+</button>
   </div>
 
   <div id="aiMessages" class="ai-body"></div>
