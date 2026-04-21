@@ -1,176 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BSA Student Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSA Student Dashboard</title>
+<link rel="stylesheet" href="styles.css">
 
-  <style>
-    .ai-trigger {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 1000;
-    }
+<style>
+.ai-trigger {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+}
 
-    .ai-panel {
-      position: fixed;
-      right: 24px;
-      bottom: 84px;
-      width: 340px;
-      max-width: calc(100vw - 24px);
-      height: 430px;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
-      overflow: hidden;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-    }
+.ai-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 84px;
+  width: 340px;
+  height: 460px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1001;
+}
 
-    .ai-panel.hidden {
-      display: none !important;
-    }
+.hidden {
+  display: none !important;
+}
 
-    .ai-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      background: #1d3557;
-      color: #ffffff;
-      font-weight: 600;
-    }
+.ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #1d3557;
+  color: #fff;
+}
 
-    .ai-header-title {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+.ai-close-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+}
 
-    .ai-header-title small {
-      font-size: 11px;
-      opacity: 0.8;
-      font-weight: 500;
-    }
+.ai-body {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  background: #f5f7fb;
+}
 
-    .ai-close {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.12);
-      border: none;
-      cursor: pointer;
-      position: relative;
-      transition: background 0.2s ease;
-      flex-shrink: 0;
-    }
+.ai-msg {
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  max-width: 85%;
+}
 
-    .ai-close:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
+.ai-msg-user {
+  background: #1d3557;
+  color: #fff;
+  margin-left: auto;
+}
 
-    .ai-close span::before,
-    .ai-close span::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 14px;
-      height: 2px;
-      background: #ffffff;
-      transform-origin: center;
-    }
+.ai-msg-bot {
+  background: #e9eef5;
+}
 
-    .ai-close span::before {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
+.ai-input-row {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
 
-    .ai-close span::after {
-      transform: translate(-50%, -50%) rotate(-45deg);
-    }
+.ai-input-row input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+}
 
-    .ai-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-      background: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .ai-message {
-      max-width: 88%;
-      padding: 10px 12px;
-      border-radius: 12px;
-      line-height: 1.45;
-      font-size: 13px;
-      white-space: pre-wrap;
-    }
-
-    .ai-message.bot {
-      align-self: flex-start;
-      background: #e9eef5;
-      color: #1f2937;
-    }
-
-    .ai-message.user {
-      align-self: flex-end;
-      background: #1d3557;
-      color: #ffffff;
-    }
-
-    .ai-input-row {
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      border-top: 1px solid #e5e7eb;
-      background: #ffffff;
-    }
-
-    .ai-input-row input {
-      flex: 1;
-      min-width: 0;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .ai-input-row input:focus {
-      border-color: #1d3557;
-      box-shadow: 0 0 0 3px rgba(29, 53, 87, 0.12);
-    }
-
-    .ai-input-row button {
-      border: none;
-      border-radius: 8px;
-      padding: 10px 14px;
-      background: #c89b2c;
-      color: #111827;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 640px) {
-      .ai-panel {
-        right: 12px;
-        bottom: 72px;
-        width: calc(100vw - 24px);
-        height: 380px;
-      }
-
-      .ai-trigger {
-        right: 12px;
-        bottom: 12px;
-      }
-    }
-  </style>
+.ai-input-row button {
+  background: #c89b2c;
+  border: none;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body>
@@ -178,7 +104,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
       <div>
         <h1>Broussard Shooting Academy</h1>
         <p>Private Student Portal • Online Prerequisite Training</p>
@@ -187,87 +113,69 @@
 
     <div class="top-actions">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-light" href="#live-range">Live Review & Range</a>
-      <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
+      <a class="btn btn-light">Live Review & Range</a>
+      <button class="btn btn-gold" id="logoutBtn">Logout</button>
     </div>
   </div>
 </header>
 
 <main class="container">
 
-  <section class="hero">
-    <div class="panel hero-main">
-      <span class="eyebrow">Online prerequisite completed in stages</span>
-      <h2 id="welcomeLine"></h2>
+<section class="hero">
+  <div class="panel hero-main">
+    <span class="eyebrow">Online prerequisite completed in stages</span>
+    <h2 id="welcomeLine"></h2>
 
-      <p>
-        Complete each lesson, pass each quiz (80%+), complete scenarios,
-        and pass the <strong>Final Evaluation</strong> before live training.
-      </p>
-
-      <div class="meta-row">
-        <span class="pill">10 Lessons</span>
-        <span class="pill">20-Question Quizzes</span>
-        <span class="pill">2 Scenarios Per Lesson</span>
-        <span class="pill">Final Evaluation Required</span>
-      </div>
-    </div>
-
-    <div class="panel hero-side">
-      <div class="stat-card">
-        <small>Overall Progress</small>
-        <strong id="progressLabel"></strong>
-        <div class="progress-wrap">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <small>Status</small>
-        <strong id="studentStatus"></strong>
-      </div>
-
-      <div class="stat-card">
-        <small>Account</small>
-        <strong id="studentEmailLabel"></strong>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-head">
-    <h3>Lesson Dashboard</h3>
-    <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
+    <p>
+      Complete each lesson, pass each quiz (80%+), complete scenarios,
+      and pass the <strong>Final Evaluation</strong>.
+    </p>
   </div>
 
-  <section class="lesson-grid" id="lessonGrid"></section>
+  <div class="panel hero-side">
+    <div class="stat-card">
+      <small>Overall Progress</small>
+      <strong id="progressLabel"></strong>
+    </div>
+
+    <div class="stat-card">
+      <small>Status</small>
+      <strong id="studentStatus"></strong>
+    </div>
+
+    <div class="stat-card">
+      <small>Account</small>
+      <strong id="studentEmailLabel"></strong>
+    </div>
+  </div>
+</section>
+
+<div class="section-head">
+  <h3>Lesson Dashboard</h3>
+</div>
+
+<section class="lesson-grid" id="lessonGrid"></section>
 
 </main>
 
-<button id="aiToggleBtn" class="btn btn-blue ai-trigger" type="button">Ask Instructor</button>
+<!-- BUTTON -->
+<button id="aiToggleBtn" class="btn btn-blue ai-trigger">Ask Instructor</button>
 
-<div id="aiPanel" class="ai-panel hidden" aria-hidden="true">
+<!-- PANEL -->
+<div id="aiPanel" class="ai-panel hidden">
   <div class="ai-header">
-    <div class="ai-header-title">
-      <span>Instructor Guidance</span>
-      <small>BSA Training Assistant</small>
+    <div>
+      <strong>Instructor Guidance</strong><br>
+      <span style="font-size:12px;opacity:.8;">BSA Training Assistant</span>
     </div>
-    <button class="ai-close" id="aiClose" type="button" aria-label="Close panel">
-      <span></span>
-    </button>
+    <button id="aiClose" class="ai-close-btn">×</button>
   </div>
 
-  <div id="aiMessages" class="ai-body">
-    <div class="ai-message bot">
-      Ask a question about your training, lessons, or decisions.
-    </div>
-    <div class="ai-message bot">
-      I teach, explain, and review. I do not give quiz answers.
-    </div>
-  </div>
+  <div id="aiMessages" class="ai-body"></div>
 
   <div class="ai-input-row">
-    <input id="aiInput" type="text" placeholder="Ask your instructor..." />
-    <button id="aiSend" type="button">Send</button>
+    <input id="aiInput" placeholder="Ask your instructor..." />
+    <button id="aiSend">Send</button>
   </div>
 </div>
 
@@ -280,8 +188,6 @@ import {
   getCurrentStudent,
   overallProgress,
   allLessonsComplete,
-  getLessonProgress,
-  lessonStatus,
   logout
 } from "./app.js";
 
@@ -291,87 +197,17 @@ const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStuden
 const prog = overallProgress(student);
 
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training and complete your certification path.`;
+  `${student?.name || "Student"}, continue your training.`;
 
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
 
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
-document.getElementById("progressBar").style.width = `${prog.percent}%`;
-
 document.getElementById("studentStatus").textContent =
   allLessonsComplete(student)
-    ? "Online Prerequisite Completed – Cleared for Live Range"
+    ? "Cleared for Live Range"
     : "In Progress";
-
-const grid = document.getElementById("lessonGrid");
-
-window.LESSONS.forEach((lesson) => {
-  const status = lessonStatus(lesson.id, student);
-  const progress = getLessonProgress(lesson.id, student);
-  const isFinal = lesson.id === 10;
-
-  const card = document.createElement("article");
-  card.className = "panel lesson-card";
-
-  card.innerHTML = `
-    <div class="lesson-top">
-      <div style="display:flex;gap:12px;">
-        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
-          ${isFinal ? '★' : lesson.id}
-        </div>
-        <div>
-          <h4>${lesson.title}</h4>
-          <p>${lesson.summary}</p>
-        </div>
-      </div>
-      <span class="status ${status.className}">${status.label}</span>
-    </div>
-
-    <div class="lesson-meta">
-      <span class="chip">Time: ${lesson.estTime}</span>
-      <span class="chip">Quiz</span>
-      <span class="chip">Scenarios</span>
-      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
-      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
-    </div>
-
-    <div class="lesson-actions">
-      ${
-        status.locked
-          ? `<span class="btn btn-blue btn-disabled">Locked</span>`
-          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
-               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
-             </a>`
-      }
-
-      ${
-        !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
-          : ""
-      }
-
-      ${
-        !status.locked && progress.scenarioCompleted
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
-               ${isFinal ? "Start Evaluation" : "Take Quiz"}
-             </a>`
-          : ""
-      }
-
-      ${
-        progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-               Review Answers
-             </a>`
-          : ""
-      }
-    </div>
-  `;
-
-  grid.appendChild(card);
-});
 
 document.getElementById("logoutBtn").onclick = () => {
   logout();
@@ -380,97 +216,41 @@ document.getElementById("logoutBtn").onclick = () => {
 </script>
 
 <script>
-(function () {
-  const aiToggleBtn = document.getElementById("aiToggleBtn");
-  const aiPanel = document.getElementById("aiPanel");
-  const aiClose = document.getElementById("aiClose");
-  const aiInput = document.getElementById("aiInput");
-  const aiSend = document.getElementById("aiSend");
-  const aiMessages = document.getElementById("aiMessages");
+const panel = document.getElementById("aiPanel");
+const toggleBtn = document.getElementById("aiToggleBtn");
+const closeBtn = document.getElementById("aiClose");
+const sendBtn = document.getElementById("aiSend");
+const input = document.getElementById("aiInput");
+const messages = document.getElementById("aiMessages");
 
-  function openAI() {
-    aiPanel.classList.remove("hidden");
-    aiPanel.setAttribute("aria-hidden", "false");
-    aiInput.focus();
-  }
+toggleBtn.onclick = () => panel.classList.toggle("hidden");
+closeBtn.onclick = () => panel.classList.add("hidden");
 
-  function closeAI() {
-    aiPanel.classList.add("hidden");
-    aiPanel.setAttribute("aria-hidden", "true");
-  }
+function addMsg(text, cls) {
+  const div = document.createElement("div");
+  div.className = "ai-msg " + cls;
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
 
-  function toggleAI() {
-    const isHidden = aiPanel.classList.contains("hidden");
-    if (isHidden) {
-      openAI();
-    } else {
-      closeAI();
-    }
-  }
+function reply(q) {
+  if (q.includes("quiz")) return "I do not give quiz answers.";
+  if (q.includes("lesson 1")) return "Lesson 1 is about awareness and avoidance.";
+  return "I can explain concepts and help you think through decisions.";
+}
 
-  function appendMessage(text, role) {
-    const msg = document.createElement("div");
-    msg.className = `ai-message ${role}`;
-    msg.textContent = text;
-    aiMessages.appendChild(msg);
-    aiMessages.scrollTop = aiMessages.scrollHeight;
-  }
+sendBtn.onclick = () => {
+  const q = input.value.trim();
+  if (!q) return;
+  addMsg(q, "ai-msg-user");
+  input.value = "";
+  setTimeout(() => addMsg(reply(q.toLowerCase()), "ai-msg-bot"), 300);
+};
 
-  function buildReply(question) {
-    const q = question.toLowerCase();
-
-    if (q.includes("quiz") || q.includes("answer")) {
-      return "I can explain concepts and help you review, but I do not provide quiz answers.";
-    }
-
-    if (q.includes("scenario")) {
-      return "Focus on what the scenario is testing: awareness, judgment, and responsible decision-making before force is ever needed.";
-    }
-
-    if (q.includes("lesson 1") || q.includes("no be there")) {
-      return "Lesson 1 centers on awareness, avoidance, and staying out of trouble before it starts. The goal is not to win confrontations. The goal is to avoid them.";
-    }
-
-    if (q.includes("responsibility") || q.includes("lesson 2")) {
-      return "Lesson 2 emphasizes that carrying a firearm is a responsibility, not a shortcut. Good decisions come before mechanics.";
-    }
-
-    if (q.includes("law") || q.includes("lesson 8")) {
-      return "Lesson 8 focuses on Louisiana firearm law, restricted locations, notification requirements, and legal responsibility before, during, and after carrying.";
-    }
-
-    if (q.includes("mental") || q.includes("lesson 9")) {
-      return "Lesson 9 covers trauma response, stress, warning signs, coping strategies, and the responsibility to protect life by reducing access to lethal means during crises.";
-    }
-
-    return "I can help explain a concept, why it matters, where to review it, or walk through a simple example. I do not give quiz answers.";
-  }
-
-  function sendAI() {
-    const question = aiInput.value.trim();
-    if (!question) return;
-
-    appendMessage(question, "user");
-    aiInput.value = "";
-
-    const reply = buildReply(question);
-    appendMessage(reply, "bot");
-  }
-
-  window.toggleAI = toggleAI;
-  window.sendAI = sendAI;
-
-  aiToggleBtn.addEventListener("click", toggleAI);
-  aiClose.addEventListener("click", closeAI);
-  aiSend.addEventListener("click", sendAI);
-
-  aiInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      sendAI();
-    }
-  });
-})();
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendBtn.click();
+});
 </script>
 
 </body>
