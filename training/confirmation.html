@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BSA Training Confirmation</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .card {
+        background: white;
+        padding: 40px;
+        border-radius: 14px;
+        width: 420px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .logo {
+        width: 60px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: #1d3557;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 25px;
+    }
+
+    .content {
+        text-align: left;
+        font-size: 15px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .quote {
+        margin: 15px 0;
+        font-weight: bold;
+        color: #1d3557;
+    }
+
+    .highlight {
+        margin-top: 15px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .checkbox-container {
+        margin-top: 25px;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 8px;
+    }
+
+    .btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #c89b2c;
+        color: black;
+        font-weight: bold;
+        cursor: not-allowed;
+        opacity: 0.6;
+        transition: 0.3s;
+    }
+
+    .btn.active {
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .btn:hover.active {
+        background: #b88a25;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <img src="logo.png" alt="BSA Logo" class="logo"/>
+
+    <h1>Before You Continue</h1>
+    <div class="subtitle">Broussard Shooting Academy Standard</div>
+
+    <div class="content">
+        <p><strong>At Broussard Shooting Academy, we train for one purpose:</strong></p>
+
+        <p class="quote">To go home safely.</p>
+
+        <ul>
+            <li>Avoid danger whenever possible</li>
+            <li>Do not go where problems happen</li>
+            <li>Do not stay where problems are developing</li>
+        </ul>
+
+        <p class="quote">If you are not there, you cannot become part of the problem.</p>
+
+        <p class="highlight">
+            Just because you have it does not mean you use it.
+        </p>
+
+        <p class="highlight">
+            With great power comes great responsibility.
+        </p>
+    </div>
+
+    <div class="checkbox-container">
+        <label>
+            <input type="checkbox" id="confirmCheck">
+            I understand my responsibility as a firearms owner
+        </label>
+    </div>
+
+    <button id="continueBtn" class="btn">I Understand — Continue Training</button>
+</div>
+
+<script>
+    const checkbox = document.getElementById('confirmCheck');
+    const button = document.getElementById('continueBtn');
+
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            button.classList.add('active');
+            button.disabled = false;
+        } else {
+            button.classList.remove('active');
+            button.disabled = true;
+        }
+    });
+
+    button.addEventListener('click', function() {
+        if (checkbox.checked) {
+            window.location.href = "dashboard.html"; // change if needed
+        }
+    });
+
+    // disable button on load
+    button.disabled = true;
+</script>
+
+</body>
+</html>
