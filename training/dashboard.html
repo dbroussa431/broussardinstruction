@@ -1,186 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSA Student Dashboard</title>
-<link rel="stylesheet" href="styles.css">
-
-<style>
-.ai-trigger {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1000;
-}
-
-.ai-panel {
-  position: fixed;
-  right: 24px;
-  bottom: 84px;
-  width: 340px;
-  height: 440px;
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.18);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 1001;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.ai-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  background: #1d3557;
-  color: #fff;
-}
-
-.ai-close-btn {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  border-radius: 6px;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  color: #fff;
-  font-weight: bold;
-}
-
-.ai-body {
-  flex: 1;
-  padding: 12px;
-  overflow-y: auto;
-  background: #f5f7fb;
-}
-
-.ai-message {
-  padding: 10px 12px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  font-size: 13px;
-  max-width: 85%;
-}
-
-.ai-message.user {
-  background: #1d3557;
-  color: #fff;
-  margin-left: auto;
-}
-
-.ai-message.bot {
-  background: #e9eef5;
-}
-
-.ai-input-row {
-  display: flex;
-  border-top: 1px solid #ddd;
-}
-
-.ai-input-row input {
-  flex: 1;
-  border: none;
-  padding: 10px;
-}
-
-.ai-input-row button {
-  background: #c89b2c;
-  border: none;
-  padding: 10px 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
-      <div>
-        <h1>Broussard Shooting Academy</h1>
-        <p>Private Student Portal • Online Prerequisite Training</p>
-      </div>
-    </div>
-
-    <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-light">Live Review & Range</a>
-      <button class="btn btn-gold" id="logoutBtn">Logout</button>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-<section class="hero">
-  <div class="panel hero-main">
-    <span class="eyebrow">Online prerequisite completed in stages</span>
-    <h2 id="welcomeLine"></h2>
-    <p>Complete lessons, quizzes, scenarios, and final evaluation.</p>
-  </div>
-
-  <div class="panel hero-side">
-    <div class="stat-card">
-      <small>Overall Progress</small>
-      <strong id="progressLabel"></strong>
-    </div>
-
-    <div class="stat-card">
-      <small>Status</small>
-      <strong id="studentStatus"></strong>
-    </div>
-
-    <div class="stat-card">
-      <small>Account</small>
-      <strong id="studentEmailLabel"></strong>
-    </div>
-  </div>
-</section>
-
-<div class="section-head">
-  <h3>Lesson Dashboard</h3>
-</div>
-
-<section class="lesson-grid" id="lessonGrid"></section>
-
-</main>
-
-<!-- AI BUTTON -->
-<button id="aiToggleBtn" class="btn btn-blue ai-trigger">Ask Instructor</button>
-
-<!-- AI PANEL -->
-<div id="aiPanel" class="ai-panel hidden">
-  <div class="ai-header">
-    <div>
-      <strong>Instructor Guidance</strong><br>
-      <span style="font-size:12px;opacity:.8;">BSA Training Assistant</span>
-    </div>
-    <button id="aiClose" class="ai-close-btn">×</button>
-  </div>
-
-  <div id="aiMessages" class="ai-body">
-    <div class="ai-message bot">Ask a question about your training.</div>
-  </div>
-
-  <div class="ai-input-row">
-    <input id="aiInput" placeholder="Ask your instructor..." />
-    <button id="aiSend">Send</button>
-  </div>
-</div>
-
-<!-- YOUR ORIGINAL SYSTEM (UNCHANGED) -->
-<script src="data.js"></script>
-
 <script type="module">
+
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -192,97 +11,161 @@ import {
   logout
 } from "./app.js";
 
-requireLogin();
+/* =========================
+   SAFE BOOT (CANNOT BREAK)
+========================= */
 
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+let student = null;
+
+try {
+  requireLogin();
+
+  try {
+    student = await refreshCurrentStudentFromFirestore();
+  } catch (e) {
+    console.warn("Firestore failed → fallback", e);
+  }
+
+  if (!student) {
+    student = getCurrentStudent();
+  }
+
+  if (!student) {
+    console.error("No student found — stopping render safely");
+    return;
+  }
+
+} catch (err) {
+  console.error("Login/init failed:", err);
+  return;
+}
+
+/* =========================
+   DASHBOARD RENDER
+========================= */
+
 const prog = overallProgress(student);
 
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training.`;
+  `${student.name || "Student"}, continue your training and complete your certification path.`;
 
-document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+document.getElementById("studentEmailLabel").textContent =
+  student.email || "—";
 
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
+document.getElementById("progressBar").style.width =
+  `${prog.percent}%`;
+
 document.getElementById("studentStatus").textContent =
   allLessonsComplete(student)
-    ? "Cleared for Live Range"
+    ? "Online Prerequisite Completed – Cleared for Live Range"
     : "In Progress";
+
+/* =========================
+   LESSON CARDS
+========================= */
 
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
+
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
+  const isFinal = lesson.id === 10;
 
   const card = document.createElement("article");
   card.className = "panel lesson-card";
 
   card.innerHTML = `
-    <h4>${lesson.title}</h4>
-    <p>${lesson.summary}</p>
-    <div>
+    <div class="lesson-top">
+      <div style="display:flex;gap:12px;">
+        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
+          ${isFinal ? '★' : lesson.id}
+        </div>
+        <div>
+          <h4>${lesson.title}</h4>
+          <p>${lesson.summary}</p>
+        </div>
+      </div>
+      <span class="status ${status.className}">${status.label}</span>
+    </div>
+
+    <div class="lesson-meta">
+      <span class="chip">Time: ${lesson.estTime}</span>
+      <span class="chip">Quiz</span>
+      <span class="chip">Scenarios</span>
+      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
+      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
+    </div>
+
+    <div class="lesson-actions">
+
       ${
         status.locked
-          ? `<span>Locked</span>`
-          : `<a href="lesson.html?lesson=${lesson.id}">Continue</a>`
+          ? `<span class="btn btn-blue btn-disabled">Locked</span>`
+          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
+               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+             </a>`
       }
+
+      ${
+        !status.locked && progress.contentViewed
+          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
+          : ""
+      }
+
+      ${
+        !status.locked && progress.scenarioCompleted
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
+               ${isFinal ? "Start Evaluation" : "Take Quiz"}
+             </a>`
+          : ""
+      }
+
+      ${
+        progress.quizPassed
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
+               Review Answers
+             </a>`
+          : ""
+      }
+
     </div>
   `;
 
   grid.appendChild(card);
 });
 
+/* =========================
+   LOGOUT
+========================= */
+
 document.getElementById("logoutBtn").onclick = () => {
   logout();
   window.location.href = "login.html";
 };
-</script>
 
-<!-- CLEAN AI (NO CONFLICTS) -->
-<script>
-(function () {
-  const btn = document.getElementById("aiToggleBtn");
-  const panel = document.getElementById("aiPanel");
-  const close = document.getElementById("aiClose");
-  const send = document.getElementById("aiSend");
-  const input = document.getElementById("aiInput");
-  const messages = document.getElementById("aiMessages");
+/* =========================
+   AI TOGGLE (FIXED)
+========================= */
 
-  btn.onclick = () => panel.classList.toggle("hidden");
-  close.onclick = () => panel.classList.add("hidden");
+const aiBtn = document.getElementById("aiToggleBtn");
+const aiPanel = document.getElementById("aiPanel");
+const aiClose = document.getElementById("aiClose");
 
-  function add(text, cls) {
-    const el = document.createElement("div");
-    el.className = "ai-message " + cls;
-    el.textContent = text;
-    messages.appendChild(el);
-    messages.scrollTop = messages.scrollHeight;
-  }
+if (aiBtn && aiPanel) {
 
-  function reply(q) {
-    q = q.toLowerCase();
-    if (q.includes("quiz")) return "I do not give quiz answers.";
-    if (q.includes("lesson")) return "Focus on understanding the concept.";
-    return "Ask me about a concept or decision.";
-  }
-
-  send.onclick = () => {
-    const q = input.value.trim();
-    if (!q) return;
-
-    add(q, "user");
-    input.value = "";
-
-    setTimeout(() => add(reply(q), "bot"), 300);
-  };
-
-  input.addEventListener("keydown", e => {
-    if (e.key === "Enter") send.click();
+  aiBtn.addEventListener("click", () => {
+    aiPanel.classList.toggle("hidden");
   });
-})();
-</script>
 
-</body>
-</html>
+  if (aiClose) {
+    aiClose.addEventListener("click", () => {
+      aiPanel.classList.add("hidden");
+    });
+  }
+}
+
+</script>
