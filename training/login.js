@@ -3,7 +3,6 @@
     const app = await import('../app.js');
     const { login, getCurrentStudent } = app;
 
-    // 🔒 EXISTING SESSION CHECK (CLEAN + CONTROLLED)
     const current = getCurrentStudent();
     if (current && current.accessCode && current.status === 'active') {
       if (sessionStorage.getItem("bsaConfirmed") === "true") {
@@ -14,37 +13,21 @@
       return;
     }
 
-    const form = document.getElementById('loginForm') || document.querySelector('form');
-    const accessCode = document.getElementById('accessCode') ||
-      document.querySelector('input[type="text"], input[type="password"], input[name="accessCode"]');
-
-    const loginBtn = document.getElementById('loginBtn') ||
-      document.querySelector('button[type="submit"], input[type="submit"]');
-
-    const loginMsg = document.getElementById('loginMsg') ||
-      document.getElementById('message');
+    const form = document.getElementById('loginForm');
+    const accessCode = document.getElementById('accessCode');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginMsg = document.getElementById('loginMsg');
 
     function showMessage(message) {
-      if (loginMsg) {
-        loginMsg.textContent = message;
-        loginMsg.style.display = 'block';
-      } else {
-        alert(message);
-      }
+      loginMsg.textContent = message;
+      loginMsg.classList.remove("hidden");
     }
 
     function setLoading(isLoading) {
-      if (!loginBtn) return;
       loginBtn.disabled = isLoading;
-
-      if ('textContent' in loginBtn) {
-        loginBtn.textContent = isLoading ? 'Checking Code...' : 'Enter';
-      }
+      loginBtn.textContent = isLoading ? 'Checking Code...' : 'Enter Student Portal';
     }
 
-    if (!form || !accessCode) return;
-
-    // 🚀 LOGIN SUBMIT HANDLER (CLEAN + SINGLE FLOW)
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       setLoading(true);
@@ -52,7 +35,6 @@
       const result = await login(accessCode.value);
 
       if (result.ok) {
-        // 🔑 CORE PHILOSOPHY GATE
         if (sessionStorage.getItem("bsaConfirmed") === "true") {
           window.location.href = "dashboard.html";
         } else {
@@ -61,12 +43,11 @@
         return;
       }
 
-      // ❌ FAILURE PATH
       showMessage(result.message || 'Login failed.');
       setLoading(false);
     });
 
   } catch (error) {
-    console.error('Compatibility login bootstrap failed:', error);
+    console.error('Login failed:', error);
   }
 })();
