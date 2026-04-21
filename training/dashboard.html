@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <!-- 🔒 HARD LOCK: DO NOT REMOVE -->
+  <script>
+    (function () {
+      const confirmed = sessionStorage.getItem("bsaConfirmed");
+      if (!confirmed) {
+        window.location.href = "confirmation.html";
+      }
+    })();
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
 
@@ -78,9 +90,7 @@
   <section class="next-step panel" id="live-range">
     <h3>Final Step: Live Review & Range Qualification</h3>
 
-    <p>
-      You must complete all lessons, including:
-    </p>
+    <p>You must complete all lessons, including:</p>
 
     <ul>
       <li>Lessons 1–7 (Core Training)</li>
@@ -89,9 +99,7 @@
       <li><strong>Lesson 10 (Final Evaluation)</strong></li>
     </ul>
 
-    <p>
-      ⚠️ <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
-    </p>
+    <p><strong>Critical mistakes in Lesson 10 = automatic failure.</strong></p>
 
     <p>
       Once complete, your status becomes:
@@ -102,10 +110,9 @@
 
 </main>
 
-   <!-- AI Assistant Button -->
-<button id="aiToggleBtn">💬 Ask Instructor</button>
+<!-- AI -->
+<button id="aiToggleBtn">Ask Instructor</button>
 
-<!-- AI Chat Panel -->
 <div id="aiPanel" class="hidden">
   <div id="aiHeader">
     <span>BSA Instructor</span>
@@ -145,6 +152,7 @@ const prog = overallProgress(student);
 document.getElementById("welcomeLine").textContent =
   `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
+// Account
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
 
 // Progress
@@ -161,14 +169,13 @@ document.getElementById("studentStatus").textContent =
     ? "Online Prerequisite Completed – Cleared for Live Range"
     : "In Progress";
 
-// Build Lesson Cards
+// Lessons
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
 
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
-
   const isFinal = lesson.id === 10;
 
   const card = document.createElement("article");
@@ -236,12 +243,11 @@ window.LESSONS.forEach((lesson) => {
 
 // Logout
 document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem("bsaConfirmed");
   logout();
   window.location.href = "login.html";
 });
 
- 
-  
 </script>
 
 </body>
