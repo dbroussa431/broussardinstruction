@@ -19,7 +19,7 @@
   right: 24px;
   bottom: 84px;
   width: 340px;
-  height: 460px;
+  height: 440px;
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 16px 40px rgba(0,0,0,0.18);
@@ -60,7 +60,7 @@
   background: #f5f7fb;
 }
 
-.ai-msg {
+.ai-message {
   padding: 10px 12px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -68,13 +68,13 @@
   max-width: 85%;
 }
 
-.ai-msg-user {
+.ai-message.user {
   background: #1d3557;
   color: #fff;
   margin-left: auto;
 }
 
-.ai-msg-bot {
+.ai-message.bot {
   background: #e9eef5;
 }
 
@@ -125,11 +125,7 @@
   <div class="panel hero-main">
     <span class="eyebrow">Online prerequisite completed in stages</span>
     <h2 id="welcomeLine"></h2>
-
-    <p>
-      Complete each lesson, pass each quiz (80%+), complete scenarios,
-      and pass the <strong>Final Evaluation</strong>.
-    </p>
+    <p>Complete lessons, quizzes, scenarios, and final evaluation.</p>
   </div>
 
   <div class="panel hero-side">
@@ -158,10 +154,10 @@
 
 </main>
 
-<!-- BUTTON -->
+<!-- AI BUTTON -->
 <button id="aiToggleBtn" class="btn btn-blue ai-trigger">Ask Instructor</button>
 
-<!-- PANEL -->
+<!-- AI PANEL -->
 <div id="aiPanel" class="ai-panel hidden">
   <div class="ai-header">
     <div>
@@ -171,7 +167,9 @@
     <button id="aiClose" class="ai-close-btn">×</button>
   </div>
 
-  <div id="aiMessages" class="ai-body"></div>
+  <div id="aiMessages" class="ai-body">
+    <div class="ai-message bot">Ask a question about your training.</div>
+  </div>
 
   <div class="ai-input-row">
     <input id="aiInput" placeholder="Ask your instructor..." />
@@ -179,6 +177,7 @@
   </div>
 </div>
 
+<!-- YOUR ORIGINAL SYSTEM (UNCHANGED) -->
 <script src="data.js"></script>
 
 <script type="module">
@@ -188,6 +187,8 @@ import {
   getCurrentStudent,
   overallProgress,
   allLessonsComplete,
+  getLessonProgress,
+  lessonStatus,
   logout
 } from "./app.js";
 
@@ -209,48 +210,78 @@ document.getElementById("studentStatus").textContent =
     ? "Cleared for Live Range"
     : "In Progress";
 
+const grid = document.getElementById("lessonGrid");
+
+window.LESSONS.forEach((lesson) => {
+  const status = lessonStatus(lesson.id, student);
+  const progress = getLessonProgress(lesson.id, student);
+
+  const card = document.createElement("article");
+  card.className = "panel lesson-card";
+
+  card.innerHTML = `
+    <h4>${lesson.title}</h4>
+    <p>${lesson.summary}</p>
+    <div>
+      ${
+        status.locked
+          ? `<span>Locked</span>`
+          : `<a href="lesson.html?lesson=${lesson.id}">Continue</a>`
+      }
+    </div>
+  `;
+
+  grid.appendChild(card);
+});
+
 document.getElementById("logoutBtn").onclick = () => {
   logout();
   window.location.href = "login.html";
 };
 </script>
 
+<!-- CLEAN AI (NO CONFLICTS) -->
 <script>
-const panel = document.getElementById("aiPanel");
-const toggleBtn = document.getElementById("aiToggleBtn");
-const closeBtn = document.getElementById("aiClose");
-const sendBtn = document.getElementById("aiSend");
-const input = document.getElementById("aiInput");
-const messages = document.getElementById("aiMessages");
+(function () {
+  const btn = document.getElementById("aiToggleBtn");
+  const panel = document.getElementById("aiPanel");
+  const close = document.getElementById("aiClose");
+  const send = document.getElementById("aiSend");
+  const input = document.getElementById("aiInput");
+  const messages = document.getElementById("aiMessages");
 
-toggleBtn.onclick = () => panel.classList.toggle("hidden");
-closeBtn.onclick = () => panel.classList.add("hidden");
+  btn.onclick = () => panel.classList.toggle("hidden");
+  close.onclick = () => panel.classList.add("hidden");
 
-function addMsg(text, cls) {
-  const div = document.createElement("div");
-  div.className = "ai-msg " + cls;
-  div.textContent = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
+  function add(text, cls) {
+    const el = document.createElement("div");
+    el.className = "ai-message " + cls;
+    el.textContent = text;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
 
-function reply(q) {
-  if (q.includes("quiz")) return "I do not give quiz answers.";
-  if (q.includes("lesson 1")) return "Lesson 1 is about awareness and avoidance.";
-  return "I can explain concepts and help you think through decisions.";
-}
+  function reply(q) {
+    q = q.toLowerCase();
+    if (q.includes("quiz")) return "I do not give quiz answers.";
+    if (q.includes("lesson")) return "Focus on understanding the concept.";
+    return "Ask me about a concept or decision.";
+  }
 
-sendBtn.onclick = () => {
-  const q = input.value.trim();
-  if (!q) return;
-  addMsg(q, "ai-msg-user");
-  input.value = "";
-  setTimeout(() => addMsg(reply(q.toLowerCase()), "ai-msg-bot"), 300);
-};
+  send.onclick = () => {
+    const q = input.value.trim();
+    if (!q) return;
 
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendBtn.click();
-});
+    add(q, "user");
+    input.value = "";
+
+    setTimeout(() => add(reply(q), "bot"), 300);
+  };
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") send.click();
+  });
+})();
 </script>
 
 </body>
