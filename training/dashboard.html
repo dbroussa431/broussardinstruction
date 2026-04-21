@@ -4,8 +4,7 @@
 
 <script>
 (function () {
-  const confirmed = sessionStorage.getItem("bsaConfirmed");
-  if (!confirmed) {
+  if (!sessionStorage.getItem("bsaConfirmed")) {
     window.location.href = "confirmation.html";
   }
 })();
@@ -19,21 +18,48 @@
 
 <style>
 
-/* FIXED SPACING + CONSISTENCY */
+/* ===== GLOBAL TIGHTEN ===== */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
 .lesson-card {
+  padding: 18px;
+  min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 260px;
 }
 
+/* ===== TOP ===== */
 .lesson-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
   gap: 12px;
 }
 
+.lesson-top h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.lesson-top p {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* ===== STATUS BADGE ===== */
+.status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+/* ===== META ===== */
 .lesson-meta {
   margin-top: 10px;
   display: flex;
@@ -41,6 +67,12 @@
   gap: 6px;
 }
 
+.chip {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+/* ===== ACTIONS ===== */
 .lesson-actions {
   margin-top: 12px;
   display: flex;
@@ -48,17 +80,34 @@
   gap: 8px;
 }
 
-/* FIX: prevent weird stretching */
-.lesson-grid {
+/* PRIMARY BUTTON */
+.lesson-actions .btn-blue {
+  flex: 1 1 100%;
+  font-weight: 600;
+}
+
+/* SECONDARY */
+.lesson-actions .btn-outline {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* LOCKED */
+.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ===== HERO FIX ===== */
+.hero {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: 18px;
 }
 
-/* MOBILE FIX */
 @media (max-width: 768px) {
   .hero {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 
   .lesson-grid {
@@ -140,29 +189,8 @@
 
 <section class="lesson-grid" id="lessonGrid"></section>
 
-<section class="next-step panel" id="live-range">
-  <h3>Final Step: Live Review & Range Qualification</h3>
-
-  <ul>
-    <li>Lessons 1–7 (Core Training)</li>
-    <li>Lesson 8 (Louisiana Law)</li>
-    <li>Lesson 9 (Mental Readiness)</li>
-    <li><strong>Lesson 10 (Final Evaluation)</strong></li>
-  </ul>
-
-  <p>
-    <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
-  </p>
-
-  <p>
-    Once complete:
-    <strong>Cleared for Live Range</strong>
-  </p>
-</section>
-
 </main>
 
-<!-- AI FLOAT BUTTON (RESTORED ORIGINAL STYLE) -->
 <button id="aiToggleBtn">Ask Instructor</button>
 
 <div id="aiPanel" class="hidden">
@@ -170,9 +198,7 @@
     <span>BSA Instructor</span>
     <button id="aiClose">X</button>
   </div>
-
   <div id="aiMessages"></div>
-
   <div id="aiInputArea">
     <input id="aiInput" type="text" placeholder="Ask a question..." />
     <button id="aiSend">Send</button>
@@ -233,7 +259,7 @@ window.LESSONS.forEach((lesson) => {
 
   card.innerHTML = `
     <div class="lesson-top">
-      <div style="display:flex;gap:12px;">
+      <div style="display:flex;gap:10px;">
         <div class="lesson-num">${isFinal ? "★" : lesson.id}</div>
         <div>
           <h4>${lesson.title}</h4>
@@ -245,9 +271,6 @@ window.LESSONS.forEach((lesson) => {
 
     <div class="lesson-meta">
       <span class="chip">Time: ${lesson.estTime}</span>
-      <span class="chip">Quiz</span>
-      <span class="chip">Scenarios</span>
-      ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
       ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
     </div>
 
@@ -262,12 +285,6 @@ window.LESSONS.forEach((lesson) => {
       }
 
       ${
-        !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
-          : ""
-      }
-
-      ${
         !status.locked && progress.scenarioCompleted
           ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
               ${isFinal ? "Start Evaluation" : "Take Quiz"}
@@ -278,7 +295,7 @@ window.LESSONS.forEach((lesson) => {
       ${
         progress.quizPassed
           ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-              Review Answers
+              Review
             </a>`
           : ""
       }
