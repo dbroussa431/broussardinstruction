@@ -5,6 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .ai-trigger {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 1000;
+    }
+
+    .ai-panel {
+      position: fixed;
+      right: 24px;
+      bottom: 84px;
+      width: 320px;
+      max-width: calc(100vw - 24px);
+      height: 420px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-panel.hidden {
+      display: none;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #1d3557;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .ai-header span {
+      display: inline-block;
+    }
+
+    .ai-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+
+    .ai-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .ai-close span::before,
+    .ai-close span::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 14px;
+      height: 2px;
+      background: #ffffff;
+      transform-origin: center;
+    }
+
+    .ai-close span::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .ai-close span::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .ai-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .ai-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    .ai-input-row input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .ai-input-row button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: #c89b2c;
+      color: #111827;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .ai-panel {
+        right: 12px;
+        bottom: 72px;
+        width: calc(100vw - 24px);
+        height: 380px;
+      }
+
+      .ai-trigger {
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -79,23 +206,21 @@
 
 </main>
 
-<!-- ✅ CLEAN AI SYSTEM (CONNECTED TO ai.js) -->
+<button id="aiToggleBtn" class="btn btn-blue ai-trigger" type="button">Ask Instructor</button>
 
-<button id="aiToggleBtn" class="ai-trigger">Ask Instructor</button>
-
-<div id="aiPanel" class="ai-panel hidden">
+<div id="aiPanel" class="ai-panel hidden" aria-hidden="true">
   <div class="ai-header">
     <span>Instructor Guidance</span>
-    <button class="ai-close" onclick="toggleAI()" aria-label="Close panel">
-  <span></span>
-</button>
+    <button class="ai-close" id="aiClose" type="button" aria-label="Close panel">
+      <span></span>
+    </button>
   </div>
 
   <div id="aiMessages" class="ai-body"></div>
 
   <div class="ai-input-row">
     <input id="aiInput" type="text" placeholder="Ask your instructor..." />
-    <button id="aiSend">Send</button>
+    <button id="aiSend" type="button">Send</button>
   </div>
 </div>
 
@@ -103,7 +228,6 @@
 <script src="ai.js"></script>
 
 <script type="module">
-
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -120,29 +244,24 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
-// Header
 document.getElementById("welcomeLine").textContent =
   `${student?.name || "Student"}, continue your training and complete your certification path.`;
 
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
 
-// Progress
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
 document.getElementById("progressBar").style.width = `${prog.percent}%`;
 
-// Status
 document.getElementById("studentStatus").textContent =
   allLessonsComplete(student)
     ? "Online Prerequisite Completed – Cleared for Live Range"
     : "In Progress";
 
-// LESSON BUILD (RESTORED)
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
-
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
   const isFinal = lesson.id === 10;
@@ -173,7 +292,6 @@ window.LESSONS.forEach((lesson) => {
     </div>
 
     <div class="lesson-actions">
-
       ${
         status.locked
           ? `<span class="btn btn-blue btn-disabled">Locked</span>`
@@ -203,19 +321,45 @@ window.LESSONS.forEach((lesson) => {
              </a>`
           : ""
       }
-
     </div>
   `;
 
   grid.appendChild(card);
 });
 
-// Logout
 document.getElementById("logoutBtn").onclick = () => {
   logout();
   window.location.href = "login.html";
 };
+</script>
 
+<script>
+(function () {
+  const aiToggleBtn = document.getElementById("aiToggleBtn");
+  const aiPanel = document.getElementById("aiPanel");
+  const aiClose = document.getElementById("aiClose");
+
+  function openAI() {
+    aiPanel.classList.remove("hidden");
+    aiPanel.setAttribute("aria-hidden", "false");
+  }
+
+  function closeAI() {
+    aiPanel.classList.add("hidden");
+    aiPanel.setAttribute("aria-hidden", "true");
+  }
+
+  function toggleAI() {
+    aiPanel.classList.toggle("hidden");
+    const isHidden = aiPanel.classList.contains("hidden");
+    aiPanel.setAttribute("aria-hidden", isHidden ? "true" : "false");
+  }
+
+  window.toggleAI = toggleAI;
+
+  aiToggleBtn.addEventListener("click", toggleAI);
+  aiClose.addEventListener("click", closeAI);
+})();
 </script>
 
 </body>
