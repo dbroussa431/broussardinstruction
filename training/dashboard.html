@@ -7,6 +7,79 @@
 
 <style>
 
+  /* FIX CARD STRUCTURE */
+.lesson-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding: 18px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* LEFT CONTENT */
+.lesson-card > div:first-child {
+  flex: 1;
+}
+
+/* RIGHT STATUS BLOCK */
+.lesson-card > div:last-child {
+  display: flex;
+  align-items: center;
+}
+
+/* REMOVE THAT WEIRD GREEN BAR */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+
+  background: #e6f4ea;
+  color: #2e7d32;
+}
+
+/* BUTTON ROW FIX */
+.lesson-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* BUTTONS */
+.btn {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.btn-blue {
+  background: #2c4a7a;
+  color: white;
+}
+
+.btn-outline {
+  border: 1px solid #ccd2d8;
+  background: white;
+}
+
+/* CLEAN TITLE */
+.lesson-card h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+/* CLEAN TEXT */
+.lesson-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+}
 /* BASE */
 body {
   margin: 0;
