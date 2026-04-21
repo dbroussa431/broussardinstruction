@@ -18,19 +18,77 @@
 
 <style>
 
-/* ===== GLOBAL TIGHTEN ===== */
-.lesson-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
+/* ===== BASE ===== */
+body {
+  background: #eef1f5;
 }
 
-.lesson-card {
+/* ===== HERO ===== */
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.hero-main {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.hero-main h2 {
+  font-size: 28px;
+  line-height: 1.3;
+  margin: 10px 0;
+}
+
+.hero-main p {
+  color: #555;
+}
+
+/* ===== SIDE PANEL ===== */
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-card {
+  background: #ffffff;
   padding: 18px;
-  min-height: 240px;
+  border-radius: 12px;
+  border: 1px solid #e3e6ea;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 18px;
+  margin-top: 6px;
+}
+
+/* ===== LESSON GRID ===== */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+/* ===== CARD ===== */
+.lesson-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #e3e6ea;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: 0.2s ease;
+}
+
+.lesson-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
 /* ===== TOP ===== */
@@ -40,50 +98,69 @@
   gap: 12px;
 }
 
-.lesson-top h4 {
-  margin: 0 0 6px 0;
-  font-size: 16px;
-  font-weight: 600;
+.lesson-num {
+  background: #1d3557;
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
-.lesson-top p {
+/* ===== TITLE ===== */
+.lesson-card h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.lesson-card p {
   font-size: 13px;
   color: #555;
+  margin-top: 6px;
   line-height: 1.4;
 }
 
-/* ===== STATUS BADGE ===== */
+/* ===== STATUS ===== */
 .status {
   font-size: 12px;
-  padding: 4px 8px;
+  font-weight: 600;
+  padding: 4px 10px;
   border-radius: 999px;
+  background: #e6f4ea;
+  color: #1e7d3b;
 }
 
 /* ===== META ===== */
 .lesson-meta {
-  margin-top: 10px;
+  margin-top: 12px;
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .chip {
   font-size: 11px;
   padding: 4px 8px;
+  background: #f2f4f7;
+  border-radius: 999px;
 }
 
 /* ===== ACTIONS ===== */
 .lesson-actions {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-/* PRIMARY BUTTON */
+/* PRIMARY */
 .lesson-actions .btn-blue {
   flex: 1 1 100%;
   font-weight: 600;
+  padding: 10px;
 }
 
 /* SECONDARY */
@@ -94,23 +171,13 @@
 
 /* LOCKED */
 .btn-disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   pointer-events: none;
 }
 
-/* ===== HERO FIX ===== */
-.hero {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 18px;
-}
-
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .lesson-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -125,7 +192,7 @@
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-mark">
-        <img src="./images/bsa-logo.png" alt="BSA logo">
+        <img src="./images/bsa-logo.png">
       </div>
       <div>
         <h1>Broussard Shooting Academy</h1>
@@ -134,7 +201,7 @@
     </div>
 
     <div class="top-actions">
-      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+      <a class="btn btn-light" href="#">Dashboard</a>
       <a class="btn btn-light" href="#live-range">Live Review & Range</a>
       <button class="btn btn-gold" id="logoutBtn">Logout</button>
     </div>
@@ -144,30 +211,20 @@
 <main class="container">
 
 <section class="hero">
-  <div class="panel hero-main">
-    <span class="eyebrow">Online prerequisite completed in stages</span>
+  <div class="hero-main">
+    <span class="eyebrow">ONLINE TRAINING PROGRESSION</span>
     <h2 id="welcomeLine"></h2>
 
     <p>
-      Complete each lesson, pass each quiz (80%+), complete scenarios,
-      and pass the <strong>Final Evaluation</strong> before live training.
+      Complete lessons, pass quizzes, complete scenarios,
+      and pass the <strong>Final Evaluation</strong>.
     </p>
-
-    <div class="meta-row">
-      <span class="pill">10 Lessons</span>
-      <span class="pill">20-Question Quizzes</span>
-      <span class="pill">2 Scenarios Per Lesson</span>
-      <span class="pill">Final Evaluation Required</span>
-    </div>
   </div>
 
-  <div class="panel hero-side">
+  <div class="hero-side">
     <div class="stat-card">
-      <small>Overall Progress</small>
+      <small>Progress</small>
       <strong id="progressLabel"></strong>
-      <div class="progress-wrap">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
     </div>
 
     <div class="stat-card">
@@ -182,28 +239,13 @@
   </div>
 </section>
 
-<div class="section-head">
-  <h3>Lesson Dashboard</h3>
-  <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
-</div>
+<h3 style="margin-top:30px;">Lesson Dashboard</h3>
 
 <section class="lesson-grid" id="lessonGrid"></section>
 
 </main>
 
 <button id="aiToggleBtn">Ask Instructor</button>
-
-<div id="aiPanel" class="hidden">
-  <div id="aiHeader">
-    <span>BSA Instructor</span>
-    <button id="aiClose">X</button>
-  </div>
-  <div id="aiMessages"></div>
-  <div id="aiInputArea">
-    <input id="aiInput" type="text" placeholder="Ask a question..." />
-    <button id="aiSend">Send</button>
-  </div>
-</div>
 
 <script src="data.js"></script>
 <script src="ai.js"></script>
@@ -226,23 +268,17 @@ requireLogin();
 const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
 const prog = overallProgress(student);
 
-// HEADER
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training and complete your certification path.`;
+  `${student?.name || "Student"}, continue your training.`;
 
-// ACCOUNT
+// INFO
 document.getElementById("studentEmailLabel").textContent = student?.email || "—";
-
-// PROGRESS
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
-document.getElementById("progressBar").style.width = `${prog.percent}%`;
-
-// STATUS
 document.getElementById("studentStatus").textContent =
   allLessonsComplete(student)
-    ? "Online Prerequisite Completed – Cleared for Live Range"
+    ? "Cleared for Live Range"
     : "In Progress";
 
 // LESSONS
@@ -252,30 +288,27 @@ window.LESSONS.forEach((lesson) => {
 
   const status = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
-  const isFinal = lesson.id === 10;
 
   const card = document.createElement("article");
-  card.className = "panel lesson-card";
+  card.className = "lesson-card";
 
   card.innerHTML = `
     <div class="lesson-top">
       <div style="display:flex;gap:10px;">
-        <div class="lesson-num">${isFinal ? "★" : lesson.id}</div>
+        <div class="lesson-num">${lesson.id}</div>
         <div>
           <h4>${lesson.title}</h4>
           <p>${lesson.summary}</p>
         </div>
       </div>
-      <span class="status ${status.className}">${status.label}</span>
+      <span class="status">${status.label}</span>
     </div>
 
     <div class="lesson-meta">
-      <span class="chip">Time: ${lesson.estTime}</span>
-      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
+      <span class="chip">${lesson.estTime}</span>
     </div>
 
     <div class="lesson-actions">
-
       ${
         status.locked
           ? `<span class="btn btn-blue btn-disabled">Locked</span>`
@@ -287,19 +320,10 @@ window.LESSONS.forEach((lesson) => {
       ${
         !status.locked && progress.scenarioCompleted
           ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
-              ${isFinal ? "Start Evaluation" : "Take Quiz"}
+              Take Quiz
             </a>`
           : ""
       }
-
-      ${
-        progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-              Review
-            </a>`
-          : ""
-      }
-
     </div>
   `;
 
