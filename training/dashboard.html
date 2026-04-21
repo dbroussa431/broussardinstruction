@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 
-<!-- 🔒 HARD LOCK -->
 <script>
 (function () {
   const confirmed = sessionStorage.getItem("bsaConfirmed");
@@ -19,37 +18,24 @@
 <link rel="stylesheet" href="styles.css">
 
 <style>
-
-/* =========================
-   GLOBAL
-========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(
-    to bottom,
-    #eef2f7 0%,
-    #f4f6f8 120px,
-    #f4f6f8 100%
-  );
+  background: linear-gradient(to bottom, #eef2f7 0%, #f4f6f8 120px);
   color: #243245;
 }
 
-/* =========================
-   TOP BAR (UNIFIED SYSTEM)
-========================= */
 .topbar {
-  width: 100%;
   background: #1d3f7a;
   color: white;
-  padding: clamp(12px,2vw,18px) clamp(16px,3vw,28px);
+  padding: 16px 24px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.12);
 }
 
 .topbar-inner {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -60,121 +46,44 @@ body {
 }
 
 .brand-mark {
-  width: clamp(48px,5vw,60px);
-  height: clamp(48px,5vw,60px);
+  width: 56px;
+  height: 56px;
   background: white;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  align-items: center;
 }
 
 .brand-mark img {
   width: 70%;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
 }
 
-.brand h1 {
-  margin: 0;
-  font-size: clamp(14px,2vw,18px);
-}
-
-.brand p {
-  margin: 2px 0 0;
-  font-size: clamp(11px,1.6vw,13px);
-  opacity: 0.9;
-}
-
-/* ACTIONS */
-.top-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-light {
-  background: rgba(255,255,255,0.15);
-  color: white;
-}
-
-.btn-gold {
-  background: #c89b2c;
-  color: black;
-}
-
-/* =========================
-   MAIN
-========================= */
 .container {
-  padding: clamp(20px,4vw,40px);
   max-width: 1200px;
   margin: auto;
-}
-
-/* HERO */
-.hero {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
+  padding: 24px;
 }
 
 .panel {
   background: white;
-  padding: 24px;
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-.hero-main h2 {
-  margin-top: 8px;
-  color: #163b73;
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
 }
 
-.meta-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
 }
 
-.pill {
-  background: #eef2f7;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-/* SIDE */
-.stat-card {
-  margin-bottom: 16px;
-}
-
-.progress-wrap {
-  background: #e4e8ef;
-  height: 8px;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-
-.progress-bar {
-  height: 100%;
-  background: #c89b2c;
-  width: 0%;
-}
-
-/* =========================
-   LESSON GRID
-========================= */
 .lesson-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
@@ -193,42 +102,65 @@ body {
   color: white;
   border-radius: 8px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .final-lesson {
   background: #c89b2c;
 }
 
-.chip {
-  background: #eef2f7;
-  padding: 5px 8px;
-  border-radius: 6px;
+.btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+}
+
+.btn-blue {
+  background: #1d3f7a;
+  color: white;
+}
+
+.btn-outline {
+  border: 1px solid #1d3f7a;
+  color: #1d3f7a;
+  background: transparent;
+}
+
+.btn-disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.lesson-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status {
   font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #eef2f7;
 }
 
-.critical {
-  background: #ffdede;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 900px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
+.locked {
+  background: #ddd;
 }
 
 </style>
 
 </head>
+
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
-
     <div class="brand">
       <div class="brand-mark">
         <img src="./images/bsa-logo.png">
@@ -238,11 +170,7 @@ body {
         <p>Student Training Dashboard</p>
       </div>
     </div>
-
-    <div class="top-actions">
-      <button class="btn btn-gold" id="logoutBtn">Logout</button>
-    </div>
-
+    <button class="btn btn-blue" id="logoutBtn">Logout</button>
   </div>
 </header>
 
@@ -250,43 +178,17 @@ body {
 
 <section class="hero">
 
-<div class="panel hero-main">
-<span class="eyebrow">Online prerequisite completed in stages</span>
+<div class="panel">
 <h2 id="welcomeLine"></h2>
-
 <p>
-Complete each lesson, pass each quiz (80%+), complete scenarios,
-and pass the <strong>Final Evaluation</strong> before live training.
+Complete each lesson, pass each quiz, complete scenarios, and pass the final evaluation before live training.
 </p>
-
-<div class="meta-row">
-<span class="pill">10 Lessons</span>
-<span class="pill">20 Questions</span>
-<span class="pill">Scenarios</span>
-<span class="pill">Final Evaluation</span>
-</div>
 </div>
 
-<div class="panel hero-side">
-
-<div class="stat-card">
-<small>Progress</small>
-<strong id="progressLabel">0 / 10</strong>
-<div class="progress-wrap">
-<div class="progress-bar" id="progressBar"></div>
-</div>
-</div>
-
-<div class="stat-card">
-<small>Status</small>
-<strong id="studentStatus">In Progress</strong>
-</div>
-
-<div class="stat-card">
-<small>Account</small>
-<strong id="studentEmailLabel">—</strong>
-</div>
-
+<div class="panel">
+<p><strong id="progressLabel"></strong></p>
+<p id="studentStatus"></p>
+<p id="studentEmailLabel"></p>
 </div>
 
 </section>
@@ -316,47 +218,94 @@ const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStuden
 const prog = overallProgress(student);
 
 document.getElementById("welcomeLine").textContent =
-`${student?.name || "Student"}, continue your training.`;
+  (student?.name || "Student") + ", continue your training.";
 
-document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+document.getElementById("studentEmailLabel").textContent =
+  student?.email || "";
 
 document.getElementById("progressLabel").textContent =
-`${prog.passed} / ${prog.total}`;
-
-document.getElementById("progressBar").style.width = `${prog.percent}%`;
+  prog.passed + " / " + prog.total + " Lessons Passed";
 
 document.getElementById("studentStatus").textContent =
-allLessonsComplete(student)
-? "Ready for Live Range"
-: "In Progress";
+  allLessonsComplete(student) ? "Ready for Live Range" : "In Progress";
 
 const grid = document.getElementById("lessonGrid");
 
 window.LESSONS.forEach((lesson) => {
 
-const status = lessonStatus(lesson.id, student);
-const progress = getLessonProgress(lesson.id, student);
+  const progress = getLessonProgress(lesson.id, student);
+  const status = lessonStatus(lesson.id, student);
 
-const card = document.createElement("article");
-card.className = "panel lesson-card";
+  let locked = false;
 
-card.innerHTML = `
-<h4>${lesson.title}</h4>
-<p>${lesson.summary}</p>
+  if (lesson.id > 1) {
+    const prev = getLessonProgress(lesson.id - 1, student);
+    if (!prev || !prev.quizPassed) {
+      locked = true;
+    }
+  }
 
-<a class="btn btn-light" href="lesson.html?lesson=${lesson.id}">
-Start / Continue
-</a>
-`;
+  const card = document.createElement("article");
+  card.className = "panel lesson-card";
 
-grid.appendChild(card);
+  card.innerHTML = `
+    <div style="display:flex;justify-content:space-between;">
+      <div style="display:flex;gap:10px;">
+        <div class="lesson-num">${lesson.id}</div>
+        <div>
+          <h4>${lesson.title}</h4>
+          <p>${lesson.summary}</p>
+        </div>
+      </div>
+      <span class="status ${locked ? 'locked' : status.className}">
+        ${locked ? "Locked" : status.label}
+      </span>
+    </div>
 
+    <div class="lesson-actions">
+
+      ${
+        locked
+          ? `<span class="btn btn-disabled">Complete Previous Lesson</span>`
+          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
+              ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+            </a>`
+      }
+
+      ${
+        !locked && progress.contentViewed
+          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">
+              Scenarios
+            </a>`
+          : ""
+      }
+
+      ${
+        !locked && progress.scenarioCompleted
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
+              Take Quiz
+            </a>`
+          : ""
+      }
+
+      ${
+        progress.quizPassed
+          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
+              Review
+            </a>`
+          : ""
+      }
+
+    </div>
+  `;
+
+  grid.appendChild(card);
 });
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
-sessionStorage.removeItem("bsaConfirmed");
-logout();
-window.location.href = "login.html";
+  sessionStorage.removeItem("bsaConfirmed");
+  logout();
+  window.location.href = "login.html";
 });
 </script>
 
