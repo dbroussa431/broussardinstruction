@@ -7,6 +7,14 @@
   if (window.__BSA_AI_BOOTED__) return;
   window.__BSA_AI_BOOTED__ = true;
 
+  
+function normalize(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^\w\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
   // ------------------------------------------------------------
   // ELEMENTS
   // ------------------------------------------------------------
