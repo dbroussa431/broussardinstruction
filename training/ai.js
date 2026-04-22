@@ -1,145 +1,407 @@
 // =====================================================================
-// BSA AI - CLOSED SYSTEM INSTRUCTOR 5.5
+// BSA DAVID INSTRUCTOR AI v6.0
+// 
 // =====================================================================
 
 (function () {
-  const panel = document.getElementById("aiPanel");
-  const input = document.getElementById("aiInput");
-  const sendBtn = document.getElementById("aiSend");
-  const messages = document.getElementById("aiMessages");
-  const toggleBtn = document.getElementById("aiToggleBtn");
-  const closeBtn = document.getElementById("aiClose");
+  if (window.__BSA_AI_BOOTED__) return;
+  window.__BSA_AI_BOOTED__ = true;
+
+  // ------------------------------------------------------------
+  // ELEMENTS
+  // ------------------------------------------------------------
+  const panel =
+    document.getElementById("aiPanel") ||
+    document.querySelector(".ai-panel");
+
+  const input =
+    document.getElementById("aiInput") ||
+    document.querySelector("#aiPanel input");
+
+  const sendBtn =
+    document.getElementById("aiSend") ||
+    document.querySelector("#aiPanel button");
+
+  const messages =
+    document.getElementById("aiMessages") ||
+    document.querySelector(".ai-messages");
+
+  const toggleBtn =
+    document.getElementById("aiToggleBtn") ||
+    document.getElementById("askInstructor");
+
+  const closeBtn =
+    document.getElementById("aiClose") ||
+    document.querySelector("#aiPanel .ai-close");
 
   if (!panel || !input || !sendBtn || !messages || !toggleBtn) {
-    console.warn("BSA AI init failed: missing required elements.");
+    console.warn("BSA AI: required UI elements missing.");
     return;
   }
 
-  const lessonData = Array.isArray(window.LESSONS) ? window.LESSONS : [];
-  const currentLessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
+  // ------------------------------------------------------------
+  // PAGE CONTEXT
+  // ------------------------------------------------------------
+  const pagePath = window.location.pathname.toLowerCase();
+  const isQuizPage = pagePath.includes("quiz");
+  const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
+  const lessons = Array.isArray(window.LESSONS) ? window.LESSONS : [];
+  const currentLesson = lessons.find((l) => Number(l.id) === lessonId) || null;
 
+  if (isQuizPage) {
+    toggleBtn.style.display = "none";
+    panel.style.display = "none";
+    return;
+  }
+
+  // ------------------------------------------------------------
+  // STATE
+  // ------------------------------------------------------------
+  const memory = [];
+
+  // ------------------------------------------------------------
+  // TONE / DOCTRINE
+  // ------------------------------------------------------------
   const DOCTRINE = {
-    yellow: {
-      answer:
-        "Condition Yellow means calm awareness. You are alert, not paranoid. You are paying attention early so you have time, distance, and options before a problem develops.",
-      source: "Developing a Personal Protection Plan → Awareness Levels"
-    },
-    white: {
-      answer:
-        "Condition White means you are unaware and distracted. This is where people get caught off guard because they are not paying attention to what is developing around them.",
-      source: "Developing a Personal Protection Plan → Awareness Levels"
-    },
-    orange: {
-      answer:
-        "Condition Orange means you have identified something specific that may become a threat. Your attention narrows to that issue and you start preparing decisions early.",
-      source: "Developing a Personal Protection Plan → Awareness Levels"
-    },
-    red: {
-      answer:
-        "Condition Red means a decision point has been reached and action is required. If you are in Condition Red, earlier opportunities may already have been lost.",
-      source: "Developing a Personal Protection Plan → Awareness Levels"
-    },
-    noBeThere: {
-      answer:
-        "The 'No Be There' principle means you do not need to stay and investigate trouble. If something feels wrong, you create distance early. The goal is not to win the confrontation. The goal is to not be there when it happens.",
-      source: "Developing a Personal Protection Plan → The “No Be There” Principle"
-    },
-    selfDefense: {
-      answer:
-        "Self-defense is not about fighting. It is about avoiding the fight entirely. A firearm is not a solution to bad decisions. The earlier you recognize a problem, the more options you have.",
-      source: "Developing a Personal Protection Plan → The Real Goal of Personal Protection"
-    },
-    responsibility: {
-      answer:
-        "Carrying a firearm does not give you more authority. It gives you more responsibility. The goal is not to use the firearm. The goal is to never need it.",
-      source: "Firearm Basics and Responsibility → The Reality of Carrying a Firearm"
-    },
-    universalSafetyRules: {
-      answer:
-        "The universal safety rules are simple: treat every firearm as if it is loaded, never point it at anything you are not willing to destroy, keep your finger off the trigger until you have made the decision to shoot, and be sure of your target and what is beyond it.",
-      source: "Firearm Basics and Responsibility → Universal Safety Rules"
-    },
-    useOfForce: {
-      answer:
-        "You do not look for a reason to use force. Force is a last resort. The correct mindset is avoidance first, lawful judgment second, and only then force if there is no safer lawful option left.",
-      source: "Legal Use of Force and Aftermath"
-    },
-    castleDoctrine: {
-      answer:
-        "Castle Doctrine is a legal concept tied to defensive force in the home, but it does not erase the need for lawful judgment. You are still responsible for what you do and why you did it.",
-      source: "Louisiana Firearm Law"
-    },
-    permitlessCarry: {
-      answer:
-        "Permitless carry changes permit requirements. It does not remove your responsibility to know the law, restricted locations, notification requirements, and standards for lawful behavior.",
-      source: "Louisiana Firearm Law"
-    },
-    suicideRisk: {
-      answer:
-        "A major part of responsible firearm ownership is understanding crisis risk, warning signs, and access reduction. Mental readiness includes protecting life by reducing access to lethal means during crisis.",
-      source: "Mental Readiness and Responsibility"
-    }
+    truths: [
+      "The goal is not to win the fight. The goal is to not be there.",
+      "Early awareness gives you options. Late awareness gives you problems.",
+      "A firearm does not fix bad decisions.",
+      "Force is a last resort, not a plan.",
+      "Carrying increases responsibility, not authority."
+    ],
+    mistakes: [
+      "waiting too long",
+      "not noticing early",
+      "asking what to do instead of what was missed",
+      "focusing on tools instead of judgment",
+      "trying to react late instead of move early"
+    ]
   };
 
-  const ALIASES = [
-    { key: "yellow", phrases: ["condition yellow", "yellow condition", "yellow awareness", "what is yellow", "what is condition yellow", "condtion yelow", "condition yelow", "conditon yellow"] },
-    { key: "white", phrases: ["condition white", "white condition", "what is white", "what is condition white"] },
-    { key: "orange", phrases: ["condition orange", "orange condition", "what is orange", "what is condition orange"] },
-    { key: "red", phrases: ["condition red", "red condition", "what is red", "what is condition red"] },
-    { key: "noBeThere", phrases: ["no be there", "nobe there", "avoidance", "avoid danger", "leave early", "stay away", "move early", "avoid problems"] },
-    { key: "selfDefense", phrases: ["self defense", "self-defense", "real goal of personal protection", "goal of self defense", "goal of personal protection"] },
-    { key: "responsibility", phrases: ["responsibility", "responsible firearm owner", "reality of carrying", "carry responsibility"] },
-    { key: "universalSafetyRules", phrases: ["universal safety rules", "safety rules", "four safety rules", "gun safety rules", "firearm safety rules"] },
-    { key: "useOfForce", phrases: ["use of force", "when should i shoot", "when can i shoot", "use force", "shoot someone", "kill someone", "deadly force"] },
-    { key: "castleDoctrine", phrases: ["castle doctrine"] },
-    { key: "permitlessCarry", phrases: ["permitless carry", "constitutional carry"] },
-    { key: "suicideRisk", phrases: ["suicide", "warning signs", "crisis", "mental readiness", "reduce access", "protect life during crisis"] }
+  const CONCEPTS = [
+    {
+      id: "condition_white",
+      aliases: [
+        "condition white",
+        "white condition",
+        "what is condition white",
+        "what is white",
+        "unaware",
+        "distracted"
+      ],
+      answer:
+        "Condition White means you are unaware and distracted. That is where people get caught off guard because they are mentally checked out instead of paying attention.",
+      why:
+        "If you are not paying attention, you lose time. If you lose time, your options disappear.",
+      follow:
+        "What would you miss first if you were distracted in a parking lot or store?"
+    },
+    {
+      id: "condition_yellow",
+      aliases: [
+        "condition yellow",
+        "what is yellow",
+        "what is condition yellow",
+        "yellow condition",
+        "condtion yelow",
+        "condition yelow",
+        "conition yellow",
+        "awareness level yellow",
+        "relaxed awareness",
+        "calm awareness"
+      ],
+      answer:
+        "Condition Yellow is relaxed awareness. You are alert, not paranoid. You are paying attention early so nothing surprises you.",
+      why:
+        "Most people get into trouble because they were not paying attention early enough to move, leave, or create distance.",
+      follow:
+        "Where in your daily life are you most likely to drop out of Yellow and drift into distraction?"
+    },
+    {
+      id: "condition_orange",
+      aliases: [
+        "condition orange",
+        "what is orange",
+        "what is condition orange",
+        "orange condition",
+        "something feels wrong",
+        "something isnt right",
+        "specific alert",
+        "specific threat"
+      ],
+      answer:
+        "Condition Orange means something specific is not right. You are no longer just generally aware. Your attention is now on a developing problem.",
+      why:
+        "This is where hesitation starts costing you. If you wait for certainty, you usually give away time and position.",
+      follow:
+        "What should happen first when something feels off: curiosity or movement?"
+    },
+    {
+      id: "condition_red",
+      aliases: [
+        "condition red",
+        "what is red",
+        "what is condition red",
+        "red condition",
+        "action required",
+        "imminent threat"
+      ],
+      answer:
+        "Condition Red means a decision point has been reached and action is required. You are now reacting to something that should have been recognized earlier.",
+      why:
+        "Red is expensive. By the time you are here, earlier opportunities to avoid, move, or disengage may already be gone.",
+      follow:
+        "What earlier failure usually causes people to end up in Red?"
+    },
+    {
+      id: "no_be_there",
+      aliases: [
+        "no be there",
+        "what does no be there mean",
+        "avoidance",
+        "leave early",
+        "move early",
+        "stay away",
+        "avoid trouble",
+        "dont be there",
+        "do not be there"
+      ],
+      answer:
+        "The 'No Be There' principle means you do not stay and investigate trouble. If something feels wrong, that is enough to move. The goal is not to prove courage. The goal is to avoid the problem before it owns the timeline.",
+      why:
+        "People lose options by staying too long. Delay turns manageable problems into force problems.",
+      follow:
+        "What do most people wait for before moving that they should not wait for?"
+    },
+    {
+      id: "self_defense",
+      aliases: [
+        "self defense",
+        "self-defense",
+        "real goal of personal protection",
+        "what is self defense",
+        "fight",
+        "winning the fight"
+      ],
+      answer:
+        "Self-defense is not about fighting. It is about avoiding the fight entirely. If your thinking starts with force, your thinking already went wrong.",
+      why:
+        "A weapon cannot correct a bad decision chain. Awareness, movement, and judgment come first.",
+      follow:
+        "What is the difference between being capable of force and looking for a reason to use it?"
+    },
+    {
+      id: "responsibility",
+      aliases: [
+        "responsibility",
+        "carrying responsibility",
+        "reality of carrying",
+        "armed responsibility",
+        "owning a gun",
+        "carrying a firearm"
+      ],
+      answer:
+        "Carrying a firearm does not give you more authority. It gives you more responsibility. The standard goes up, not down.",
+      why:
+        "Once armed, your judgment matters even more. You do not get to be sloppy just because you have a tool.",
+      follow:
+        "How does being armed change what you should tolerate, say, or do in public?"
+    },
+    {
+      id: "universal_safety_rules",
+      aliases: [
+        "safety rules",
+        "universal safety rules",
+        "gun safety rules",
+        "firearm safety rules",
+        "four safety rules"
+      ],
+      answer:
+        "The core safety rules are simple: treat every firearm as if it is loaded, never point it at anything you are not willing to destroy, keep your finger off the trigger until you have made the decision to shoot, and know your target and what is beyond it.",
+      why:
+        "Most gun handling mistakes come from acting casual with something that demands discipline.",
+      follow:
+        "Which safety rule do people violate first when they rush?"
+    },
+    {
+      id: "use_of_force",
+      aliases: [
+        "use of force",
+        "deadly force",
+        "when should i shoot",
+        "when can i shoot",
+        "when do i draw",
+        "should i shoot",
+        "use force",
+        "kill someone"
+      ],
+      answer:
+        "You do not look for a reason to use force. Force is a last resort when earlier layers failed and there is no safer lawful option left.",
+      why:
+        "The better question is usually not 'when do I shoot?' It is 'what should have happened earlier so this never got here?'",
+      follow:
+        "What earlier decision usually prevents the force question from ever needing to be asked?"
+    },
+    {
+      id: "approach_distance",
+      aliases: [
+        "someone approaches me",
+        "someone walking toward me",
+        "closing distance",
+        "approach me",
+        "stranger approaching",
+        "parking lot approach",
+        "what if someone walks up"
+      ],
+      answer:
+        "The first issue is not the approach. It is when you noticed it. If you are paying attention early, you manage distance, change angle, create movement, and avoid being fixed in place.",
+      why:
+        "Most people wait until it feels uncomfortable. By then they are already behind the situation.",
+      follow:
+        "If someone is closing distance, what matters first: explanation or space?"
+    },
+    {
+      id: "shooting_fundamentals",
+      aliases: [
+        "shooting fundamentals",
+        "how do i shoot better",
+        "aim better",
+        "trigger control",
+        "front sight",
+        "target focus",
+        "sight alignment",
+        "sight picture",
+        "grip",
+        "recoil control"
+      ],
+      answer:
+        "Good shooting comes from consistency: grip, sight alignment, front sight focus when appropriate, and clean trigger press. People usually try to go fast before they can go clean.",
+      why:
+        "Speed without control is wasted motion. Mechanics matter, but they still sit underneath decision-making and judgment.",
+      follow:
+        "What are you actually losing first when you miss: sights, trigger control, or discipline?"
+    },
+    {
+      id: "reaction_time",
+      aliases: [
+        "reaction time",
+        "how fast can someone react",
+        "why awareness matters",
+        "time and distance",
+        "late reaction"
+      ],
+      answer:
+        "Reaction time is exactly why awareness matters. People imagine they will just react on time. Usually they do not. If you see it late, you are already paying a penalty.",
+      why:
+        "Awareness buys time. Time creates options. Without time, people default to panic, flinch, or bad force decisions.",
+      follow:
+        "What would you rather have in a real encounter: better reactions or earlier recognition?"
+    },
+    {
+      id: "gear",
+      aliases: [
+        "what should i carry",
+        "best gun",
+        "best flashlight",
+        "holster",
+        "optic",
+        "sling",
+        "belt",
+        "gear",
+        "equipment"
+      ],
+      answer:
+        "Gear supports decisions. It does not replace them. The wrong mindset with expensive gear is still the wrong mindset. Tools matter, but they come after judgment, awareness, and consistency.",
+      why:
+        "People love to solve thinking problems with shopping. That does not work.",
+      follow:
+        "Are you trying to solve a skill problem, a judgment problem, or just a gear preference?"
+    },
+    {
+      id: "mental_readiness",
+      aliases: [
+        "mental readiness",
+        "stress response",
+        "freeze",
+        "tunnel vision",
+        "fear",
+        "hesitation",
+        "panic"
+      ],
+      answer:
+        "Mental readiness is about recognizing how stress changes performance. Under pressure, people lose clarity, vision narrows, and hesitation gets expensive.",
+      why:
+        "If you do not account for human stress effects, you build fantasy plans instead of usable ones.",
+      follow:
+        "What falls apart first under pressure: your mechanics or your judgment?"
+    },
+    {
+      id: "home_defense",
+      aliases: [
+        "home defense",
+        "protect my home",
+        "house defense",
+        "castle doctrine",
+        "home invasion",
+        "defending my house"
+      ],
+      answer:
+        "Home defense is still judgment-driven. Being in the home does not erase responsibility. You still need identification, safe angles, target confirmation, and clean thinking.",
+      why:
+        "People act like the location alone solves the decision. It does not.",
+      follow:
+        "What is the danger of assuming the house automatically makes every force decision simple?"
+    }
   ];
 
-  const QUIZ_REFUSAL_PHRASES = [
-    "what is the answer",
-    "what's the answer",
+  const QUIZ_REQUESTS = [
     "give me the answer",
+    "what is the answer",
+    "whats the answer",
+    "what's the answer",
     "quiz answer",
     "correct answer",
-    "which option is right",
-    "what letter is right",
-    "just give me the answer",
-    "tell me the answer"
+    "which option",
+    "what letter",
+    "just tell me the answer"
   ];
 
   const GREETINGS = ["hi", "hello", "hey", "good morning", "good afternoon"];
+  const HELP_PHRASES = ["help", "what can you do", "can you help"];
   const THANKS = ["thanks", "thank you", "appreciate it"];
-  const HELP = ["help", "can you help", "what can you do", "what do you do"];
 
-  function normalize(text) {
-    return String(text || "")
-      .toLowerCase()
-      .replace(/[^\w\s]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  // ------------------------------------------------------------
+  // HELPERS
+  // ------------------------------------------------------------
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
-  function tokens(text) {
+  function tokenize(text) {
     return normalize(text)
-      .split(" ")
+      .split(/\s+/)
       .filter(Boolean)
       .filter((w) => w.length > 2);
-  }
-
-  function includesPhrase(question, phrase) {
-    return normalize(question).includes(normalize(phrase));
   }
 
   function levenshtein(a, b) {
     a = normalize(a);
     b = normalize(b);
+
     const m = a.length;
     const n = b.length;
+
     if (!m) return n;
     if (!n) return m;
 
     const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
     for (let i = 0; i <= m; i++) dp[i][0] = i;
     for (let j = 0; j <= n; j++) dp[0][j] = j;
 
@@ -153,12 +415,14 @@
         );
       }
     }
+
     return dp[m][n];
   }
 
   function fuzzyPhrase(question, phrase) {
     const q = normalize(question);
     const p = normalize(phrase);
+
     if (q.includes(p)) return true;
 
     const qWords = q.split(" ").filter(Boolean);
@@ -177,86 +441,155 @@
       windows.push(qWords.slice(i, i + pWords.length).join(" "));
     }
 
-    return windows.some((w) => {
-      const dist = levenshtein(w, p);
-      const maxLen = Math.max(w.length, p.length);
+    return windows.some((windowText) => {
+      const dist = levenshtein(windowText, p);
+      const maxLen = Math.max(windowText.length, p.length);
       return maxLen > 0 && dist / maxLen <= 0.28;
     });
   }
 
-  function isQuizAnswerRequest(question) {
-    const q = normalize(question);
-    return QUIZ_REFUSAL_PHRASES.some((p) => q.includes(p));
-  }
-
-  function isGreeting(question) {
-    const q = normalize(question);
-    return GREETINGS.some((g) => q === g || q.startsWith(g + " "));
-  }
-
-  function isThanks(question) {
-    const q = normalize(question);
-    return THANKS.some((t) => q.includes(t));
-  }
-
-  function isHelp(question) {
-    const q = normalize(question);
-    return HELP.some((h) => q.includes(h));
-  }
-
-  function doctrineMatch(question) {
-    for (const item of ALIASES) {
-      for (const phrase of item.phrases) {
-        if (fuzzyPhrase(question, phrase)) {
-          return item.key;
-        }
-      }
-    }
-    return null;
-  }
-
-  function scoreLine(question, line, heading, lessonTitle, isCurrentLesson) {
-    const qTokens = tokens(question);
-    const lineText = normalize(line);
-    const headingText = normalize(heading);
-    const lessonText = normalize(lessonTitle);
-
+  function scoreTokenOverlap(question, text) {
+    const qTokens = tokenize(question);
+    const textNorm = normalize(text);
     let score = 0;
 
     for (const t of qTokens) {
-      if (lineText.includes(t)) score += 3;
-      if (headingText.includes(t)) score += 4;
-      if (lessonText.includes(t)) score += 2;
+      if (textNorm.includes(t)) score += 3;
+      else {
+        const root = t.slice(0, Math.max(3, t.length - 2));
+        if (textNorm.includes(root)) score += 1;
+      }
     }
-
-    const q = normalize(question);
-    if (lineText.includes(q)) score += 8;
-    if (headingText.includes(q)) score += 10;
-
-    const headingTokens = tokens(heading);
-    const overlap = headingTokens.filter((t) => qTokens.includes(t)).length;
-    score += overlap * 5;
-
-    if (isCurrentLesson) score += 2;
 
     return score;
   }
 
-  function searchLessons(question) {
-    if (!lessonData.length) return null;
+  function currentFocusText() {
+    if (currentLesson) return currentLesson.title;
+    if (pagePath.includes("dashboard")) return "dashboard review";
+    if (pagePath.includes("scenario")) return "scenario review";
+    return "course review";
+  }
+
+  function greetingResponse() {
+    return `
+<b>I’m here.</b><br><br>
+Ask me about a concept, situation, or mistake pattern from the training.<br><br>
+<b>Current focus:</b> ${escapeHtml(currentFocusText())}<br><br>
+<i>I teach thinking, not answer-hunting.</i>
+`;
+  }
+
+  function helpResponse() {
+    return `
+<b>Here is what I do.</b><br><br>
+I explain doctrine, correct bad thinking, connect lesson material, and force the issue back to judgment when needed.<br><br>
+<b>Current focus:</b> ${escapeHtml(currentFocusText())}<br><br>
+<i>Ask me what it means, why it matters, or what most people get wrong.</i>
+`;
+  }
+
+  function thanksResponse() {
+    return `
+<b>Good.</b><br><br>
+Keep going. Understanding matters more than memorizing.<br><br>
+<i>The goal is not to sound informed. The goal is to think correctly early.</i>
+`;
+  }
+
+  function blockQuizAnswerResponse() {
+    return `
+<b>No.</b><br><br>
+I’m not giving quiz answers.<br><br>
+<b>Why:</b><br>
+If you only memorize a choice, you miss the judgment behind it.<br><br>
+<i>Ask me to explain the principle the question is testing.</i>
+`;
+  }
+
+  function doctrineResponse(concept) {
+    return `
+<b>This is where people get this wrong.</b><br><br>
+${concept.answer}<br><br>
+<b>Why it matters:</b><br>
+${concept.why}<br><br>
+<b>Think about this:</b><br>
+${concept.follow}
+`;
+  }
+
+  function lessonResponse(match) {
+    return `
+<b>Back up.</b><br><br>
+${match.line}<br><br>
+<b>Why it matters:</b><br>
+${match.summary || "If you do not understand the principle early, your decisions get worse later."}<br><br>
+<b>Source:</b><br>
+${escapeHtml(match.lessonTitle)} → ${escapeHtml(match.heading)}<br><br>
+<i>Most people miss this because they jump to reaction before they understand the setup.</i>
+`;
+  }
+
+  function fallbackResponse() {
+    return `
+<b>You’re still asking too wide.</b><br><br>
+Give me the concept, situation, or mistake you’re actually trying to understand.<br><br>
+<b>Try:</b><br>
+- what is condition yellow<br>
+- what if someone closes distance<br>
+- why does awareness matter<br>
+- when does force become the wrong question<br><br>
+<i>The clearer the concept, the cleaner the correction.</i>
+`;
+  }
+
+  // ------------------------------------------------------------
+  // CONCEPT MATCHING
+  // ------------------------------------------------------------
+  function findConcept(question) {
+    let best = null;
+    let bestScore = 0;
+
+    for (const concept of CONCEPTS) {
+      let score = 0;
+
+      for (const phrase of concept.aliases) {
+        if (fuzzyPhrase(question, phrase)) score += 10;
+        score += scoreTokenOverlap(question, phrase);
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = concept;
+      }
+    }
+
+    return bestScore >= 8 ? best : null;
+  }
+
+  function findLessonMatch(question) {
+    if (!lessons.length) return null;
 
     let best = null;
     let bestScore = 0;
 
-    for (const lesson of lessonData) {
-      const isCurrent = Number(lesson.id) === currentLessonId;
+    for (const lesson of lessons) {
+      const lessonBias = Number(lesson.id) === lessonId ? 2 : 0;
+
       for (const section of lesson.sections || []) {
+        const headingScore = scoreTokenOverlap(question, section.heading) * 2;
+
         for (const line of section.body || []) {
-          const score = scoreLine(question, line, section.heading, lesson.title, isCurrent);
+          const score =
+            lessonBias +
+            headingScore +
+            scoreTokenOverlap(question, line) +
+            (fuzzyPhrase(question, section.heading) ? 8 : 0) +
+            (fuzzyPhrase(question, line) ? 10 : 0);
+
           if (score > bestScore) {
             bestScore = score;
             best = {
-              lessonId: lesson.id,
               lessonTitle: lesson.title,
               heading: section.heading,
               line,
@@ -267,144 +600,158 @@
       }
     }
 
-    return bestScore >= 5 ? best : null;
+    return bestScore >= 7 ? best : null;
   }
 
-  function buildSourceText(match) {
-    return `${match.lessonTitle} → ${match.heading}`;
+  // ------------------------------------------------------------
+  // INPUT ROUTING
+  // ------------------------------------------------------------
+  function isGreeting(question) {
+    const q = normalize(question);
+    return GREETINGS.some((g) => q === g || q.startsWith(g + " "));
   }
 
-  function doctrineWrap(answer, source) {
-    return `
-<b>This is where people get this wrong.</b><br><br>
-${answer}<br><br>
-<b>Why it matters:</b><br>
-If you recognize the problem early, you still have options. If you wait, your options disappear.<br><br>
-<b>Source:</b><br>
-${source}<br><br>
-<i>Think early. Move early. Avoid early.</i>
-`;
+  function isHelp(question) {
+    const q = normalize(question);
+    return HELP_PHRASES.some((p) => q.includes(p));
   }
 
-  function knowledgeWrap(match) {
-    return `
-<b>This is where people get this wrong.</b><br><br>
-${match.line}<br><br>
-<b>What matters:</b><br>
-${match.summary || "Understanding this early gives you better decisions later."}<br><br>
-<b>Source:</b><br>
-${buildSourceText(match)}<br><br>
-<i>If you wait, your options disappear.</i>
-`;
+  function isThanks(question) {
+    const q = normalize(question);
+    return THANKS.some((p) => q.includes(p));
   }
 
-  function fallbackWrap() {
-    const current = lessonData.find((l) => Number(l.id) === currentLessonId);
-    return `
-<b>Good question.</b><br><br>
-Ask me using a concept from the training and I’ll break it down clearly.<br><br>
-<b>Current focus:</b><br>
-${current ? current.title : "Course review"}<br><br>
-<i>I teach the principle — not just the words.</i>
-`;
+  function isQuizRequest(question) {
+    const q = normalize(question);
+    return QUIZ_REQUESTS.some((p) => q.includes(p));
   }
 
-  function answerQuestion(question) {
-    if (isGreeting(question)) {
-      return `
-<b>I’m here.</b><br><br>
-Ask me about a concept from the training and I’ll help you think it through.<br><br>
-<i>I teach — I don’t spoon-feed.</i>
-`;
-    }
+  function remember(userText, aiText) {
+    memory.push({
+      user: userText,
+      ai: aiText,
+      time: Date.now()
+    });
 
-    if (isThanks(question)) {
-      return `
-<b>Good.</b><br><br>
-Keep going. Understanding matters more than memorizing.<br><br>
-<i>That is how you stay out of trouble before it starts.</i>
-`;
-    }
-
-    if (isHelp(question)) {
-      return `
-<b>Here’s what I do.</b><br><br>
-I explain concepts from the training, correct bad thinking, and point you back to the right lesson material.<br><br>
-<i>Ask me the principle you’re actually trying to understand.</i>
-`;
-    }
-
-    if (isQuizAnswerRequest(question)) {
-      return `
-<b>No.</b><br><br>
-I’m not giving you quiz answers.<br><br>
-<b>Why:</b><br>
-If you only memorize the answer, you fail the judgment part.<br><br>
-<i>Ask me to explain the concept instead.</i>
-`;
-    }
-
-    const matchedDoctrine = doctrineMatch(question);
-    if (matchedDoctrine && DOCTRINE[matchedDoctrine]) {
-      const item = DOCTRINE[matchedDoctrine];
-      return doctrineWrap(item.answer, item.source);
-    }
-
-    const match = searchLessons(question);
-    if (match) {
-      return knowledgeWrap(match);
-    }
-
-    return fallbackWrap();
+    if (memory.length > 8) memory.shift();
   }
 
-  function addMessage(text, type) {
+  function maybeBridge(question) {
+    if (memory.length < 1) return "";
+
+    const recent = memory[memory.length - 1];
+    const nowTokens = tokenize(question);
+    const oldTokens = tokenize(recent.user);
+    const overlap = nowTokens.filter((t) => oldTokens.includes(t));
+
+    if (overlap.length >= 2) {
+      return "This connects to what you just asked. ";
+    }
+
+    return "";
+  }
+
+  function answer(question) {
+    if (isGreeting(question)) return greetingResponse();
+    if (isHelp(question)) return helpResponse();
+    if (isThanks(question)) return thanksResponse();
+    if (isQuizRequest(question)) return blockQuizAnswerResponse();
+
+    const bridge = maybeBridge(question);
+
+    const concept = findConcept(question);
+    if (concept) {
+      return doctrineResponse({
+        ...concept,
+        answer: bridge + concept.answer
+      });
+    }
+
+    const lessonMatch = findLessonMatch(question);
+    if (lessonMatch) {
+      if (bridge) {
+        lessonMatch.line = bridge + lessonMatch.line;
+      }
+      return lessonResponse(lessonMatch);
+    }
+
+    return fallbackResponse();
+  }
+
+  // ------------------------------------------------------------
+  // RENDER
+  // ------------------------------------------------------------
+  function addMessage(html, type) {
     const div = document.createElement("div");
     div.className = "msg " + type;
-    div.innerHTML = text;
+    div.innerHTML = html;
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function handleInput() {
+  function handleSend() {
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || sendBtn.disabled) return;
 
-    addMessage(text, "user");
+    addMessage(escapeHtml(text), "user");
     input.value = "";
     sendBtn.disabled = true;
 
     setTimeout(() => {
-      try {
-        const reply = answerQuestion(text);
-        addMessage(reply, "ai");
-      } finally {
-        sendBtn.disabled = false;
-        input.focus();
-      }
+      const reply = answer(text);
+      addMessage(reply, "ai");
+      remember(text, reply);
+      sendBtn.disabled = false;
+      input.focus();
     }, 180);
   }
 
+  // ------------------------------------------------------------
+  // EVENTS
+  // ------------------------------------------------------------
   toggleBtn.addEventListener("click", () => {
-    panel.classList.toggle("hidden");
-    if (!panel.classList.contains("hidden")) {
+    const hiddenByClass = panel.classList.contains("hidden");
+    const hiddenByStyle = panel.style.display === "none" || panel.style.display === "";
+
+    if (hiddenByClass) {
+      panel.classList.remove("hidden");
+      panel.style.display = "flex";
+    } else if (hiddenByStyle) {
+      panel.style.display = "flex";
+    } else {
+      if (panel.classList.contains("hidden")) {
+        panel.classList.remove("hidden");
+      } else {
+        panel.style.display = "none";
+      }
+    }
+
+    if (panel.style.display === "flex" || !panel.classList.contains("hidden")) {
       input.focus();
     }
   });
 
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
+      panel.style.display = "none";
       panel.classList.add("hidden");
     });
   }
 
-  sendBtn.addEventListener("click", handleInput);
+  sendBtn.addEventListener("click", handleSend);
   input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleInput();
+    if (e.key === "Enter") handleSend();
   });
 
+  // ------------------------------------------------------------
+  // BOOT
+  // ------------------------------------------------------------
   addMessage(
-    `Ask me about any concept from Lessons 1–10.<br><br><b>I teach — I don’t give answers.</b>`,
+    `
+Ask me about a concept, situation, or mistake from the training.<br><br>
+<b>I teach thinking — not answer hunting.</b><br><br>
+<i>Most problems are missed early before they are reacted to late.</i>
+`,
     "ai"
   );
 })();
