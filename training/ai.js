@@ -1,11 +1,12 @@
 // =====================================================================
-// BSA DAVID TEACHER - COMPLETE SMART AI.JS (FIXED INIT VERSION)
+// BSA DAVID TEACHER - AI.JS 5.2
 // =====================================================================
+
 
 if (!window.BSA_AI_LOADED) {
   window.BSA_AI_LOADED = true;
 
-  document.addEventListener("DOMContentLoaded", function () {
+  (function () {
 
     const aiBtn = document.getElementById("aiToggleBtn");
     const aiPanel = document.getElementById("aiPanel");
@@ -14,77 +15,112 @@ if (!window.BSA_AI_LOADED) {
     const aiInput = document.getElementById("aiInput");
     const aiMessages = document.getElementById("aiMessages");
 
-    let aiClear = document.getElementById("aiClear");
-
-    if (!aiBtn || !aiPanel || !aiSend || !aiInput || !aiMessages) {
-      console.warn("BSA AI: Missing required elements — check HTML IDs");
-      return;
-    }
+    if (!aiBtn || !aiPanel) return;
 
     let conversationMemory = [];
 
-    function initAI() {
+    // ===============================
+    // INIT
+    // ===============================
+    aiBtn.onclick = () => {
+      aiPanel.classList.toggle("hidden");
 
-      ensureClearButton();
-
-      aiBtn.onclick = () => {
-        aiPanel.classList.toggle("hidden");
-
-        if (!aiPanel.classList.contains("hidden")) {
-          if (!aiMessages.dataset.initialized) {
-            aiMessages.innerHTML = "";
-            addInstructorMessage(getWelcomeMessage());
-            aiMessages.dataset.initialized = "true";
-          }
-          aiInput.focus();
-        }
-      };
-
-      aiClose.onclick = () => {
-        aiPanel.classList.add("hidden");
-      };
-
-      aiSend.onclick = handleAISend;
-
-      aiInput.onkeypress = (e) => {
-        if (e.key === "Enter") handleAISend();
-      };
-
-      if (aiClear) {
-        aiClear.onclick = clearChat;
+      if (!aiMessages.dataset.init) {
+        aiMessages.innerHTML = "";
+        addInstructorMessage(getWelcome());
+        aiMessages.dataset.init = "1";
       }
-    }
 
-    initAI();
+      aiInput.focus();
+    };
 
-    function handleAISend() {
-      const question = aiInput.value.trim();
-      if (!question || aiSend.disabled) return;
+    aiClose.onclick = () => aiPanel.classList.add("hidden");
+    aiSend.onclick = sendMessage;
 
-      addUserMessage(question);
+    aiInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // ===============================
+    // SEND MESSAGE
+    // ===============================
+    function sendMessage() {
+      const text = aiInput.value.trim();
+      if (!text) return;
+
+      addUserMessage(text);
       aiInput.value = "";
       aiSend.disabled = true;
 
       const thinkingId = addThinking();
 
       setTimeout(() => {
-        try {
-          const response = finalizeAnswer("Good question. Think about the concept first — not the answer.");
-          replaceMessage(thinkingId, renderInstructor(response));
-        } catch (error) {
-          console.error(error);
-        } finally {
-          aiSend.disabled = false;
-          aiInput.focus();
-        }
-      }, 400);
+        const response = instructorAI(text);
+        replaceMessage(thinkingId, renderAI(response));
+        aiSend.disabled = false;
+        aiInput.focus();
+      }, 350);
     }
 
-    function finalizeAnswer(answer) {
-      return answer;
+    // ===============================
+    // CORE AI (FIXED LOGIC ORDER)
+    // ===============================
+    function instructorAI(qRaw) {
+      const q = qRaw.toLowerCase();
+
+      // 1. DIRECT ANSWERS FIRST
+      if (q.includes("condition yellow")) {
+        return finalize("Condition Yellow means you are relaxed — but aware of your surroundings.");
+      }
+
+      if (q.includes("condition white")) {
+        return finalize("Condition White means you are unaware and mentally checked out.");
+      }
+
+      if (q.includes("no be there")) {
+        return finalize("The goal is simple — don’t be there when the problem happens.");
+      }
+
+      if (q.includes("responsibility")) {
+        return finalize("Carrying a firearm increases responsibility, not authority.");
+      }
+
+      // 2. NORMAL FLOW
+      if (q === "hi" || q === "hello") {
+        return finalize("I’m here. Ask me about the lesson.");
+      }
+
+      if (q.includes("help")) {
+        return finalize("Ask me about a concept and I’ll break it down.");
+      }
+
+      if (q.includes("answer") || q.includes("quiz")) {
+        return `
+          I’m not giving quiz answers.<br><br>
+          <strong>Why it matters:</strong> You need to understand the concept.<br><br>
+          Ask me to explain it instead.
+        `;
+      }
+
+      // 3. FALLBACK
+      return finalize("Ask using a lesson concept and I’ll explain it clearly.");
     }
 
-    function renderInstructor(html) {
+    // ===============================
+    // STYLE LAYER (YOUR VOICE)
+    // ===============================
+    function finalize(text) {
+      return `
+        <strong>Good question.</strong><br><br>
+        ${text}<br><br>
+        <em>Think about it — don’t just memorize it.</em>
+      `;
+    }
+
+    // ===============================
+    // UI RENDERING
+    // ===============================
+    function renderAI(html) {
       return `
         <div class="ai-row ai-row-ai">
           <div class="ai-bubble ai-bubble-ai">${html}</div>
@@ -95,7 +131,7 @@ if (!window.BSA_AI_LOADED) {
     function renderUser(text) {
       return `
         <div class="ai-row ai-row-user">
-          <div class="ai-bubble ai-bubble-user">${text}</div>
+          <div class="ai-bubble ai-bubble-user">${escape(text)}</div>
         </div>
       `;
     }
@@ -106,27 +142,24 @@ if (!window.BSA_AI_LOADED) {
     }
 
     function addInstructorMessage(html) {
-      aiMessages.insertAdjacentHTML("beforeend", renderInstructor(html));
+      aiMessages.insertAdjacentHTML("beforeend", renderAI(html));
       scroll();
     }
 
     function addThinking() {
-      const id = "msg-" + Date.now();
-      const div = document.createElement("div");
-      div.dataset.msgId = id;
-      div.innerHTML = `
-        <div class="ai-row ai-row-ai">
+      const id = "t" + Date.now();
+      aiMessages.insertAdjacentHTML("beforeend", `
+        <div class="ai-row ai-row-ai" data-id="${id}">
           <div class="ai-bubble ai-bubble-ai">Thinking...</div>
         </div>
-      `;
-      aiMessages.appendChild(div);
+      `);
       scroll();
       return id;
     }
 
     function replaceMessage(id, html) {
-      const el = aiMessages.querySelector(`[data-msg-id="${id}"]`);
-      if (el) el.innerHTML = html;
+      const el = aiMessages.querySelector(`[data-id="${id}"]`);
+      if (el) el.outerHTML = html;
       scroll();
     }
 
@@ -134,26 +167,18 @@ if (!window.BSA_AI_LOADED) {
       aiMessages.scrollTop = aiMessages.scrollHeight;
     }
 
-    function clearChat() {
-      aiMessages.innerHTML = "";
-      addInstructorMessage(getWelcomeMessage());
+    function escape(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[m]));
     }
 
-    function ensureClearButton() {
-      if (aiClear) return;
-
-      aiClear = document.createElement("button");
-      aiClear.textContent = "Clear";
-      aiClear.className = "ai-clear-btn";
-
-      aiPanel.prepend(aiClear);
-    }
-
-    function getWelcomeMessage() {
+    function getWelcome() {
       return `
-        Ask me about the lesson. I’ll explain it clearly.
+        Ask me about a concept, why it matters, or where to review it.<br><br>
+        <strong>I teach — I don’t give answers.</strong>
       `;
     }
 
-  });
+  })();
 }
