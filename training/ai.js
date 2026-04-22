@@ -1,20 +1,38 @@
 // =====================================================================
-// BSA DAVID INSTRUCTOR AI v6.0
-// 
+// BSA DAVID INSTRUCTOR AI v7.0
 // =====================================================================
 
 (function () {
   if (window.__BSA_AI_BOOTED__) return;
   window.__BSA_AI_BOOTED__ = true;
 
-  
-function normalize(text) {
-  return String(text || "")
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+  // ------------------------------------------------------------
+  // REQUIRED UTIL
+  // ------------------------------------------------------------
+  function normalize(text) {
+    return String(text || "")
+      .toLowerCase()
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function tokenize(text) {
+    return normalize(text)
+      .split(/\s+/)
+      .filter(Boolean)
+      .filter((w) => w.length > 2);
+  }
+
   // ------------------------------------------------------------
   // ELEMENTS
   // ------------------------------------------------------------
@@ -68,25 +86,8 @@ function normalize(text) {
   const memory = [];
 
   // ------------------------------------------------------------
-  // TONE / DOCTRINE
+  // STRICT DOCTRINE
   // ------------------------------------------------------------
-  const DOCTRINE = {
-    truths: [
-      "The goal is not to win the fight. The goal is to not be there.",
-      "Early awareness gives you options. Late awareness gives you problems.",
-      "A firearm does not fix bad decisions.",
-      "Force is a last resort, not a plan.",
-      "Carrying increases responsibility, not authority."
-    ],
-    mistakes: [
-      "waiting too long",
-      "not noticing early",
-      "asking what to do instead of what was missed",
-      "focusing on tools instead of judgment",
-      "trying to react late instead of move early"
-    ]
-  };
-
   const CONCEPTS = [
     {
       id: "condition_white",
@@ -260,7 +261,8 @@ function normalize(text) {
         "approach me",
         "stranger approaching",
         "parking lot approach",
-        "what if someone walks up"
+        "what if someone walks up",
+        "someone comes toward me"
       ],
       answer:
         "The first issue is not the approach. It is when you noticed it. If you are paying attention early, you manage distance, change angle, create movement, and avoid being fixed in place.",
@@ -380,22 +382,21 @@ function normalize(text) {
   const THANKS = ["thanks", "thank you", "appreciate it"];
 
   // ------------------------------------------------------------
-  // HELPERS
+  // FUZZY MATCHING - ~80% FEEL
   // ------------------------------------------------------------
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+  function similarityScore(a, b) {
+    a = normalize(a);
+    b = normalize(b);
 
-  function tokenize(text) {
-    return normalize(text)
-      .split(/\s+/)
-      .filter(Boolean)
-      .filter((w) => w.length > 2);
+    let longer = a.length > b.length ? a : b;
+    let shorter = a.length > b.length ? b : a;
+
+    let same = 0;
+    for (let i = 0; i < shorter.length; i++) {
+      if (longer[i] === shorter[i]) same++;
+    }
+
+    return longer.length ? same / longer.length : 0;
   }
 
   function levenshtein(a, b) {
@@ -432,6 +433,7 @@ function normalize(text) {
     const p = normalize(phrase);
 
     if (q.includes(p)) return true;
+    if (similarityScore(q, p) >= 0.6) return true;
 
     const qWords = q.split(" ").filter(Boolean);
     const pWords = p.split(" ").filter(Boolean);
@@ -440,7 +442,7 @@ function normalize(text) {
       return qWords.some((word) => {
         const dist = levenshtein(word, pWords[0]);
         const maxLen = Math.max(word.length, pWords[0].length);
-        return maxLen > 0 && dist / maxLen <= 0.34;
+        return maxLen > 0 && dist / maxLen <= 0.45;
       });
     }
 
@@ -452,7 +454,7 @@ function normalize(text) {
     return windows.some((windowText) => {
       const dist = levenshtein(windowText, p);
       const maxLen = Math.max(windowText.length, p.length);
-      return maxLen > 0 && dist / maxLen <= 0.28;
+      return maxLen > 0 && dist / maxLen <= 0.4;
     });
   }
 
@@ -479,75 +481,101 @@ function normalize(text) {
     return "course review";
   }
 
+  // ------------------------------------------------------------
+  // RESPONSE BUILDERS
+  // ------------------------------------------------------------
   function greetingResponse() {
     return `
-<b>I’m here.</b><br><br>
-Ask me about a concept, situation, or mistake pattern from the training.<br><br>
-<b>Current focus:</b> ${escapeHtml(currentFocusText())}<br><br>
-<i>I teach thinking, not answer-hunting.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">I’m here.</div>
+  <div class="ai-answer-text">
+    Ask me about a concept, situation, or mistake pattern from the training.
+  </div>
+  <div class="ai-answer-meta"><b>Current focus:</b> ${escapeHtml(currentFocusText())}</div>
+  <div class="ai-answer-note">I teach thinking, not answer-hunting.</div>
+</div>
 `;
   }
 
   function helpResponse() {
     return `
-<b>Here is what I do.</b><br><br>
-I explain doctrine, correct bad thinking, connect lesson material, and force the issue back to judgment when needed.<br><br>
-<b>Current focus:</b> ${escapeHtml(currentFocusText())}<br><br>
-<i>Ask me what it means, why it matters, or what most people get wrong.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">Here is what I do.</div>
+  <div class="ai-answer-text">
+    I explain doctrine, correct bad thinking, connect lesson material, and force the issue back to judgment when needed.
+  </div>
+  <div class="ai-answer-meta"><b>Current focus:</b> ${escapeHtml(currentFocusText())}</div>
+  <div class="ai-answer-note">Ask me what it means, why it matters, or what most people get wrong.</div>
+</div>
 `;
   }
 
   function thanksResponse() {
     return `
-<b>Good.</b><br><br>
-Keep going. Understanding matters more than memorizing.<br><br>
-<i>The goal is not to sound informed. The goal is to think correctly early.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">Good.</div>
+  <div class="ai-answer-text">
+    Keep going. Understanding matters more than memorizing.
+  </div>
+  <div class="ai-answer-note">The goal is not to sound informed. The goal is to think correctly early.</div>
+</div>
 `;
   }
 
   function blockQuizAnswerResponse() {
     return `
-<b>No.</b><br><br>
-I’m not giving quiz answers.<br><br>
-<b>Why:</b><br>
-If you only memorize a choice, you miss the judgment behind it.<br><br>
-<i>Ask me to explain the principle the question is testing.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">No.</div>
+  <div class="ai-answer-text">
+    I’m not giving quiz answers.
+  </div>
+  <div class="ai-answer-section"><b>Why:</b> If you only memorize a choice, you miss the judgment behind it.</div>
+  <div class="ai-answer-note">Ask me to explain the principle the question is testing.</div>
+</div>
 `;
   }
 
   function doctrineResponse(concept) {
     return `
-<b>This is where people get this wrong.</b><br><br>
-${concept.answer}<br><br>
-<b>Why it matters:</b><br>
-${concept.why}<br><br>
-<b>Think about this:</b><br>
-${concept.follow}
+<div class="ai-answer-block">
+  <div class="ai-answer-title">This is where people get this wrong.</div>
+  <div class="ai-answer-text">${concept.answer}</div>
+  <div class="ai-answer-section"><b>Why it matters:</b> ${concept.why}</div>
+  <div class="ai-answer-section"><b>Think about this:</b> ${concept.follow}</div>
+</div>
 `;
   }
 
   function lessonResponse(match) {
     return `
-<b>Back up.</b><br><br>
-${match.line}<br><br>
-<b>Why it matters:</b><br>
-${match.summary || "If you do not understand the principle early, your decisions get worse later."}<br><br>
-<b>Source:</b><br>
-${escapeHtml(match.lessonTitle)} → ${escapeHtml(match.heading)}<br><br>
-<i>Most people miss this because they jump to reaction before they understand the setup.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">Back up.</div>
+  <div class="ai-answer-text">${match.line}</div>
+  <div class="ai-answer-section">
+    <b>Why it matters:</b> ${match.summary || "If you do not understand the principle early, your decisions get worse later."}
+  </div>
+  <div class="ai-answer-section"><b>Source:</b> ${escapeHtml(match.lessonTitle)} → ${escapeHtml(match.heading)}</div>
+  <div class="ai-answer-note">Most people miss this because they jump to reaction before they understand the setup.</div>
+</div>
 `;
   }
 
   function fallbackResponse() {
     return `
-<b>You’re still asking too wide.</b><br><br>
-Give me the concept, situation, or mistake you’re actually trying to understand.<br><br>
-<b>Try:</b><br>
-- what is condition yellow<br>
-- what if someone closes distance<br>
-- why does awareness matter<br>
-- when does force become the wrong question<br><br>
-<i>The clearer the concept, the cleaner the correction.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">You’re still asking too wide.</div>
+  <div class="ai-answer-text">
+    Give me the concept, situation, or mistake you’re actually trying to understand.
+  </div>
+  <div class="ai-answer-section">
+    <b>Try:</b><br>
+    - what is condition yellow<br>
+    - what if someone closes distance<br>
+    - why does awareness matter<br>
+    - when does force become the wrong question
+  </div>
+  <div class="ai-answer-note">The clearer the concept, the cleaner the correction.</div>
+</div>
 `;
   }
 
@@ -687,13 +715,28 @@ Give me the concept, situation, or mistake you’re actually trying to understan
   }
 
   // ------------------------------------------------------------
-  // RENDER
+  // MESSAGE RENDER
   // ------------------------------------------------------------
   function addMessage(html, type) {
-    const div = document.createElement("div");
-    div.className = "msg " + type;
-    div.innerHTML = html;
-    messages.appendChild(div);
+    const row = document.createElement("div");
+    row.className = `ai-msg-row ai-msg-row-${type}`;
+
+    const bubble = document.createElement("div");
+    bubble.className = `msg msg-${type}`;
+
+    const label = document.createElement("div");
+    label.className = "msg-label";
+    label.textContent = type === "user" ? "You" : "BSA Instructor";
+
+    const body = document.createElement("div");
+    body.className = "msg-body";
+    body.innerHTML = html;
+
+    bubble.appendChild(label);
+    bubble.appendChild(body);
+    row.appendChild(bubble);
+    messages.appendChild(row);
+
     messages.scrollTop = messages.scrollHeight;
   }
 
@@ -752,13 +795,127 @@ Give me the concept, situation, or mistake you’re actually trying to understan
   });
 
   // ------------------------------------------------------------
+  // STYLE INJECTION
+  // ------------------------------------------------------------
+  (function injectAIStyles() {
+    if (document.getElementById("bsa-ai-styles-v7")) return;
+
+    const style = document.createElement("style");
+    style.id = "bsa-ai-styles-v7";
+    style.textContent = `
+      .ai-msg-row {
+        display: flex;
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      .ai-msg-row-user {
+        justify-content: flex-end;
+      }
+
+      .ai-msg-row-ai {
+        justify-content: flex-start;
+      }
+
+      .msg {
+        max-width: 88%;
+        border-radius: 14px;
+        padding: 10px 14px;
+        line-height: 1.45;
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        animation: bsaAiFadeIn 0.18s ease;
+      }
+
+      .msg-user {
+        background: #1e3a5f;
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+      }
+
+      .msg-ai {
+        background: #f4f6f8;
+        color: #1d1d1d;
+        border: 1px solid #e0e6ec;
+        border-bottom-left-radius: 4px;
+      }
+
+      .msg-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+        opacity: 0.8;
+      }
+
+      .msg-user .msg-label {
+        color: rgba(255,255,255,0.82);
+      }
+
+      .msg-ai .msg-label {
+        color: #29456d;
+      }
+
+      .msg-body {
+        word-break: break-word;
+      }
+
+      .ai-answer-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .ai-answer-title {
+        font-weight: 700;
+        color: #14263f;
+      }
+
+      .ai-answer-text {
+        color: #1d1d1d;
+      }
+
+      .ai-answer-section {
+        padding: 8px 10px;
+        background: #ffffff;
+        border: 1px solid #e2e8ef;
+        border-radius: 10px;
+      }
+
+      .ai-answer-meta {
+        font-size: 13px;
+      }
+
+      .ai-answer-note {
+        font-style: italic;
+        color: #4d5d72;
+      }
+
+      @keyframes bsaAiFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  })();
+
+  // ------------------------------------------------------------
   // BOOT
   // ------------------------------------------------------------
   addMessage(
     `
-Ask me about a concept, situation, or mistake from the training.<br><br>
-<b>I teach thinking — not answer hunting.</b><br><br>
-<i>Most problems are missed early before they are reacted to late.</i>
+<div class="ai-answer-block">
+  <div class="ai-answer-title">Ask me about a concept, situation, or mistake from the training.</div>
+  <div class="ai-answer-text"><b>I teach thinking — not answer hunting.</b></div>
+  <div class="ai-answer-note">Most problems are missed early before they are reacted to late.</div>
+</div>
 `,
     "ai"
   );
