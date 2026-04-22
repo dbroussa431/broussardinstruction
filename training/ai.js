@@ -1,182 +1,142 @@
 // =====================================================================
 // BSA DAVID TEACHER - AI.JS 5.2
 // =====================================================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSA Lesson</title>
 
-// ---------- UI HOOKS ----------
-const panel = document.getElementById("aiPanel");
-const input = document.getElementById("aiInput");
-const sendBtn = document.getElementById("aiSend");
-const messages = document.getElementById("aiMessages");
-const toggleBtn = document.getElementById("askInstructor");
+<link rel="stylesheet" href="css/styles.css">
 
-// ---------- TOGGLE ----------
-if (toggleBtn) {
-  toggleBtn.onclick = () => {
-    panel.style.display = panel.style.display === "flex" ? "none" : "flex";
-  };
+<style>
+/* ===== AI PANEL ===== */
+#aiPanel {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 320px;
+  height: 420px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
 }
 
-// ---------- UTIL ----------
-function normalize(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .trim();
+#aiHeader {
+  background: #1e3a5f;
+  color: white;
+  padding: 10px 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-function similarity(a, b) {
-  let longer = a.length > b.length ? a : b;
-  let shorter = a.length > b.length ? b : a;
-
-  let same = 0;
-  for (let i = 0; i < shorter.length; i++) {
-    if (longer[i] === shorter[i]) same++;
-  }
-
-  return same / longer.length;
+#aiMessages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
 }
 
-function fuzzyIncludes(input, keyword) {
-  input = normalize(input);
-  keyword = normalize(keyword);
-
-  if (input.includes(keyword)) return true;
-
-  return similarity(input, keyword) > 0.6;
+.msg {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  max-width: 85%;
 }
 
-// ---------- CHAT UI ----------
-function addMessage(text, type = "ai") {
-  const div = document.createElement("div");
-  div.className = type === "user" ? "msg user" : "msg ai";
-  div.innerHTML = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+.msg.ai {
+  background: #f1f3f5;
 }
 
-// ---------- CORE BRAIN ----------
-
-function getIntent(input) {
-  input = normalize(input);
-
-  // CONDITION YELLOW
-  if (
-    fuzzyIncludes(input, "yellow") ||
-    fuzzyIncludes(input, "condition yellow") ||
-    fuzzyIncludes(input, "awareness")
-  ) {
-    return "yellow";
-  }
-
-  // NO BE THERE
-  if (
-    fuzzyIncludes(input, "no be there") ||
-    fuzzyIncludes(input, "avoid") ||
-    fuzzyIncludes(input, "stay away")
-  ) {
-    return "avoidance";
-  }
-
-  // SELF DEFENSE
-  if (
-    fuzzyIncludes(input, "self defense") ||
-    fuzzyIncludes(input, "fight") ||
-    fuzzyIncludes(input, "protect")
-  ) {
-    return "mindset";
-  }
-
-  // FIREARM USE
-  if (
-    fuzzyIncludes(input, "when shoot") ||
-    fuzzyIncludes(input, "use gun") ||
-    fuzzyIncludes(input, "firearm")
-  ) {
-    return "use_of_force";
-  }
-
-  return "unknown";
+.msg.user {
+  background: #1e3a5f;
+  color: white;
+  margin-left: auto;
 }
 
-// ---------- RESPONSE SYSTEM ----------
-
-function respond(intent, input) {
-  switch (intent) {
-    case "yellow":
-      return `
-<b>Good question.</b><br><br>
-Condition Yellow means you're relaxed — but aware of your surroundings.<br><br>
-Not paranoid. Not distracted.<br><br>
-You’re paying attention early so you don’t have to react late.<br><br>
-<i>Think about it — the earlier you see something, the more options you have.</i>
-`;
-
-    case "avoidance":
-      return `
-<b>This is the core idea.</b><br><br>
-The goal is not to win the fight.<br>
-The goal is to not be there.<br><br>
-Most people wait too long and then try to react.<br><br>
-You don’t wait. You move early.<br><br>
-<i>If something feels off — that’s enough. You leave.</i>
-`;
-
-    case "mindset":
-      return `
-<b>Let’s correct something.</b><br><br>
-Self-defense is not about fighting.<br><br>
-It’s about avoiding the fight entirely.<br><br>
-A firearm is not a solution to bad decisions.<br><br>
-<i>The goal is to never need it.</i>
-`;
-
-    case "use_of_force":
-      return `
-<b>Careful here.</b><br><br>
-You don’t look for a reason to use force.<br><br>
-Force is a last resort — when everything else has failed.<br><br>
-If you’re thinking correctly, you avoid most situations long before that point.<br><br>
-<i>Think early decisions — not last-second reactions.</i>
-`;
-
-    default:
-      return `
-<b>Good question.</b><br><br>
-Ask using a lesson concept and I’ll explain it clearly.<br><br>
-<i>Think about the concept — not just the answer.</i>
-`;
-  }
+#aiInputRow {
+  display: flex;
+  border-top: 1px solid #ddd;
 }
 
-// ---------- MAIN FLOW ----------
-function handleInput() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage(text, "user");
-
-  const intent = getIntent(text);
-  const reply = respond(intent, text);
-
-  setTimeout(() => {
-    addMessage(reply, "ai");
-  }, 300);
-
-  input.value = "";
+#aiInput {
+  flex: 1;
+  border: none;
+  padding: 10px;
 }
 
-// ---------- EVENTS ----------
-if (sendBtn) sendBtn.onclick = handleInput;
-
-if (input) {
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleInput();
-  });
+#aiSend {
+  background: #1e3a5f;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
 }
 
-// ---------- START MESSAGE ----------
-addMessage(
-  `Ask me about a concept, why it matters, or where to review it.<br><br>
-<b>I teach — I don’t give answers.</b>`,
-  "ai"
-);
+/* ===== BUTTON ===== */
+#askInstructor {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1e3a5f;
+  color: white;
+  border-radius: 25px;
+  padding: 12px 18px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<header style="background:#1e3a5f;color:white;padding:15px;">
+  <h2>Broussard Shooting Academy</h2>
+  <button onclick="window.location.href='dashboard.html'">Dashboard</button>
+</header>
+
+<!-- ===== CONTENT ===== -->
+<div style="padding:20px;">
+  <h1>Developing a Personal Protection Plan</h1>
+
+  <p>This lesson teaches awareness, avoidance, and decision-making.</p>
+
+  <h3>The Real Goal of Personal Protection</h3>
+  <ul>
+    <li>Self-defense is not about fighting.</li>
+    <li>The goal is to avoid the fight entirely.</li>
+    <li>Early awareness gives more options.</li>
+  </ul>
+</div>
+
+<!-- ===== AI BUTTON ===== -->
+<div id="askInstructor">Ask Instructor</div>
+
+<!-- ===== AI PANEL ===== -->
+<div id="aiPanel">
+  <div id="aiHeader">
+    BSA Instructor
+    <span style="cursor:pointer;" onclick="document.getElementById('aiPanel').style.display='none'">✕</span>
+  </div>
+
+  <div id="aiMessages"></div>
+
+  <div id="aiInputRow">
+    <input id="aiInput" placeholder="Ask a question...">
+    <button id="aiSend">Send</button>
+  </div>
+</div>
+
+<!-- ===== LOAD AI (THIS WAS YOUR PROBLEM) ===== -->
+<script src="ai.js"></script>
+
+</body>
+</html>
