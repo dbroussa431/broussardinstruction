@@ -1,17 +1,14 @@
 // =====================================================================
-// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 5.0 CLEAN BUILD)
+// BSA DAVID TEACHER - COMPLETE SMART AI.JS (ver. 5.1 CLEAN BUILD)
+// =====================================================================
+// 
+// FULL REBUILT VERSION - CHATGPT STYLE UI, SAME INSTRUCTOR PHILOSOPHY
 // =====================================================================
 
 if (!window.BSA_AI_LOADED) {
   window.BSA_AI_LOADED = true;
 
   (function () {
-    // -----------------------------------------------------------------
-    // CONSTANTS + DOM
-    // -----------------------------------------------------------------
-    const LABELS = { instructor: "BSA Instructor", user: "You" };
-    const CSS = { hidden: "hidden" };
-
     const aiBtn = document.getElementById("aiToggleBtn");
     const aiPanel = document.getElementById("aiPanel");
     const aiClose = document.getElementById("aiClose");
@@ -21,31 +18,19 @@ if (!window.BSA_AI_LOADED) {
 
     let aiClear = document.getElementById("aiClear");
 
-    // -----------------------------------------------------------------
-    // PAGE CONTEXT
-    // -----------------------------------------------------------------
     const pagePath = window.location.pathname.toLowerCase();
     const isQuizPage = pagePath.includes("quiz.html");
     const currentLessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
     const currentLesson = getLessonById(currentLessonId);
 
-    // -----------------------------------------------------------------
-    // SIMPLE MEMORY
-    // -----------------------------------------------------------------
     let conversationMemory = [];
 
-    // -----------------------------------------------------------------
-    // DISABLE ON QUIZ PAGES
-    // -----------------------------------------------------------------
     if (isQuizPage) {
       aiBtn?.remove();
       aiPanel?.remove();
       return;
     }
 
-    // -----------------------------------------------------------------
-    // BSA PHILOSOPHY
-    // -----------------------------------------------------------------
     function applyPhilosophy(answer) {
       const inserts = [
         "Remember — the goal is to avoid needing the firearm.",
@@ -56,7 +41,7 @@ if (!window.BSA_AI_LOADED) {
 
       if (Math.random() < 0.4) {
         const line = inserts[Math.floor(Math.random() * inserts.length)];
-        return `${answer}<br><br><i>${line}</i>`;
+        return `${answer}<br><br><em>${line}</em>`;
       }
 
       return answer;
@@ -80,11 +65,11 @@ if (!window.BSA_AI_LOADED) {
       let result = answer;
 
       if (Math.random() < 0.3) {
-        result = `<b>${openers[Math.floor(Math.random() * openers.length)]}</b><br><br>${result}`;
+        result = `<strong>${openers[Math.floor(Math.random() * openers.length)]}</strong><br><br>${result}`;
       }
 
       if (Math.random() < 0.3) {
-        result += `<br><br><i>${closers[Math.floor(Math.random() * closers.length)]}</i>`;
+        result += `<br><br><em>${closers[Math.floor(Math.random() * closers.length)]}</em>`;
       }
 
       return result;
@@ -99,7 +84,7 @@ if (!window.BSA_AI_LOADED) {
       ];
 
       if (Math.random() < 0.35) {
-        return `${answer}<br><br><b>${prompts[Math.floor(Math.random() * prompts.length)]}</b>`;
+        return `${answer}<br><br><strong>${prompts[Math.floor(Math.random() * prompts.length)]}</strong>`;
       }
 
       return answer;
@@ -112,24 +97,26 @@ if (!window.BSA_AI_LOADED) {
       return answer;
     }
 
-    // -----------------------------------------------------------------
-    // INIT
-    // -----------------------------------------------------------------
     function initAI() {
       if (!aiBtn || !aiPanel || !aiClose || !aiSend || !aiInput || !aiMessages) return;
 
       ensureClearButton();
 
       aiBtn.addEventListener("click", () => {
-        aiPanel.classList.toggle(CSS.hidden);
+        aiPanel.classList.toggle("hidden");
 
-        if (!aiPanel.classList.contains(CSS.hidden) && aiMessages.children.length === 0) {
-          addInstructorMessage(getWelcomeMessage());
+        if (!aiPanel.classList.contains("hidden")) {
+          if (!aiMessages.dataset.initialized) {
+            aiMessages.innerHTML = "";
+            addInstructorMessage(getWelcomeMessage());
+            aiMessages.dataset.initialized = "true";
+          }
+          aiInput.focus();
         }
       });
 
       aiClose.addEventListener("click", () => {
-        aiPanel.classList.add(CSS.hidden);
+        aiPanel.classList.add("hidden");
       });
 
       aiSend.addEventListener("click", handleAISend);
@@ -145,9 +132,6 @@ if (!window.BSA_AI_LOADED) {
 
     initAI();
 
-    // -----------------------------------------------------------------
-    // MESSAGE FLOW
-    // -----------------------------------------------------------------
     function handleAISend() {
       const question = aiInput.value.trim();
       if (!question || aiSend.disabled) return;
@@ -175,16 +159,12 @@ if (!window.BSA_AI_LOADED) {
           aiSend.disabled = false;
           aiInput.focus();
         }
-      }, 500);
+      }, 450);
     }
 
-    // -----------------------------------------------------------------
-    // AI CORE
-    // -----------------------------------------------------------------
     function instructorAI(rawQuestion) {
       const question = normalize(rawQuestion);
 
-      // Social / light conversation
       if (isGreeting(question)) {
         return finalizeAnswer("I’m here. Ask me about the lesson and I’ll help you work through it.");
       }
@@ -197,71 +177,62 @@ if (!window.BSA_AI_LOADED) {
         return finalizeAnswer("Good. Keep going. Understanding matters more than memorizing.");
       }
 
-      // Hard block on quiz answer requests
       if (looksLikeQuizAnswerRequest(question)) {
         return `
           I’m not going to give you a direct quiz or test answer.<br><br>
-          <b>Why it matters:</b> Understanding the concept matters more than memorizing a choice.<br><br>
-          <b>Go back to:</b> Review the lesson tied to that question, or ask me to explain the concept behind it.<br><br>
-          <b>Think about this:</b> What principle is that question actually testing?
+          <strong>Why it matters:</strong> Understanding the concept matters more than memorizing a choice.<br><br>
+          <strong>Go back to:</strong> Review the lesson tied to that question, or ask me to explain the concept behind it.<br><br>
+          <strong>Think about this:</strong> What principle is that question actually testing?
         `;
       }
 
-      // Soft redirect if way off track
       if (isOffTrack(question)) {
         return finalizeAnswer("I’ll keep you focused on the training. Ask me about awareness, safety, judgment, responsibility, or a lesson concept and I’ll help.");
       }
 
-      // Confusion / struggle handling
       if (detectStruggle(question)) {
         return finalizeAnswer(
           `Alright — slow it down.<br><br>
           Lock onto one idea first. Define it clearly, then connect it to the situation.<br><br>
-          <b>Start here:</b> ${currentLesson ? currentLesson.title : "current lesson"}`
+          <strong>Start here:</strong> ${currentLesson ? currentLesson.title : "current lesson"}`
         );
       }
 
-      // Simple direct philosophy-aware answers
       const direct = findDirectResponse(question);
       if (direct) {
         return finalizeAnswer(direct);
       }
 
-      // Lesson-aware concept search
       const sectionMatch = findBestSectionMatch(question);
       if (sectionMatch) {
-        const answerLine = pickBestLine(sectionMatch.section.body || [], question)
-          || sectionMatch.section.body?.[0]
-          || currentLesson?.summary
-          || "That concept is covered in your lesson.";
+        const answerLine =
+          pickBestLine(sectionMatch.section.body || [], question) ||
+          sectionMatch.section.body?.[0] ||
+          currentLesson?.summary ||
+          "That concept is covered in your lesson.";
 
         return finalizeAnswer(
           `${answerLine}<br><br>
-          <b>Why it matters:</b> ${buildWhy(sectionMatch.section, sectionMatch.lesson)}<br><br>
-          <b>Go back to:</b> ${sectionMatch.lesson.title} → ${sectionMatch.section.heading}`
+          <strong>Why it matters:</strong> ${buildWhy(sectionMatch.section, sectionMatch.lesson)}<br><br>
+          <strong>Go back to:</strong> ${sectionMatch.lesson.title} → ${sectionMatch.section.heading}`
         );
       }
 
-      // Scenario-aware response
       const scenarioMatch = findScenarioResponse(question);
       if (scenarioMatch) {
         return finalizeAnswer(
           `Training points you toward the safer and more responsible response.<br><br>
-          <b>Why it matters:</b> ${scenarioMatch.explanation}<br><br>
-          <b>Go back to:</b> ${scenarioMatch.where}`
+          <strong>Why it matters:</strong> ${scenarioMatch.explanation}<br><br>
+          <strong>Go back to:</strong> ${scenarioMatch.where}`
         );
       }
 
-      // Final fallback
       return finalizeAnswer(
         `Ask using a concept from the lesson and I’ll break it down clearly.<br><br>
-        <b>Current focus:</b> ${currentLesson ? currentLesson.title : "Course review"}`
+        <strong>Current focus:</strong> ${currentLesson ? currentLesson.title : "Course review"}`
       );
     }
 
-    // -----------------------------------------------------------------
-    // AI HELPERS
-    // -----------------------------------------------------------------
     function normalize(text) {
       return String(text || "").toLowerCase().trim();
     }
@@ -461,9 +432,6 @@ if (!window.BSA_AI_LOADED) {
       return best.score > 0.4 ? best : null;
     }
 
-    // -----------------------------------------------------------------
-    // MEMORY
-    // -----------------------------------------------------------------
     function rememberConversation(userText, aiText) {
       conversationMemory.push({
         user: userText,
@@ -476,49 +444,47 @@ if (!window.BSA_AI_LOADED) {
       }
     }
 
-    // -----------------------------------------------------------------
-    // UI HELPERS
-    // -----------------------------------------------------------------
-    function renderMessage(label, body, role) {
+    function renderInstructor(html) {
       return `
-        <div class="ai-msg ai-msg-${role}">
-          <div class="ai-msg-label">${label}</div>
-          <div class="ai-msg-body">${body}</div>
+        <div class="ai-row ai-row-ai">
+          <div class="ai-bubble ai-bubble-ai">
+            ${html}
+          </div>
         </div>
       `;
     }
 
-    function renderInstructor(html) {
-      return renderMessage(LABELS.instructor, html, "instructor");
-    }
-
-    function renderUser(html) {
-      return renderMessage(LABELS.user, escapeHtml(html), "user");
+    function renderUser(text) {
+      return `
+        <div class="ai-row ai-row-user">
+          <div class="ai-bubble ai-bubble-user">
+            ${text}
+          </div>
+        </div>
+      `;
     }
 
     function addUserMessage(text) {
-      const div = document.createElement("div");
-      div.className = "ai-msg-row ai-msg-row-user";
-      div.innerHTML = renderUser(escapeHtml(text));
-      aiMessages.appendChild(div);
+      aiMessages.insertAdjacentHTML("beforeend", renderUser(escapeHtml(text)));
       scrollAIToBottom();
     }
 
     function addInstructorMessage(html) {
-      const div = document.createElement("div");
-      div.className = "ai-msg-row ai-msg-row-instructor";
-      div.innerHTML = renderInstructor(html);
-      aiMessages.appendChild(div);
+      aiMessages.insertAdjacentHTML("beforeend", renderInstructor(html));
       scrollAIToBottom();
     }
 
     function addThinking() {
       const id = `thinking-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      const div = document.createElement("div");
-      div.className = "ai-msg-row ai-msg-row-instructor";
-      div.dataset.msgId = id;
-      div.innerHTML = renderInstructor(`<i class="thinking">Thinking</i>`);
-      aiMessages.appendChild(div);
+      const wrapper = document.createElement("div");
+      wrapper.className = "ai-row ai-row-ai";
+      wrapper.dataset.msgId = id;
+      wrapper.innerHTML = `
+        <div class="ai-bubble ai-bubble-ai ai-thinking">
+          Thinking<span class="ai-thinking-dots"></span>
+        </div>
+      `;
+      aiMessages.appendChild(wrapper);
       scrollAIToBottom();
       return id;
     }
@@ -526,7 +492,7 @@ if (!window.BSA_AI_LOADED) {
     function replaceMessage(id, html) {
       const target = aiMessages.querySelector(`[data-msg-id="${id}"]`);
       if (target) {
-        target.innerHTML = html;
+        target.outerHTML = html;
       } else {
         addInstructorMessage(html);
       }
@@ -580,91 +546,236 @@ if (!window.BSA_AI_LOADED) {
         : "You are in the course review area.";
 
       return `
-        Ask me about:
-        <ul style="margin:8px 0 0 18px;padding:0;">
-          <li>what a concept means</li>
-          <li>why it matters</li>
-          <li>where to review it</li>
-          <li>a simple example if it helps</li>
-        </ul>
-        <br>
+        Ask me about a concept, why it matters, where to review it, or a simple example if it helps.<br><br>
         ${lessonText}<br><br>
-        <b>Important:</b> I teach, explain, and review — not give quiz answers.
+        <strong>Important:</strong> I teach, explain, and review — not give quiz answers.
       `;
     }
 
-    // -----------------------------------------------------------------
-    // STYLE INJECTION
-    // -----------------------------------------------------------------
     (function injectStyles() {
       if (document.getElementById("aiChatBubbleStyles")) return;
 
       const s = document.createElement("style");
       s.id = "aiChatBubbleStyles";
       s.textContent = `
-        .ai-msg-row{display:flex;margin:10px 0;width:100%;}
-        .ai-msg-row-user{justify-content:flex-end;}
-        .ai-msg-row-instructor{justify-content:flex-start;}
-        .ai-msg{
-          max-width:88%;
-          border-radius:14px;
-          padding:10px 12px;
-          line-height:1.45;
-          box-shadow:0 2px 8px rgba(0,0,0,.06);
+        .ai-panel{
+          position:fixed;
+          right:24px;
+          bottom:90px;
+          width:360px;
+          height:520px;
+          background:#ffffff;
+          border-radius:18px;
+          display:flex;
+          flex-direction:column;
+          overflow:hidden;
+          box-shadow:0 25px 60px rgba(0,0,0,0.18),0 6px 16px rgba(0,0,0,0.08);
+          border:1px solid rgba(15,23,42,0.08);
+          z-index:9999;
+        }
+
+        .ai-panel.hidden{
+          display:none !important;
+        }
+
+        .ai-header{
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:10px;
+          padding:14px 16px;
+          background:#ffffff;
+          border-bottom:1px solid #e5e7eb;
+        }
+
+        .ai-title{
           font-size:14px;
-        }
-        .ai-msg-user{
-          background:#1e3a8a;
-          color:#fff;
-          border-bottom-right-radius:4px;
-        }
-        .ai-msg-instructor{
-          background:#f8fbff;
-          color:#142033;
-          border:1px solid #d9e0ec;
-          border-bottom-left-radius:4px;
-        }
-        .ai-msg-label{
-          font-size:11px;
           font-weight:700;
-          text-transform:uppercase;
-          letter-spacing:.04em;
-          margin-bottom:6px;
-          opacity:.82;
+          color:#111827;
         }
-        .ai-msg-user .ai-msg-label{color:rgba(255,255,255,.88);}
-        .ai-msg-instructor .ai-msg-label{color:#1f468c;}
-        .ai-msg-body{white-space:normal;word-break:break-word;}
-        .thinking::after{
-          content:'';
+
+        .ai-sub{
+          font-size:11px;
+          color:#6b7280;
+          margin-top:2px;
+        }
+
+        .ai-close{
+          border:none;
+          background:#f3f4f6;
+          color:#374151;
+          width:30px;
+          height:30px;
+          border-radius:999px;
+          cursor:pointer;
+          font-size:14px;
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          flex-shrink:0;
+        }
+
+        .ai-close:hover{
+          background:#e5e7eb;
+        }
+
+        .ai-messages{
+          flex:1;
+          overflow-y:auto;
+          background:#f9fafb;
+          padding:18px 14px;
+        }
+
+        .ai-row{
+          display:flex;
+          width:100%;
+          margin-bottom:12px;
+        }
+
+        .ai-row-ai{
+          justify-content:flex-start;
+        }
+
+        .ai-row-user{
+          justify-content:flex-end;
+        }
+
+        .ai-bubble{
+          max-width:82%;
+          padding:12px 14px;
+          border-radius:18px;
+          font-size:14px;
+          line-height:1.5;
+          box-shadow:0 1px 2px rgba(0,0,0,0.04);
+          word-break:break-word;
+          white-space:normal;
+        }
+
+        .ai-bubble-ai{
+          background:#ffffff;
+          color:#111827;
+          border:1px solid #e5e7eb;
+          border-bottom-left-radius:6px;
+        }
+
+        .ai-bubble-user{
+          background:#1d3557;
+          color:#ffffff;
+          border-bottom-right-radius:6px;
+        }
+
+        .ai-thinking{
+          color:#4b5563;
+        }
+
+        .ai-thinking-dots::after{
+          content:"";
           display:inline-block;
-          width:1ch;
-          animation:dots 1.2s steps(4,end) infinite;
+          width:1.2em;
+          text-align:left;
+          animation:aiDots 1.2s infinite steps(4,end);
         }
-        @keyframes dots{
-          0%,20%{content:'';}
-          40%{content:'.';}
-          60%{content:'..';}
-          80%,100%{content:'...';}
+
+        @keyframes aiDots{
+          0%{content:"";}
+          25%{content:".";}
+          50%{content:"..";}
+          75%{content:"...";}
+          100%{content:"";}
         }
+
+        .ai-input{
+          display:flex;
+          align-items:center;
+          gap:10px;
+          padding:12px;
+          background:#ffffff;
+          border-top:1px solid #e5e7eb;
+        }
+
+        .ai-input input{
+          flex:1;
+          min-width:0;
+          border:1px solid #d1d5db;
+          outline:none;
+          background:#ffffff;
+          border-radius:999px;
+          padding:10px 14px;
+          font-size:14px;
+          color:#111827;
+        }
+
+        .ai-input input:focus{
+          border-color:#93c5fd;
+          box-shadow:0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        .ai-input button{
+          border:none;
+          background:#1d3557;
+          color:#ffffff;
+          padding:10px 16px;
+          border-radius:999px;
+          font-weight:600;
+          cursor:pointer;
+          flex-shrink:0;
+        }
+
+        .ai-input button:hover{
+          background:#17304d;
+        }
+
         .ai-clear-btn{
           margin-left:auto;
-          padding:6px 12px;
-          border:1px solid #cfd6e3;
-          background:#ffffff;
-          color:#19376d;
-          border-radius:8px;
+          border:none;
+          background:#f3f4f6;
+          color:#374151;
+          padding:8px 12px;
+          border-radius:999px;
           font-size:12px;
           font-weight:600;
           cursor:pointer;
         }
+
         .ai-clear-btn:hover{
-          background:#f5f8ff;
+          background:#e5e7eb;
+        }
+
+        #aiToggleBtn{
+          position:fixed;
+          right:24px;
+          bottom:24px;
+          border:none;
+          border-radius:999px;
+          background:#1d3557;
+          color:#ffffff;
+          padding:12px 18px;
+          font-weight:600;
+          cursor:pointer;
+          box-shadow:0 6px 18px rgba(0,0,0,0.16);
+          z-index:9998;
+        }
+
+        #aiToggleBtn:hover{
+          background:#17304d;
+        }
+
+        @media (max-width: 640px){
+          .ai-panel{
+            width:calc(100vw - 24px);
+            right:12px;
+            bottom:76px;
+            height:60vh;
+            min-height:420px;
+          }
+
+          #aiToggleBtn{
+            right:12px;
+            bottom:12px;
+          }
         }
       `;
       document.head.appendChild(s);
     })();
-
   })();
 }
-
