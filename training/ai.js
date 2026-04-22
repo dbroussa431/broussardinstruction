@@ -110,12 +110,17 @@ if (!window.BSA_AI_LOADED) {
     // STYLE LAYER (YOUR VOICE)
     // ===============================
     function finalize(text) {
-      return `
-        <strong>Good question.</strong><br><br>
-        ${text}<br><br>
-        <em>Think about it — don’t just memorize it.</em>
-      `;
-    }
+  return `
+    <strong>Good — this is where people get this wrong.</strong><br><br>
+
+    ${text}<br><br>
+
+    <strong>Here’s the part you need to understand:</strong><br>
+    If you don’t recognize this early, you lose options.<br><br>
+
+    <em>Think about it — don’t just memorize it.</em>
+  `;
+}
 
     // ===============================
     // UI RENDERING
