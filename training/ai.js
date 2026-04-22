@@ -1,53 +1,19 @@
 // =====================================================================
-// BSA DAVID AI - 5.3
+// BSA AI — COMPLETE INSTRUCTOR MODEL 5.4
 // =====================================================================
 
-console.log("AI LOADED");
-
-// ---------- ELEMENTS ----------
-const panel = document.getElementById("aiPanel");
 const input = document.getElementById("aiInput");
 const sendBtn = document.getElementById("aiSend");
 const messages = document.getElementById("aiMessages");
-
 const toggleBtn = document.getElementById("aiToggleBtn");
+const panel = document.getElementById("aiPanel");
 const closeBtn = document.getElementById("aiClose");
 
-// ---------- SAFETY CHECK ----------
-if (!panel || !input || !sendBtn || !messages || !toggleBtn) {
-  console.warn("AI INIT FAILED: Missing elements");
-}
+// ---------- UI ----------
+toggleBtn.onclick = () => panel.classList.toggle("hidden");
+if (closeBtn) closeBtn.onclick = () => panel.classList.add("hidden");
 
-// ---------- TOGGLE ----------
-toggleBtn.onclick = () => {
-  panel.classList.toggle("hidden");
-};
-
-if (closeBtn) {
-  closeBtn.onclick = () => panel.classList.add("hidden");
-}
-
-// ---------- UTIL ----------
-function normalize(text) {
-  return text.toLowerCase().replace(/[^\w\s]/g, "").trim();
-}
-
-function fuzzyMatch(input, keyword) {
-  input = normalize(input);
-  keyword = normalize(keyword);
-
-  if (input.includes(keyword)) return true;
-
-  let matches = 0;
-  for (let i = 0; i < Math.min(input.length, keyword.length); i++) {
-    if (input[i] === keyword[i]) matches++;
-  }
-
-  return (matches / keyword.length) > 0.6;
-}
-
-// ---------- CHAT UI ----------
-function addMessage(text, type = "ai") {
+function addMessage(text, type="ai"){
   const div = document.createElement("div");
   div.className = "msg " + type;
   div.innerHTML = text;
@@ -55,113 +21,130 @@ function addMessage(text, type = "ai") {
   messages.scrollTop = messages.scrollHeight;
 }
 
-// ---------- INTENT ----------
-function getIntent(text) {
-  text = normalize(text);
+// ---------- UTIL ----------
+function normalize(t){
+  return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
+}
 
-  if (
-    fuzzyMatch(text, "condition yellow") ||
-    fuzzyMatch(text, "yellow") ||
-    fuzzyMatch(text, "awareness")
-  ) return "yellow";
+// ---------- DOCTRINE ----------
+function applyDoctrine(q){
+  if(q.includes("shoot") || q.includes("kill")){
+    return {
+      type:"force",
+      warning:true
+    };
+  }
 
-  if (
-    fuzzyMatch(text, "no be there") ||
-    fuzzyMatch(text, "avoid") ||
-    fuzzyMatch(text, "stay away")
-  ) return "avoidance";
+  if(q.includes("fight")){
+    return {
+      type:"mindset",
+      warning:false
+    };
+  }
 
-  if (
-    fuzzyMatch(text, "self defense") ||
-    fuzzyMatch(text, "fight") ||
-    fuzzyMatch(text, "protect")
-  ) return "mindset";
+  return { type:"general" };
+}
 
-  if (
-    fuzzyMatch(text, "when shoot") ||
-    fuzzyMatch(text, "use gun") ||
-    fuzzyMatch(text, "firearm")
-  ) return "force";
+// ---------- KNOWLEDGE ----------
+function searchLessons(q){
+  if(!window.LESSONS) return null;
 
-  return "unknown";
+  q = normalize(q);
+
+  let best=null;
+  let score=0;
+
+  LESSONS.forEach(l=>{
+    l.sections.forEach(s=>{
+      s.body.forEach(line=>{
+        let match = similarity(q,line);
+        if(match>score){
+          score=match;
+          best={lesson:l.title,heading:s.heading,line};
+        }
+      });
+    });
+  });
+
+  return score>0.3 ? best : null;
+}
+
+function similarity(a,b){
+  a=normalize(a); b=normalize(b);
+  let match=0;
+  for(let i=0;i<Math.min(a.length,b.length);i++){
+    if(a[i]===b[i]) match++;
+  }
+  return match/b.length;
 }
 
 // ---------- RESPONSE ----------
-function respond(intent) {
-  switch (intent) {
+function respond(q){
 
-    case "yellow":
-      return `
-      <b>Good question.</b><br><br>
-      Condition Yellow means you're aware of your surroundings.<br><br>
-      Not paranoid. Not distracted.<br><br>
-      You're paying attention early so you don’t have to react late.<br><br>
-      <i>The earlier you see something, the more options you have.</i>
-      `;
+  const doctrine = applyDoctrine(q);
+  const lesson = searchLessons(q);
 
-    case "avoidance":
-      return `
-      <b>This is the core idea.</b><br><br>
-      The goal is not to win the fight.<br>
-      The goal is to not be there.<br><br>
-      Most people wait too long and react late.<br><br>
-      You move early.<br><br>
-      <i>If something feels off — that’s enough. You leave.</i>
-      `;
+  // FORCE / DANGEROUS THINKING
+  if(doctrine.type==="force"){
+    return `
+<b>Stop.</b><br><br>
+You're thinking about this the wrong way.<br><br>
 
-    case "mindset":
-      return `
-      <b>Let’s correct something.</b><br><br>
-      Self-defense is not about fighting.<br><br>
-      It’s about avoiding the fight entirely.<br><br>
-      A firearm is not a solution to bad decisions.<br><br>
-      <i>The goal is to never need it.</i>
-      `;
+Force is not the goal.<br>
+Avoidance is the goal.<br><br>
 
-    case "force":
-      return `
-      <b>Careful here.</b><br><br>
-      You don’t look for a reason to use force.<br><br>
-      Force is a last resort.<br><br>
-      If you're thinking correctly, you avoid most situations long before this point.<br><br>
-      <i>Think early decisions — not last-second reactions.</i>
-      `;
+If you're at the point where you're asking that, you've already made earlier mistakes.<br><br>
 
-    default:
-      return `
-      <b>Good question.</b><br><br>
-      Ask using a lesson concept and I’ll explain it clearly.<br><br>
-      <i>Think about the concept — not just the answer.</i>
-      `;
+<i>Think earlier. Move earlier. Avoid earlier.</i>
+`;
   }
+
+  // LESSON MATCH
+  if(lesson){
+    return `
+<b>This is where people get this wrong.</b><br><br>
+
+${lesson.line}<br><br>
+
+<b>What matters:</b><br>
+You either recognize this early — or you deal with it late.<br><br>
+
+<b>Source:</b><br>
+${lesson.lesson} → ${lesson.heading}<br><br>
+
+<i>If you wait, your options disappear.</i>
+`;
+  }
+
+  // DEFAULT
+  return `
+<b>Good question.</b><br><br>
+Ask using a concept from the training and I’ll break it down.<br><br>
+<i>Think about what problem you're actually trying to solve.</i>
+`;
 }
 
 // ---------- MAIN ----------
-function handleInput() {
+function handleInput(){
   const text = input.value.trim();
-  if (!text) return;
+  if(!text) return;
 
-  addMessage(text, "user");
+  addMessage(text,"user");
 
-  const intent = getIntent(text);
+  setTimeout(()=>{
+    addMessage(respond(text),"ai");
+  },250);
 
-  setTimeout(() => {
-    addMessage(respond(intent), "ai");
-  }, 250);
-
-  input.value = "";
+  input.value="";
 }
 
-// ---------- EVENTS ----------
 sendBtn.onclick = handleInput;
-
-input.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") handleInput();
+input.addEventListener("keypress",(e)=>{
+  if(e.key==="Enter") handleInput();
 });
 
 // ---------- START ----------
-addMessage(
-  `Ask me about a concept, why it matters, or where to review it.<br><br>
-  <b>I teach — I don’t give answers.</b>`,
-  "ai"
-);
+addMessage(`
+Ask me anything from the training.<br><br>
+<b>I will correct your thinking — not just answer you.</b>
+`);
