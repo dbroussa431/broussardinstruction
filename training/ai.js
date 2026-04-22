@@ -2,188 +2,181 @@
 // BSA DAVID TEACHER - AI.JS 5.2
 // =====================================================================
 
+// ---------- UI HOOKS ----------
+const panel = document.getElementById("aiPanel");
+const input = document.getElementById("aiInput");
+const sendBtn = document.getElementById("aiSend");
+const messages = document.getElementById("aiMessages");
+const toggleBtn = document.getElementById("askInstructor");
 
-if (!window.BSA_AI_LOADED) {
-  window.BSA_AI_LOADED = true;
-
-  (function () {
-
-    const aiBtn = document.getElementById("aiToggleBtn");
-    const aiPanel = document.getElementById("aiPanel");
-    const aiClose = document.getElementById("aiClose");
-    const aiSend = document.getElementById("aiSend");
-    const aiInput = document.getElementById("aiInput");
-    const aiMessages = document.getElementById("aiMessages");
-
-    if (!aiBtn || !aiPanel) return;
-
-    let conversationMemory = [];
-
-    // ===============================
-    // INIT
-    // ===============================
-    aiBtn.onclick = () => {
-      aiPanel.classList.toggle("hidden");
-
-      if (!aiMessages.dataset.init) {
-        aiMessages.innerHTML = "";
-        addInstructorMessage(getWelcome());
-        aiMessages.dataset.init = "1";
-      }
-
-      aiInput.focus();
-    };
-
-    aiClose.onclick = () => aiPanel.classList.add("hidden");
-    aiSend.onclick = sendMessage;
-
-    aiInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
-
-    // ===============================
-    // SEND MESSAGE
-    // ===============================
-    function sendMessage() {
-      const text = aiInput.value.trim();
-      if (!text) return;
-
-      addUserMessage(text);
-      aiInput.value = "";
-      aiSend.disabled = true;
-
-      const thinkingId = addThinking();
-
-      setTimeout(() => {
-        const response = instructorAI(text);
-        replaceMessage(thinkingId, renderAI(response));
-        aiSend.disabled = false;
-        aiInput.focus();
-      }, 350);
-    }
-
-    // ===============================
-    // CORE AI (FIXED LOGIC ORDER)
-    // ===============================
-    function instructorAI(qRaw) {
-      const q = qRaw.toLowerCase();
-
-      // 1. DIRECT ANSWERS FIRST
-      if (q.includes("condition yellow")) {
-        return finalize("Condition Yellow means you are relaxed — but aware of your surroundings.");
-      }
-
-      if (q.includes("condition white")) {
-        return finalize("Condition White means you are unaware and mentally checked out.");
-      }
-
-      if (q.includes("no be there")) {
-        return finalize("The goal is simple — don’t be there when the problem happens.");
-      }
-
-      if (q.includes("responsibility")) {
-        return finalize("Carrying a firearm increases responsibility, not authority.");
-      }
-
-      // 2. NORMAL FLOW
-      if (q === "hi" || q === "hello") {
-        return finalize("I’m here. Ask me about the lesson.");
-      }
-
-      if (q.includes("help")) {
-        return finalize("Ask me about a concept and I’ll break it down.");
-      }
-
-      if (q.includes("answer") || q.includes("quiz")) {
-        return `
-          I’m not giving quiz answers.<br><br>
-          <strong>Why it matters:</strong> You need to understand the concept.<br><br>
-          Ask me to explain it instead.
-        `;
-      }
-
-      // 3. FALLBACK
-      return finalize("Ask using a lesson concept and I’ll explain it clearly.");
-    }
-
-    // ===============================
-    // STYLE LAYER (YOUR VOICE)
-    // ===============================
-    function finalize(text) {
-  return `
-    <strong>Good — this is where people get this wrong.</strong><br><br>
-
-    ${text}<br><br>
-
-    <strong>Here’s the part you need to understand:</strong><br>
-    If you don’t recognize this early, you lose options.<br><br>
-
-    <em>Think about it — don’t just memorize it.</em>
-  `;
+// ---------- TOGGLE ----------
+if (toggleBtn) {
+  toggleBtn.onclick = () => {
+    panel.style.display = panel.style.display === "flex" ? "none" : "flex";
+  };
 }
 
-    // ===============================
-    // UI RENDERING
-    // ===============================
-    function renderAI(html) {
-      return `
-        <div class="ai-row ai-row-ai">
-          <div class="ai-bubble ai-bubble-ai">${html}</div>
-        </div>
-      `;
-    }
-
-    function renderUser(text) {
-      return `
-        <div class="ai-row ai-row-user">
-          <div class="ai-bubble ai-bubble-user">${escape(text)}</div>
-        </div>
-      `;
-    }
-
-    function addUserMessage(text) {
-      aiMessages.insertAdjacentHTML("beforeend", renderUser(text));
-      scroll();
-    }
-
-    function addInstructorMessage(html) {
-      aiMessages.insertAdjacentHTML("beforeend", renderAI(html));
-      scroll();
-    }
-
-    function addThinking() {
-      const id = "t" + Date.now();
-      aiMessages.insertAdjacentHTML("beforeend", `
-        <div class="ai-row ai-row-ai" data-id="${id}">
-          <div class="ai-bubble ai-bubble-ai">Thinking...</div>
-        </div>
-      `);
-      scroll();
-      return id;
-    }
-
-    function replaceMessage(id, html) {
-      const el = aiMessages.querySelector(`[data-id="${id}"]`);
-      if (el) el.outerHTML = html;
-      scroll();
-    }
-
-    function scroll() {
-      aiMessages.scrollTop = aiMessages.scrollHeight;
-    }
-
-    function escape(str) {
-      return str.replace(/[&<>"']/g, m => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-      }[m]));
-    }
-
-    function getWelcome() {
-      return `
-        Ask me about a concept, why it matters, or where to review it.<br><br>
-        <strong>I teach — I don’t give answers.</strong>
-      `;
-    }
-
-  })();
+// ---------- UTIL ----------
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, "")
+    .trim();
 }
+
+function similarity(a, b) {
+  let longer = a.length > b.length ? a : b;
+  let shorter = a.length > b.length ? b : a;
+
+  let same = 0;
+  for (let i = 0; i < shorter.length; i++) {
+    if (longer[i] === shorter[i]) same++;
+  }
+
+  return same / longer.length;
+}
+
+function fuzzyIncludes(input, keyword) {
+  input = normalize(input);
+  keyword = normalize(keyword);
+
+  if (input.includes(keyword)) return true;
+
+  return similarity(input, keyword) > 0.6;
+}
+
+// ---------- CHAT UI ----------
+function addMessage(text, type = "ai") {
+  const div = document.createElement("div");
+  div.className = type === "user" ? "msg user" : "msg ai";
+  div.innerHTML = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// ---------- CORE BRAIN ----------
+
+function getIntent(input) {
+  input = normalize(input);
+
+  // CONDITION YELLOW
+  if (
+    fuzzyIncludes(input, "yellow") ||
+    fuzzyIncludes(input, "condition yellow") ||
+    fuzzyIncludes(input, "awareness")
+  ) {
+    return "yellow";
+  }
+
+  // NO BE THERE
+  if (
+    fuzzyIncludes(input, "no be there") ||
+    fuzzyIncludes(input, "avoid") ||
+    fuzzyIncludes(input, "stay away")
+  ) {
+    return "avoidance";
+  }
+
+  // SELF DEFENSE
+  if (
+    fuzzyIncludes(input, "self defense") ||
+    fuzzyIncludes(input, "fight") ||
+    fuzzyIncludes(input, "protect")
+  ) {
+    return "mindset";
+  }
+
+  // FIREARM USE
+  if (
+    fuzzyIncludes(input, "when shoot") ||
+    fuzzyIncludes(input, "use gun") ||
+    fuzzyIncludes(input, "firearm")
+  ) {
+    return "use_of_force";
+  }
+
+  return "unknown";
+}
+
+// ---------- RESPONSE SYSTEM ----------
+
+function respond(intent, input) {
+  switch (intent) {
+    case "yellow":
+      return `
+<b>Good question.</b><br><br>
+Condition Yellow means you're relaxed — but aware of your surroundings.<br><br>
+Not paranoid. Not distracted.<br><br>
+You’re paying attention early so you don’t have to react late.<br><br>
+<i>Think about it — the earlier you see something, the more options you have.</i>
+`;
+
+    case "avoidance":
+      return `
+<b>This is the core idea.</b><br><br>
+The goal is not to win the fight.<br>
+The goal is to not be there.<br><br>
+Most people wait too long and then try to react.<br><br>
+You don’t wait. You move early.<br><br>
+<i>If something feels off — that’s enough. You leave.</i>
+`;
+
+    case "mindset":
+      return `
+<b>Let’s correct something.</b><br><br>
+Self-defense is not about fighting.<br><br>
+It’s about avoiding the fight entirely.<br><br>
+A firearm is not a solution to bad decisions.<br><br>
+<i>The goal is to never need it.</i>
+`;
+
+    case "use_of_force":
+      return `
+<b>Careful here.</b><br><br>
+You don’t look for a reason to use force.<br><br>
+Force is a last resort — when everything else has failed.<br><br>
+If you’re thinking correctly, you avoid most situations long before that point.<br><br>
+<i>Think early decisions — not last-second reactions.</i>
+`;
+
+    default:
+      return `
+<b>Good question.</b><br><br>
+Ask using a lesson concept and I’ll explain it clearly.<br><br>
+<i>Think about the concept — not just the answer.</i>
+`;
+  }
+}
+
+// ---------- MAIN FLOW ----------
+function handleInput() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+
+  const intent = getIntent(text);
+  const reply = respond(intent, text);
+
+  setTimeout(() => {
+    addMessage(reply, "ai");
+  }, 300);
+
+  input.value = "";
+}
+
+// ---------- EVENTS ----------
+if (sendBtn) sendBtn.onclick = handleInput;
+
+if (input) {
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") handleInput();
+  });
+}
+
+// ---------- START MESSAGE ----------
+addMessage(
+  `Ask me about a concept, why it matters, or where to review it.<br><br>
+<b>I teach — I don’t give answers.</b>`,
+  "ai"
+);
