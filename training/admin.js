@@ -824,17 +824,55 @@ async function logEmailForStudent(id) {
   console.log("🔥 BUTTON CLICKED", id);
 
   const student = studentForEdit(id);
-  if (!student) return;
 
+  if (!student) {
+    alert("Student record not found.");
+    return;
+  }
+
+  // ---------- VALIDATION ----------
+  const email = String(student.email || "").trim();
+  const name = String(student.name || "").trim();
+
+  if (!email || !name) {
+    console.error("❌ Missing required fields", {
+      email,
+      name,
+      student
+    });
+
+    alert("Student record missing email or name.");
+    return;
+  }
+
+  // ---------- EMAIL FORMAT VALIDATION ----------
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    console.error("❌ Invalid email format:", email);
+
+    alert("Invalid email address for this student.");
+    return;
+  }
+
+  // ---------- DETERMINE EMAIL TYPE ----------
   const type = getNextLoggableEmailType(student);
+
   if (!type) {
-    alert("No email is due for this student.");
+    alert("No email is currently due for this student.");
     return;
   }
 
   try {
-    console.log("📡 Sending request to Firebase...");
 
+    console.log("📡 Sending request to Firebase...", {
+      email,
+      name,
+      type,
+      studentId: student.id
+    });
+
+    // ---------- SEND REQUEST ----------
     const response = await fetch(
       "https://us-central1-bsa-training-admin.cloudfunctions.net/sendManualEmail",
       {
@@ -843,9 +881,9 @@ async function logEmailForStudent(id) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          email: student.email,
-          name: student.name,
-          type: type,
+          email,
+          name,
+          type,
           studentId: student.id
         })
       }
@@ -853,29 +891,49 @@ async function logEmailForStudent(id) {
 
     console.log("📡 Response status:", response.status);
 
-    const text = await response.text();
-    console.log("📡 Raw response:", text);
+    const rawText = await response.text();
 
-    let result;
+    console.log("📡 Raw response:", rawText);
+
+    let result = {};
+
     try {
-      result = JSON.parse(text);
-    } catch {
-      throw new Error("Invalid JSON response from server");
+      result = JSON.parse(rawText);
+    } catch (jsonError) {
+
+      console.error("❌ Invalid JSON response:", jsonError);
+
+      throw new Error("Server returned invalid response.");
     }
 
+    // ---------- HANDLE FAILURE ----------
     if (!response.ok) {
-      throw new Error(result.error || "Failed to send email");
+
+      console.error("❌ Firebase returned error:", result);
+
+      throw new Error(
+        result.error ||
+        result.message ||
+        `Server error (${response.status})`
+      );
     }
 
-    console.log("✅ Email sent:", result);
+    // ---------- SUCCESS ----------
+    console.log("✅ Email sent successfully:", result);
 
     alert(`${type} email sent successfully`);
 
+    // ---------- RELOAD TABLE ----------
     await loadStudents();
 
   } catch (error) {
+
     console.error("❌ Manual send error:", error);
-    alert("Failed to send email: " + error.message);
+
+    alert(
+      "Failed to send email:\n\n" +
+      (error.message || "Unknown error")
+    );
   }
 }
 
