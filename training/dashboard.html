@@ -11,34 +11,45 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+      <div class="brand-mark">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy logo">
+      </div>
       <div>
         <h1>Broussard Shooting Academy</h1>
-        <p>Private Student Portal • Online Prerequisite Training</p>
+        <p>Private Student Portal &bull; Online Prerequisite Training</p>
       </div>
     </div>
-    <div class="top-actions">
+    <nav class="top-actions" aria-label="Site navigation">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-light" href="#live-range">Live Review & Range</a>
+      <a class="btn btn-light" href="#live-range">Live Review &amp; Range</a>
       <button class="btn btn-gold" id="logoutBtn" type="button">Logout</button>
-    </div>
+    </nav>
   </div>
 </header>
 
-<main class="container">
+<!-- Loading overlay shown until data is ready -->
+<div id="loadingOverlay" class="loading-overlay" aria-live="polite" aria-label="Loading your dashboard">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <p>Loading your training dashboard&hellip;</p>
+</div>
 
-  <section class="hero">
+<!-- Error banner, hidden by default -->
+<div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
+
+<main class="container" id="mainContent" aria-busy="true">
+
+  <section class="hero" aria-labelledby="welcomeLine">
     <div class="panel hero-main">
       <span class="eyebrow">Online prerequisite completed in stages</span>
-      <h2 id="welcomeLine"></h2>
+      <h2 id="welcomeLine">Loading&hellip;</h2>
 
       <p>
         Complete each lesson, pass each quiz (80%+), complete scenarios,
         and pass the <strong>Final Evaluation</strong> before live training.
       </p>
 
-      <div class="meta-row">
-        <span class="pill">10 Lessons</span>
+      <div class="meta-row" aria-label="Course overview">
+        <span class="pill" id="lessonCountPill">10 Lessons</span>
         <span class="pill">20-Question Quizzes</span>
         <span class="pill">2 Scenarios Per Lesson</span>
         <span class="pill">Final Evaluation Required</span>
@@ -48,10 +59,18 @@
     <div class="panel hero-side">
 
       <div class="stat-card">
-        <small>Overall Progress</small>
+        <small id="progressBarLabel">Overall Progress</small>
         <strong id="progressLabel">0 / 10 Lessons Passed</strong>
         <div class="progress-wrap">
-          <div class="progress-bar" id="progressBar"></div>
+          <div
+            class="progress-bar"
+            id="progressBar"
+            role="progressbar"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-labelledby="progressBarLabel"
+          ></div>
         </div>
       </div>
 
@@ -62,7 +81,7 @@
 
       <div class="stat-card">
         <small>Account</small>
-        <strong id="studentEmailLabel">—</strong>
+        <strong id="studentEmailLabel">&mdash;</strong>
       </div>
 
     </div>
@@ -73,67 +92,92 @@
     <p>Progress through all lessons including law, mental readiness, and final evaluation.</p>
   </div>
 
-  <section class="lesson-grid" id="lessonGrid"></section>
+  <section
+    class="lesson-grid"
+    id="lessonGrid"
+    aria-label="Lesson list"
+    aria-live="polite"
+  ></section>
 
-  <section class="next-step panel" id="live-range">
-    <h3>Final Step: Live Review & Range Qualification</h3>
+  <section class="next-step panel" id="live-range" aria-labelledby="liveRangeHeading">
+    <h3 id="liveRangeHeading">Final Step: Live Review &amp; Range Qualification</h3>
 
-    <p>
-      You must complete all lessons, including:
-    </p>
+    <p>You must complete all lessons, including:</p>
 
     <ul>
-      <li>Lessons 1–7 (Core Training)</li>
+      <li>Lessons 1&ndash;7 (Core Training)</li>
       <li>Lesson 8 (Louisiana Law)</li>
       <li>Lesson 9 (Mental Readiness)</li>
       <li><strong>Lesson 10 (Final Evaluation)</strong></li>
     </ul>
 
     <p>
-      ⚠️ <strong>Critical mistakes in Lesson 10 = automatic failure.</strong>
+      ⚠️ <strong>Critical mistakes in Lesson 10 result in automatic failure.</strong>
     </p>
 
     <p>
       Once complete, your status becomes:
-      <strong>Online Prerequisite Completed – Cleared for Live Range</strong>
+      <strong>Online Prerequisite Completed &ndash; Cleared for Live Range</strong>
     </p>
-
   </section>
 
 </main>
 
-   <!-- AI Assistant Button -->
-<button id="aiToggleBtn">💬 Ask Instructor</button>
+<!-- Logout confirmation dialog -->
+<dialog id="logoutDialog" aria-labelledby="logoutDialogTitle" aria-modal="true">
+  <h4 id="logoutDialogTitle">Log out of your session?</h4>
+  <p>Your progress is saved. You can log back in at any time.</p>
+  <div class="dialog-actions">
+    <button class="btn btn-outline" id="logoutCancel" type="button">Cancel</button>
+    <button class="btn btn-gold" id="logoutConfirm" type="button">Yes, Log Out</button>
+  </div>
+</dialog>
+
+<!-- AI Assistant Button -->
+<button id="aiToggleBtn" aria-expanded="false" aria-controls="aiPanel" aria-label="Open instructor chat">
+  💬 Ask Instructor
+</button>
 
 <!-- AI Chat Panel -->
-<div id="aiPanel" class="ai-panel hidden">
-
+<div
+  id="aiPanel"
+  class="ai-panel hidden"
+  role="dialog"
+  aria-modal="false"
+  aria-label="Instructor Guidance"
+>
   <div class="ai-header">
     <div>
-      <div class="ai-title">Instructor Guidance</div>
+      <div class="ai-title" id="aiPanelTitle">Instructor Guidance</div>
       <div class="ai-sub">BSA Training Assistant</div>
     </div>
-    <button id="aiClose" class="ai-close">✕</button>
+    <button id="aiClose" class="ai-close" aria-label="Close instructor chat">&#x2715;</button>
   </div>
 
-  <div id="aiMessages" class="ai-messages">
+  <div id="aiMessages" class="ai-messages" role="log" aria-live="polite" aria-label="Chat messages">
     <div class="ai-msg ai-msg-ai">
       Ask a question about your training, lessons, or decisions.
     </div>
   </div>
 
   <div class="ai-input">
-    <input id="aiInput" type="text" placeholder="Ask your instructor..." />
-    <button id="aiSend">Send</button>
+    <label for="aiInput" class="sr-only">Message your instructor</label>
+    <input
+      id="aiInput"
+      type="text"
+      placeholder="Ask your instructor..."
+      autocomplete="off"
+      aria-describedby="aiPanelTitle"
+    />
+    <button id="aiSend" type="button">Send</button>
   </div>
-
 </div>
 
+<!-- Classic scripts (non-module globals) loaded first -->
 <script src="data.js"></script>
 <script src="ai.js"></script>
 
 <script type="module">
-
 import {
   requireLogin,
   refreshCurrentStudentFromFirestore,
@@ -145,112 +189,248 @@ import {
   logout
 } from "./app.js";
 
+// ─── Utilities ───────────────────────────────────────────────────────────────
+
+/**
+ * Safely escape a string for injection into innerHTML.
+ * Prevents stored-XSS when lesson data comes from external sources.
+ */
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = String(str ?? "");
+  return div.innerHTML;
+}
+
+function showError(message) {
+  const banner = document.getElementById("errorBanner");
+  banner.textContent = message;
+  banner.classList.remove("hidden");
+}
+
+function hideLoading() {
+  const overlay = document.getElementById("loadingOverlay");
+  const main    = document.getElementById("mainContent");
+  overlay.classList.add("hidden");
+  main.setAttribute("aria-busy", "false");
+}
+
+// ─── Guard ───────────────────────────────────────────────────────────────────
+
 requireLogin();
 
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+// ─── Data fetch with error handling ──────────────────────────────────────────
+
+let student;
+
+try {
+  student = (await refreshCurrentStudentFromFirestore()) ?? getCurrentStudent();
+} catch (err) {
+  console.error("Failed to load student data:", err);
+  showError(
+    "Unable to load your training data. Please refresh the page or contact support."
+  );
+  hideLoading();
+}
+
+if (!student) {
+  showError("No student record found. Please log in again.");
+  hideLoading();
+}
+
+// ─── Lesson list guard ────────────────────────────────────────────────────────
+
+const LESSONS = window.LESSONS;
+
+if (!Array.isArray(LESSONS) || LESSONS.length === 0) {
+  showError("Course data failed to load. Please refresh the page.");
+  hideLoading();
+  throw new Error("window.LESSONS is missing or empty.");
+}
+
+const FINAL_LESSON_ID = LESSONS.at(-1).id;
+const LESSON_COUNT    = LESSONS.length;
+
+// ─── Header / stats ──────────────────────────────────────────────────────────
+
 const prog = overallProgress(student);
 
-// Header Info
 document.getElementById("welcomeLine").textContent =
-  `${student?.name || "Student"}, continue your training and complete your certification path.`;
+  `${student?.name ?? "Student"}, continue your training and complete your certification path.`;
 
-document.getElementById("studentEmailLabel").textContent = student?.email || "—";
+document.getElementById("studentEmailLabel").textContent = student?.email ?? "—";
 
-// Progress
+document.getElementById("lessonCountPill").textContent = `${LESSON_COUNT} Lessons`;
+
 document.getElementById("progressLabel").textContent =
   `${prog.passed} / ${prog.total} Lessons Passed`;
 
-document.getElementById("progressBar").style.width = `${prog.percent}%`;
+const bar = document.getElementById("progressBar");
+bar.style.setProperty("--progress-pct", `${prog.percent}%`);
+bar.setAttribute("aria-valuenow", prog.percent);
 
-// Status
 const complete = allLessonsComplete(student);
 
-document.getElementById("studentStatus").textContent =
-  complete
-    ? "Online Prerequisite Completed – Cleared for Live Range"
-    : "In Progress";
+document.getElementById("studentStatus").textContent = complete
+  ? "Online Prerequisite Completed – Cleared for Live Range"
+  : "In Progress";
 
-// Build Lesson Cards
+// ─── Lesson card builder ──────────────────────────────────────────────────────
+
 const grid = document.getElementById("lessonGrid");
 
-window.LESSONS.forEach((lesson) => {
-
-  const status = lessonStatus(lesson.id, student);
+LESSONS.forEach((lesson) => {
+  const status   = lessonStatus(lesson.id, student);
   const progress = getLessonProgress(lesson.id, student);
+  const isFinal  = lesson.id === FINAL_LESSON_ID;
 
-  const isFinal = lesson.id === 10;
+  // Derive a human-readable lock reason for UX clarity
+  const lockReason = status.locked
+    ? (status.lockReason ?? "Complete the previous lesson to unlock this one.")
+    : null;
 
   const card = document.createElement("article");
   card.className = "panel lesson-card";
+  card.setAttribute("aria-labelledby", `lesson-title-${lesson.id}`);
+
+  // Build action buttons safely — all lesson data escaped
+  let actionsHtml = "";
+
+  if (status.locked) {
+    actionsHtml += `
+      <button
+        class="btn btn-blue"
+        disabled
+        aria-disabled="true"
+        title="${escapeHtml(lockReason)}"
+      >Locked</button>
+      <span class="lock-reason" role="note">${escapeHtml(lockReason)}</span>
+    `;
+  } else {
+    actionsHtml += `
+      <a class="btn btn-blue" href="lesson.html?lesson=${encodeURIComponent(lesson.id)}">
+        ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
+      </a>
+    `;
+  }
+
+  if (!status.locked && progress.contentViewed) {
+    actionsHtml += `
+      <a class="btn btn-outline" href="scenario.html?lesson=${encodeURIComponent(lesson.id)}">
+        Scenarios
+      </a>
+    `;
+  }
+
+  if (!status.locked && progress.scenarioCompleted) {
+    actionsHtml += `
+      <a class="btn btn-outline" href="quiz.html?lesson=${encodeURIComponent(lesson.id)}">
+        ${isFinal ? "Start Evaluation" : "Take Quiz"}
+      </a>
+    `;
+  }
+
+  if (progress.quizPassed) {
+    actionsHtml += `
+      <a class="btn btn-outline" href="quiz.html?lesson=${encodeURIComponent(lesson.id)}&review=1">
+        Review Answers
+      </a>
+    `;
+  }
 
   card.innerHTML = `
     <div class="lesson-top">
-      <div style="display:flex;gap:12px;">
-        <div class="lesson-num ${isFinal ? 'final-lesson' : ''}">
-          ${isFinal ? '★' : lesson.id}
+      <div class="lesson-identity">
+        <div class="lesson-num ${isFinal ? "final-lesson" : ""}" aria-hidden="true">
+          ${isFinal ? "★" : escapeHtml(lesson.id)}
         </div>
         <div>
-          <h4>${lesson.title}</h4>
-          <p>${lesson.summary}</p>
+          <h4 id="lesson-title-${escapeHtml(lesson.id)}">${escapeHtml(lesson.title)}</h4>
+          <p>${escapeHtml(lesson.summary)}</p>
         </div>
       </div>
-      <span class="status ${status.className}">${status.label}</span>
+      <span class="status ${escapeHtml(status.className)}" aria-label="Status: ${escapeHtml(status.label)}">
+        ${escapeHtml(status.label)}
+      </span>
     </div>
 
-    <div class="lesson-meta">
-      <span class="chip">Time: ${lesson.estTime}</span>
+    <div class="lesson-meta" aria-label="Lesson details">
+      <span class="chip">Time: ${escapeHtml(lesson.estTime)}</span>
       <span class="chip">Quiz</span>
       <span class="chip">Scenarios</span>
       ${isFinal ? `<span class="chip critical">Final Evaluation</span>` : ""}
-      ${progress.attempts ? `<span class="chip">Attempts: ${progress.attempts}</span>` : ""}
+      ${progress.attempts ? `<span class="chip">Attempts: ${escapeHtml(progress.attempts)}</span>` : ""}
     </div>
 
     <div class="lesson-actions">
-
-      ${
-        status.locked
-          ? `<span class="btn btn-blue btn-disabled">Locked</span>`
-          : `<a class="btn btn-blue" href="lesson.html?lesson=${lesson.id}">
-               ${progress.contentViewed ? "Continue Lesson" : "Start Lesson"}
-             </a>`
-      }
-
-      ${
-        !status.locked && progress.contentViewed
-          ? `<a class="btn btn-outline" href="scenario.html?lesson=${lesson.id}">Scenarios</a>`
-          : ""
-      }
-
-      ${
-        !status.locked && progress.scenarioCompleted
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}">
-               ${isFinal ? "Start Evaluation" : "Take Quiz"}
-             </a>`
-          : ""
-      }
-
-      ${
-        progress.quizPassed
-          ? `<a class="btn btn-outline" href="quiz.html?lesson=${lesson.id}&review=1">
-               Review Answers
-             </a>`
-          : ""
-      }
-
+      ${actionsHtml}
     </div>
   `;
 
   grid.appendChild(card);
 });
 
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", () => {
+// ─── Hide loading overlay once all content is rendered ───────────────────────
+
+hideLoading();
+
+// ─── Logout with confirmation dialog ─────────────────────────────────────────
+
+const logoutBtn     = document.getElementById("logoutBtn");
+const logoutDialog  = document.getElementById("logoutDialog");
+const logoutCancel  = document.getElementById("logoutCancel");
+const logoutConfirm = document.getElementById("logoutConfirm");
+
+logoutBtn.addEventListener("click", () => {
+  logoutDialog.showModal();
+  logoutCancel.focus();
+});
+
+logoutCancel.addEventListener("click", () => {
+  logoutDialog.close();
+  logoutBtn.focus();
+});
+
+logoutConfirm.addEventListener("click", () => {
+  logoutDialog.close();
   logout();
   window.location.href = "login.html";
 });
 
- 
-  
+// Close dialog on backdrop click
+logoutDialog.addEventListener("click", (e) => {
+  if (e.target === logoutDialog) logoutDialog.close();
+});
+
+// ─── AI panel toggle ──────────────────────────────────────────────────────────
+
+const aiToggleBtn = document.getElementById("aiToggleBtn");
+const aiPanel     = document.getElementById("aiPanel");
+const aiClose     = document.getElementById("aiClose");
+const aiInput     = document.getElementById("aiInput");
+
+function openAiPanel() {
+  aiPanel.classList.remove("hidden");
+  aiToggleBtn.setAttribute("aria-expanded", "true");
+  aiInput.focus();
+}
+
+function closeAiPanel() {
+  aiPanel.classList.add("hidden");
+  aiToggleBtn.setAttribute("aria-expanded", "false");
+  aiToggleBtn.focus();
+}
+
+aiToggleBtn.addEventListener("click", () => {
+  const isHidden = aiPanel.classList.contains("hidden");
+  if (isHidden) openAiPanel(); else closeAiPanel();
+});
+
+aiClose.addEventListener("click", closeAiPanel);
+
+// Close panel on Escape key
+aiPanel.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeAiPanel();
+});
 </script>
 
 </body>
