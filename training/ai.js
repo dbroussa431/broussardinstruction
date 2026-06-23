@@ -1,5 +1,5 @@
 // =====================================================================
-// BSA DAVID INSTRUCTOR AI v7.0
+// BSA DAVID INSTRUCTOR AI v7.1
 // =====================================================================
 
 (function () {
@@ -34,51 +34,27 @@
   }
 
   // ------------------------------------------------------------
-  // ELEMENTS
+  // ELEMENTS — defer until DOM is ready
   // ------------------------------------------------------------
-  const panel =
-    document.getElementById("aiPanel") ||
-    document.querySelector(".ai-panel");
-
-  const input =
-    document.getElementById("aiInput") ||
-    document.querySelector("#aiPanel input");
-
-  const sendBtn =
-    document.getElementById("aiSend") ||
-    document.querySelector("#aiPanel button");
-
-  const messages =
-    document.getElementById("aiMessages") ||
-    document.querySelector(".ai-messages");
-
-  const toggleBtn =
-    document.getElementById("aiToggleBtn") ||
-    document.getElementById("askInstructor");
-
-  const closeBtn =
-    document.getElementById("aiClose") ||
-    document.querySelector("#aiPanel .ai-close");
-
-  if (!panel || !input || !sendBtn || !messages || !toggleBtn) {
-    console.warn("BSA AI: required UI elements missing.");
-    return;
+  function getElements() {
+    return {
+      panel:     document.getElementById("aiPanel")      || document.querySelector(".ai-panel"),
+      input:     document.getElementById("aiInput")      || document.querySelector("#aiPanel input"),
+      sendBtn:   document.getElementById("aiSend")       || document.querySelector("#aiPanel button[id='aiSend']"),
+      messages:  document.getElementById("aiMessages")   || document.querySelector(".ai-messages"),
+      toggleBtn: document.getElementById("aiToggleBtn")  || document.getElementById("askInstructor"),
+      closeBtn:  document.getElementById("aiClose")      || document.querySelector("#aiPanel .ai-close"),
+    };
   }
 
   // ------------------------------------------------------------
   // PAGE CONTEXT
   // ------------------------------------------------------------
-  const pagePath = window.location.pathname.toLowerCase();
-  const isQuizPage = pagePath.includes("quiz");
-  const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
-  const lessons = Array.isArray(window.LESSONS) ? window.LESSONS : [];
+  const pagePath    = window.location.pathname.toLowerCase();
+  const isQuizPage  = pagePath.includes("quiz");
+  const lessonId    = Number(new URLSearchParams(window.location.search).get("lesson") || 0);
+  const lessons     = Array.isArray(window.LESSONS) ? window.LESSONS : [];
   const currentLesson = lessons.find((l) => Number(l.id) === lessonId) || null;
-
-  if (isQuizPage) {
-    toggleBtn.style.display = "none";
-    panel.style.display = "none";
-    return;
-  }
 
   // ------------------------------------------------------------
   // STATE
@@ -377,19 +353,19 @@
     "just tell me the answer"
   ];
 
-  const GREETINGS = ["hi", "hello", "hey", "good morning", "good afternoon"];
+  const GREETINGS    = ["hi", "hello", "hey", "good morning", "good afternoon"];
   const HELP_PHRASES = ["help", "what can you do", "can you help"];
-  const THANKS = ["thanks", "thank you", "appreciate it"];
+  const THANKS       = ["thanks", "thank you", "appreciate it"];
 
   // ------------------------------------------------------------
-  // FUZZY MATCHING - ~80% FEEL
+  // FUZZY MATCHING
   // ------------------------------------------------------------
   function similarityScore(a, b) {
     a = normalize(a);
     b = normalize(b);
 
-    let longer = a.length > b.length ? a : b;
-    let shorter = a.length > b.length ? b : a;
+    const longer  = a.length > b.length ? a : b;
+    const shorter = a.length > b.length ? b : a;
 
     let same = 0;
     for (let i = 0; i < shorter.length; i++) {
@@ -440,7 +416,7 @@
 
     if (pWords.length === 1) {
       return qWords.some((word) => {
-        const dist = levenshtein(word, pWords[0]);
+        const dist   = levenshtein(word, pWords[0]);
         const maxLen = Math.max(word.length, pWords[0].length);
         return maxLen > 0 && dist / maxLen <= 0.45;
       });
@@ -452,20 +428,21 @@
     }
 
     return windows.some((windowText) => {
-      const dist = levenshtein(windowText, p);
+      const dist   = levenshtein(windowText, p);
       const maxLen = Math.max(windowText.length, p.length);
       return maxLen > 0 && dist / maxLen <= 0.4;
     });
   }
 
   function scoreTokenOverlap(question, text) {
-    const qTokens = tokenize(question);
+    const qTokens  = tokenize(question);
     const textNorm = normalize(text);
     let score = 0;
 
     for (const t of qTokens) {
-      if (textNorm.includes(t)) score += 3;
-      else {
+      if (textNorm.includes(t)) {
+        score += 3;
+      } else {
         const root = t.slice(0, Math.max(3, t.length - 2));
         if (textNorm.includes(root)) score += 1;
       }
@@ -475,9 +452,9 @@
   }
 
   function currentFocusText() {
-    if (currentLesson) return currentLesson.title;
+    if (currentLesson)               return currentLesson.title;
     if (pagePath.includes("dashboard")) return "dashboard review";
-    if (pagePath.includes("scenario")) return "scenario review";
+    if (pagePath.includes("scenario"))  return "scenario review";
     return "course review";
   }
 
@@ -487,103 +464,86 @@
   function greetingResponse() {
     return `
 <div class="ai-answer-block">
-  <div class="ai-answer-title">I’m here.</div>
-  <div class="ai-answer-text">
-    Ask me about a concept, situation, or mistake pattern from the training.
-  </div>
+  <div class="ai-answer-title">I'm here.</div>
+  <div class="ai-answer-text">Ask me about a concept, situation, or mistake pattern from the training.</div>
   <div class="ai-answer-meta"><b>Current focus:</b> ${escapeHtml(currentFocusText())}</div>
   <div class="ai-answer-note">I teach thinking, not answer-hunting.</div>
-</div>
-`;
+</div>`;
   }
 
   function helpResponse() {
     return `
 <div class="ai-answer-block">
   <div class="ai-answer-title">Here is what I do.</div>
-  <div class="ai-answer-text">
-    I explain doctrine, correct bad thinking, connect lesson material, and force the issue back to judgment when needed.
-  </div>
+  <div class="ai-answer-text">I explain doctrine, correct bad thinking, connect lesson material, and force the issue back to judgment when needed.</div>
   <div class="ai-answer-meta"><b>Current focus:</b> ${escapeHtml(currentFocusText())}</div>
   <div class="ai-answer-note">Ask me what it means, why it matters, or what most people get wrong.</div>
-</div>
-`;
+</div>`;
   }
 
   function thanksResponse() {
     return `
 <div class="ai-answer-block">
   <div class="ai-answer-title">Good.</div>
-  <div class="ai-answer-text">
-    Keep going. Understanding matters more than memorizing.
-  </div>
+  <div class="ai-answer-text">Keep going. Understanding matters more than memorizing.</div>
   <div class="ai-answer-note">The goal is not to sound informed. The goal is to think correctly early.</div>
-</div>
-`;
+</div>`;
   }
 
   function blockQuizAnswerResponse() {
     return `
 <div class="ai-answer-block">
   <div class="ai-answer-title">No.</div>
-  <div class="ai-answer-text">
-    I’m not giving quiz answers.
-  </div>
+  <div class="ai-answer-text">I'm not giving quiz answers.</div>
   <div class="ai-answer-section"><b>Why:</b> If you only memorize a choice, you miss the judgment behind it.</div>
   <div class="ai-answer-note">Ask me to explain the principle the question is testing.</div>
-</div>
-`;
+</div>`;
   }
 
   function doctrineResponse(concept) {
     return `
 <div class="ai-answer-block">
   <div class="ai-answer-title">This is where people get this wrong.</div>
-  <div class="ai-answer-text">${concept.answer}</div>
-  <div class="ai-answer-section"><b>Why it matters:</b> ${concept.why}</div>
-  <div class="ai-answer-section"><b>Think about this:</b> ${concept.follow}</div>
-</div>
-`;
+  <div class="ai-answer-text">${escapeHtml(concept.answer)}</div>
+  <div class="ai-answer-section"><b>Why it matters:</b> ${escapeHtml(concept.why)}</div>
+  <div class="ai-answer-section"><b>Think about this:</b> ${escapeHtml(concept.follow)}</div>
+</div>`;
   }
 
   function lessonResponse(match) {
     return `
 <div class="ai-answer-block">
   <div class="ai-answer-title">Back up.</div>
-  <div class="ai-answer-text">${match.line}</div>
+  <div class="ai-answer-text">${escapeHtml(match.line)}</div>
   <div class="ai-answer-section">
-    <b>Why it matters:</b> ${match.summary || "If you do not understand the principle early, your decisions get worse later."}
+    <b>Why it matters:</b> ${escapeHtml(match.summary || "If you do not understand the principle early, your decisions get worse later.")}
   </div>
-  <div class="ai-answer-section"><b>Source:</b> ${escapeHtml(match.lessonTitle)} → ${escapeHtml(match.heading)}</div>
+  <div class="ai-answer-section"><b>Source:</b> ${escapeHtml(match.lessonTitle)} &rarr; ${escapeHtml(match.heading)}</div>
   <div class="ai-answer-note">Most people miss this because they jump to reaction before they understand the setup.</div>
-</div>
-`;
+</div>`;
   }
 
   function fallbackResponse() {
     return `
 <div class="ai-answer-block">
-  <div class="ai-answer-title">You’re still asking too wide.</div>
-  <div class="ai-answer-text">
-    Give me the concept, situation, or mistake you’re actually trying to understand.
-  </div>
+  <div class="ai-answer-title">You're still asking too wide.</div>
+  <div class="ai-answer-text">Give me the concept, situation, or mistake you're actually trying to understand.</div>
   <div class="ai-answer-section">
     <b>Try:</b><br>
-    - what is condition yellow<br>
-    - what if someone closes distance<br>
-    - why does awareness matter<br>
-    - when does force become the wrong question
+    &bull; what is condition yellow<br>
+    &bull; what if someone closes distance<br>
+    &bull; why does awareness matter<br>
+    &bull; when does force become the wrong question
   </div>
   <div class="ai-answer-note">The clearer the concept, the cleaner the correction.</div>
-</div>
-`;
+</div>`;
   }
 
   // ------------------------------------------------------------
   // CONCEPT MATCHING
   // ------------------------------------------------------------
   function findConcept(question) {
-    let best = null;
+    let best      = null;
     let bestScore = 0;
 
     for (const concept of CONCEPTS) {
@@ -606,7 +566,7 @@
   function findLessonMatch(question) {
     if (!lessons.length) return null;
 
-    let best = null;
+    let best      = null;
     let bestScore = 0;
 
     for (const lesson of lessons) {
@@ -627,9 +587,9 @@
             bestScore = score;
             best = {
               lessonTitle: lesson.title,
-              heading: section.heading,
+              heading:     section.heading,
               line,
-              summary: lesson.summary || ""
+              summary:     lesson.summary || ""
             };
           }
         }
@@ -663,34 +623,25 @@
   }
 
   function remember(userText, aiText) {
-    memory.push({
-      user: userText,
-      ai: aiText,
-      time: Date.now()
-    });
-
+    memory.push({ user: userText, ai: aiText, time: Date.now() });
     if (memory.length > 8) memory.shift();
   }
 
   function maybeBridge(question) {
-    if (memory.length < 1) return "";
+    if (!memory.length) return "";
 
-    const recent = memory[memory.length - 1];
+    const recent    = memory[memory.length - 1];
     const nowTokens = tokenize(question);
     const oldTokens = tokenize(recent.user);
-    const overlap = nowTokens.filter((t) => oldTokens.includes(t));
+    const overlap   = nowTokens.filter((t) => oldTokens.includes(t));
 
-    if (overlap.length >= 2) {
-      return "This connects to what you just asked. ";
-    }
-
-    return "";
+    return overlap.length >= 2 ? "This connects to what you just asked. " : "";
   }
 
   function answer(question) {
-    if (isGreeting(question)) return greetingResponse();
-    if (isHelp(question)) return helpResponse();
-    if (isThanks(question)) return thanksResponse();
+    if (isGreeting(question))    return greetingResponse();
+    if (isHelp(question))        return helpResponse();
+    if (isThanks(question))      return thanksResponse();
     if (isQuizRequest(question)) return blockQuizAnswerResponse();
 
     const bridge = maybeBridge(question);
@@ -705,9 +656,7 @@
 
     const lessonMatch = findLessonMatch(question);
     if (lessonMatch) {
-      if (bridge) {
-        lessonMatch.line = bridge + lessonMatch.line;
-      }
+      if (bridge) lessonMatch.line = bridge + lessonMatch.line;
       return lessonResponse(lessonMatch);
     }
 
@@ -725,7 +674,7 @@
     bubble.className = `msg msg-${type}`;
 
     const label = document.createElement("div");
-    label.className = "msg-label";
+    label.className  = "msg-label";
     label.textContent = type === "user" ? "You" : "BSA Instructor";
 
     const body = document.createElement("div");
@@ -735,17 +684,22 @@
     bubble.appendChild(label);
     bubble.appendChild(body);
     row.appendChild(bubble);
-    messages.appendChild(row);
 
+    const { messages } = getElements();
+    messages.appendChild(row);
     messages.scrollTop = messages.scrollHeight;
   }
 
+  // ------------------------------------------------------------
+  // SEND HANDLER
+  // ------------------------------------------------------------
   function handleSend() {
+    const { input, sendBtn } = getElements();
     const text = input.value.trim();
     if (!text || sendBtn.disabled) return;
 
     addMessage(escapeHtml(text), "user");
-    input.value = "";
+    input.value     = "";
     sendBtn.disabled = true;
 
     setTimeout(() => {
@@ -758,46 +712,30 @@
   }
 
   // ------------------------------------------------------------
-  // EVENTS
+  // PANEL OPEN / CLOSE
   // ------------------------------------------------------------
-  toggleBtn.addEventListener("click", () => {
-    const hiddenByClass = panel.classList.contains("hidden");
-    const hiddenByStyle = panel.style.display === "none" || panel.style.display === "";
-
-    if (hiddenByClass) {
-      panel.classList.remove("hidden");
-      panel.style.display = "flex";
-    } else if (hiddenByStyle) {
-      panel.style.display = "flex";
-    } else {
-      if (panel.classList.contains("hidden")) {
-        panel.classList.remove("hidden");
-      } else {
-        panel.style.display = "none";
-      }
-    }
-
-    if (panel.style.display === "flex" || !panel.classList.contains("hidden")) {
-      input.focus();
-    }
-  });
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      panel.style.display = "none";
-      panel.classList.add("hidden");
-    });
+  function isPanelOpen(panel) {
+    return !panel.classList.contains("hidden") && panel.style.display !== "none";
   }
 
-  sendBtn.addEventListener("click", handleSend);
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleSend();
-  });
+  function openPanel(panel, input, toggleBtn) {
+    panel.classList.remove("hidden");
+    panel.style.display = "flex";
+    toggleBtn.setAttribute("aria-expanded", "true");
+    input.focus();
+  }
+
+  function closePanel(panel, toggleBtn) {
+    panel.classList.add("hidden");
+    panel.style.display = "none";
+    toggleBtn.setAttribute("aria-expanded", "false");
+    toggleBtn.focus();
+  }
 
   // ------------------------------------------------------------
   // STYLE INJECTION
   // ------------------------------------------------------------
-  (function injectAIStyles() {
+  function injectAIStyles() {
     if (document.getElementById("bsa-ai-styles-v7")) return;
 
     const style = document.createElement("style");
@@ -808,14 +746,8 @@
         width: 100%;
         margin: 10px 0;
       }
-
-      .ai-msg-row-user {
-        justify-content: flex-end;
-      }
-
-      .ai-msg-row-ai {
-        justify-content: flex-start;
-      }
+      .ai-msg-row-user { justify-content: flex-end; }
+      .ai-msg-row-ai   { justify-content: flex-start; }
 
       .msg {
         max-width: 88%;
@@ -826,13 +758,11 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         animation: bsaAiFadeIn 0.18s ease;
       }
-
       .msg-user {
         background: #1e3a5f;
         color: #ffffff;
         border-bottom-right-radius: 4px;
       }
-
       .msg-ai {
         background: #f4f6f8;
         color: #1d1d1d;
@@ -848,75 +778,127 @@
         margin-bottom: 6px;
         opacity: 0.8;
       }
+      .msg-user .msg-label { color: rgba(255,255,255,0.82); }
+      .msg-ai  .msg-label  { color: #29456d; }
 
-      .msg-user .msg-label {
-        color: rgba(255,255,255,0.82);
-      }
-
-      .msg-ai .msg-label {
-        color: #29456d;
-      }
-
-      .msg-body {
-        word-break: break-word;
-      }
+      .msg-body { word-break: break-word; }
 
       .ai-answer-block {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-
-      .ai-answer-title {
-        font-weight: 700;
-        color: #14263f;
-      }
-
-      .ai-answer-text {
-        color: #1d1d1d;
-      }
-
+      .ai-answer-title   { font-weight: 700; color: #14263f; }
+      .ai-answer-text    { color: #1d1d1d; }
       .ai-answer-section {
         padding: 8px 10px;
         background: #ffffff;
         border: 1px solid #e2e8ef;
         border-radius: 10px;
       }
-
-      .ai-answer-meta {
-        font-size: 13px;
-      }
-
-      .ai-answer-note {
-        font-style: italic;
-        color: #4d5d72;
-      }
+      .ai-answer-meta  { font-size: 13px; }
+      .ai-answer-note  { font-style: italic; color: #4d5d72; }
 
       @keyframes bsaAiFadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(4px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
     `;
     document.head.appendChild(style);
-  })();
+  }
 
   // ------------------------------------------------------------
-  // BOOT
+  // BOOT — wait for DOM if needed
   // ------------------------------------------------------------
-  addMessage(
-    `
+  function boot() {
+    const { panel, input, sendBtn, messages, toggleBtn, closeBtn } = getElements();
+
+    if (!panel || !input || !sendBtn || !messages || !toggleBtn) {
+      console.warn("BSA AI: required UI elements not found. Retrying...");
+      // Retry once after a short delay in case the module script is still rendering
+      setTimeout(() => {
+        const els = getElements();
+        if (!els.panel || !els.input || !els.sendBtn || !els.messages || !els.toggleBtn) {
+          console.error("BSA AI: required UI elements still missing after retry. Aborting.");
+          return;
+        }
+        attachEvents(els);
+        injectAIStyles();
+        bootMessage(els.messages);
+      }, 300);
+      return;
+    }
+
+    // Hide the panel on quiz pages
+    if (isQuizPage) {
+      toggleBtn.style.display = "none";
+      panel.style.display     = "none";
+      return;
+    }
+
+    attachEvents({ panel, input, sendBtn, messages, toggleBtn, closeBtn });
+    injectAIStyles();
+    bootMessage(messages);
+  }
+
+  function attachEvents({ panel, input, sendBtn, toggleBtn, closeBtn }) {
+    // Toggle open/close
+    toggleBtn.addEventListener("click", () => {
+      if (isPanelOpen(panel)) {
+        closePanel(panel, toggleBtn);
+      } else {
+        openPanel(panel, input, toggleBtn);
+      }
+    });
+
+    // Close button
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => closePanel(panel, toggleBtn));
+    }
+
+    // Escape key closes the panel
+    panel.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closePanel(panel, toggleBtn);
+    });
+
+    // Send handlers
+    sendBtn.addEventListener("click", handleSend);
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleSend();
+    });
+  }
+
+  function bootMessage(messages) {
+    const row = document.createElement("div");
+    row.className = "ai-msg-row ai-msg-row-ai";
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg msg-ai";
+
+    const label = document.createElement("div");
+    label.className   = "msg-label";
+    label.textContent = "BSA Instructor";
+
+    const body = document.createElement("div");
+    body.className = "msg-body";
+    body.innerHTML = `
 <div class="ai-answer-block">
   <div class="ai-answer-title">Ask me about a concept, situation, or mistake from the training.</div>
   <div class="ai-answer-text"><b>I teach thinking — not answer hunting.</b></div>
   <div class="ai-answer-note">Most problems are missed early before they are reacted to late.</div>
-</div>
-`,
-    "ai"
-  );
+</div>`;
+
+    bubble.appendChild(label);
+    bubble.appendChild(body);
+    row.appendChild(bubble);
+    messages.appendChild(row);
+  }
+
+  // Run immediately if DOM is ready, otherwise wait
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
 })();
