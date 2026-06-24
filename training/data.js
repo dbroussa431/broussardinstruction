@@ -1,713 +1,664 @@
 window.LESSONS = [
- {
-  id: 1,
-  slug: 'personal-protection-plan',
-  title: 'Developing a Personal Protection Plan',
-  estTime: '18 min',
-  summary: 'This lesson teaches awareness, avoidance, and decision-making. The goal is not to win confrontations — the goal is to avoid them entirely. Students learn how to recognize danger early, move intelligently, and apply the “No Be There” principle to stay out of trouble before it starts.',
-
-  sections: [
-    {
-      heading: 'The Real Goal of Personal Protection',
-      body: [
-        'Most people think self-defense is about fighting. It is not.',
-        'Self-defense is about avoiding the fight entirely.',
-        'If you are a law-abiding citizen, your goal is not to win confrontations. Your goal is to stay out of them.',
-        'The earlier you recognize a problem, the more options you have.',
-        'The later you recognize it, the fewer options remain.',
-        'Good decisions happen early, not in the middle of chaos.'
-      ]
-    },
-    {
-      heading: 'Awareness Levels',
-      body: [
-        'Condition White is unaware and distracted. This is where most people get caught off guard.',
-        'Condition Yellow is calm awareness. You are alert, not paranoid.',
-        'Condition Orange means you have identified something that may become a threat.',
-        'Condition Red means a decision point has been reached and action is required.',
-        'Most of your life should be lived in Condition Yellow when in public.',
-        'You are not looking for trouble — you are simply paying attention.'
-      ]
-    },
-    {
-      heading: 'The “No Be There” Principle',
-      body: [
-        'The most important concept in this course is simple: do not be there.',
-        'You do not need to confirm a threat to make a decision.',
-        'If something feels wrong, that is enough.',
-        'You do not move closer. You do not wait. You do not investigate.',
-        'You leave. You create distance. You change direction.',
-        'Avoidance is not weakness. Avoidance is control.',
-        'Most people get into trouble because they stay too long or ignore early warning signs.',
-        'Your best decision is often the one that removes you from the situation entirely.'
-      ]
-    },
-    {
-      heading: 'Avoidance and Route Selection',
-      body: [
-        'Bad routes create bad outcomes.',
-        'Dark areas, isolated spaces, and tight environments reduce your options.',
-        'Good route selection keeps you near light, people, and exits.',
-        'You should always be thinking about where you would go if something changed.',
-        'Convenience should never override safety.',
-        'The safest path is not always the shortest path.'
-      ]
-    },
-    {
-      heading: 'Environmental Awareness and Positioning',
-      body: [
-        'Your environment can work for you or against you.',
-        'Barriers, distance, and movement are advantages if used early.',
-        'Low-light and isolation generally increase risk.',
-        'Positioning yourself correctly early removes the need for force later.',
-        'You are not reacting to danger — you are staying ahead of it.'
-      ]
-    },
-    {
-      heading: 'Daily Habits That Prevent Problems',
-      body: [
-        'Most problems are preventable with simple habits.',
-        'Stay off your phone when moving through public spaces.',
-        'Pay attention when entering and exiting locations.',
-        'Lock doors, use lighting, and control access points at home.',
-        'Mental rehearsal prepares you to make decisions faster under stress.',
-        'Preparedness is not fear — it is discipline.'
-      ]
-    }
-  ],
-
-  scenarios: [
-    {
-      prompt: 'You are walking to your car at night and notice someone adjusting their path to match yours. Something feels off, but you are not sure if it is a real threat. What is the best decision?',
-      choices: [
-        'Continue walking normally until you are sure',
-        'Move closer to confirm what they are doing',
-        'Change direction and move toward light and people',
-        'Stop and watch them more closely'
-      ],
-      answer: 2,
-      explanation: 'You do not need confirmation to act. The correct decision is to leave early and avoid the situation entirely. This is the “No Be There” principle.'
-    },
-    {
-      prompt: 'Your car is parked in a dark, isolated area behind a building. You realize there are better-lit routes available, but they take longer. What is the best choice?',
-      choices: [
-        'Take the shortcut to save time',
-        'Proceed quickly and hope nothing happens',
-        'Take the safer, well-lit route instead',
-        'Enter the area with your hand on your weapon'
-      ],
-      answer: 2,
-      explanation: 'The lesson is not about managing risk once you are in danger. It is about avoiding the risk entirely. The correct decision is not to be there.'
-    }
-  ]
-},
-    {
-  id: 2,
-  slug: 'firearm-basics',
-  title: 'Firearm Basics and Responsibility',
-  estTime: '22 min',
-  summary: 'This lesson explains how firearms work, how to handle them safely, and the responsibility that comes with carrying one. The focus is not just mechanics — it is understanding that a firearm is a last-resort tool, not a solution to poor decisions.',
-
-  sections: [
-    {
-      heading: 'The Reality of Carrying a Firearm',
-      body: [
-        'It is better to have a firearm and not need it than to need one and not have it.',
-        'But that does not mean you should ever look for a reason to use it.',
-        'Carrying a firearm does not give you more authority. It gives you more responsibility.',
-        'You are now accountable for every decision at a higher level.',
-        'The goal is not to use the firearm. The goal is to never need it.',
-        'This is why the “No Be There” principle still applies, even when armed.'
-      ]
-    },
-    {
-      heading: 'Universal Safety Rules',
-      body: [
-        'Always treat every firearm as if it is loaded.',
-        'Never point a firearm at anything you are not willing to destroy.',
-        'Keep your finger off the trigger until you have made the decision to shoot.',
-        'Be sure of your target and what is beyond it.',
-        'These rules are always in effect — no exceptions.',
-        'Most accidents happen when people believe the rules do not apply in that moment.'
-      ]
-    },
-    {
-      heading: 'How a Firearm Works',
-      body: [
-        'A firearm is a mechanical system that fires a cartridge.',
-        'When the trigger is pressed, it releases a firing mechanism that strikes the primer.',
-        'The primer ignites powder, creating pressure that pushes the bullet down the barrel.',
-        'Semi-automatic firearms cycle automatically, ejecting the casing and loading a new round.',
-        'Understanding how the firearm works helps you understand both function and failure.'
-      ]
-    },
-    {
-      heading: 'Ammunition Basics',
-      body: [
-        'A cartridge consists of a case, primer, powder, and bullet.',
-        'Different calibers behave differently in recoil, penetration, and performance.',
-        'Not all ammunition is appropriate for self-defense.',
-        'Overpenetration is a real risk — what is behind your target matters.',
-        'You are responsible for every round that leaves the firearm.'
-      ]
-    },
-    {
-      heading: 'Malfunctions and Limitations',
-      body: [
-        'Firearms are mechanical devices and can fail.',
-        'Common malfunctions include failure to fire, failure to feed, and failure to eject.',
-        'Nothing works perfectly all the time.',
-        'This is why your plan should never depend entirely on the firearm.',
-        'Avoidance and positioning matter more than equipment.'
-      ]
-    },
-    {
-      heading: 'Safe Handling and Storage',
-      body: [
-        'Safe handling prevents accidents.',
-        'Safe storage prevents unauthorized access.',
-        'Firearms must be secured when not in use.',
-        'A firearm left unsecured becomes a liability.',
-        'Responsibility continues even when the firearm is not in your hand.'
-      ]
-    },
-    {
-      heading: 'When NOT to Use a Firearm',
-      body: [
-        'A firearm is not used to investigate, intimidate, or solve uncertainty.',
-        'You do not use a firearm because something feels off.',
-        'You use distance, awareness, and movement first.',
-        'If you can leave, you leave.',
-        'If you can avoid, you avoid.',
-        'If a firearm becomes necessary, the situation has already escalated to a critical level.',
-        'Your responsibility is to prevent reaching that point whenever possible.'
-      ]
-    }
-  ],
-
-  scenarios: [
-    {
-      prompt: 'You hear a noise outside your home late at night. You are unsure what caused it. What is the best decision?',
-      choices: [
-        'Go outside with your firearm to investigate',
-        'Stay inside, secure your position, and observe safely',
-        'Immediately confront the situation outside',
-        'Ignore it completely'
-      ],
-      answer: 1,
-      explanation: 'A firearm is not used to investigate uncertainty. The correct decision is to remain in a position of safety and avoid unnecessary risk.'
-    },
-    {
-      prompt: 'You notice a suspicious person in a parking lot while carrying a firearm. What is the correct approach?',
-      choices: [
-        'Approach carefully with your firearm ready',
-        'Use your firearm to control the situation',
-        'Create distance and leave the area',
-        'Stay and observe until you are sure'
-      ],
-      answer: 2,
-      explanation: 'The firearm is not the solution. The correct decision is to leave early and avoid the situation entirely.'
-    }
-  ]
-},
-{
-  id: 3,
-  slug: 'shooting-fundamentals',
-  title: 'Shooting Fundamentals',
-  estTime: '25 min',
-
-  summary: 'This lesson covers the core mechanics of shooting: grip, stance, sight alignment, and trigger control. These fundamentals create consistency and control, but skill must always be paired with judgment. The goal is not just accuracy — it is responsible application.',
-
-  sections: [
-
-    {
-      heading: 'Why Fundamentals Matter',
-      body: [
-        'Fundamentals are the foundation of all shooting.',
-        'Without them, accuracy is inconsistent and unreliable.',
-        'Under stress, you will fall back to your level of training.',
-        'You do not rise to the occasion — you default to your habits.',
-        'This is why correct repetition matters.'
-      ]
-    },
-
-    {
-      heading: 'Grip: Control Starts Here',
-      body: [
-        'Grip controls recoil and stabilizes the firearm.',
-        'Both hands must work together as a unit.',
-        'A weak or inconsistent grip causes inconsistent shots.',
-        'Firm, consistent pressure is key — not excessive tension.',
-        'Control begins before the trigger is ever pressed.'
-      ]
-    },
-
-    {
-      heading: 'Stance and Balance',
-      body: [
-        'Your stance supports stability and movement.',
-        'Weight should be slightly forward to manage recoil.',
-        'Perfect stance matters less than mobility in real life.',
-        'You must be able to move, not just stand still.',
-        'Real situations are dynamic — not a shooting lane.'
-      ]
-    },
-
-    {
-      heading: 'Sight Alignment and Focus',
-      body: [
-        'Sight alignment is the relationship between front and rear sights.',
-        'Sight picture is placing those sights onto the target.',
-        'Focus should remain on the front sight.',
-        'Small alignment errors become large misses over distance.',
-        'Under stress, vision narrows — making this harder.'
-      ]
-    },
-
-    {
-      heading: 'Trigger Control',
-      body: [
-        'Trigger control is one of the most critical skills.',
-        'Press the trigger straight to the rear.',
-        'Jerking or slapping causes missed shots.',
-        'Smooth, consistent pressure creates consistent results.',
-        'Every shot should feel the same.'
-      ]
-    },
-
-    {
-      heading: 'Follow-Through',
-      body: [
-        'The shot is not over when the trigger breaks.',
-        'Maintain control after firing.',
-        'Allow the firearm to cycle and reset properly.',
-        'Prepare for additional shots if needed.',
-        'Control continues beyond the shot.'
-      ]
-    },
-
-    {
-      heading: 'Practice and Muscle Memory',
-      body: [
-        'Skill is built through repetition.',
-        'Dry fire practice allows safe skill development.',
-        'Bad repetition creates bad habits.',
-        'Consistency is more important than speed.',
-        'You are building responses for stress situations.'
-      ]
-    },
-
-    {
-      heading: 'Equipment Reality',
-      body: [
-        'Equipment does not replace skill.',
-        'Lasers, optics, and lights are tools — not solutions.',
-        'Holsters must be safe and secure.',
-        'Accessories should support fundamentals, not replace them.',
-        'The more gear you add, the more training it requires.'
-      ]
-    },
-
-    {
-      heading: 'Reality Check: Skill vs Judgment',
-      body: [
-        'Being skilled does not mean you should use force.',
-        'Avoidance is always the priority.',
-        'If you can leave, you leave.',
-        'If you can avoid, you avoid.',
-        'The firearm is a last resort.',
-        '“No Be There” still applies — always.'
-      ]
-    }
-
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You have strong shooting skills. You notice a situation becoming tense nearby. What is the correct action?',
-      choices: [
-        'Move closer to evaluate',
-        'Prepare to draw immediately',
-        'Create distance and leave',
-        'Stay and observe closely'
-      ],
-      answer: 2,
-      explanation: 'Skill does not override judgment. Avoidance is always the correct first choice.'
-    },
-
-    {
-      prompt: 'Your shots are inconsistent during practice. What is the most likely cause?',
-      choices: [
-        'The firearm is defective',
-        'Environmental conditions only',
-        'Grip or trigger control issues',
-        'The ammunition is incorrect'
-      ],
-      answer: 2,
-      explanation: 'Most inconsistency comes from fundamentals, especially grip and trigger control.'
-    },
-
-    {
-      prompt: 'You rely heavily on a laser for aiming. What is the risk?',
-      choices: [
-        'It replaces the need for fundamentals',
-        'It always improves accuracy',
-        'It may fail or not be visible',
-        'It guarantees faster shooting'
-      ],
-      answer: 2,
-      explanation: 'Equipment can fail. Fundamentals must always be your foundation.'
-    }
-
-  ]
-},
   {
-  id: 4,
-  slug: 'legal-use-of-force',
-  title: 'Legal Use of Force and Aftermath',
-  estTime: '30–40 min',
+    id: 1,
+    slug: 'personal-protection-plan',
+    title: 'Developing a Personal Protection Plan',
+    estTime: '18 min',
+    summary: 'This lesson teaches awareness, avoidance, and decision-making. The goal is not to win confrontations — the goal is to avoid them entirely. Students learn how to recognize danger early, move intelligently, and apply the “No Be There” principle to stay out of trouble before it starts.',
 
-  summary: 'This lesson explains when force may be legally justified, what happens during and after a defensive incident, and the serious consequences that follow. The focus is not just survival, but making lawful, responsible decisions before, during, and after an encounter.',
+    sections: [
+      {
+        heading: 'The Real Goal of Personal Protection',
+        body: [
+          'Most people think self-defense is about fighting. It is not.',
+          'Self-defense is about avoiding the fight entirely.',
+          'If you are a law-abiding citizen, your goal is not to win confrontations. Your goal is to stay out of them.',
+          'The earlier you recognize a problem, the more options you have.',
+          'The later you recognize it, the fewer options remain.',
+          'Good decisions happen early, not in the middle of chaos.'
+        ]
+      },
+      {
+        heading: 'Awareness Levels',
+        body: [
+          'Condition White is unaware and distracted. This is where most people get caught off guard.',
+          'Condition Yellow is calm awareness. You are alert, not paranoid.',
+          'Condition Orange means you have identified something that may become a threat.',
+          'Condition Red means a decision point has been reached and action is required.',
+          'Most of your life should be lived in Condition Yellow when in public.',
+          'You are not looking for trouble — you are simply paying attention.'
+        ]
+      },
+      {
+        heading: 'The “No Be There” Principle',
+        body: [
+          'The most important concept in this course is simple: do not be there.',
+          'You do not need to confirm a threat to make a decision.',
+          'If something feels wrong, that is enough.',
+          'You do not move closer. You do not wait. You do not investigate.',
+          'You leave. You create distance. You change direction.',
+          'Avoidance is not weakness. Avoidance is control.',
+          'Most people get into trouble because they stay too long or ignore early warning signs.',
+          'Your best decision is often the one that removes you from the situation entirely.'
+        ]
+      },
+      {
+        heading: 'Avoidance and Route Selection',
+        body: [
+          'Bad routes create bad outcomes.',
+          'Dark areas, isolated spaces, and tight environments reduce your options.',
+          'Good route selection keeps you near light, people, and exits.',
+          'You should always be thinking about where you would go if something changed.',
+          'Convenience should never override safety.',
+          'The safest path is not always the shortest path.'
+        ]
+      },
+      {
+        heading: 'Environmental Awareness and Positioning',
+        body: [
+          'Your environment can work for you or against you.',
+          'Barriers, distance, and movement are advantages if used early.',
+          'Low-light and isolation generally increase risk.',
+          'Positioning yourself correctly early removes the need for force later.',
+          'You are not reacting to danger — you are staying ahead of it.'
+        ]
+      },
+      {
+        heading: 'Daily Habits That Prevent Problems',
+        body: [
+          'Most problems are preventable with simple habits.',
+          'Stay off your phone when moving through public spaces.',
+          'Pay attention when entering and exiting locations.',
+          'Lock doors, use lighting, and control access points at home.',
+          'Mental rehearsal prepares you to make decisions faster under stress.',
+          'Preparedness is not fear — it is discipline.'
+        ]
+      }
+    ],
 
-  sections: [
-
-    {
-      heading: 'The Reality of Use of Force',
-      body: [
-        'Using force is a life-altering event.',
-        'Even when justified, there are consequences.',
-        'Legal, financial, emotional, and social impacts follow.',
-        'This is not a win — it is survival.',
-        'Avoidance is always the preferred outcome.'
-      ]
-    },
-
-    {
-      heading: 'When Is Force Justified?',
-      body: [
-        'Force is only justified when facing an immediate threat.',
-        'You must reasonably believe serious harm or death is imminent.',
-        'Your actions must be proportional to the threat.',
-        'You must not be the aggressor.',
-        'Every decision will be judged after the fact.'
-      ]
-    },
-
-    {
-      heading: 'The Decision Timeline',
-      body: [
-        'Violent encounters happen quickly.',
-        'Decisions are made in seconds.',
-        'Hesitation or poor judgment can have lasting consequences.',
-        'Preparation helps guide decisions under stress.',
-        'You must think before the moment happens.'
-      ]
-    },
-
-    {
-      heading: 'Physiological Effects Under Stress',
-      body: [
-        'Heart rate increases dramatically.',
-        'Vision narrows (tunnel vision).',
-        'Hearing may be diminished.',
-        'Fine motor skills degrade.',
-        'Time perception may be distorted.'
-      ]
-    },
-
-    {
-      heading: 'After the Threat Ends',
-      body: [
-        'The situation is not over when the threat stops.',
-        'You must assess safety and surroundings.',
-        'Call 911 as soon as possible.',
-        'Provide only necessary information.',
-        'Remain calm and cooperative.'
-      ]
-    },
-
-    {
-      heading: 'Interaction with Law Enforcement',
-      body: [
-        'Expect to be treated as part of the investigation.',
-        'Keep your hands visible and follow instructions.',
-        'Do not make detailed statements under stress.',
-        'Identify yourself and request legal counsel if needed.',
-        'Everything you say can be used in court.'
-      ]
-    },
-
-    {
-      heading: 'Legal and Financial Consequences',
-      body: [
-        'Even justified use of force may result in arrest.',
-        'Legal defense can be expensive.',
-        'Civil lawsuits may follow.',
-        'Your life may change permanently.',
-        'This is why avoidance is critical.'
-      ]
-    },
-
-    {
-      heading: 'Emotional and Psychological Aftermath',
-      body: [
-        'Stress and emotional impact are common.',
-        'You may experience doubt or second-guessing.',
-        'Sleep disruption and anxiety may occur.',
-        'Support systems are important.',
-        'You must prepare mentally for the aftermath.'
-      ]
-    },
-
-    {
-      heading: 'Final Principle: Responsibility',
-      body: [
-        'Owning a firearm carries responsibility.',
-        'Having the ability to use force does not mean you should.',
-        'Avoid conflict whenever possible.',
-        '“No Be There” is still your first strategy.',
-        'With great power comes great responsibility.'
-      ]
-    }
-
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You are in a situation that feels uncomfortable but not immediately dangerous. What should you do?',
-      choices: [
-        'Prepare to use force immediately',
-        'Stay and observe closely',
-        'Leave the area and create distance',
-        'Engage to figure out intent'
-      ],
-      answer: 2,
-      explanation: 'Avoidance is always the best option when possible. You are not required to stay.'
-    },
-
-    {
-      prompt: 'After a defensive incident, what is your first priority?',
-      choices: [
-        'Leave the scene immediately',
-        'Call 911 and report the situation',
-        'Post about it online',
-        'Talk to witnesses in detail'
-      ],
-      answer: 1,
-      explanation: 'Calling 911 establishes your role as the reporting party and begins the legal process correctly.'
-    },
-
-    {
-      prompt: 'During police interaction after an incident, what is the best approach?',
-      choices: [
-        'Explain everything in detail immediately',
-        'Remain calm and follow instructions',
-        'Refuse to speak entirely',
-        'Argue your case on the spot'
-      ],
-      answer: 1,
-      explanation: 'Remain calm, comply, and avoid detailed statements under stress.'
-    }
-
-  ]
-},
+    scenarios: [
+      {
+        prompt: 'You are walking to your car at night and notice someone adjusting their path to match yours. Something feels off, but you are not sure if it is a real threat. What is the best decision?',
+        choices: [
+          'Continue walking normally until you are sure',
+          'Move closer to confirm what they are doing',
+          'Change direction and move toward light and people',
+          'Stop and watch them more closely'
+        ],
+        answer: 2,
+        explanation: 'You do not need confirmation to act. The correct decision is to leave early and avoid the situation entirely. This is the “No Be There” principle.'
+      },
+      {
+        prompt: 'Your car is parked in a dark, isolated area behind a building. You realize there are better-lit routes available, but they take longer. What is the best choice?',
+        choices: [
+          'Take the shortcut to save time',
+          'Proceed quickly and hope nothing happens',
+          'Take the safer, well-lit route instead',
+          'Enter the area with your hand on your weapon'
+        ],
+        answer: 2,
+        explanation: 'The lesson is not about managing risk once you are in danger. It is about avoiding the risk entirely. The correct decision is not to be there.'
+      }
+    ]
+  },
   {
-  id: 5,
-  slug: 'applied-skills-training',
-  title: 'Applied Skills and Training',
-  estTime: '28 min',
+    id: 2,
+    slug: 'firearm-basics',
+    title: 'Firearm Basics and Responsibility',
+    estTime: '22 min',
+    summary: 'This lesson explains how firearms work, how to handle them safely, and the responsibility that comes with carrying one. The focus is not just mechanics — it is understanding that a firearm is a last-resort tool, not a solution to poor decisions.',
 
-  summary: 'This lesson focuses on applying shooting fundamentals through structured training. Drills, repetition, and consistency build performance under stress. Training prepares you for worst-case scenarios, but does not replace judgment or responsibility.',
+    sections: [
+      {
+        heading: 'The Reality of Carrying a Firearm',
+        body: [
+          'It is better to have a firearm and not need it than to need one and not have it.',
+          'But that does not mean you should ever look for a reason to use it.',
+          'Carrying a firearm does not give you more authority. It gives you more responsibility.',
+          'You are now accountable for every decision at a higher level.',
+          'The goal is not to use the firearm. The goal is to never need it.',
+          'This is why the “No Be There” principle still applies, even when armed.'
+        ]
+      },
+      {
+        heading: 'Universal Safety Rules',
+        body: [
+          'Always treat every firearm as if it is loaded.',
+          'Never point a firearm at anything you are not willing to destroy.',
+          'Keep your finger off the trigger until you have made the decision to shoot.',
+          'Be sure of your target and what is beyond it.',
+          'These rules are always in effect — no exceptions.',
+          'Most accidents happen when people believe the rules do not apply in that moment.'
+        ]
+      },
+      {
+        heading: 'How a Firearm Works',
+        body: [
+          'A firearm is a mechanical system that fires a cartridge.',
+          'When the trigger is pressed, it releases a firing mechanism that strikes the primer.',
+          'The primer ignites powder, creating pressure that pushes the bullet down the barrel.',
+          'Semi-automatic firearms cycle automatically, ejecting the casing and loading a new round.',
+          'Understanding how the firearm works helps you understand both function and failure.'
+        ]
+      },
+      {
+        heading: 'Ammunition Basics',
+        body: [
+          'A cartridge consists of a case, primer, powder, and bullet.',
+          'Different calibers behave differently in recoil, penetration, and performance.',
+          'Not all ammunition is appropriate for self-defense.',
+          'Overpenetration is a real risk — what is behind your target matters.',
+          'You are responsible for every round that leaves the firearm.'
+        ]
+      },
+      {
+        heading: 'Malfunctions and Limitations',
+        body: [
+          'Firearms are mechanical devices and can fail.',
+          'Common malfunctions include failure to fire, failure to feed, and failure to eject.',
+          'Nothing works perfectly all the time.',
+          'This is why your plan should never depend entirely on the firearm.',
+          'Avoidance and positioning matter more than equipment.'
+        ]
+      },
+      {
+        heading: 'Safe Handling and Storage',
+        body: [
+          'Safe handling prevents accidents.',
+          'Safe storage prevents unauthorized access.',
+          'Firearms must be secured when not in use.',
+          'A firearm left unsecured becomes a liability.',
+          'Responsibility continues even when the firearm is not in your hand.'
+        ]
+      },
+      {
+        heading: 'When NOT to Use a Firearm',
+        body: [
+          'A firearm is not used to investigate, intimidate, or solve uncertainty.',
+          'You do not use a firearm because something feels off.',
+          'You use distance, awareness, and movement first.',
+          'If you can leave, you leave.',
+          'If you can avoid, you avoid.',
+          'If a firearm becomes necessary, the situation has already escalated to a critical level.',
+          'Your responsibility is to prevent reaching that point whenever possible.'
+        ]
+      }
+    ],
 
-  sections: [
-
-    {
-      heading: 'Why Training Matters',
-      body: [
-        'Shooting is a perishable skill.',
-        'Without practice, performance declines.',
-        'Training builds consistency and confidence.',
-        'Under stress, you default to your level of training.',
-        'Preparation must happen before the moment.'
-      ]
-    },
-
-    {
-      heading: 'Deliberate Practice',
-      body: [
-        'Practice must be intentional, not random.',
-        'Focus on fundamentals during every repetition.',
-        'Speed comes from consistency, not rushing.',
-        'Train correctly — not just frequently.',
-        'Bad practice builds bad habits.'
-      ]
-    },
-
-    {
-      heading: 'Dry Fire Training',
-      body: [
-        'Dry fire allows safe repetition without ammunition.',
-        'It improves trigger control and sight alignment.',
-        'It reinforces proper grip and mechanics.',
-        'Consistency is more important than volume.',
-        'Always follow safety rules during dry fire.'
-      ]
-    },
-
-    {
-      heading: 'Range Training',
-      body: [
-        'Live fire confirms your training.',
-        'Focus on accuracy before speed.',
-        'Use structured drills to measure progress.',
-        'Understand your limitations.',
-        'Train with purpose, not ego.'
-      ]
-    },
-
-    {
-      heading: 'Training Under Stress',
-      body: [
-        'Real situations involve stress and pressure.',
-        'Heart rate and adrenaline affect performance.',
-        'Simple, repeatable skills perform best under stress.',
-        'Complicated techniques often fail.',
-        'Train for reality, not perfection.'
-      ]
-    },
-
-    {
-      heading: 'Reality Check',
-      body: [
-        'Training prepares you for worst-case scenarios.',
-        'It does not mean you should seek them out.',
-        'Avoidance is still the priority.',
-        '“No Be There” remains your first decision.',
-        'Training is preparation — not permission.'
-      ]
-    }
-
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You want to improve quickly at shooting. What is the best approach?',
-      choices: [
-        'Shoot as fast as possible every time',
-        'Focus on consistent fundamentals',
-        'Buy better equipment',
-        'Only train occasionally'
-      ],
-      answer: 1,
-      explanation: 'Consistency in fundamentals builds real skill, not speed alone.'
-    },
-
-    {
-      prompt: 'Why is dry fire training valuable?',
-      choices: [
-        'It replaces live fire entirely',
-        'It builds repetition safely',
-        'It is only for beginners',
-        'It makes shooting easier automatically'
-      ],
-      answer: 1,
-      explanation: 'Dry fire builds consistent habits without the need for ammunition.'
-    }
-
-  ]
-},
+    scenarios: [
+      {
+        prompt: 'You hear a noise outside your home late at night. You are unsure what caused it. What is the best decision?',
+        choices: [
+          'Go outside with your firearm to investigate',
+          'Stay inside, secure your position, and observe safely',
+          'Immediately confront the situation outside',
+          'Ignore it completely'
+        ],
+        answer: 1,
+        explanation: 'A firearm is not used to investigate uncertainty. The correct decision is to remain in a position of safety and avoid unnecessary risk.'
+      },
+      {
+        prompt: 'You notice a suspicious person in a parking lot while carrying a firearm. What is the correct approach?',
+        choices: [
+          'Approach carefully with your firearm ready',
+          'Use your firearm to control the situation',
+          'Create distance and leave the area',
+          'Stay and observe until you are sure'
+        ],
+        answer: 2,
+        explanation: 'The firearm is not the solution. The correct decision is to leave early and avoid the situation entirely.'
+      }
+    ]
+  },
   {
-  id: 6,
-  slug: 'gear-and-application',
-  title: 'Gear and Practical Application',
-  estTime: '22 min',
+    id: 3,
+    slug: 'shooting-fundamentals',
+    title: 'Shooting Fundamentals',
+    estTime: '25 min',
+    summary: 'This lesson covers the core mechanics of shooting: grip, stance, sight alignment, and trigger control. These fundamentals create consistency and control, but skill must always be paired with judgment. The goal is not just accuracy — it is responsible application.',
 
-  summary: 'This lesson covers the practical use of equipment such as holsters, lights, and accessories. Proper gear supports performance, but does not replace skill or judgment. Simplicity and reliability are key.',
+    sections: [
+      {
+        heading: 'Why Fundamentals Matter',
+        body: [
+          'Fundamentals are the foundation of all shooting.',
+          'Without them, accuracy is inconsistent and unreliable.',
+          'Under stress, you will fall back to your level of training.',
+          'You do not rise to the occasion — you default to your habits.',
+          'This is why correct repetition matters.'
+        ]
+      },
+      {
+        heading: 'Grip: Control Starts Here',
+        body: [
+          'Grip controls recoil and stabilizes the firearm.',
+          'Both hands must work together as a unit.',
+          'A weak or inconsistent grip causes inconsistent shots.',
+          'Firm, consistent pressure is key — not excessive tension.',
+          'Control begins before the trigger is ever pressed.'
+        ]
+      },
+      {
+        heading: 'Stance and Balance',
+        body: [
+          'Your stance supports stability and movement.',
+          'Weight should be slightly forward to manage recoil.',
+          'Perfect stance matters less than mobility in real life.',
+          'You must be able to move, not just stand still.',
+          'Real situations are dynamic — not a shooting lane.'
+        ]
+      },
+      {
+        heading: 'Sight Alignment and Focus',
+        body: [
+          'Sight alignment is the relationship between front and rear sights.',
+          'Sight picture is placing those sights onto the target.',
+          'Focus should remain on the front sight.',
+          'Small alignment errors become large misses over distance.',
+          'Under stress, vision narrows — making this harder.'
+        ]
+      },
+      {
+        heading: 'Trigger Control',
+        body: [
+          'Trigger control is one of the most critical skills.',
+          'Press the trigger straight to the rear.',
+          'Jerking or slapping causes missed shots.',
+          'Smooth, consistent pressure creates consistent results.',
+          'Every shot should feel the same.'
+        ]
+      },
+      {
+        heading: 'Follow-Through',
+        body: [
+          'The shot is not over when the trigger breaks.',
+          'Maintain control after firing.',
+          'Allow the firearm to cycle and reset properly.',
+          'Prepare for additional shots if needed.',
+          'Control continues beyond the shot.'
+        ]
+      },
+      {
+        heading: 'Practice and Muscle Memory',
+        body: [
+          'Skill is built through repetition.',
+          'Dry fire practice allows safe skill development.',
+          'Bad repetition creates bad habits.',
+          'Consistency is more important than speed.',
+          'You are building responses for stress situations.'
+        ]
+      },
+      {
+        heading: 'Equipment Reality',
+        body: [
+          'Equipment does not replace skill.',
+          'Lasers, optics, and lights are tools — not solutions.',
+          'Holsters must be safe and secure.',
+          'Accessories should support fundamentals, not replace them.',
+          'The more gear you add, the more training it requires.'
+        ]
+      },
+      {
+        heading: 'Reality Check: Skill vs Judgment',
+        body: [
+          'Being skilled does not mean you should use force.',
+          'Avoidance is always the priority.',
+          'If you can leave, you leave.',
+          'If you can avoid, you avoid.',
+          'The firearm is a last resort.',
+          '“No Be There” still applies — always.'
+        ]
+      }
+    ],
 
-  sections: [
+    scenarios: [
+      {
+        prompt: 'You have strong shooting skills. You notice a situation becoming tense nearby. What is the correct action?',
+        choices: [
+          'Move closer to evaluate',
+          'Prepare to draw immediately',
+          'Create distance and leave',
+          'Stay and observe closely'
+        ],
+        answer: 2,
+        explanation: 'Skill does not override judgment. Avoidance is always the correct first choice.'
+      },
+      {
+        prompt: 'Your shots are inconsistent during practice. What is the most likely cause?',
+        choices: [
+          'The firearm is defective',
+          'Environmental conditions only',
+          'Grip or trigger control issues',
+          'The ammunition is incorrect'
+        ],
+        answer: 2,
+        explanation: 'Most inconsistency comes from fundamentals, especially grip and trigger control.'
+      },
+      {
+        prompt: 'You rely heavily on a laser for aiming. What is the risk?',
+        choices: [
+          'It replaces the need for fundamentals',
+          'It always improves accuracy',
+          'It may fail or not be visible',
+          'It guarantees faster shooting'
+        ],
+        answer: 2,
+        explanation: 'Equipment can fail. Fundamentals must always be your foundation.'
+      }
+    ]
+  },
+  {
+    id: 4,
+    slug: 'legal-use-of-force',
+    title: 'Legal Use of Force and Aftermath',
+    estTime: '30–40 min',
+    summary: 'This lesson explains when force may be legally justified, what happens during and after a defensive incident, and the serious consequences that follow. The focus is not just survival, but making lawful, responsible decisions before, during, and after an encounter.',
 
-    {
-      heading: 'Gear is a Tool',
-      body: [
-        'Equipment supports your ability.',
-        'It does not replace skill.',
-        'More gear does not equal better performance.',
-        'Reliability matters more than complexity.',
-        'Simple systems are easier to manage under stress.'
-      ]
-    },
+    sections: [
+      {
+        heading: 'The Reality of Use of Force',
+        body: [
+          'Using force is a life-altering event.',
+          'Even when justified, there are consequences.',
+          'Legal, financial, emotional, and social impacts follow.',
+          'This is not a win — it is survival.',
+          'Avoidance is always the preferred outcome.'
+        ]
+      },
+      {
+        heading: 'When Is Force Justified?',
+        body: [
+          'Force is only justified when facing an immediate threat.',
+          'You must reasonably believe serious harm or death is imminent.',
+          'Your actions must be proportional to the threat.',
+          'You must not be the aggressor.',
+          'Every decision will be judged after the fact.'
+        ]
+      },
+      {
+        heading: 'The Decision Timeline',
+        body: [
+          'Violent encounters happen quickly.',
+          'Decisions are made in seconds.',
+          'Hesitation or poor judgment can have lasting consequences.',
+          'Preparation helps guide decisions under stress.',
+          'You must think before the moment happens.'
+        ]
+      },
+      {
+        heading: 'Physiological Effects Under Stress',
+        body: [
+          'Heart rate increases dramatically.',
+          'Vision narrows (tunnel vision).',
+          'Hearing may be diminished.',
+          'Fine motor skills degrade.',
+          'Time perception may be distorted.'
+        ]
+      },
+      {
+        heading: 'After the Threat Ends',
+        body: [
+          'The situation is not over when the threat stops.',
+          'You must assess safety and surroundings.',
+          'Call 911 as soon as possible.',
+          'Provide only necessary information.',
+          'Remain calm and cooperative.'
+        ]
+      },
+      {
+        heading: 'Interaction with Law Enforcement',
+        body: [
+          'Expect to be treated as part of the investigation.',
+          'Keep your hands visible and follow instructions.',
+          'Do not make detailed statements under stress.',
+          'Identify yourself and request legal counsel if needed.',
+          'Everything you say can be used in court.'
+        ]
+      },
+      {
+        heading: 'Legal and Financial Consequences',
+        body: [
+          'Even justified use of force may result in arrest.',
+          'Legal defense can be expensive.',
+          'Civil lawsuits may follow.',
+          'Your life may change permanently.',
+          'This is why avoidance is critical.'
+        ]
+      },
+      {
+        heading: 'Emotional and Psychological Aftermath',
+        body: [
+          'Stress and emotional impact are common.',
+          'You may experience doubt or second-guessing.',
+          'Sleep disruption and anxiety may occur.',
+          'Support systems are important.',
+          'You must prepare mentally for the aftermath.'
+        ]
+      },
+      {
+        heading: 'Final Principle: Responsibility',
+        body: [
+          'Owning a firearm carries responsibility.',
+          'Having the ability to use force does not mean you should.',
+          'Avoid conflict whenever possible.',
+          '“No Be There” is still your first strategy.',
+          'With great power comes great responsibility.'
+        ]
+      }
+    ],
 
-    {
-      heading: 'Holsters and Carry',
-      body: [
-        'Holsters must securely retain the firearm.',
-        'They must allow safe and consistent access.',
-        'Trigger coverage is critical.',
-        'Comfort affects consistency of carry.',
-        'Practice your draw safely and correctly.'
-      ]
-    },
+    scenarios: [
+      {
+        prompt: 'You are in a situation that feels uncomfortable but not immediately dangerous. What should you do?',
+        choices: [
+          'Prepare to use force immediately',
+          'Stay and observe closely',
+          'Leave the area and create distance',
+          'Engage to figure out intent'
+        ],
+        answer: 2,
+        explanation: 'Avoidance is always the best option when possible. You are not required to stay.'
+      },
+      {
+        prompt: 'After a defensive incident, what is your first priority?',
+        choices: [
+          'Leave the scene immediately',
+          'Call 911 and report the situation',
+          'Post about it online',
+          'Talk to witnesses in detail'
+        ],
+        answer: 1,
+        explanation: 'Calling 911 establishes your role as the reporting party and begins the legal process correctly.'
+      },
+      {
+        prompt: 'During police interaction after an incident, what is the best approach?',
+        choices: [
+          'Explain everything in detail immediately',
+          'Remain calm and follow instructions',
+          'Refuse to speak entirely',
+          'Argue your case on the spot'
+        ],
+        answer: 1,
+        explanation: 'Remain calm, comply, and avoid detailed statements under stress.'
+      }
+    ]
+  },
+  {
+    id: 5,
+    slug: 'applied-skills-training',
+    title: 'Applied Skills and Training',
+    estTime: '28 min',
+    summary: 'This lesson focuses on applying shooting fundamentals through structured training. Drills, repetition, and consistency build performance under stress. Training prepares you for worst-case scenarios, but does not replace judgment or responsibility.',
 
-    {
-      heading: 'Lights and Identification',
-      body: [
-        'You must identify a threat before acting.',
-        'Weapon-mounted lights assist in low light.',
-        'Handheld lights offer flexibility.',
-        'Never assume — always confirm.',
-        'Misidentification has serious consequences.'
-      ]
-    },
+    sections: [
+      {
+        heading: 'Why Training Matters',
+        body: [
+          'Shooting is a perishable skill.',
+          'Without practice, performance declines.',
+          'Training builds consistency and confidence.',
+          'Under stress, you default to your level of training.',
+          'Preparation must happen before the moment.'
+        ]
+      },
+      {
+        heading: 'Deliberate Practice',
+        body: [
+          'Practice must be intentional, not random.',
+          'Focus on fundamentals during every repetition.',
+          'Speed comes from consistency, not rushing.',
+          'Train correctly — not just frequently.',
+          'Bad practice builds bad habits.'
+        ]
+      },
+      {
+        heading: 'Dry Fire Training',
+        body: [
+          'Dry fire allows safe repetition without ammunition.',
+          'It improves trigger control and sight alignment.',
+          'It reinforces proper grip and mechanics.',
+          'Consistency is more important than volume.',
+          'Always follow safety rules during dry fire.'
+        ]
+      },
+      {
+        heading: 'Range Training',
+        body: [
+          'Live fire confirms your training.',
+          'Focus on accuracy before speed.',
+          'Use structured drills to measure progress.',
+          'Understand your limitations.',
+          'Train with purpose, not ego.'
+        ]
+      },
+      {
+        heading: 'Training Under Stress',
+        body: [
+          'Real situations involve stress and pressure.',
+          'Heart rate and adrenaline affect performance.',
+          'Simple, repeatable skills perform best under stress.',
+          'Complicated techniques often fail.',
+          'Train for reality, not perfection.'
+        ]
+      },
+      {
+        heading: 'Reality Check',
+        body: [
+          'Training prepares you for worst-case scenarios.',
+          'It does not mean you should seek them out.',
+          'Avoidance is still the priority.',
+          '“No Be There” remains your first decision.',
+          'Training is preparation — not permission.'
+        ]
+      }
+    ],
 
-    {
-      heading: 'Accessories and Optics',
-      body: [
-        'Optics can improve sighting speed.',
-        'Lasers may assist in certain conditions.',
-        'Every addition requires training.',
-        'Complexity increases failure points.',
-        'You must train with what you carry.'
-      ]
-    },
+    scenarios: [
+      {
+        prompt: 'You want to improve quickly at shooting. What is the best approach?',
+        choices: [
+          'Shoot as fast as possible every time',
+          'Focus on consistent fundamentals',
+          'Buy better equipment',
+          'Only train occasionally'
+        ],
+        answer: 1,
+        explanation: 'Consistency in fundamentals builds real skill, not speed alone.'
+      },
+      {
+        prompt: 'Why is dry fire training valuable?',
+        choices: [
+          'It replaces live fire entirely',
+          'It builds repetition safely',
+          'It is only for beginners',
+          'It makes shooting easier automatically'
+        ],
+        answer: 1,
+        explanation: 'Dry fire builds consistent habits without the need for ammunition.'
+      }
+    ]
+  },
+  {
+    id: 6,
+    slug: 'gear-and-application',
+    title: 'Gear and Practical Application',
+    estTime: '22 min',
+    summary: 'This lesson covers the practical use of equipment such as holsters, lights, and accessories. Proper gear supports performance, but does not replace skill or judgment. Simplicity and reliability are key.',
 
-    {
-      heading: 'Reality Check',
-      body: [
-        'Gear does not make decisions for you.',
-        'You are responsible for every action.',
-        'Avoid situations whenever possible.',
-        '“No Be There” still applies.',
-        'Tools support judgment — they do not replace it.'
-      ]
-    }
+    sections: [
+      {
+        heading: 'Gear is a Tool',
+        body: [
+          'Equipment supports your ability.',
+          'It does not replace skill.',
+          'More gear does not equal better performance.',
+          'Reliability matters more than complexity.',
+          'Simple systems are easier to manage under stress.'
+        ]
+      },
+      {
+        heading: 'Holsters and Carry',
+        body: [
+          'Holsters must securely retain the firearm.',
+          'They must allow safe and consistent access.',
+          'Trigger coverage is critical.',
+          'Comfort affects consistency of carry.',
+          'Practice your draw safely and correctly.'
+        ]
+      },
+      {
+        heading: 'Lights and Identification',
+        body: [
+          'You must identify a threat before acting.',
+          'Weapon-mounted lights assist in low light.',
+          'Handheld lights offer flexibility.',
+          'Never assume — always confirm.',
+          'Misidentification has serious consequences.'
+        ]
+      },
+      {
+        heading: 'Accessories and Optics',
+        body: [
+          'Optics can improve sighting speed.',
+          'Lasers may assist in certain conditions.',
+          'Every addition requires training.',
+          'Complexity increases failure points.',
+          'You must train with what you carry.'
+        ]
+      },
+      {
+        heading: 'Reality Check',
+        body: [
+          'Gear does not make decisions for you.',
+          'You are responsible for every action.',
+          'Avoid situations whenever possible.',
+          '“No Be There” still applies.',
+          'Tools support judgment — they do not replace it.'
+        ]
+      }
+    ],
 
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You are unsure of what you are seeing in low light. What is the correct action?',
-      choices: [
-        'Assume the worst and act immediately',
-        'Identify before acting',
-        'Move closer quickly',
-        'Draw without confirming'
-      ],
-      answer: 1,
-      explanation: 'You must positively identify a threat before taking action.'
-    }
-
-  ]
-},
+    scenarios: [
+      {
+        prompt: 'You are unsure of what you are seeing in low light. What is the correct action?',
+        choices: [
+          'Assume the worst and act immediately',
+          'Identify before acting',
+          'Move closer quickly',
+          'Draw without confirming'
+        ],
+        answer: 1,
+        explanation: 'You must positively identify a threat before taking action.'
+      }
+    ]
+  },
   {
     id: 7,
     slug: 'basic-and-advanced-skills',
     title: 'Basic and Advanced Skills',
     estTime: '16 min',
     summary: 'This lesson covers how to keep improving after the fundamentals, including virtual training, flashlight techniques, cautious family introduction to the range, and logical next training steps.',
+
     sections: [
       {
         heading: 'Build from the Basics',
@@ -742,6 +693,7 @@ window.LESSONS = [
         ]
       }
     ],
+
     scenarios: [
       {
         prompt: 'A shooter trains often and wants to skip warm-up fundamentals every range session so they can jump straight into advanced drills. What is the best lesson-based response?',
@@ -764,16 +716,16 @@ window.LESSONS = [
         ],
         answer: 1,
         explanation: 'The source material frames continuing education as a logical next step.'
-    }
-  ]
-},
-
+      }
+    ]
+  },
   {
     id: 8,
     slug: 'louisiana-firearm-law',
     title: 'Louisiana Firearm Law',
     estTime: '30–40 min',
     summary: 'This lesson covers Louisiana carry law, restricted locations, notification requirements, impairment restrictions, and legal responsibility before, during, and after carrying a firearm.',
+
     sections: [
       {
         heading: 'Permitless Carry in Louisiana',
@@ -816,6 +768,7 @@ window.LESSONS = [
         ]
       }
     ],
+
     scenarios: [
       {
         prompt: 'You are carrying legally in Louisiana and realize you are about to enter a courthouse. What is the correct action?',
@@ -858,6 +811,7 @@ window.LESSONS = [
     title: 'Mental Readiness and Responsibility',
     estTime: '30–40 min',
     summary: 'This lesson covers trauma response, stress, substance impairment, suicide prevention, warning signs, coping strategies, and the responsibility to protect life by reducing access to lethal means during crises.',
+
     sections: [
       {
         heading: 'Trauma and Stress Responses',
@@ -900,6 +854,7 @@ window.LESSONS = [
         ]
       }
     ],
+
     scenarios: [
       {
         prompt: 'A close friend says they feel trapped, hopeless, and like a burden, and they have access to firearms. What is the best response?',
@@ -936,137 +891,124 @@ window.LESSONS = [
       }
     ]
   },
-{
-  id: 10,
-  slug: 'bsa-doctrine',
-  title: 'Final Doctrine: Responsibility Over Everything',
-  estTime: '15 min',
+  {
+    id: 10,
+    slug: 'bsa-doctrine',
+    title: 'Final Doctrine: Responsibility Over Everything',
+    estTime: '15 min',
+    summary: 'This final lesson defines the core philosophy of Broussard Shooting Academy. Owning a firearm is not about power — it is about responsibility, discipline, and avoiding situations where force is ever needed.',
 
-  summary: 'This final lesson defines the core philosophy of Broussard Shooting Academy. Owning a firearm is not about power — it is about responsibility, discipline, and avoiding situations where force is ever needed.',
+    sections: [
+      {
+        heading: 'The Truth About Firearms',
+        body: [
+          'A firearm is a tool — nothing more, nothing less.',
+          'It does not make you safer by itself.',
+          'It does not make you stronger by itself.',
+          'It only amplifies your decisions.',
+          'Good decisions keep you safe. Bad decisions make things worse.'
+        ]
+      },
+      {
+        heading: 'The BSA Principle',
+        body: [
+          'You have probably heard:',
+          '“It is better to have a firearm and not need it, than need it and not have it.”',
+          'That is true.',
+          'But it is incomplete.',
+          'The real goal is this:',
+          'Avoid ever needing it in the first place.'
+        ]
+      },
+      {
+        heading: 'No Be There',
+        body: [
+          'This is your primary strategy.',
+          'Do not go where problems happen.',
+          'Do not stay where problems are developing.',
+          'Do not insert yourself into situations that can escalate.',
+          'Distance and avoidance solve more problems than force ever will.',
+          'If you are not there, you cannot be part of the problem.'
+        ]
+      },
+      {
+        heading: 'Responsibility',
+        body: [
+          'Owning a firearm is a serious responsibility.',
+          'Every decision you make matters.',
+          'Every action has consequences.',
+          'You are accountable for what happens before, during, and after any situation.',
+          'This responsibility does not turn off — ever.'
+        ]
+      },
+      {
+        heading: 'The Reality of Use',
+        body: [
+          'Using a firearm in defense is a last resort.',
+          'There are no clean outcomes.',
+          'There are no easy answers.',
+          'Even when justified, the consequences are real and lasting.',
+          'That is why avoidance must always come first.'
+        ]
+      },
+      {
+        heading: 'The Mindset',
+        body: [
+          'You are not looking for conflict.',
+          'You are not trying to prove anything.',
+          'You are not trying to win.',
+          'You are trying to go home safely.',
+          'That is success.'
+        ]
+      },
+      {
+        heading: 'The Responsibility Quote',
+        body: [
+          '“With great power comes great responsibility.”',
+          'That is not a movie line here.',
+          'That is real life.',
+          'You now carry something that can permanently change lives.',
+          'Your job is to make sure it never has to.'
+        ]
+      },
+      {
+        heading: 'Final Thought',
+        body: [
+          'Skill matters.',
+          'Training matters.',
+          'Equipment matters.',
+          'But none of it matters more than your decisions.',
+          'And the best decision you can make is:',
+          '“No Be There.”'
+        ]
+      }
+    ],
 
-  sections: [
-
-    {
-      heading: 'The Truth About Firearms',
-      body: [
-        'A firearm is a tool — nothing more, nothing less.',
-        'It does not make you safer by itself.',
-        'It does not make you stronger by itself.',
-        'It only amplifies your decisions.',
-        'Good decisions keep you safe. Bad decisions make things worse.'
-      ]
-    },
-
-    {
-      heading: 'The BSA Principle',
-      body: [
-        'You have probably heard:',
-        '“It is better to have a firearm and not need it, than need it and not have it.”',
-        'That is true.',
-        'But it is incomplete.',
-        'The real goal is this:',
-        'Avoid ever needing it in the first place.'
-      ]
-    },
-
-    {
-      heading: 'No Be There',
-      body: [
-        'This is your primary strategy.',
-        'Do not go where problems happen.',
-        'Do not stay where problems are developing.',
-        'Do not insert yourself into situations that can escalate.',
-        'Distance and avoidance solve more problems than force ever will.',
-        'If you are not there, you cannot be part of the problem.'
-      ]
-    },
-
-    {
-      heading: 'Responsibility',
-      body: [
-        'Owning a firearm is a serious responsibility.',
-        'Every decision you make matters.',
-        'Every action has consequences.',
-        'You are accountable for what happens before, during, and after any situation.',
-        'This responsibility does not turn off — ever.'
-      ]
-    },
-
-    {
-      heading: 'The Reality of Use',
-      body: [
-        'Using a firearm in defense is a last resort.',
-        'There are no clean outcomes.',
-        'There are no easy answers.',
-        'Even when justified, the consequences are real and lasting.',
-        'That is why avoidance must always come first.'
-      ]
-    },
-
-    {
-      heading: 'The Mindset',
-      body: [
-        'You are not looking for conflict.',
-        'You are not trying to prove anything.',
-        'You are not trying to win.',
-        'You are trying to go home safely.',
-        'That is success.'
-      ]
-    },
-
-    {
-      heading: 'The Responsibility Quote',
-      body: [
-        '“With great power comes great responsibility.”',
-        'That is not a movie line here.',
-        'That is real life.',
-        'You now carry something that can permanently change lives.',
-        'Your job is to make sure it never has to.'
-      ]
-    },
-
-    {
-      heading: 'Final Thought',
-      body: [
-        'Skill matters.',
-        'Training matters.',
-        'Equipment matters.',
-        'But none of it matters more than your decisions.',
-        'And the best decision you can make is:',
-        '“No Be There.”'
-      ]
-    }
-
-  ],
-
-  scenarios: [
-
-    {
-      prompt: 'You notice a situation beginning to escalate in a public place. What is the best action?',
-      choices: [
-        'Stay and watch what happens',
-        'Move closer to understand the situation',
-        'Leave the area and create distance',
-        'Prepare to intervene immediately'
-      ],
-      answer: 2,
-      explanation: 'Avoidance is always the safest and most responsible option.'
-    },
-
-    {
-      prompt: 'What is the true goal of carrying a firearm?',
-      choices: [
-        'To be prepared to use it',
-        'To defend yourself if needed',
-        'To avoid situations where it is ever needed',
-        'To feel safer'
-      ],
-      answer: 2,
-      explanation: 'The ultimate goal is to avoid needing to use force at all.'
-    }
-
-  ]
-},
+    scenarios: [
+      {
+        prompt: 'You notice a situation beginning to escalate in a public place. What is the best action?',
+        choices: [
+          'Stay and watch what happens',
+          'Move closer to understand the situation',
+          'Leave the area and create distance',
+          'Prepare to intervene immediately'
+        ],
+        answer: 2,
+        explanation: 'Avoidance is always the safest and most responsible option.'
+      },
+      {
+        prompt: 'What is the true goal of carrying a firearm?',
+        choices: [
+          'To be prepared to use it',
+          'To defend yourself if needed',
+          'To avoid situations where it is ever needed',
+          'To feel safer'
+        ],
+        answer: 2,
+        explanation: 'The ultimate goal is to avoid needing to use force at all.'
+      }
+    ]
+  }
 ];
 
 /* Compatibility layer for pages that expect window.LESSON_CONTENT */
