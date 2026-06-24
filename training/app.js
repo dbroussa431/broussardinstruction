@@ -429,11 +429,40 @@ function getQuizQuestionsForLesson(lessonId, count = 20) {
 
 function getScenarioQuestionsForLesson(lessonId, count = 2) {
   const lesson = getLessons().find((entry) => Number(entry.id) === Number(lessonId));
-  const pool = Array.isArray(lesson?.scenarios) ? lesson.scenarios : [];
-  return randomSample(pool, count).map((item, idx) => ({
-    id: item.id || `L${lessonId}-S${idx + 1}`,
-    ...item
-  }));
+
+  // Primary source: the lesson's curated decision scenarios.
+  const out = [];
+  const scenarios = Array.isArray(lesson?.scenarios) ? lesson.scenarios : [];
+  scenarios.forEach((item, idx) => {
+    if (item && item.prompt && Array.isArray(item.choices) && item.choices.length >= 2) {
+      out.push({
+        id: item.id || `L${lessonId}-S${idx + 1}`,
+        prompt: item.prompt,
+        choices: item.choices,
+        answer: Number(item.answer),
+        explanation: item.explanation || ""
+      });
+    }
+  });
+
+  // Fallback / top-up: draw from the lesson's quiz bank so the page never
+  // ends up with "0 of 0" when a lesson has no curated scenarios, or needs
+  // more than it has (e.g. the final-evaluation prep asks for 5).
+  if (out.length < count) {
+    const bank = Array.isArray(window.QUIZ_BANK?.[lessonId]) ? window.QUIZ_BANK[lessonId] : [];
+    const extra = randomSample(bank, count - out.length)
+      .map((q, idx) => {
+        const base = { id: q.id || `L${lessonId}-SB${idx + 1}`, prompt: q.q, explanation: q.explanation || "" };
+        if (q.type === "tf") {
+          return { ...base, choices: ["True", "False"], answer: q.answer ? 0 : 1 };
+        }
+        return { ...base, choices: Array.isArray(q.choices) ? q.choices : [], answer: Number(q.answer) };
+      })
+      .filter((s) => Array.isArray(s.choices) && s.choices.length >= 2);
+    out.push(...extra);
+  }
+
+  return out.slice(0, count);
 }
 
 function formatSeconds(totalSeconds = 0) {
