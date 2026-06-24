@@ -11,40 +11,97 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
+      <div class="brand-mark">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy logo">
+      </div>
       <div>
         <h1>Broussard Shooting Academy</h1>
-        <p>Scenario Review</p>
+        <p id="headerSubtitle">Scenario Review</p>
       </div>
     </div>
-
-    <div class="top-actions">
+    <nav class="top-actions" aria-label="Site navigation">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-      <a class="btn btn-gold" id="toQuizTop" href="#">Continue to Quiz</a>
-    </div>
+      <a
+        class="btn btn-gold btn-disabled"
+        id="toQuizTop"
+        href="#"
+        aria-disabled="true"
+        tabindex="-1"
+        title="Complete all scenarios to unlock the quiz"
+      >Continue to Quiz</a>
+    </nav>
   </div>
 </header>
 
-<main class="container">
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="loading-overlay" aria-live="polite" aria-label="Loading scenarios">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <p>Loading your scenarios&hellip;</p>
+</div>
 
-  <section class="panel content-card">
+<!-- Error banner -->
+<div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
+
+<main class="container" id="mainContent" aria-busy="true">
+
+  <section class="panel content-card" aria-labelledby="scenarioTitle">
 
     <span class="eyebrow">Scenario-Based Decision Training</span>
-    <h2 id="scenarioTitle"></h2>
+    <h2 id="scenarioTitle">Loading&hellip;</h2>
 
-    <div class="notice warn small">
-      You must complete all scenarios before moving to the quiz.
+    <div class="notice warn small" role="note">
+      You must complete and submit all scenarios before moving to the quiz.
     </div>
 
-    <div id="scenarioWrap"></div>
+    <!-- Answer progress indicator -->
+    <div class="quiz-progress" id="scenarioProgress" aria-live="polite" aria-atomic="true">
+      <span id="progressText">0 of 0 scenarios answered</span>
+      <div
+        class="progress-wrap"
+        role="progressbar"
+        aria-valuenow="0"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-labelledby="progressText"
+      >
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
 
-    <div id="scenarioResults" class="hidden"></div>
+    <div id="scenarioWrap" role="list" aria-label="Scenario questions"></div>
+
+    <div
+      id="scenarioResults"
+      class="hidden"
+      role="region"
+      aria-label="Scenario results"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
 
     <div class="lesson-actions">
-      <button class="btn btn-blue" id="submitScenarioBtn">Submit Scenario Review</button>
-      <a class="btn btn-outline" id="quizLink">Continue to Quiz</a>
-      <a class="btn btn-light" id="backToLesson">Back to Lesson</a>
+      <button
+        class="btn btn-blue"
+        id="submitScenarioBtn"
+        type="button"
+        disabled
+        aria-describedby="submitHint"
+      >
+        Submit Scenario Review
+      </button>
+      <a
+        class="btn btn-outline btn-disabled"
+        id="quizLink"
+        href="#"
+        aria-disabled="true"
+        tabindex="-1"
+        title="Complete all scenarios to unlock the quiz"
+      >Continue to Quiz</a>
+      <a class="btn btn-light" id="backToLesson" href="#">Back to Lesson</a>
     </div>
+    <p class="muted" id="submitHint" style="font-size:0.85em; margin-top:0.5rem;">
+      Answer all scenarios to enable submission.
+    </p>
 
   </section>
 
@@ -69,130 +126,325 @@ import {
   stopTracking
 } from "./tracking.js";
 
+// ─── Utilities ────────────────────────────────────────────────────────────────
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = String(value ?? "");
+  return div.innerHTML;
+}
+
+function showError(message) {
+  const banner = document.getElementById("errorBanner");
+  banner.textContent = message;
+  banner.classList.remove("hidden");
+}
+
+function hideLoading() {
+  document.getElementById("loadingOverlay").classList.add("hidden");
+  document.getElementById("mainContent").setAttribute("aria-busy", "false");
+}
+
+function enableQuizLinks(lessonId) {
+  const url         = `quiz.html?lesson=${encodeURIComponent(lessonId)}`;
+  const toQuizTop   = document.getElementById("toQuizTop");
+  const quizLink    = document.getElementById("quizLink");
+
+  [toQuizTop, quizLink].forEach((el) => {
+    el.href = url;
+    el.classList.remove("btn-disabled");
+    el.removeAttribute("aria-disabled");
+    el.removeAttribute("tabindex");
+    el.removeAttribute("title");
+  });
+}
+
+// ─── Guard ────────────────────────────────────────────────────────────────────
+
 requireLogin();
 
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+// ─── Data fetch ───────────────────────────────────────────────────────────────
 
+let student;
+
+try {
+  student = (await refreshCurrentStudentFromFirestore()) ?? getCurrentStudent();
+} catch (err) {
+  console.error("Failed to load student data:", err);
+  showError("Unable to load your session. Please refresh or log in again.");
+  hideLoading();
+}
+
+// Null check BEFORE student is used anywhere
 if (!student) {
   window.location.href = "index.html";
   throw new Error("Student session missing");
 }
 
-// TRACKING START
+// ─── Tracking start ───────────────────────────────────────────────────────────
+
+const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
+
 try {
   initTracking(student.id, lessonId);
   await logStage("Scenario Started");
-} catch (error) {
-  console.error("Scenario tracking init failed:", error);
+} catch (err) {
+  console.error("Scenario tracking init failed:", err);
 }
 
-// LOCK CHECK
+// ─── Lock check ───────────────────────────────────────────────────────────────
+
 if (!lessonSequenceUnlocked(lessonId, student)) {
   window.location.href = "dashboard.html";
-  throw new Error("Scenario access blocked");
+  throw new Error("Scenario access blocked — sequence not unlocked");
 }
 
-const lesson = window.LESSONS.find(l => l.id === lessonId);
+// ─── Lesson resolution ────────────────────────────────────────────────────────
+
+const lessons = window.LESSONS;
+
+if (!Array.isArray(lessons) || !lessons.length) {
+  showError("Course data failed to load. Please refresh the page.");
+  hideLoading();
+  throw new Error("window.LESSONS missing or empty");
+}
+
+const lesson      = lessons.find((l) => l.id === lessonId);
+const FINAL_ID    = lessons.at(-1).id;
 
 if (!lesson) {
-  document.getElementById("scenarioWrap").innerHTML = "<p>Lesson not found.</p>";
-  throw new Error("Lesson missing");
+  showError(`Lesson ${lessonId} not found. Please return to the dashboard.`);
+  hideLoading();
+  throw new Error(`Scenario lesson ${lessonId} not found`);
 }
 
-// DETERMINE SCENARIO COUNT
-let scenarioCount = 2;
-if (lessonId === 8 || lessonId === 9) scenarioCount = 3;
-if (lessonId === 10) scenarioCount = 5;
+// ─── Scenario count — driven from lesson data, falls back to config ───────────
 
-// LOAD SCENARIOS
+const SCENARIO_COUNT_MAP = {
+  [FINAL_ID]: 5,              // final lesson always gets 5
+};
+// Lessons 8 and 9 get 3 — reference by actual lesson id from data
+// so renumbering lessons won't silently break this
+const SPECIAL_IDS = lessons.slice(-3, -1).map((l) => l.id); // lessons before final
+SPECIAL_IDS.forEach((id) => { SCENARIO_COUNT_MAP[id] = 3; });
+
+const scenarioCount = SCENARIO_COUNT_MAP[lessonId] ?? 2;
+
+// ─── Scenarios ────────────────────────────────────────────────────────────────
+
 const scenarios = getScenarioQuestionsForLesson(lesson.id, scenarioCount);
 
-// TITLES / ROUTING
+if (!scenarios?.length) {
+  showError("No scenarios found for this lesson. Please contact your instructor.");
+  hideLoading();
+  throw new Error(`No scenarios returned for lesson ${lessonId}`);
+}
+
+// ─── Page setup ──────────────────────────────────────────────────────────────
+
+document.title = `BSA Scenarios — ${lesson.title}`;
+document.getElementById("headerSubtitle").textContent = `Lesson ${lesson.id} Scenarios`;
+
 document.getElementById("scenarioTitle").textContent =
   `${lesson.id}. ${lesson.title} — Scenario Review`;
 
-document.getElementById("toQuizTop").href = `quiz.html?lesson=${lesson.id}`;
-document.getElementById("quizLink").href = `quiz.html?lesson=${lesson.id}`;
-document.getElementById("backToLesson").href = `lesson.html?lesson=${lesson.id}`;
+document.getElementById("backToLesson").href =
+  `lesson.html?lesson=${encodeURIComponent(lesson.id)}`;
 
-// BUILD UI
+// Quiz links stay disabled until submission succeeds
+
+// ─── Progress tracking ────────────────────────────────────────────────────────
+
+const answeredMap  = new Map(); // scenario index → true
+const totalScenarios = scenarios.length;
+const submitBtn    = document.getElementById("submitScenarioBtn");
+const progressBar  = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const progressWrap = progressBar.parentElement;
+
+function updateProgress() {
+  const answered = answeredMap.size;
+  const pct      = Math.round((answered / totalScenarios) * 100);
+
+  progressText.textContent = `${answered} of ${totalScenarios} scenarios answered`;
+  progressBar.style.setProperty("--progress-pct", `${pct}%`);
+  progressWrap.setAttribute("aria-valuenow", pct);
+
+  const allAnswered = answered === totalScenarios;
+  submitBtn.disabled = !allAnswered;
+  document.getElementById("submitHint").textContent = allAnswered
+    ? "All scenarios answered. Ready to submit."
+    : `Answer all ${totalScenarios} scenarios to enable submission.`;
+}
+
+updateProgress();
+
+// ─── Build scenario UI ────────────────────────────────────────────────────────
+
 const wrap = document.getElementById("scenarioWrap");
 
 scenarios.forEach((sc, index) => {
   const block = document.createElement("div");
   block.className = "scenario-block";
+  block.setAttribute("role", "listitem");
+  block.setAttribute("aria-labelledby", `scenario-label-${index}`);
 
-  block.innerHTML = `
-    <div class="scenario-header">Scenario ${index + 1}</div>
-    <p>${sc.prompt}</p>
-  `;
+  // Header
+  const header = document.createElement("div");
+  header.className   = "scenario-header";
+  header.textContent = `Scenario ${index + 1}`;
 
-  const options = document.createElement("div");
-  options.className = "scenario-options";
+  // Prompt — use textContent, not innerHTML, to prevent XSS
+  const prompt = document.createElement("p");
+  prompt.textContent = sc.prompt;
+
+  // Choices — proper fieldset/legend/label pattern
+  const fieldset = document.createElement("fieldset");
+  fieldset.className = "scenario-options";
+
+  const legend = document.createElement("legend");
+  legend.className   = "sr-only";
+  legend.id          = `scenario-label-${index}`;
+  legend.textContent = `Scenario ${index + 1}: ${sc.prompt}`;
+  fieldset.appendChild(legend);
 
   sc.choices.forEach((choice, i) => {
+    const inputId = `scenario_${index}_opt${i}`;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "answer-option";
+
+    const input = document.createElement("input");
+    input.type  = "radio";
+    input.name  = `scenario_${index}`;
+    input.id    = inputId;
+    input.value = String(i);
+
     const label = document.createElement("label");
+    label.htmlFor     = inputId;
+    label.textContent = `${String.fromCharCode(65 + i)}. ${choice}`;
 
-    label.innerHTML = `
-      <input type="radio" name="scenario_${index}" value="${i}">
-      ${String.fromCharCode(65 + i)}. ${choice}
-    `;
+    input.addEventListener("change", async () => {
+      // Update selected styling
+      fieldset.querySelectorAll(".answer-option").forEach((el) =>
+        el.classList.remove("selected")
+      );
+      wrapper.classList.add("selected");
 
-    options.appendChild(label);
+      // Mark scenario as answered and update progress
+      if (!answeredMap.has(index)) {
+        answeredMap.set(index, true);
+        updateProgress();
+      }
+
+      try {
+        await trackManualActivity();
+      } catch (err) {
+        console.error("Scenario answer activity failed:", err);
+      }
+    });
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(label);
+    fieldset.appendChild(wrapper);
   });
 
-  block.appendChild(options);
+  block.appendChild(header);
+  block.appendChild(prompt);
+  block.appendChild(fieldset);
   wrap.appendChild(block);
 });
 
-// SUBMIT LOGIC
-document.getElementById("submitScenarioBtn").addEventListener("click", async () => {
+// ─── Submit logic ─────────────────────────────────────────────────────────────
+
+submitBtn.addEventListener("click", async () => {
+  // Prevent double submission
+  submitBtn.disabled     = true;
+  submitBtn.textContent  = "Submitting…";
+
   let correct = 0;
-  let html = "";
+  const reviewItems = [];
 
   scenarios.forEach((sc, index) => {
-    const selected = document.querySelector(`input[name="scenario_${index}"]:checked`);
+    const selected      = document.querySelector(`input[name="scenario_${index}"]:checked`);
     const selectedIndex = selected ? Number(selected.value) : -1;
+    const isCorrect     = selectedIndex === sc.answer;
 
-    const isCorrect = selectedIndex === sc.answer;
     if (isCorrect) correct++;
 
-    html += `
-      <div class="review-item">
-        <p><strong>Scenario ${index + 1}</strong></p>
-        <p><strong>Your Answer:</strong> ${selectedIndex >= 0 ? sc.choices[selectedIndex] : "No answer selected"}</p>
-        <p><strong>Best Answer:</strong> ${sc.choices[sc.answer]}</p>
-        <p>${sc.explanation}</p>
-      </div>
-    `;
+    reviewItems.push({
+      index,
+      isCorrect,
+      yourAnswer:  selectedIndex >= 0 ? sc.choices[selectedIndex] : "No answer selected",
+      bestAnswer:  sc.choices[sc.answer],
+      explanation: sc.explanation,
+    });
   });
 
-  const score = Math.round((correct / scenarios.length) * 100);
-  const bannerClass = score >= 70 ? "pass" : "retake";
+  const score       = Math.round((correct / scenarios.length) * 100);
+  const passed      = score >= 70;
+  const bannerClass = passed ? "pass" : "retake";
+  const bannerLabel = passed ? "Scenario Complete" : "Review Recommended";
 
-  const banner = `
-    <div class="banner ${bannerClass}">
-      Score: ${score}% — ${score >= 70 ? "Scenario Complete" : "Review Recommended"}
+  // Build results HTML safely — all content escaped
+  const reviewHtml = reviewItems.map((item) => `
+    <div class="review-item ${item.isCorrect ? "review-correct" : "review-wrong"}">
+      <p>
+        <strong>Scenario ${item.index + 1}</strong>
+        <span class="review-badge ${item.isCorrect ? "badge-pass" : "badge-fail"}">
+          ${item.isCorrect ? "✓ Correct" : "✗ Incorrect"}
+        </span>
+      </p>
+      <p><strong>Your Answer:</strong> ${escapeHtml(item.yourAnswer)}</p>
+      <p><strong>Best Answer:</strong> ${escapeHtml(item.bestAnswer)}</p>
+      <p class="review-explanation">${escapeHtml(item.explanation)}</p>
+    </div>
+  `).join("");
+
+  const resultsBox = document.getElementById("scenarioResults");
+
+  resultsBox.innerHTML = `
+    <div class="banner ${escapeHtml(bannerClass)}" id="scenarioResultBanner" tabindex="-1">
+      Score: ${escapeHtml(String(score))}% &mdash; ${escapeHtml(bannerLabel)}
+    </div>
+    <div class="review-list" aria-label="Scenario answer review">
+      ${reviewHtml}
     </div>
   `;
 
-  const resultsBox = document.getElementById("scenarioResults");
-  resultsBox.innerHTML = banner + html;
   resultsBox.classList.remove("hidden");
 
-  await setScenarioCompleted(lesson.id);
+  // Save completion — with error handling
+  try {
+    await setScenarioCompleted(lesson.id);
+    // Unlock quiz links only after successful save
+    enableQuizLinks(lesson.id);
+  } catch (err) {
+    console.error("Failed to save scenario completion:", err);
+    showError(
+      "Your scenario results could not be saved. Please try again or contact your instructor."
+    );
+    // Re-enable submit so they can retry
+    submitBtn.disabled    = false;
+    submitBtn.textContent = "Submit Scenario Review";
+    return;
+  }
 
   try {
     await logStage("Scenario Completed");
-  } catch (error) {
-    console.error("Scenario completion tracking failed:", error);
+  } catch (err) {
+    console.error("Scenario completion tracking failed:", err);
   }
 
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  // Move focus to results banner so screen readers announce the outcome
+  resultsBox.querySelector("#scenarioResultBanner")?.focus();
+
+  // Scroll to results
+  resultsBox.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-// ACTIVITY THROTTLE
+// ─── Activity tracking ────────────────────────────────────────────────────────
+
 let activityThrottle = false;
 
 async function handleActivityPing() {
@@ -201,13 +453,11 @@ async function handleActivityPing() {
 
   try {
     await trackManualActivity();
-  } catch (error) {
-    console.error("Manual scenario activity failed:", error);
+  } catch (err) {
+    console.error("Manual scenario activity ping failed:", err);
   }
 
-  setTimeout(() => {
-    activityThrottle = false;
-  }, 15000);
+  setTimeout(() => { activityThrottle = false; }, 15000);
 }
 
 ["click", "keydown", "scroll", "touchstart"].forEach((eventName) => {
@@ -217,6 +467,10 @@ async function handleActivityPing() {
 window.addEventListener("beforeunload", () => {
   stopTracking();
 });
+
+// ─── Done loading ─────────────────────────────────────────────────────────────
+
+hideLoading();
 </script>
 
 </body>
