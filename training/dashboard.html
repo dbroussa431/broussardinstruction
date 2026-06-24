@@ -138,37 +138,17 @@
   💬 Ask Instructor
 </button>
 
-<!-- AI Chat Panel -->
-<div
-  id="aiPanel"
-  class="ai-panel hidden"
-  role="dialog"
-  aria-modal="false"
-  aria-label="Instructor Guidance"
->
-  <div class="ai-header">
-    <div>
-      <div class="ai-title" id="aiPanelTitle">Instructor Guidance</div>
-      <div class="ai-sub">BSA Training Assistant</div>
-    </div>
-    <button id="aiClose" class="ai-close" aria-label="Close instructor chat">&#x2715;</button>
+<!-- AI Chat Panel — same ID-based markup as lesson.html so it shares the
+     dark "BSA Instructor" styling (#aiPanel / #aiHeader) for a consistent look. -->
+<div id="aiPanel" class="hidden" role="dialog" aria-modal="false" aria-label="BSA Instructor">
+  <div id="aiHeader">
+    <span>BSA Instructor</span>
+    <button id="aiClose" aria-label="Close instructor chat">&#x2715;</button>
   </div>
-
-  <div id="aiMessages" class="ai-messages" role="log" aria-live="polite" aria-label="Chat messages">
-    <div class="ai-msg ai-msg-ai">
-      Ask a question about your training, lessons, or decisions.
-    </div>
-  </div>
-
-  <div class="ai-input">
+  <div id="aiMessages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+  <div id="aiInputArea">
     <label for="aiInput" class="sr-only">Message your instructor</label>
-    <input
-      id="aiInput"
-      type="text"
-      placeholder="Ask your instructor..."
-      autocomplete="off"
-      aria-describedby="aiPanelTitle"
-    />
+    <input id="aiInput" type="text" placeholder="Ask your instructor..." autocomplete="off" />
     <button id="aiSend" type="button">Send</button>
   </div>
 </div>
