@@ -402,35 +402,43 @@ logoutDialog.addEventListener("click", (e) => {
 });
 
 // ─── AI panel toggle ──────────────────────────────────────────────────────────
+// The portal's ai.js (BSA Instructor) self-boots and fully owns this panel —
+// open/close, Escape, and the actual Q&A messaging. Binding our OWN toggle here
+// as well meant BOTH handlers fired on a single click and cancelled each other
+// out (open → immediately close), which is why "Ask Instructor" appeared dead.
+// ai.js sets window.__BSA_AI_BOOTED__ synchronously when it loads, so only bind
+// a fallback toggle here when ai.js is NOT present (e.g. standalone preview).
+if (!window.__BSA_AI_BOOTED__) {
+  const aiToggleBtn = document.getElementById("aiToggleBtn");
+  const aiPanel     = document.getElementById("aiPanel");
+  const aiClose     = document.getElementById("aiClose");
+  const aiInput     = document.getElementById("aiInput");
 
-const aiToggleBtn = document.getElementById("aiToggleBtn");
-const aiPanel     = document.getElementById("aiPanel");
-const aiClose     = document.getElementById("aiClose");
-const aiInput     = document.getElementById("aiInput");
+  const openAiPanel = () => {
+    aiPanel.classList.remove("hidden");
+    aiPanel.style.display = "flex";
+    aiToggleBtn.setAttribute("aria-expanded", "true");
+    aiInput.focus();
+  };
 
-function openAiPanel() {
-  aiPanel.classList.remove("hidden");
-  aiToggleBtn.setAttribute("aria-expanded", "true");
-  aiInput.focus();
+  const closeAiPanel = () => {
+    aiPanel.classList.add("hidden");
+    aiPanel.style.display = "none";
+    aiToggleBtn.setAttribute("aria-expanded", "false");
+    aiToggleBtn.focus();
+  };
+
+  aiToggleBtn.addEventListener("click", () => {
+    aiPanel.classList.contains("hidden") ? openAiPanel() : closeAiPanel();
+  });
+
+  aiClose.addEventListener("click", closeAiPanel);
+
+  // Close panel on Escape key
+  aiPanel.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAiPanel();
+  });
 }
-
-function closeAiPanel() {
-  aiPanel.classList.add("hidden");
-  aiToggleBtn.setAttribute("aria-expanded", "false");
-  aiToggleBtn.focus();
-}
-
-aiToggleBtn.addEventListener("click", () => {
-  const isHidden = aiPanel.classList.contains("hidden");
-  if (isHidden) openAiPanel(); else closeAiPanel();
-});
-
-aiClose.addEventListener("click", closeAiPanel);
-
-// Close panel on Escape key
-aiPanel.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeAiPanel();
-});
 </script>
 
 </body>
