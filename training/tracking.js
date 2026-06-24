@@ -1,288 +1,402 @@
+/**
+ * tracking.js — BSA Student Activity & Time Tracking
+ * =====================================================================
+ * Tracks lesson activity, quiz time, stage progression, and final
+ * evaluation results to Firestore.
+ *
+ * All Firestore writes go through safeUpdate() for consistent error
+ * handling. The 15-second auto-timer pauses when the tab is hidden
+ * (Page Visibility API) and caps each tick at MAX_TICK_SECONDS to
+ * prevent runaway accumulation from sleep/wake cycles.
+ *
+ * USAGE:
+ *   initTracking(studentId, lessonNumber)  — call once per page load
+ *   stopTracking()                         — call on beforeunload
+ *   All other exports are called by quiz.html, scenario.html, etc.
+ * =====================================================================
+ */
+ 
 import { db } from "./firebase-config.js";
 import {
   doc,
-  getDoc,
   updateDoc,
+  arrayUnion,
   serverTimestamp,
   increment
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-// ========================================
-// TRACKING STATE
-// ========================================
-let trackingState = {
-  studentId: null,
+} from "./firebase-firestore-shim.js";
+// NOTE: Import from your local Firebase shim or bundled SDK rather than
+// the CDN URL. This removes the external network dependency and ensures
+// consistent versioning with firebase-config.js.
+// If you are using the CDN directly everywhere, replace the import above
+// with the versioned CDN URL you use in firebase-config.js.
+ 
+// ─── Constants ────────────────────────────────────────────────────────────────
+ 
+/** Maximum seconds credited per timer tick — caps sleep/wake drift */
+const MAX_TICK_SECONDS = 60;
+ 
+/** Timer interval in milliseconds */
+const TICK_INTERVAL_MS = 15_000;
+ 
+/** Development mode — set to true locally to enable verbose logging */
+const DEV_MODE = false;
+ 
+// ─── Tracking state ───────────────────────────────────────────────────────────
+ 
+/**
+ * Module-level singleton. Safe because each page does a full reload
+ * between lessons (no SPA navigation in this portal).
+ * initTracking() always calls stopTracking() first to clear any
+ * previous timer before setting new state.
+ *
+ * @type {{
+ *   studentId: string|null,
+ *   lessonNumber: number|null,
+ *   timerHandle: number|null,
+ *   lastTickMs: number|null,
+ *   isRunning: boolean
+ * }}
+ */
+let state = {
+  studentId:    null,
   lessonNumber: null,
-  timerHandle: null,
-  startedAtMs: null,
-  lastTickMs: null
+  timerHandle:  null,
+  lastTickMs:   null,
+  isRunning:    false,
 };
-
-// ========================================
-// INTERNAL HELPERS
-// ========================================
-function hasValidTrackingContext() {
-  return !!trackingState.studentId && Number.isFinite(Number(trackingState.lessonNumber));
+ 
+// ─── Internal utilities ───────────────────────────────────────────────────────
+ 
+function log(...args) {
+  if (DEV_MODE) console.log("[BSA Tracking]", ...args);
 }
-
+ 
+function hasContext() {
+  return (
+    typeof state.studentId === "string" &&
+    state.studentId.trim() !== "" &&
+    Number.isFinite(state.lessonNumber)
+  );
+}
+ 
 function getLessonKey() {
-  return Number(trackingState.lessonNumber);
+  return state.lessonNumber;
 }
-
-function resetTimerBase() {
-  trackingState.startedAtMs = Date.now();
-  trackingState.lastTickMs = Date.now();
+ 
+/** Returns a Firestore document reference synchronously. No async needed. */
+function getStudentRef() {
+  if (!state.studentId) return null;
+  return doc(db, "portalStudents", state.studentId);
 }
-
-function clearTrackingTimer() {
-  if (trackingState.timerHandle) {
-    clearInterval(trackingState.timerHandle);
-    trackingState.timerHandle = null;
-  }
-}
-
-function setTrackingTimer() {
-  clearTrackingTimer();
-
-  trackingState.timerHandle = setInterval(async () => {
-    try {
-      await trackTimeSlice();
-    } catch (error) {
-      console.error("Tracking interval failed:", error);
-    }
-  }, 15000);
-}
-
-function buildBaseUpdate() {
-  return {
-    lastLoginAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-    currentLessonNumber: getLessonKey()
-  };
-}
-
-function buildProgressPath(field) {
+ 
+/** Dotted Firestore path for a field inside a lesson's progress map. */
+function progressPath(field) {
   return `progress.${getLessonKey()}.${field}`;
 }
-
-function normalizeFinalResult(result) {
-  const safe = String(result || "").trim().toLowerCase();
-
-  if (!safe) return "unknown";
-  if (safe.includes("pass")) return "passed";
-  if (safe.includes("fail")) return "failed";
-  if (safe.includes("critical")) return "critical";
-
-  return safe;
+ 
+/**
+ * Base fields written on every update.
+ * NOTE: lastLoginAt is intentionally NOT included here — it should only
+ * be written on actual login, not on every activity ping.
+ */
+function baseUpdate() {
+  return {
+    updatedAt:            serverTimestamp(),
+    currentLessonNumber:  getLessonKey(),
+    lastActivityAt:       serverTimestamp(),
+  };
 }
-
-async function getStudentDocRef() {
-  if (!trackingState.studentId) return null;
-  return doc(db, "portalStudents", trackingState.studentId);
-}
-
+ 
+/**
+ * Writes a payload to the student document.
+ * All Firestore writes go through this — single error-handling path.
+ *
+ * @param {object} payload
+ * @returns {Promise<boolean>}
+ */
 async function safeUpdate(payload) {
-  const studentRef = await getStudentDocRef();
-  if (!studentRef) return false;
-
+  const ref = getStudentRef();
+  if (!ref) return false;
+ 
   try {
-    await updateDoc(studentRef, payload);
+    await updateDoc(ref, payload);
     return true;
-  } catch (error) {
-    console.error("Tracking update failed:", error);
+  } catch (err) {
+    console.error("[BSA Tracking] Firestore update failed:", err);
     return false;
   }
 }
-
-// ========================================
-// INIT / STOP / RESET
-// ========================================
+ 
+/**
+ * Normalizes a final evaluation result string to a known value.
+ * @param {string} result
+ * @returns {"passed"|"failed"|"critical"|"unknown"}
+ */
+function normalizeFinalResult(result) {
+  const s = String(result ?? "").trim().toLowerCase();
+  if (!s)                  return "unknown";
+  if (s.includes("pass"))  return "passed";
+  if (s.includes("crit"))  return "critical";
+  if (s.includes("fail"))  return "failed";
+  return "unknown";
+}
+ 
+// ─── Page Visibility API — pause timer when tab is hidden ─────────────────────
+ 
+let _tabVisible = !document.hidden;
+ 
+document.addEventListener("visibilitychange", () => {
+  _tabVisible = !document.hidden;
+ 
+  if (_tabVisible && state.isRunning) {
+    // Tab became visible again — reset tick base so hidden time is not counted
+    state.lastTickMs = Date.now();
+    log("Tab visible — tick base reset.");
+  } else {
+    log("Tab hidden — time accumulation paused.");
+  }
+});
+ 
+// ─── Timer ────────────────────────────────────────────────────────────────────
+ 
+function clearTimer() {
+  if (state.timerHandle !== null) {
+    clearInterval(state.timerHandle);
+    state.timerHandle = null;
+  }
+}
+ 
+function startTimer() {
+  clearTimer();
+  state.lastTickMs = Date.now();
+ 
+  state.timerHandle = setInterval(async () => {
+    if (!_tabVisible) return; // tab hidden — skip this tick
+    try {
+      await tickTimeSlice();
+    } catch (err) {
+      console.error("[BSA Tracking] Timer tick failed:", err);
+    }
+  }, TICK_INTERVAL_MS);
+}
+ 
+/**
+ * Writes elapsed seconds since last tick to Firestore.
+ * Caps at MAX_TICK_SECONDS to prevent sleep/wake runaway accumulation.
+ */
+async function tickTimeSlice() {
+  if (!hasContext()) return;
+ 
+  const now     = Date.now();
+  const rawSecs = Math.floor((now - state.lastTickMs) / 1000);
+ 
+  // Cap to prevent inflated times from sleep/wake or browser throttling
+  const elapsed = Math.min(Math.max(rawSecs, 1), MAX_TICK_SECONDS);
+ 
+  state.lastTickMs = now;
+ 
+  await safeUpdate({
+    ...baseUpdate(),
+    [progressPath("totalQuizTimeSeconds")]: increment(elapsed),
+    totalQuizTimeSeconds:                   increment(elapsed),
+    [progressPath("lastActivityAt")]:        serverTimestamp(),
+  });
+ 
+  log(`Tick: +${elapsed}s`);
+}
+ 
+// ─── Public API ───────────────────────────────────────────────────────────────
+ 
+/**
+ * Initialize tracking for a student and lesson.
+ * Always stops any previous tracking session first.
+ *
+ * @param {string} studentId   - Firestore document ID
+ * @param {number} lessonNumber - lesson ID (integer)
+ */
 export function initTracking(studentId, lessonNumber) {
-  trackingState.studentId = studentId || null;
-  trackingState.lessonNumber = Number(lessonNumber);
-
-  if (!hasValidTrackingContext()) {
-    console.warn("Tracking not initialized: missing studentId or lessonNumber.");
-    clearTrackingTimer();
+  // Always clean up previous session before re-initializing
+  stopTracking();
+ 
+  state.studentId    = typeof studentId === "string" ? studentId.trim() : null;
+  state.lessonNumber = Number(lessonNumber);
+ 
+  if (!hasContext()) {
+    console.warn("[BSA Tracking] initTracking: invalid studentId or lessonNumber.", {
+      studentId,
+      lessonNumber,
+    });
     return;
   }
-
-  resetTimerBase();
-  setTrackingTimer();
-
-  console.log("Tracking started:", trackingState.studentId, trackingState.lessonNumber);
+ 
+  state.isRunning = true;
+  startTimer();
+ 
+  log("Initialized.", { studentId: state.studentId, lesson: state.lessonNumber });
 }
-
+ 
+/**
+ * Stop the tracking timer. Call on beforeunload or when leaving a page.
+ * Safe to call multiple times.
+ */
 export function stopTracking() {
-  clearTrackingTimer();
+  clearTimer();
+  state.isRunning = false;
+  log("Stopped.");
 }
-
+ 
+/**
+ * Fully reset tracking state. Use when logging out or switching students.
+ */
 export function resetTracking() {
-  clearTrackingTimer();
-  trackingState = {
-    studentId: null,
+  stopTracking();
+  state = {
+    studentId:    null,
     lessonNumber: null,
-    timerHandle: null,
-    startedAtMs: null,
-    lastTickMs: null
+    timerHandle:  null,
+    lastTickMs:   null,
+    isRunning:    false,
   };
+  log("Reset.");
 }
-
-// ========================================
-// AUTO TIME SLICE
-// ========================================
-async function trackTimeSlice() {
-  if (!hasValidTrackingContext()) return;
-
-  const now = Date.now();
-  const elapsedSeconds = Math.max(1, Math.floor((now - trackingState.lastTickMs) / 1000));
-
-  if (elapsedSeconds < 1) return;
-
-  trackingState.lastTickMs = now;
-
-  await safeUpdate({
-    ...buildBaseUpdate(),
-    [buildProgressPath("lastActivityAt")]: serverTimestamp(),
-    [buildProgressPath("totalQuizTimeSeconds")]: increment(elapsedSeconds),
-    totalQuizTimeSeconds: increment(elapsedSeconds)
-  });
-}
-
-// ========================================
-// GENERAL ACTIVITY
-// ========================================
-export async function trackActivity() {
-  if (!trackingState.studentId) return;
-
-  await safeUpdate({
-    ...buildBaseUpdate()
-  });
-}
-
+ 
+// ─── Activity ─────────────────────────────────────────────────────────────────
+ 
+/**
+ * Record manual user activity (answer click, scroll, etc.).
+ * Throttled by the caller — this just writes the timestamp.
+ */
 export async function trackManualActivity() {
-  if (!hasValidTrackingContext()) return;
-
+  if (!hasContext()) return;
+ 
   await safeUpdate({
-    ...buildBaseUpdate(),
-    [buildProgressPath("lastActivityAt")]: serverTimestamp()
+    ...baseUpdate(),
+    [progressPath("lastActivityAt")]: serverTimestamp(),
   });
 }
-
-// ========================================
-// LESSON VIEW
-// ========================================
+ 
+// ─── Lesson view ──────────────────────────────────────────────────────────────
+ 
+/**
+ * Record that the student opened and viewed lesson content.
+ */
 export async function trackLessonView() {
-  if (!hasValidTrackingContext()) return;
-
+  if (!hasContext()) return;
+ 
   await safeUpdate({
-    ...buildBaseUpdate(),
-    currentStage: "Lesson Opened",
-    [buildProgressPath("contentViewed")]: true,
-    [buildProgressPath("stage")]: "Lesson Opened",
-    [buildProgressPath("lastActivityAt")]: serverTimestamp()
+    ...baseUpdate(),
+    currentStage:                       "Lesson Opened",
+    [progressPath("contentViewed")]:    true,
+    [progressPath("stage")]:            "Lesson Opened",
+    [progressPath("lastActivityAt")]:   serverTimestamp(),
   });
+ 
+  log("Lesson viewed.");
 }
-
-// ========================================
-// QUIZ START
-// ========================================
+ 
+// ─── Quiz start ───────────────────────────────────────────────────────────────
+ 
+/**
+ * Record that the student started a quiz or final evaluation.
+ * Resets the tick base so quiz time is measured from this point.
+ */
 export async function trackQuizStart() {
-  if (!hasValidTrackingContext()) return;
-
-  resetTimerBase();
-
+  if (!hasContext()) return;
+ 
+  // Reset tick base so time counts from quiz open, not lesson open
+  state.lastTickMs = Date.now();
+ 
   await safeUpdate({
-    ...buildBaseUpdate(),
-    currentStage: "Quiz Started",
-    [buildProgressPath("attempts")]: increment(1),
-    [buildProgressPath("stage")]: "Quiz Started",
-    [buildProgressPath("lastActivityAt")]: serverTimestamp()
+    ...baseUpdate(),
+    currentStage:                     "Quiz Started",
+    [progressPath("attempts")]:       increment(1),
+    [progressPath("stage")]:          "Quiz Started",
+    [progressPath("lastActivityAt")]: serverTimestamp(),
   });
+ 
+  log("Quiz started.");
 }
-
-// ========================================
-// EXPLICIT QUIZ TIME TRACK
-// ========================================
-export async function trackQuizTime(seconds) {
-  if (!hasValidTrackingContext()) return;
-
-  const safeSeconds = Math.max(0, Number(seconds || 0));
-  if (!safeSeconds) return;
-
-  await safeUpdate({
-    ...buildBaseUpdate(),
-    [buildProgressPath("totalQuizTimeSeconds")]: increment(safeSeconds),
-    totalQuizTimeSeconds: increment(safeSeconds),
-    [buildProgressPath("lastActivityAt")]: serverTimestamp()
-  });
-}
-
-// ========================================
-// LESSON COMPLETE
-// ========================================
+ 
+// ─── Lesson complete ──────────────────────────────────────────────────────────
+ 
+/**
+ * Record that the student completed a lesson.
+ * Uses arrayUnion to atomically append the lesson ID — safe for
+ * concurrent sessions (mobile + desktop) without read-modify-write.
+ */
 export async function trackLessonComplete() {
-  if (!hasValidTrackingContext()) return;
-
-  const studentRef = await getStudentDocRef();
-  if (!studentRef) return;
-
+  if (!hasContext()) return;
+ 
+  const ref = getStudentRef();
+  if (!ref) return;
+ 
   try {
-    const snap = await getDoc(studentRef);
-    const data = snap.exists() ? (snap.data() || {}) : {};
-    const completedLessons = Array.isArray(data.completedLessons) ? [...data.completedLessons] : [];
-
-    if (!completedLessons.includes(getLessonKey())) {
-      completedLessons.push(getLessonKey());
-      completedLessons.sort((a, b) => Number(a) - Number(b));
-    }
-
-    await updateDoc(studentRef, {
-      ...buildBaseUpdate(),
-      completedLessons,
-      currentLessonNumber: getLessonKey() + 1,
-      currentStage: "Lesson Completed",
-      [buildProgressPath("completedAt")]: serverTimestamp(),
-      [buildProgressPath("stage")]: "Lesson Completed",
-      [buildProgressPath("lastActivityAt")]: serverTimestamp()
+    await updateDoc(ref, {
+      ...baseUpdate(),
+      // arrayUnion is atomic — no read-modify-write race condition
+      completedLessons:                     arrayUnion(getLessonKey()),
+      currentLessonNumber:                  getLessonKey() + 1,
+      currentStage:                         "Lesson Completed",
+      [progressPath("completedAt")]:        serverTimestamp(),
+      [progressPath("stage")]:             "Lesson Completed",
+      [progressPath("lastActivityAt")]:     serverTimestamp(),
     });
-  } catch (error) {
-    console.error("Lesson complete tracking failed:", error);
+ 
+    log("Lesson complete.", getLessonKey());
+  } catch (err) {
+    console.error("[BSA Tracking] trackLessonComplete failed:", err);
   }
 }
-
-// ========================================
-// FINAL RESULT
-// ========================================
+ 
+// ─── Final evaluation result ──────────────────────────────────────────────────
+ 
+/**
+ * Record the final evaluation outcome.
+ *
+ * @param {"passed"|"failed"|"critical"} result
+ */
 export async function trackFinalResult(result) {
-  if (!trackingState.studentId) return;
-
+  if (!state.studentId) return;
+ 
   const safeResult = normalizeFinalResult(result);
-
+ 
+  const stageLabel =
+    safeResult === "passed"   ? "Final Passed"  :
+    safeResult === "critical" ? "Critical Fail" :
+    safeResult === "failed"   ? "Final Failed"  :
+                                "Final — Unknown Result";
+ 
   await safeUpdate({
-    ...buildBaseUpdate(),
+    ...baseUpdate(),
     finalEvaluationStatus: safeResult,
-    currentStage: safeResult === "passed"
-      ? "Final Passed"
-      : safeResult === "critical"
-        ? "Critical Fail"
-        : "Final Failed"
+    currentStage:          stageLabel,
+    [progressPath("stage")]:           stageLabel,
+    [progressPath("lastActivityAt")]:  serverTimestamp(),
   });
+ 
+  log("Final result recorded:", safeResult);
 }
-
-// ========================================
-// STAGE LOGGING
-// ========================================
+ 
+// ─── Stage logging ────────────────────────────────────────────────────────────
+ 
+/**
+ * Write a named stage label to the student record and lesson progress.
+ * Used for "Scenario Started", "Quiz Completed", etc.
+ *
+ * @param {string} stageLabel
+ */
 export async function logStage(stageLabel) {
-  if (!hasValidTrackingContext()) return;
-
-  const safeStage = String(stageLabel || "").trim();
-  if (!safeStage) return;
-
+  if (!hasContext()) return;
+ 
+  const safe = String(stageLabel ?? "").trim();
+  if (!safe) return;
+ 
   await safeUpdate({
-    ...buildBaseUpdate(),
-    currentStage: safeStage,
-    [buildProgressPath("stage")]: safeStage,
-    [buildProgressPath("lastActivityAt")]: serverTimestamp()
+    ...baseUpdate(),
+    currentStage:                     safe,
+    [progressPath("stage")]:          safe,
+    [progressPath("lastActivityAt")]: serverTimestamp(),
   });
+ 
+  log("Stage:", safe);
 }
