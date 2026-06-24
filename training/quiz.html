@@ -11,45 +11,93 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <div class="brand-mark"><img src="./images/bsa-logo.png"></div>
+      <div class="brand-mark">
+        <img src="./images/bsa-logo.png" alt="Broussard Shooting Academy logo">
+      </div>
       <div>
         <h1>Broussard Shooting Academy</h1>
-        <p>Final Evaluation</p>
+        <p id="headerSubtitle">Quiz</p>
       </div>
     </div>
-    <div class="top-actions">
+    <nav class="top-actions" aria-label="Site navigation">
       <a class="btn btn-light" href="dashboard.html">Dashboard</a>
-    </div>
+    </nav>
   </div>
 </header>
 
-<main class="container">
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="loading-overlay" aria-live="polite" aria-label="Loading quiz">
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <p>Loading your evaluation&hellip;</p>
+</div>
 
-<section class="panel content-card" id="quizPanel">
+<!-- Error banner -->
+<div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
 
-  <span class="eyebrow" id="quizHeader"></span>
-  <h2 id="quizTitle"></h2>
-  <p class="muted" id="quizDescription"></p>
+<main class="container" id="mainContent" aria-busy="true">
 
-  <div class="notice warn" id="finalNotice">
-    <strong>This is your final evaluation.</strong>
-    <ul>
-      <li>Minimum passing score: 80%</li>
-      <li>Critical mistakes may result in failure</li>
-      <li>This determines readiness for live training</li>
-    </ul>
-  </div>
+  <section class="panel content-card" id="quizPanel" aria-labelledby="quizTitle">
 
-  <div id="quizWrap"></div>
+    <span class="eyebrow" id="quizHeader" aria-hidden="true"></span>
+    <h2 id="quizTitle">Loading&hellip;</h2>
+    <p class="muted" id="quizDescription"></p>
 
-  <div class="lesson-actions">
-    <button class="btn btn-blue" id="submitQuizBtn">Submit Evaluation</button>
-    <a class="btn btn-outline" id="backLessonLink">Back to Lesson</a>
-  </div>
+    <div class="notice warn" id="finalNotice" role="note" aria-label="Final evaluation notice">
+      <strong>This is your final evaluation.</strong>
+      <ul>
+        <li>Minimum passing score: 80%</li>
+        <li>Critical mistakes may result in automatic failure</li>
+        <li>This determines your readiness for live training</li>
+      </ul>
+    </div>
 
-</section>
+    <!-- Progress indicator -->
+    <div class="quiz-progress" id="quizProgress" aria-live="polite" aria-atomic="true">
+      <span id="progressText">Question 0 of 0 answered</span>
+      <div
+        class="progress-wrap"
+        role="progressbar"
+        aria-valuenow="0"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-labelledby="progressText"
+      >
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
 
-<section id="resultPanel" class="hidden"></section>
+    <div id="quizWrap" role="list" aria-label="Quiz questions"></div>
+
+    <div class="lesson-actions">
+      <button
+        class="btn btn-blue"
+        id="submitQuizBtn"
+        type="button"
+        aria-describedby="submitHint"
+        disabled
+      >
+        Submit Evaluation
+      </button>
+      <a class="btn btn-outline" id="backLessonLink" href="#">Back to Lesson</a>
+    </div>
+    <p class="muted" id="submitHint" style="font-size:0.85em; margin-top: 0.5rem;">
+      Answer all questions to enable submission.
+    </p>
+
+  </section>
+
+  <!-- Confirmation dialog before submit -->
+  <dialog id="submitDialog" aria-labelledby="submitDialogTitle" aria-modal="true">
+    <h4 id="submitDialogTitle">Submit your evaluation?</h4>
+    <p id="submitDialogBody">You have answered all 20 questions. This cannot be undone.</p>
+    <p id="unansweredWarning" class="hidden notice warn" role="alert"></p>
+    <div class="dialog-actions">
+      <button class="btn btn-outline" id="submitCancel" type="button">Go Back</button>
+      <button class="btn btn-blue"    id="submitConfirm" type="button">Yes, Submit</button>
+    </div>
+  </dialog>
+
+  <section id="resultPanel" class="hidden" aria-live="polite" aria-atomic="true"></section>
 
 </main>
 
@@ -79,113 +127,281 @@ import {
   stopTracking
 } from "./tracking.js";
 
+// ─── Utilities ────────────────────────────────────────────────────────────────
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = String(value ?? "");
+  return div.innerHTML;
+}
+
+function showError(message) {
+  const banner = document.getElementById("errorBanner");
+  banner.textContent = message;
+  banner.classList.remove("hidden");
+}
+
+function hideLoading() {
+  document.getElementById("loadingOverlay").classList.add("hidden");
+  document.getElementById("mainContent").setAttribute("aria-busy", "false");
+}
+
+// ─── Guard ────────────────────────────────────────────────────────────────────
+
 requireLogin();
 
-const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
-const lessonId = Number(new URLSearchParams(window.location.search).get("lesson") || 1);
-const lesson = window.LESSONS.find(l => l.id === lessonId);
+// ─── Data fetch ───────────────────────────────────────────────────────────────
+
+let student;
+
+try {
+  student = (await refreshCurrentStudentFromFirestore()) ?? getCurrentStudent();
+} catch (err) {
+  console.error("Failed to load student data:", err);
+  showError("Unable to load your session. Please refresh or log in again.");
+  hideLoading();
+}
 
 if (!student) {
   window.location.href = "index.html";
   throw new Error("Student session missing");
 }
 
-if (!lesson) {
-  document.getElementById("quizWrap").innerHTML = "<p>Quiz lesson not found.</p>";
-  throw new Error("Quiz lesson missing");
+// ─── Lesson resolution ────────────────────────────────────────────────────────
+
+const params   = new URLSearchParams(window.location.search);
+const lessonId = Number(params.get("lesson") || 1);
+const isReview = params.get("review") === "1";
+const lessons  = window.LESSONS;
+
+if (!Array.isArray(lessons) || !lessons.length) {
+  showError("Course data failed to load. Please refresh the page.");
+  hideLoading();
+  throw new Error("window.LESSONS missing or empty");
 }
 
-// TRACKING START
+const lesson = lessons.find((l) => l.id === lessonId);
+
+if (!lesson) {
+  showError(`Lesson ${lessonId} not found. Please return to the dashboard.`);
+  hideLoading();
+  throw new Error(`Quiz lesson ${lessonId} not found`);
+}
+
+const isFinal = lesson.id === lessons.at(-1).id;
+
+// ─── Header setup ─────────────────────────────────────────────────────────────
+
+document.title = isFinal
+  ? `BSA Final Evaluation — ${lesson.title}`
+  : `BSA Quiz — ${lesson.title}`;
+
+document.getElementById("headerSubtitle").textContent = isFinal
+  ? "Final Evaluation"
+  : `Lesson ${lesson.id} Quiz`;
+
+document.getElementById("quizTitle").textContent = isFinal
+  ? `${lesson.id}. ${lesson.title} — Final Evaluation`
+  : `${lesson.id}. ${lesson.title} — Quiz`;
+
+document.getElementById("quizHeader").textContent = isFinal
+  ? "FINAL EVALUATION • PASS AT 80%"
+  : `LESSON ${lesson.id} QUIZ • PASS AT 80%`;
+
+document.getElementById("quizDescription").textContent = isFinal
+  ? "This evaluation measures legal understanding, judgment, and responsibility."
+  : "Answer each question based on what you learned in this lesson.";
+
+document.getElementById("backLessonLink").href =
+  `lesson.html?lesson=${encodeURIComponent(lesson.id)}`;
+
+// Only show the final notice on the final evaluation
+if (!isFinal) {
+  document.getElementById("finalNotice").classList.add("hidden");
+}
+
+// ─── Tracking start ──────────────────────────────────────────────────────────
+
 try {
   initTracking(student.id, lessonId);
   await trackQuizStart();
   await logStage("Quiz Started");
-} catch (error) {
-  console.error("Quiz tracking init failed:", error);
+} catch (err) {
+  console.error("Quiz tracking init failed:", err);
 }
 
-document.getElementById("quizTitle").textContent =
-  `${lesson.id}. ${lesson.title} — Final Evaluation`;
-
-document.getElementById("quizHeader").textContent =
-  "FINAL EVALUATION • PASS AT 80%";
-
-document.getElementById("quizDescription").textContent =
-  "This evaluation measures legal understanding, judgment, and responsibility.";
-
-document.getElementById("backLessonLink").href =
-  `lesson.html?lesson=${lesson.id}`;
+// ─── Question build ───────────────────────────────────────────────────────────
 
 clearActiveQuiz(lessonId);
 
 const selectedQuestions = getQuizQuestionsForLesson(lessonId, 20);
-const quizWrap = document.getElementById("quizWrap");
+const totalQuestions    = selectedQuestions.length;
+const answeredMap       = new Map(); // index → boolean (answered)
+const quizWrap          = document.getElementById("quizWrap");
+const submitBtn         = document.getElementById("submitQuizBtn");
+const progressBar       = document.getElementById("progressBar");
+const progressText      = document.getElementById("progressText");
+const progressWrap      = progressBar.parentElement;
+
+function updateProgress() {
+  const answered = answeredMap.size;
+  const pct      = totalQuestions > 0 ? Math.round((answered / totalQuestions) * 100) : 0;
+
+  progressText.textContent = `${answered} of ${totalQuestions} answered`;
+  progressBar.style.setProperty("--progress-pct", `${pct}%`);
+  progressWrap.setAttribute("aria-valuenow", pct);
+
+  // Enable submit only when all questions answered
+  const allAnswered = answered === totalQuestions;
+  submitBtn.disabled = !allAnswered;
+  document.getElementById("submitHint").textContent = allAnswered
+    ? "All questions answered. Ready to submit."
+    : `Answer all ${totalQuestions} questions to enable submission.`;
+}
+
+updateProgress();
 
 selectedQuestions.forEach((q, index) => {
   const card = document.createElement("div");
-  card.className = "scenario-card";
+  card.className  = "scenario-card";
+  card.setAttribute("role", "listitem");
+  card.setAttribute("aria-labelledby", `question-label-${index}`);
 
-  const title = document.createElement("h3");
-  title.textContent = `${index + 1}. ${q.q}`;
+  const questionId = `question-label-${index}`;
 
-  const answers = document.createElement("div");
+  const titleEl = document.createElement("h3");
+  titleEl.id          = questionId;
+  titleEl.textContent = `${index + 1}. ${q.q}`;
+
+  const answers = document.createElement("fieldset");
   answers.className = "answer-group";
 
-  const choices = q.type === "tf"
-    ? ["True", "False"]
-    : q.choices;
+  const legend = document.createElement("legend");
+  legend.className   = "sr-only";
+  legend.textContent = `Question ${index + 1}: ${q.q}`;
+  answers.appendChild(legend);
+
+  const choices = q.type === "tf" ? ["True", "False"] : q.choices;
 
   choices.forEach((choice, i) => {
+    const inputId = `q${index}_opt${i}`;
+    const value   = q.type === "tf" ? (i === 0 ? "true" : "false") : String(i);
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "answer-option";
+
+    const input = document.createElement("input");
+    input.type  = "radio";
+    input.name  = `q${index}`;
+    input.id    = inputId;
+    input.value = value;
+
     const label = document.createElement("label");
-    label.className = "answer-option";
+    label.htmlFor     = inputId;
+    label.textContent = choice;
 
-    label.innerHTML = `
-      <input type="radio" name="q${index}" value="${q.type === "tf" ? (i === 0 ? "true" : "false") : i}">
-      <span>${choice}</span>
-    `;
+    input.addEventListener("change", async () => {
+      // Update selected state on wrappers
+      answers.querySelectorAll(".answer-option").forEach((el) =>
+        el.classList.remove("selected")
+      );
+      wrapper.classList.add("selected");
 
-    label.addEventListener("click", async () => {
-      answers.querySelectorAll(".answer-option").forEach(el => el.classList.remove("selected"));
-      label.classList.add("selected");
+      // Track answer
+      if (!answeredMap.has(index)) {
+        answeredMap.set(index, true);
+        updateProgress();
+      }
 
       try {
         await trackManualActivity();
-      } catch (error) {
-        console.error("Quiz answer activity failed:", error);
+      } catch (err) {
+        console.error("Quiz answer activity failed:", err);
       }
     });
 
-    answers.appendChild(label);
+    wrapper.appendChild(input);
+    wrapper.appendChild(label);
+    answers.appendChild(wrapper);
   });
 
-  card.appendChild(title);
+  card.appendChild(titleEl);
   card.appendChild(answers);
   quizWrap.appendChild(card);
 });
 
-document.getElementById("submitQuizBtn").addEventListener("click", async () => {
-  let correct = 0;
+// ─── Submit flow ──────────────────────────────────────────────────────────────
+
+const submitDialog   = document.getElementById("submitDialog");
+const submitCancel   = document.getElementById("submitCancel");
+const submitConfirm  = document.getElementById("submitConfirm");
+const unansweredWarn = document.getElementById("unansweredWarning");
+const submitDialogBody = document.getElementById("submitDialogBody");
+
+submitBtn.addEventListener("click", () => {
+  const unanswered = totalQuestions - answeredMap.size;
+
+  if (unanswered > 0) {
+    // Allow submission with unanswered questions but warn clearly
+    unansweredWarn.textContent =
+      `Warning: ${unanswered} question${unanswered > 1 ? "s are" : " is"} unanswered and will be marked incorrect.`;
+    unansweredWarn.classList.remove("hidden");
+    submitDialogBody.textContent =
+      `You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Submitting will mark ${unanswered > 1 ? "them" : "it"} as incorrect. This cannot be undone.`;
+  } else {
+    unansweredWarn.classList.add("hidden");
+    submitDialogBody.textContent =
+      `You have answered all ${totalQuestions} questions. This cannot be undone.`;
+  }
+
+  submitDialog.showModal();
+  submitCancel.focus();
+});
+
+submitCancel.addEventListener("click", () => {
+  submitDialog.close();
+  submitBtn.focus();
+});
+
+// Close dialog on backdrop click
+submitDialog.addEventListener("click", (e) => {
+  if (e.target === submitDialog) submitDialog.close();
+});
+
+submitConfirm.addEventListener("click", async () => {
+  submitDialog.close();
+  await gradeAndSubmit();
+});
+
+// ─── Grading ──────────────────────────────────────────────────────────────────
+
+async function gradeAndSubmit() {
+  // Disable submit to prevent double submission
+  submitBtn.disabled  = true;
+  submitBtn.textContent = "Submitting…";
+
+  let correct      = 0;
   let criticalFail = false;
-  const details = [];
+  const details    = [];
 
   selectedQuestions.forEach((q, index) => {
     const picked = document.querySelector(`input[name="q${index}"]:checked`);
 
-    let isCorrect = false;
-    let yourAnswer = "No answer";
+    let isCorrect    = false;
+    let yourAnswer   = "No answer";
     let correctAnswer = "";
 
     if (q.type === "tf") {
       correctAnswer = q.answer ? "True" : "False";
       if (picked) {
         yourAnswer = picked.value === "true" ? "True" : "False";
-        isCorrect = String(q.answer) === picked.value;
+        isCorrect  = String(q.answer) === picked.value;
       }
     } else {
       correctAnswer = q.choices[q.answer];
       if (picked) {
         yourAnswer = q.choices[Number(picked.value)];
-        isCorrect = Number(picked.value) === q.answer;
+        isCorrect  = Number(picked.value) === q.answer;
       }
     }
 
@@ -195,42 +411,102 @@ document.getElementById("submitQuizBtn").addEventListener("click", async () => {
     details.push({ question: q.q, yourAnswer, correctAnswer, isCorrect });
   });
 
-  const score = Math.round((correct / selectedQuestions.length) * 100);
-
-  await recordFinalEvaluation(lessonId, score, details, 0, { criticalFail });
+  const score  = Math.round((correct / totalQuestions) * 100);
+  const passed = score >= PASSING_SCORE && !criticalFail;
 
   try {
-    await trackFinalResult(score >= PASSING_SCORE && !criticalFail ? "passed" : "failed");
-    await trackLessonComplete();
-    await logStage("Quiz Completed");
-  } catch (error) {
-    console.error("Final quiz tracking failed:", error);
+    await recordFinalEvaluation(lessonId, score, details, 0, { criticalFail });
+  } catch (err) {
+    console.error("Failed to record evaluation:", err);
+    showError("Your results could not be saved. Please contact your instructor.");
   }
 
-  renderResults(score, details, criticalFail);
-});
+  try {
+    await trackFinalResult(passed ? "passed" : "failed");
+    await trackLessonComplete();
+    await logStage("Quiz Completed");
+  } catch (err) {
+    console.error("Final quiz tracking failed:", err);
+  }
 
-function renderResults(score, details, criticalFail) {
+  renderResults(score, details, criticalFail, passed);
+}
+
+// ─── Results render ───────────────────────────────────────────────────────────
+
+function renderResults(score, details, criticalFail, passed) {
+  // Scroll quiz panel out of focus, surface results
+  document.getElementById("quizPanel").setAttribute("aria-hidden", "true");
+  document.getElementById("quizPanel").inert = true;
+
   const panel = document.getElementById("resultPanel");
   panel.classList.remove("hidden");
 
-  const passed = score >= PASSING_SCORE && !criticalFail;
+  const statusLabel = criticalFail ? "CRITICAL FAIL" : passed ? "PASS" : "FAIL";
+  const bannerClass = passed ? "pass" : "retake";
+
+  // Build per-question review
+  const reviewRows = details.map((d, i) => `
+    <div class="review-row ${d.isCorrect ? "review-correct" : "review-wrong"}">
+      <div class="review-q">
+        <strong>${i + 1}.</strong> ${escapeHtml(d.question)}
+      </div>
+      <div class="review-answers">
+        <span class="review-yours">
+          Your answer: <strong>${escapeHtml(d.yourAnswer)}</strong>
+        </span>
+        ${
+          !d.isCorrect
+            ? `<span class="review-correct-answer">
+                 Correct answer: <strong>${escapeHtml(d.correctAnswer)}</strong>
+               </span>`
+            : ""
+        }
+      </div>
+    </div>
+  `).join("");
 
   panel.innerHTML = `
-    <div class="panel result-card">
-      <div class="banner ${passed ? "pass" : "retake"}">
-        ${criticalFail ? "CRITICAL FAIL" : passed ? "PASS" : "FAIL"} • ${score}%
+    <div class="panel result-card" role="region" aria-labelledby="resultHeading">
+
+      <div class="banner ${escapeHtml(bannerClass)}" id="resultHeading" tabindex="-1">
+        ${escapeHtml(statusLabel)} &bull; ${escapeHtml(String(score))}%
+      </div>
+
+      ${criticalFail ? `
+        <div class="notice warn" role="alert">
+          <strong>Critical mistake detected.</strong>
+          A critical error on this evaluation results in automatic failure regardless of overall score.
+        </div>` : ""
+      }
+
+      ${!passed ? `
+        <div class="notice warn" role="note">
+          <strong>Score required to pass: ${PASSING_SCORE}%</strong><br>
+          Review the lesson material and retake the evaluation.
+        </div>` : ""
+      }
+
+      <h3>Question Review</h3>
+      <div class="review-list" aria-label="Answer review">
+        ${reviewRows}
       </div>
 
       <div class="lesson-actions">
         <a class="btn btn-blue" href="dashboard.html">Return to Dashboard</a>
-        <a class="btn btn-outline" href="lesson.html?lesson=${lessonId}">Review Lesson</a>
+        <a class="btn btn-outline" href="lesson.html?lesson=${encodeURIComponent(lessonId)}">Review Lesson</a>
+        ${!passed ? `<a class="btn btn-outline" href="quiz.html?lesson=${encodeURIComponent(lessonId)}">Retake Evaluation</a>` : ""}
       </div>
+
     </div>
   `;
+
+  // Move focus to result heading so screen readers announce the outcome
+  panel.querySelector("#resultHeading")?.focus();
 }
 
-// ACTIVITY THROTTLE
+// ─── Activity tracking ────────────────────────────────────────────────────────
+
 let activityThrottle = false;
 
 async function handleActivityPing() {
@@ -239,13 +515,11 @@ async function handleActivityPing() {
 
   try {
     await trackManualActivity();
-  } catch (error) {
-    console.error("Manual quiz activity failed:", error);
+  } catch (err) {
+    console.error("Manual quiz activity ping failed:", err);
   }
 
-  setTimeout(() => {
-    activityThrottle = false;
-  }, 15000);
+  setTimeout(() => { activityThrottle = false; }, 15000);
 }
 
 ["click", "keydown", "scroll", "touchstart"].forEach((eventName) => {
@@ -255,6 +529,10 @@ async function handleActivityPing() {
 window.addEventListener("beforeunload", () => {
   stopTracking();
 });
+
+// ─── Done loading ─────────────────────────────────────────────────────────────
+
+hideLoading();
 </script>
 
 </body>
