@@ -1524,7 +1524,7 @@ input[type="radio"] {
   box-shadow:0 0 0 2px rgba(59,130,246,0.3);
 }
 
-ai-input button{
+.ai-input button{
   border:none;
   background:#1d3557;
   color:#fff;
@@ -1533,8 +1533,6 @@ ai-input button{
   cursor:pointer;
 }
 
-
-}
 /* ===== AI PANEL (PREMIUM) ===== */
 
 .ai-panel{
@@ -1558,7 +1556,6 @@ ai-input button{
   opacity:0;
   transform:translateY(20px);
   pointer-events:none;
-}
 }
 
 /* HEADER */
