@@ -5,134 +5,442 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Admin Dashboard</title>
   <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./admin.css">
+  <style>
+    .admin-page { max-width: 1600px; }
+
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .admin-stat-card {
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid #e1e6f0;
+      box-shadow: 0 12px 30px rgba(17, 35, 74, .08);
+    }
+
+    .admin-stat-card small {
+      display: block;
+      color: #6e7890;
+      margin-bottom: 8px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .84rem;
+    }
+
+    .admin-stat-card strong {
+      font-size: 2.2rem;
+      color: #17356b;
+      line-height: 1;
+    }
+
+    .admin-stat-card.warning { box-shadow: inset 0 -3px 0 #efc45d, 0 12px 30px rgba(17,35,74,.08); }
+    .admin-stat-card.success { box-shadow: inset 0 -3px 0 #9bd0a9, 0 12px 30px rgba(17,35,74,.08); }
+    .admin-stat-card.gold { box-shadow: inset 0 -3px 0 #efc45d, 0 12px 30px rgba(17,35,74,.08); }
+    .admin-stat-card.danger { box-shadow: inset 0 -3px 0 #e58f8f, 0 12px 30px rgba(17,35,74,.08); }
+
+    .admin-toolbar-wrap,
+    .admin-table-panel {
+      padding: 22px 24px;
+    }
+
+    .admin-toolbar-row {
+      display: grid;
+      grid-template-columns: 1.4fr .9fr .9fr .7fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .search-block,
+    .filter-block {
+      display: grid;
+      gap: 8px;
+    }
+
+    .search-block label,
+    .filter-block label {
+      font-weight: 800;
+      color: #30476f;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-table-head {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .admin-table-head h2 {
+      margin: 0;
+      font-size: 2rem;
+      color: #0f2245;
+    }
+
+    .admin-table-head p {
+      margin: 6px 0 0;
+      color: #68758a;
+      font-size: 1.05rem;
+    }
+
+    .instructor-meta {
+      text-align: right;
+      color: #68758a;
+      font-size: .96rem;
+      line-height: 1.5;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 16px;
+    }
+
+    .admin-table {
+      width: 100%;
+      min-width: 2120px;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      table-layout: fixed;
+    }
+
+    .admin-table thead th {
+      background: linear-gradient(180deg, #343946 0%, #242935 100%);
+      color: #ffffff;
+      font-size: .92rem;
+      font-weight: 800;
+      padding: 14px 12px;
+      border-bottom: 0;
+      line-height: 1.2;
+      white-space: normal;
+    }
+
+    .admin-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #dde4ef;
+      vertical-align: top;
+      background: #fff;
+      color: #1f2f4d;
+      font-size: .92rem;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .admin-table tbody tr:hover td {
+      background: #f8fbff;
+    }
+
+    .cell-wrap {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .cell-center {
+      text-align: center;
+    }
+
+    .cell-small {
+      font-size: .84rem;
+      color: #5f6f88;
+      line-height: 1.35;
+    }
+
+    .col-name { width: 150px; }
+    .col-email { width: 240px; }
+    .col-course { width: 210px; }
+    .col-price { width: 70px; }
+    .col-pay-method { width: 110px; }
+    .col-pay-status { width: 110px; }
+    .col-portal { width: 100px; }
+    .col-code { width: 120px; }
+    .col-lesson { width: 120px; }
+    .col-stage { width: 120px; }
+    .col-attempts { width: 85px; }
+    .col-time { width: 115px; }
+    .col-progress { width: 95px; }
+    .col-course-status { width: 120px; }
+    .col-final { width: 120px; }
+    .col-activity { width: 160px; }
+    .col-email-status { width: 145px; }
+    .col-actions { width: 180px; }
+
+    .mini-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mini-actions .btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: .84rem;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+      border: 1px solid #dbe2ee;
+      background: #f5f8fd;
+      color: #31425e;
+      min-width: 62px;
+    }
+
+    .status-pill.active,
+    .status-pill.passed,
+    .status-pill.paid {
+      background: #e8f7ee;
+      border-color: #c4e6cf;
+      color: #16673a;
+    }
+
+    .status-pill.locked,
+    .status-pill.critical,
+    .status-pill.failed,
+    .status-pill.danger {
+      background: #fff1f0;
+      border-color: #f0cdca;
+      color: #9f2a24;
+    }
+
+    .status-pill.pending,
+    .status-pill.warning {
+      background: #fff7e5;
+      border-color: #f0d897;
+      color: #8a6400;
+    }
+
+    .status-pill.waived {
+      background: #eef2fb;
+      border-color: #d6def0;
+      color: #37558f;
+    }
+
+    .status-pill.none {
+      background: #f4f6fa;
+      border-color: #dde4ef;
+      color: #5a6983;
+    }
+
+    .email-status-wrap {
+      display: grid;
+      gap: 4px;
+    }
+
+    .email-status-wrap small {
+      color: #65748c;
+      font-size: .78rem;
+      line-height: 1.25;
+    }
+
+    .admin-modal {
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .admin-modal::backdrop {
+      background: rgba(10, 18, 38, .46);
+    }
+
+    .admin-modal-card {
+      width: min(820px, calc(100vw - 24px));
+      background: #ffffff;
+      border: 1px solid #dfe5ef;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.2);
+      padding: 24px;
+    }
+
+    .admin-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .admin-modal-head h3 {
+      margin: 0;
+      color: #17356b;
+      font-size: 1.5rem;
+    }
+
+    .icon-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #dbe2ee;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field-span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .code-inline {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .modal-message {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .modal-message.ok {
+      background: #e9f8ef;
+      color: #166c38;
+      border-color: #bfe7cc;
+    }
+
+    .modal-message.bad {
+      background: #fff0ef;
+      color: #9d2720;
+      border-color: #f1c6c3;
+    }
+
+    @media (max-width: 1400px) {
+      .admin-stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1200px) {
+      .admin-toolbar-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .admin-stats-grid,
+      .admin-toolbar-row,
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-span-2 { grid-column: auto; }
+      .code-inline { grid-template-columns: 1fr; }
+      .instructor-meta { text-align: left; }
+    }
+  </style>
 </head>
 <body>
-
   <header class="topbar">
     <div class="topbar-inner admin-wide">
       <div class="brand">
-        <div class="brand-mark">
-          <img src="images/bsa-logo.png" alt="Broussard Shooting Academy logo">
-        </div>
+        <div class="brand-mark"><img src="images/bsa-logo.png" alt="BSA logo" onerror="this.src='logo.png'"></div>
         <div>
           <h1>BSA Admin Dashboard</h1>
-          <p>Student progress, payments, access codes, evaluations, and email status.</p>
+          <p>Student progress, timing, payment, code management, final evaluation tracking, and email status.</p>
         </div>
       </div>
-      <nav class="top-actions" aria-label="Admin actions">
-        <button class="btn btn-gold"    id="addStudentBtn" type="button">Add Student</button>
-        <button class="btn btn-light"   id="refreshBtn"    type="button">Refresh Records</button>
-        <button class="btn btn-light"   id="exportBtn"     type="button">Export CSV</button>
-        <button class="btn btn-light"   id="logoutBtn"     type="button">Logout</button>
-      </nav>
+      <div class="top-actions">
+        <button class="btn btn-gold" id="addStudentBtn" type="button">Add Student</button>
+        <button class="btn btn-light" id="refreshBtn" type="button">Refresh Records</button>
+        <button class="btn btn-light" id="exportBtn" type="button">Export CSV</button>
+        <button class="btn btn-light" id="logoutBtn" type="button">Logout</button>
+      </div>
     </div>
   </header>
 
-  <!-- Loading overlay -->
-  <div id="loadingOverlay" class="loading-overlay" aria-live="polite" aria-label="Loading admin dashboard">
-    <div class="loading-spinner" aria-hidden="true"></div>
-    <p>Loading student records&hellip;</p>
-  </div>
-
-  <!-- Error banner -->
-  <div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
-
-  <main class="container admin-page" id="mainContent" aria-busy="true">
-
-    <!-- ── Stats ─────────────────────────────────────────────────── -->
-    <section class="admin-stats-grid" aria-label="Dashboard statistics">
-
-      <article class="admin-stat-card" aria-label="Total Students">
-        <small id="label-total">Total Students</small>
-        <span class="stat-number" id="statTotalStudents" aria-labelledby="label-total">0</span>
+  <main class="container admin-page">
+    <section class="admin-stats-grid">
+      <article class="admin-stat-card">
+        <small>Total Students</small>
+        <strong id="statTotalStudents">0</strong>
       </article>
-
-      <article class="admin-stat-card warning" aria-label="Pending Payments">
-        <small id="label-pending">Pending Payments</small>
-        <span class="stat-number" id="statPendingPayments" aria-labelledby="label-pending">0</span>
+      <article class="admin-stat-card warning">
+        <small>Pending Payments</small>
+        <strong id="statPendingPayments">0</strong>
       </article>
-
-      <article class="admin-stat-card success" aria-label="Paid Students">
-        <small id="label-paid">Paid Students</small>
-        <span class="stat-number" id="statPaidStudents" aria-labelledby="label-paid">0</span>
+      <article class="admin-stat-card success">
+        <small>Paid Students</small>
+        <strong id="statPaidStudents">0</strong>
       </article>
-
-      <article class="admin-stat-card gold" aria-label="Revenue Collected">
-        <small id="label-revenue">Revenue Collected</small>
-        <span class="stat-number" id="statRevenue" aria-labelledby="label-revenue">$0</span>
+      <article class="admin-stat-card gold">
+        <small>Revenue Collected</small>
+        <strong id="statRevenue">$0</strong>
       </article>
-
-      <article class="admin-stat-card success" aria-label="Final Evaluation Passes">
-        <small id="label-passes">Final Evaluation Passes</small>
-        <span class="stat-number" id="statPassedFinal" aria-labelledby="label-passes">0</span>
+      <article class="admin-stat-card success">
+        <small>Final Evaluation Passes</small>
+        <strong id="statPassedFinal">0</strong>
       </article>
-
-      <article class="admin-stat-card danger" aria-label="Critical Failures">
-        <small id="label-critical">Critical Failures</small>
-        <span class="stat-number" id="statCritical" aria-labelledby="label-critical">0</span>
+      <article class="admin-stat-card danger">
+        <small>Critical Failures</small>
+        <strong id="statCritical">0</strong>
       </article>
-
     </section>
 
-    <!-- ── Filters ────────────────────────────────────────────────── -->
-    <section class="panel admin-toolbar-wrap" aria-label="Search and filter">
+    <section class="panel admin-toolbar-wrap">
       <div class="admin-toolbar-row">
-
         <div class="search-block">
           <label for="searchInput">Search Records</label>
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Name, email, or access code"
-            autocomplete="off"
-            aria-label="Search students by name, email, or access code"
-          >
+          <input id="searchInput" type="text" placeholder="Search by name, email, or code">
         </div>
-
         <div class="filter-block">
           <label for="paymentFilter">Payment Status</label>
-          <select id="paymentFilter" aria-label="Filter by payment status">
+          <select id="paymentFilter">
             <option value="all">All Payment Statuses</option>
             <option value="paid">Paid</option>
             <option value="pending">Pending</option>
             <option value="waived">Waived</option>
           </select>
         </div>
-
         <div class="filter-block">
           <label for="portalFilter">Portal Status</label>
-          <select id="portalFilter" aria-label="Filter by portal status">
+          <select id="portalFilter">
             <option value="all">All Portal Statuses</option>
             <option value="active">Active</option>
             <option value="locked">Locked</option>
           </select>
         </div>
-
         <div class="filter-block">
           <label for="sortBy">Sort By</label>
-          <select id="sortBy" aria-label="Sort student records">
+          <select id="sortBy">
             <option value="newest">Newest</option>
             <option value="name">Name</option>
             <option value="progress">Progress</option>
           </select>
         </div>
-
         <div class="filter-actions">
-          <button class="btn btn-blue"    id="applyFiltersBtn" type="button">Filter</button>
+          <button class="btn btn-blue" id="applyFiltersBtn" type="button">Filter</button>
           <button class="btn btn-outline" id="clearFiltersBtn" type="button">Clear</button>
         </div>
-
       </div>
     </section>
 
-    <!-- ── Table ──────────────────────────────────────────────────── -->
-    <section class="panel admin-table-panel" aria-labelledby="tableHeading">
-
+    <section class="panel admin-table-panel">
       <div class="admin-table-head">
         <div>
-          <h2 id="tableHeading">Student Records</h2>
-          <p>Payment, portal access, progress, activity, and email status.</p>
+          <h2>Student Records</h2>
+          <p>Payment, portal access, progress, activity, and inactive-email visibility.</p>
         </div>
         <div class="instructor-meta">
           <strong>Instructor:</strong> David A. Broussard, Sr.<br>
@@ -140,118 +448,64 @@
         </div>
       </div>
 
-      <div class="table-scroll" role="region" aria-label="Student records table" tabindex="0">
-        <table class="admin-table" aria-describedby="tableHeading">
-          <caption class="sr-only">
-            Student records including payment, portal access, lesson progress, final evaluation results, and email status.
-          </caption>
+      <div class="table-scroll">
+        <table class="admin-table">
           <thead>
             <tr>
-              <th scope="col" class="col-name">Name</th>
-              <th scope="col" class="col-email">Email</th>
-              <th scope="col" class="col-course">Course</th>
-              <th scope="col" class="col-price">Price</th>
-              <th scope="col" class="col-pay-method">Payment Method</th>
-              <th scope="col" class="col-pay-status">Payment Status</th>
-              <th scope="col" class="col-portal">Portal Status</th>
-              <th scope="col" class="col-code">Access Code</th>
-              <th scope="col" class="col-lesson">Current Lesson</th>
-              <th scope="col" class="col-stage">Current Stage</th>
-              <th scope="col" class="col-attempts">Attempts</th>
-              <th scope="col" class="col-time">Total Quiz Time</th>
-              <th scope="col" class="col-progress">Progress</th>
-              <th scope="col" class="col-course-status">Course Status</th>
-              <th scope="col" class="col-final">Final Evaluation</th>
-              <th scope="col" class="col-activity">Last Activity</th>
-              <th scope="col" class="col-email-status">Email Status</th>
-              <th scope="col" class="col-actions">Actions</th>
+              <th class="col-name">Name</th>
+              <th class="col-email">Email</th>
+              <th class="col-course">Course</th>
+              <th class="col-price">Price</th>
+              <th class="col-pay-method">Payment Method</th>
+              <th class="col-pay-status">Payment Status</th>
+              <th class="col-portal">Portal Status</th>
+              <th class="col-code">Access Code</th>
+              <th class="col-lesson">Current Lesson</th>
+              <th class="col-stage">Current Stage</th>
+              <th class="col-attempts">Attempts</th>
+              <th class="col-time">Total Quiz Time</th>
+              <th class="col-progress">Progress</th>
+              <th class="col-course-status">Course Status</th>
+              <th class="col-final">Final Evaluation</th>
+              <th class="col-activity">Last Activity</th>
+              <th class="col-email-status">Email Status</th>
+              <th class="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody id="studentTableBody">
-            <tr id="tableLoadingRow">
-              <td colspan="18" class="cell-center" aria-live="polite">
-                Loading student records&hellip;
-              </td>
-            </tr>
+            <tr><td colspan="18">Loading student records...</td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Empty state — shown by admin.js when filtered results are zero -->
-      <div id="tableEmptyState" class="hidden table-empty" role="status" aria-live="polite">
-        <p>No student records match your current filters.</p>
-        <button class="btn btn-outline" id="clearFiltersEmpty" type="button">Clear Filters</button>
-      </div>
-
-      <!-- Table error state -->
-      <div id="tableErrorState" class="hidden table-empty" role="alert">
-        <p>Student records could not be loaded. Check your connection and try again.</p>
-        <button class="btn btn-outline" id="retryLoadBtn" type="button">Retry</button>
-      </div>
-
     </section>
-
   </main>
 
-  <!-- ── Add / Edit Student Modal ───────────────────────────────── -->
-  <dialog
-    id="studentModal"
-    class="admin-modal"
-    aria-labelledby="modalTitle"
-    aria-modal="true"
-  >
-    <form class="admin-modal-card" id="studentFormWrap">
-
+  <dialog id="studentModal" class="admin-modal">
+    <form method="dialog" class="admin-modal-card" id="studentFormWrap">
       <div class="admin-modal-head">
         <h3 id="modalTitle">Add Student</h3>
-        <button
-          class="icon-close"
-          type="button"
-          id="closeModalBtn"
-          aria-label="Close modal"
-        >&#x2715;</button>
+        <button value="cancel" class="icon-close" type="button" id="closeModalBtn">×</button>
       </div>
 
-      <!-- Not using <form method="dialog"> — save is handled explicitly in admin.js
-           to allow async Firestore writes before closing the dialog.            -->
-      <div class="admin-form-grid" role="group" aria-labelledby="modalTitle">
-
+      <div class="admin-form-grid">
         <div class="field">
-          <label for="studentName">
-            Name <span class="required-mark" aria-hidden="true">*</span>
-          </label>
-          <input
-            id="studentName"
-            type="text"
-            required
-            autocomplete="off"
-            aria-required="true"
-          >
-          <span class="field-error hidden" id="studentNameError" role="alert">Name is required.</span>
+          <label for="studentName">Name</label>
+          <input id="studentName" required>
         </div>
 
         <div class="field">
-          <label for="studentEmail">
-            Email <span class="required-mark" aria-hidden="true">*</span>
-          </label>
-          <input
-            id="studentEmail"
-            type="email"
-            required
-            autocomplete="off"
-            aria-required="true"
-          >
-          <span class="field-error hidden" id="studentEmailError" role="alert">A valid email address is required.</span>
+          <label for="studentEmail">Email</label>
+          <input id="studentEmail" type="email">
         </div>
 
         <div class="field">
           <label for="studentCourse">Course</label>
-          <input id="studentCourse" type="text" value="Louisiana Concealed Carry" autocomplete="off">
+          <input id="studentCourse" value="Louisiana Concealed Carry">
         </div>
 
         <div class="field">
-          <label for="studentPrice">Price ($)</label>
-          <input id="studentPrice" type="number" min="0" step="1" value="150" aria-label="Course price in dollars">
+          <label for="studentPrice">Price</label>
+          <input id="studentPrice" type="number" min="0" step="1" value="150">
         </div>
 
         <div class="field">
@@ -293,33 +547,29 @@
         <div class="field field-span-2">
           <label for="generatedCode">Access Code</label>
           <div class="code-inline">
-            <input id="generatedCode" type="text" readonly aria-label="Generated access code" aria-describedby="codeHint">
+            <input id="generatedCode" readonly>
             <button type="button" class="btn btn-outline" id="regenCodeBtn">Generate Code</button>
           </div>
-          <span class="field-hint" id="codeHint">Click Generate Code to create a unique access code for this student.</span>
         </div>
-
       </div>
 
-      <!-- Feedback message inside modal -->
-      <div class="modal-message hidden" id="modalMessage" role="alert" aria-live="assertive"></div>
+      <div class="modal-message hidden" id="modalMessage"></div>
 
-      <div class="lesson-actions" style="margin-top: 18px;">
-        <button type="button" class="btn btn-gold"    id="saveStudentBtn">Save Student</button>
+      <div class="lesson-actions" style="margin-top:18px;">
+        <button type="submit" class="btn btn-gold" id="saveStudentBtn">Save Student</button>
         <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancel</button>
       </div>
-
-    </div>
+    </form>
   </dialog>
 
+  <script>
+    if (localStorage.getItem("bsa_admin_auth") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+  </script>
+
   <script src="./data.js"></script>
-
-  <!-- Auth and admin logic fully handled in admin.js as an ES module.
-       The localStorage-only guard has been removed — real auth verification
-       is performed inside admin.js using Firebase Auth, which redirects
-       unauthenticated or non-admin users server-side before any data loads. -->
   <script type="module" src="./firebase-config.js"></script>
-  <script type="module" src="./admin.js?v=8"></script>
-
+  <script type="module" src="./admin.js?v=7"></script>
 </body>
 </html>
