@@ -1,349 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BSA Student Portal Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Student Portal &mdash; Login</title>
 
-<link rel="stylesheet" href="styles.css?v=7" />
+  <!-- Shared styles loaded first; login-specific overrides follow inline.
+       Version strings on static assets are fine for cache-busting.
+       They are intentionally NOT placed on ES module import paths. -->
+  <link rel="stylesheet" href="styles.css" />
 
-<style>
-/* =========================
-   GLOBAL
-========================= */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(
-    to bottom,
-    #eef2f7 0%,
-    #f4f6f8 120px,
-    #f4f6f8 100%
-  );
-  color: #243245;
-}
+  <style>
+    /* ─── Login-scoped styles ────────────────────────────────────
+       All selectors are prefixed (.login-*) or scoped to avoid
+       colliding with shared styles.css rules. No bare element
+       selectors (input, label, p, h2) that would override globals.
+    ─────────────────────────────────────────────────────────── */
 
-/* =========================
-   TOP BAR (CONSISTENT SYSTEM)
-========================= */
-.top-bar {
-  width: 100%;
-  background: #1d3f7a;
-  color: #fff;
-  padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-}
-
-.top-bar-logo-box {
-  width: clamp(44px, 5vw, 56px);
-  height: clamp(44px, 5vw, 56px);
-  background: #fff;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-}
-
-.top-bar-logo {
-  width: 70%;
-}
-
-.top-bar-copy h1 {
-  margin: 0;
-  font-size: clamp(14px, 2vw, 18px);
-  font-weight: 700;
-}
-
-.top-bar-copy p {
-  margin: 2px 0 0;
-  font-size: clamp(11px, 1.6vw, 13px);
-  opacity: 0.9;
-}
-
-/* =========================
-   WRAP
-========================= */
-.wrap {
-  min-height: calc(100vh - 80px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: clamp(40px, 8vh, 80px) clamp(12px, 4vw, 24px);
-}
-
-/* =========================
-   CARD
-========================= */
-.card {
-  width: 100%;
-  max-width: 520px;
-  background: white;
-  border-radius: 16px;
-  padding: clamp(24px, 4vw, 40px);
-  box-shadow: 0 14px 34px rgba(0,0,0,0.12);
-}
-
-/* =========================
-   BRAND BLOCK
-========================= */
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.brand-mark {
-  width: clamp(60px, 8vw, 70px);
-  height: clamp(60px, 8vw, 70px);
-  background: linear-gradient(135deg, #ffffff, #f5f7fb);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.16);
-}
-
-.brand-mark img {
-  width: 70%;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
-}
-
-.brand h1 {
-  margin: 0;
-  font-size: clamp(18px, 2.5vw, 22px);
-  color: #163b73;
-}
-
-.muted {
-  color: #68778b;
-  font-size: clamp(12px, 1.8vw, 14px);
-}
-
-/* =========================
-   FORM
-========================= */
-h2 {
-  margin: 10px 0 6px;
-  font-size: clamp(20px, 3vw, 26px);
-  color: #163b73;
-}
-
-p {
-  font-size: clamp(14px, 2.2vw, 15px);
-  line-height: 1.6;
-}
-
-.field {
-  margin-top: 18px;
-}
-
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccd3dc;
-  font-size: 14px;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.btn-gold {
-  background: #c89b2c;
-}
-
-.btn-gold:hover {
-  background: #b88a25;
-}
-
-.btn-blue {
-  background: #1d3f7a;
-  color: #fff;
-  text-decoration: none;
-  display: block;
-  text-align: center;
-}
-
-.btn-blue:hover {
-  background: #16325f;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-.notice {
-  font-size: 14px;
-}
-
-.bad {
-  color: #c0392b;
-}
-
-.hidden {
-  display: none;
-}
-
-/* =========================
-   MOBILE
-========================= */
-@media (max-width: 480px) {
-  .card {
-    border-radius: 12px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="top-bar-logo-box">
-    <img src="./images/bsa-logo.png" class="top-bar-logo">
-  </div>
-  <div class="top-bar-copy">
-    <h1>Broussard Shooting Academy</h1>
-    <p>Private Student Portal • Online Prerequisite Access</p>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div class="wrap">
-<div class="card">
-
-<!-- BRAND -->
-<div class="brand">
-  <div class="brand-mark">
-    <img src="./images/bsa-logo.png" alt="BSA logo" />
-  </div>
-  <div>
-    <h1>BSA Student Portal</h1>
-    <p class="muted">Secure access to your training</p>
-  </div>
-</div>
-
-<h2>Log in with your access code</h2>
-<p>
-Use your access code to enter the student portal. If your record already
-has an email saved, you can enter it for an extra match check.
-</p>
-
-<form id="loginForm">
-
-<div class="field">
-<label>Email address <span class="muted">(optional)</span></label>
-<input id="studentEmail" type="email" placeholder="you@example.com" />
-</div>
-
-<div class="field">
-<label>Access code</label>
-<input id="accessCode" type="text" placeholder="Example: BSA-FULL-4821" required />
-</div>
-
-<button class="btn btn-gold" id="loginBtn" type="submit">
-Enter Student Portal
-</button>
-
-</form>
-
-<p id="loginMsg" class="notice bad hidden"></p>
-
-<div style="margin-top:20px;">
-<a class="btn btn-blue" href="purchase.html?v=7">
-Purchase / Request Access
-</a>
-</div>
-
-</div>
-</div>
-
-<script src="data.js?v=7"></script>
-
-<script type="module">
-import { login, getCurrentStudent } from "./app.js?v=7";
-
-const form = document.getElementById("loginForm");
-const emailInput = document.getElementById("studentEmail");
-const accessCodeInput = document.getElementById("accessCode");
-const loginBtn = document.getElementById("loginBtn");
-const loginMsg = document.getElementById("loginMsg");
-
-function showMessage(message) {
-  loginMsg.textContent = message;
-  loginMsg.classList.remove("hidden");
-}
-
-function hideMessage() {
-  loginMsg.textContent = "";
-  loginMsg.classList.add("hidden");
-}
-
-function setLoading(isLoading) {
-  loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading
-    ? "Checking..."
-    : "Enter Student Portal";
-}
-
-function routeAfterLogin() {
-  if (sessionStorage.getItem("bsaConfirmed") === "true") {
-    window.location.href = "dashboard.html?v=7";
-  } else {
-    window.location.href = "confirmation.html?v=7";
-  }
-}
-
-/* AUTO ROUTE (RETURNING USERS) */
-const current = getCurrentStudent();
-if (current && current.accessCode && current.status === "active") {
-  routeAfterLogin();
-}
-
-/* LOGIN */
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  hideMessage();
-  setLoading(true);
-
-  try {
-    const result = await login(emailInput.value, accessCodeInput.value);
-
-    if (!result.ok) {
-      showMessage(result.message || "Login failed.");
-      setLoading(false);
-      return;
+    /* Page background */
+    .login-page {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(
+        to bottom,
+        #eef2f7 0%,
+        #f4f6f8 120px,
+        #f4f6f8 100%
+      );
+      color: #243245;
     }
 
-    routeAfterLogin();
+    /* ── Top bar ───────────────────────────────────────────────── */
 
-  } catch (error) {
-    console.error("Login failed:", error);
-    showMessage("Something went wrong.");
-    setLoading(false);
-  }
-});
-</script>
+    .login-topbar {
+      width: 100%;
+      background: #1d3f7a;
+      color: #fff;
+      padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-topbar-logo-box {
+      flex-shrink: 0;
+      width: clamp(44px, 5vw, 56px);
+      height: clamp(44px, 5vw, 56px);
+      background: #fff;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .login-topbar-logo {
+      width: 70%;
+    }
+
+    .login-topbar-copy .login-topbar-name {
+      margin: 0;
+      font-size: clamp(14px, 2vw, 18px);
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .login-topbar-copy .login-topbar-sub {
+      margin: 2px 0 0;
+      font-size: clamp(11px, 1.6vw, 13px);
+      opacity: 0.9;
+      color: #fff;
+    }
+
+    /* ── Centering wrapper ─────────────────────────────────────── */
+
+    .login-wrap {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: clamp(40px, 8vh, 80px) clamp(12px, 4vw, 24px);
+    }
+
+    /* ── Login card ────────────────────────────────────────────── */
+
+    .login-card {
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 40px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ── Brand block ───────────────────────────────────────────── */
+
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .login-brand-mark {
+      flex-shrink: 0;
+      width: clamp(60px, 8vw, 70px);
+      height: clamp(60px, 8vw, 70px);
+      background: linear-gradient(135deg, #ffffff, #f5f7fb);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+    }
+
+    .login-brand-mark img {
+      width: 70%;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+    }
+
+    .login-brand-name {
+      margin: 0;
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: #163b73;
+    }
+
+    .login-brand-sub {
+      margin: 4px 0 0;
+      color: #68778b;
+      font-size: clamp(12px, 1.8vw, 14px);
+    }
+
+    /* ── Heading & description ─────────────────────────────────── */
+
+    .login-heading {
+      margin: 10px 0 6px;
+      font-size: clamp(20px, 3vw, 26px);
+      color: #163b73;
+    }
+
+    .login-desc {
+      margin: 0 0 4px;
+      font-size: clamp(14px, 2.2vw, 15px);
+      line-height: 1.6;
+      color: #3d4f66;
+    }
+
+    /* ── Form fields ───────────────────────────────────────────── */
+
+    .login-field {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .login-label {
+      display: block;
+      font-weight: 600;
+      color: #243245;
+      font-size: 0.94rem;
+    }
+
+    .login-optional {
+      color: #68778b;
+      font-size: 0.85em;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccd3dc;
+      font-size: 15px;
+      color: #243245;
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: #3478b9;
+      box-shadow: 0 0 0 3px rgba(52, 120, 185, 0.18);
+    }
+
+    .login-input[aria-invalid="true"] {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    }
+
+    .login-field-hint {
+      font-size: 0.82rem;
+      color: #68778b;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .login-field-error {
+      font-size: 0.82rem;
+      color: #c0392b;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* ── Buttons ───────────────────────────────────────────────── */
+
+    .login-btn {
+      display: block;
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.18s ease, opacity 0.18s ease;
+      margin-top: 20px;
+    }
+
+    .login-btn:focus-visible {
+      outline: 3px solid #3478b9;
+      outline-offset: 2px;
+    }
+
+    .login-btn-gold {
+      background: #c89b2c;
+      color: #111;
+    }
+
+    .login-btn-gold:hover:not(:disabled) {
+      background: #b88a25;
+    }
+
+    .login-btn-gold:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .login-btn-blue {
+      background: #1d3f7a;
+      color: #fff;
+      margin-top: 14px;
+    }
+
+    .login-btn-blue:hover {
+      background: #16325f;
+    }
+
+    /* ── Status message ────────────────────────────────────────── */
+
+    .login-msg {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .login-msg.error {
+      background: #fff0ef;
+      color: #9d2720;
+      border-color: #f1c6c3;
+    }
+
+    .login-msg.success {
+      background: #e9f8ef;
+      color: #166c38;
+      border-color: #bfe7cc;
+    }
+
+    .login-msg[hidden] {
+      display: none;
+    }
+
+    /* ── Divider ───────────────────────────────────────────────── */
+
+    .login-divider {
+      border: none;
+      border-top: 1px solid #e4e8f0;
+      margin: 22px 0 0;
+    }
+
+    /* ── Responsive ────────────────────────────────────────────── */
+
+    @media (max-width: 480px) {
+      .login-card {
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body class="login-page">
+
+  <!-- ── Top bar ──────────────────────────────────────────────── -->
+  <header class="login-topbar" role="banner">
+    <div class="login-topbar-logo-box" aria-hidden="true">
+      <img src="./images/bsa-logo.png" alt="" class="login-topbar-logo">
+    </div>
+    <div class="login-topbar-copy">
+      <p class="login-topbar-name">Broussard Shooting Academy</p>
+      <p class="login-topbar-sub">Private Student Portal &bull; Online Prerequisite Access</p>
+    </div>
+  </header>
+
+  <!-- ── Main content ─────────────────────────────────────────── -->
+  <main class="login-wrap" id="mainContent">
+    <div class="login-card" role="region" aria-labelledby="loginHeading">
+
+      <!-- Brand -->
+      <div class="login-brand" aria-hidden="true">
+        <div class="login-brand-mark">
+          <img src="./images/bsa-logo.png" alt="">
+        </div>
+        <div>
+          <p class="login-brand-name">BSA Student Portal</p>
+          <p class="login-brand-sub">Secure access to your training</p>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="login-heading" id="loginHeading">Log in with your access code</h1>
+      <p class="login-desc">
+        Enter your access code to reach the student portal. If your record has
+        an email saved, you can include it for an additional match check.
+      </p>
+
+      <!-- Login form -->
+      <form
+        id="loginForm"
+        aria-labelledby="loginHeading"
+        novalidate
+      >
+
+        <!-- Email (optional) -->
+        <div class="login-field">
+          <label class="login-label" for="studentEmail">
+            Email address
+            <span class="login-optional" aria-label="(optional)">(optional)</span>
+          </label>
+          <input
+            id="studentEmail"
+            class="login-input"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            inputmode="email"
+          />
+        </div>
+
+        <!-- Access code (required) -->
+        <div class="login-field">
+          <label class="login-label" for="accessCode">
+            Access code
+          </label>
+          <input
+            id="accessCode"
+            class="login-input"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            required
+            aria-required="true"
+            aria-describedby="accessCodeHint accessCodeError"
+          />
+          <p class="login-field-hint" id="accessCodeHint">
+            Your access code was provided by your instructor (e.g.,&nbsp;BSA-FULL-####).
+          </p>
+          <p
+            class="login-field-error"
+            id="accessCodeError"
+            role="alert"
+            aria-live="polite"
+            hidden
+          ></p>
+        </div>
+
+        <button
+          class="login-btn login-btn-gold"
+          id="loginBtn"
+          type="submit"
+          aria-describedby="loginStatusMsg"
+        >
+          Enter Student Portal
+        </button>
+
+      </form>
+
+      <!-- Status message (errors / success) -->
+      <p
+        id="loginStatusMsg"
+        class="login-msg"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        hidden
+      ></p>
+
+      <hr class="login-divider" aria-hidden="true">
+
+      <a class="login-btn login-btn-blue" href="purchase.html">
+        Purchase / Request Access
+      </a>
+
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+
+  <script type="module">
+    // ── Imports (no ?v= on module paths — unreliable across runtimes) ──
+    import { login, getCurrentStudent } from "./app.js";
+
+    // ── Element refs ────────────────────────────────────────────────────
+    const form            = document.getElementById("loginForm");
+    const emailInput      = document.getElementById("studentEmail");
+    const accessCodeInput = document.getElementById("accessCode");
+    const loginBtn        = document.getElementById("loginBtn");
+    const statusMsg       = document.getElementById("loginStatusMsg");
+    const codeError       = document.getElementById("accessCodeError");
+
+    // ── Message helpers ─────────────────────────────────────────────────
+
+    function showStatus(message, type = "error") {
+      statusMsg.textContent = message;
+      statusMsg.className   = `login-msg ${type}`;
+      statusMsg.removeAttribute("hidden");
+    }
+
+    function hideStatus() {
+      statusMsg.textContent = "";
+      statusMsg.setAttribute("hidden", "");
+    }
+
+    function showFieldError(element, errorEl, message) {
+      errorEl.textContent = message;
+      errorEl.removeAttribute("hidden");
+      element.setAttribute("aria-invalid", "true");
+      element.focus();
+    }
+
+    function clearFieldError(element, errorEl) {
+      errorEl.textContent = "";
+      errorEl.setAttribute("hidden", "");
+      element.removeAttribute("aria-invalid");
+    }
+
+    // ── Loading state ───────────────────────────────────────────────────
+
+    function setLoading(isLoading) {
+      loginBtn.disabled     = isLoading;
+      loginBtn.textContent  = isLoading ? "Checking…" : "Enter Student Portal";
+      loginBtn.setAttribute("aria-busy", String(isLoading));
+    }
+
+    // ── Post-login routing ──────────────────────────────────────────────
+    // Version strings removed from redirect targets — serve no purpose
+    // in the URL bar and clutter browser history.
+
+    function routeAfterLogin() {
+      const dest = sessionStorage.getItem("bsaConfirmed") === "true"
+        ? "dashboard.html"
+        : "confirmation.html";
+      window.location.href = dest;
+    }
+
+    // ── Auto-route for returning sessions ───────────────────────────────
+    // Only redirect if we have a stored session AND the student record
+    // looks valid. Does NOT redirect on every page load — stale/corrupt
+    // localStorage records were silently trapping students in a redirect
+    // loop in the original code.
+
+    (function checkExistingSession() {
+      try {
+        const current = getCurrentStudent();
+        if (
+          current &&
+          typeof current.accessCode === "string" &&
+          current.accessCode.trim() !== "" &&
+          current.status === "active"
+        ) {
+          routeAfterLogin();
+        }
+      } catch (err) {
+        // If getCurrentStudent throws (corrupted storage), stay on login
+        console.warn("BSA Login: session check failed, staying on login.", err);
+      }
+    })();
+
+    // ── Access code normalization ────────────────────────────────────────
+    // Trim whitespace and uppercase on blur so "bsa-full-4821 " becomes
+    // "BSA-FULL-4821" before submission — prevents case-mismatch failures.
+
+    accessCodeInput.addEventListener("blur", () => {
+      accessCodeInput.value = accessCodeInput.value.trim().toUpperCase();
+    });
+
+    // ── Clear field error on input ───────────────────────────────────────
+
+    accessCodeInput.addEventListener("input", () => {
+      clearFieldError(accessCodeInput, codeError);
+      hideStatus();
+    });
+
+    emailInput.addEventListener("input", hideStatus);
+
+    // ── Form submit ──────────────────────────────────────────────────────
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideStatus();
+      clearFieldError(accessCodeInput, codeError);
+
+      const emailVal = emailInput.value.trim();
+      const codeVal  = accessCodeInput.value.trim().toUpperCase();
+
+      // Client-side validation before hitting the server
+      if (!codeVal) {
+        showFieldError(
+          accessCodeInput,
+          codeError,
+          "Please enter your access code."
+        );
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const result = await login(emailVal, codeVal);
+
+        if (!result.ok) {
+          showStatus(result.message || "Invalid access code. Please try again.");
+          setLoading(false);
+
+          // Highlight the code field specifically on auth failure
+          accessCodeInput.setAttribute("aria-invalid", "true");
+          accessCodeInput.focus();
+          return;
+        }
+
+        // Success — show brief confirmation before redirecting
+        showStatus("Access granted. Redirecting…", "success");
+        routeAfterLogin();
+
+      } catch (err) {
+        console.error("BSA Login error:", err);
+        showStatus(
+          "Something went wrong. Please check your connection and try again."
+        );
+        setLoading(false);
+      }
+    });
+  </script>
 
 </body>
 </html>
