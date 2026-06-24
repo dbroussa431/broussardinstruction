@@ -1784,3 +1784,99 @@ input[type="radio"] {
 #aiToggleBtn:hover{
   transform:translateY(-2px);
 }
+
+/* =========================================================
+   DASHBOARD SUPPORT CLASSES
+   These classes are referenced by dashboard.html (and others)
+   but were not previously defined, which left the "Message your
+   instructor" label visible, the loading overlay unstyled, and
+   the logout dialog transparent. Defined here in the brand palette.
+========================================================= */
+
+/* Screen-reader-only (visually hidden but accessible) */
+.sr-only{
+  position:absolute !important;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* Full-screen loading overlay (hidden via .hidden once data is ready) */
+.loading-overlay{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  background:linear-gradient(180deg,#eef2f9,#f7f8fc);
+  color:var(--bsa-blue-dark,#17356b);
+  font-weight:700;
+}
+.loading-spinner{
+  width:48px;height:48px;
+  border-radius:50%;
+  border:4px solid #d9e0ec;
+  border-top-color:var(--bsa-blue,#1f468c);
+  animation:bsaSpin .9s linear infinite;
+}
+@keyframes bsaSpin{ to{ transform:rotate(360deg); } }
+
+/* Error banner */
+.error-banner{
+  max-width:1200px;
+  margin:18px auto 0;
+  padding:14px 18px;
+  border-radius:14px;
+  background:#fee6e4;
+  border:1px solid #f4c5c0;
+  color:var(--danger,#c4372f);
+  font-weight:700;
+}
+
+/* Logout confirmation dialog */
+#logoutDialog{
+  border:1px solid #dfe5ef;
+  border-radius:20px;
+  background:#fff;
+  padding:24px;
+  width:min(440px,calc(100vw - 24px));
+  box-shadow:0 24px 60px rgba(0,0,0,.2);
+  color:var(--text,#142033);
+}
+#logoutDialog h4{ margin:0 0 8px; font-size:1.2rem; color:var(--bsa-blue-dark,#17356b); }
+#logoutDialog p{ margin:0 0 18px; color:var(--muted,#68758a); line-height:1.6; }
+.dialog-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Lesson card extras */
+.lesson-identity{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  min-width:0;
+}
+.lock-reason{
+  display:block;
+  margin-top:6px;
+  font-size:.85rem;
+  color:var(--muted,#68758a);
+}
+.lesson-num.final-lesson{
+  background:rgba(216,166,42,.16);
+  color:var(--bsa-gold-dark,#b88918);
+}
+.chip.critical{
+  background:#fde4e2;
+  border-color:#f3c7c3;
+  color:var(--danger,#c4372f);
+}
