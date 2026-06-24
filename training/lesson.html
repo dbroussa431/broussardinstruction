@@ -5,341 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BSA Lesson</title>
 
-<!-- Keep the project's stylesheet if present; the inline styles below are
-     self-contained so the page looks correct even when styles.css is missing. -->
+<!--
+  FALLBACK STYLES (loaded BEFORE styles.css on purpose).
+  When the portal's styles.css is present it loads after this block and wins,
+  so the page matches the rest of the portal. When styles.css is missing
+  (e.g. standalone preview) this keeps the page looking like the BSA brand
+  instead of unstyled HTML. Uses the same blue/gold palette.
+-->
+<style id="bsa-fallback">
+  :root{
+    --bsa-blue:#1f468c;--bsa-blue-dark:#17356b;--bsa-gold:#d8a62a;--bsa-gold-dark:#b88918;
+    --bg:#f4f6fb;--card:#fff;--text:#142033;--muted:#68758a;--line:#d9e0ec;
+    --success:#18864b;--danger:#c4372f;--warning:#b57916;
+    --shadow:0 14px 35px rgba(19,40,78,.12);--radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;
+    background:linear-gradient(180deg,#eef2f9 0%,#f7f8fc 100%);color:var(--text);overflow-x:hidden;}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  button{font:inherit;}
+  .hidden{display:none !important;}
+  .topbar{background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));color:#fff;
+    padding:18px 24px;box-shadow:0 8px 20px rgba(0,0,0,.18);position:sticky;top:0;z-index:50;}
+  .topbar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;}
+  .brand{display:flex;align-items:center;gap:14px;min-width:0;}
+  .brand-mark{width:56px;height:56px;border-radius:14px;background:#fff;padding:6px;display:grid;place-items:center;flex:0 0 auto;
+    font-weight:900;color:var(--bsa-blue);font-size:18px;}
+  .brand-mark img{width:100%;height:100%;object-fit:contain;}
+  .brand h1{margin:0;font-size:1.25rem;line-height:1.1;}
+  .brand p{margin:2px 0 0;color:rgba(255,255,255,.85);font-size:.92rem;}
+  .top-actions,.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .container{max-width:1200px;margin:28px auto 48px;padding:0 20px;}
+  .panel{background:var(--card);border:1px solid rgba(17,35,74,.06);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--bsa-gold);color:#1d1500;}
+  .btn-gold:hover{background:var(--bsa-gold-dark);}
+  .btn-light{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);}
+  .btn-blue{background:var(--bsa-blue);color:#fff;}
+  .btn-outline{background:#fff;color:var(--bsa-blue);border:1px solid var(--line);}
+  .eyebrow{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(31,70,140,.08);color:var(--bsa-blue);
+    font-size:.82rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-bottom:14px;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+  .lesson-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;}
+  .sidebar{padding:18px;position:sticky;top:98px;height:fit-content;}
+  .sidebar h3{margin:0 0 10px;}
+  .sidebar a{display:block;padding:10px 12px;border-radius:10px;margin-bottom:6px;color:var(--bsa-blue-dark);font-weight:700;}
+  .sidebar a.active,.sidebar a:hover{background:#eef4ff;}
+  .content-card{padding:26px;}
+  .content-card h2{margin-top:0;font-size:2rem;}
+  .content-card h3{margin-top:24px;}
+  .content-card p,.content-card li{line-height:1.7;}
+  .callout{background:#f8fbff;border-left:4px solid var(--bsa-gold);padding:16px;border-radius:12px;margin:18px 0;}
+  .lesson-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+  .chip,.pill{border-radius:999px;padding:8px 12px;font-size:.88rem;font-weight:700;border:1px solid var(--line);background:#f9fbff;}
+  .notice{padding:14px 16px;border-radius:12px;font-weight:700;border:1px solid transparent;}
+  .notice.warn{background:#fff3da;color:var(--warning);border-color:#f4de9d;}
+  @media (max-width:980px){.lesson-layout{grid-template-columns:1fr;}.sidebar{position:static;}}
+</style>
+
+<!-- Portal stylesheet (authoritative when present; ignored gracefully if missing). -->
 <link rel="stylesheet" href="styles.css" onerror="this.remove()">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<!--
+  ENHANCEMENT STYLES (loaded AFTER styles.css).
+  These target NEW elements this page adds (reading-progress bar, section
+  numbering, statement list, inline self-check, prev/next nav, sidebar
+  progress). styles.css has no rules for these selectors, so order is safe
+  and nothing in the portal is overridden. Palette matches the brand vars.
+-->
+<style id="bsa-enhance">
+  #readProgress{position:fixed;top:0;left:0;height:3px;width:0%;
+    background:linear-gradient(90deg,var(--bsa-gold,#d8a62a),#efc45d);z-index:60;transition:width .12s linear;}
 
-<style>
-  :root{
-    --bg:#0e1116;
-    --bg-grad:#0b0e12;
-    --panel:#151921;
-    --panel-2:#1b212b;
-    --line:#2a313d;
-    --line-soft:#222934;
-    --text:#e8ebef;
-    --muted:#98a2ad;
-    --muted-2:#6f7a86;
-    --gold:#c9a24b;
-    --gold-soft:#e0c483;
-    --gold-dim:rgba(201,162,75,.14);
-    --steel:#6f93b8;
-    --danger:#d8744d;
-    --danger-bg:rgba(216,116,77,.12);
-    --ok:#6fae7e;
-    --radius:4px;
-    --maxw:1180px;
-    font-synthesis:none;
-  }
+  .lesson-layout{padding-top:28px;align-items:start;}
 
-  *{box-sizing:border-box;}
-  html{scroll-behavior:auto;}
-  body{
-    margin:0;
-    background:
-      radial-gradient(1200px 600px at 80% -200px, #161b24 0%, transparent 60%),
-      linear-gradient(180deg,var(--bg) 0%,var(--bg-grad) 100%);
-    background-attachment:fixed;
-    color:var(--text);
-    font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    font-size:16px;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  a{color:inherit;text-decoration:none;}
-  .hidden{display:none !important;}
+  .sidebar .side-eyebrow{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#68758a);font-weight:800;margin-bottom:8px;}
+  .sidebar .side-progress{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:.8rem;color:var(--muted,#68758a);font-weight:700;}
+  .sidebar .side-progress .bar{flex:1;height:6px;border-radius:999px;background:#e9eef8;overflow:hidden;}
+  .sidebar .side-progress .bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--bsa-gold,#d8a62a),#efc45d);transition:width .2s;}
+  #sideSections a{display:flex;align-items:flex-start;gap:10px;line-height:1.35;}
+  #sideSections a .num{font-size:.78rem;color:#9aa6ba;min-width:20px;font-weight:800;padding-top:1px;}
+  #sideSections a.active .num{color:var(--bsa-blue,#1f468c);}
 
-  /* ---------- reading progress ---------- */
-  #readProgress{
-    position:fixed;top:0;left:0;height:3px;width:0%;
-    background:linear-gradient(90deg,var(--gold),var(--gold-soft));
-    z-index:60;transition:width .12s linear;
-  }
+  #lessonSummary{font-size:1.06rem;line-height:1.65;color:#3c4a5e;
+    border-left:4px solid var(--bsa-gold,#d8a62a);padding-left:18px;margin:6px 0 26px;}
 
-  /* ---------- top bar ---------- */
-  .topbar{
-    position:sticky;top:0;z-index:50;
-    background:rgba(13,16,21,.82);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .topbar-inner{
-    max-width:var(--maxw);margin:0 auto;padding:14px 24px;
-    display:flex;align-items:center;justify-content:space-between;gap:20px;
-  }
-  .brand{display:flex;align-items:center;gap:14px;min-width:0;}
-  .brand-mark{
-    width:46px;height:46px;flex:0 0 auto;border-radius:var(--radius);
-    background:var(--panel-2);border:1px solid var(--line);
-    display:grid;place-items:center;overflow:hidden;
-    font-family:"Oswald";font-weight:700;font-size:18px;color:var(--gold);letter-spacing:1px;
-  }
-  .brand-mark img{width:100%;height:100%;object-fit:contain;display:block;}
-  .brand h1{
-    font-family:"Oswald";font-weight:600;font-size:18px;letter-spacing:.5px;
-    margin:0;text-transform:uppercase;line-height:1.1;white-space:nowrap;
-  }
-  .brand p{margin:2px 0 0;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted-2);}
+  #lessonContent section{padding:24px 0;border-top:1px solid var(--line,#d9e0ec);scroll-margin-top:96px;}
+  #lessonContent section:first-child{border-top:none;padding-top:4px;}
+  #lessonContent h3{display:flex;align-items:baseline;gap:12px;color:var(--bsa-blue-dark,#17356b);}
+  #lessonContent h3 .secnum{font-size:.72rem;font-weight:800;color:var(--bsa-blue,#1f468c);
+    background:rgba(31,70,140,.08);border-radius:6px;padding:3px 8px;letter-spacing:.06em;flex:0 0 auto;}
+  ul.statements{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  ul.statements li{position:relative;padding-left:22px;line-height:1.65;color:#27384f;}
+  ul.statements li::before{content:"";position:absolute;left:3px;top:.62em;width:7px;height:7px;
+    border:1.5px solid var(--bsa-gold,#d8a62a);transform:rotate(45deg);}
+  ul.statements li.quote{padding:13px 16px;margin:2px 0;font-style:italic;color:var(--bsa-blue-dark,#17356b);
+    background:#f1f5fc;border-radius:12px;border:1px solid #dde6f4;}
+  ul.statements li.quote::before{display:none;}
+  .nobethere{color:var(--bsa-gold-dark,#b88918);font-weight:800;font-style:normal;}
 
-  .top-actions{display:flex;align-items:center;gap:10px;flex:0 0 auto;}
-
-  .btn{
-    display:inline-flex;align-items:center;gap:8px;
-    font-family:"Public Sans";font-weight:600;font-size:13.5px;
-    letter-spacing:.3px;line-height:1;
-    padding:11px 16px;border-radius:var(--radius);
-    border:1px solid transparent;cursor:pointer;white-space:nowrap;
-    transition:transform .08s ease,background .15s ease,border-color .15s ease,color .15s ease;
-  }
-  .btn:active{transform:translateY(1px);}
-  .btn-gold{background:var(--gold);color:#1a1407;border-color:var(--gold);}
-  .btn-gold:hover{background:var(--gold-soft);}
-  .btn-blue{background:transparent;color:var(--text);border-color:var(--steel);}
-  .btn-blue:hover{background:rgba(111,147,184,.14);}
-  .btn-light{background:var(--panel-2);color:var(--text);border-color:var(--line);}
-  .btn-light:hover{border-color:#3a4350;background:#222934;}
-  .btn-outline{background:transparent;color:var(--muted);border-color:var(--line);}
-  .btn-outline:hover{color:var(--text);border-color:#3a4350;}
-
-  /* ---------- layout ---------- */
-  .container{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
-  .lesson-layout{
-    display:grid;grid-template-columns:280px 1fr;gap:28px;
-    padding-top:34px;padding-bottom:90px;align-items:start;
-  }
-
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-  }
-
-  /* ---------- sidebar ---------- */
-  .sidebar{
-    position:sticky;top:96px;padding:22px 20px;
-    max-height:calc(100vh - 120px);overflow:auto;
-  }
-  .sidebar .side-eyebrow{
-    font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;
-    color:var(--muted-2);font-weight:600;margin-bottom:8px;
-  }
-  .sidebar h3{
-    font-family:"Oswald";font-weight:600;font-size:18px;line-height:1.25;
-    margin:0 0 16px;text-transform:uppercase;letter-spacing:.4px;
-  }
-  .side-progress{
-    display:flex;align-items:center;gap:10px;margin-bottom:16px;
-    font-size:12px;color:var(--muted);
-  }
-  .side-progress .bar{flex:1;height:5px;border-radius:3px;background:var(--panel-2);overflow:hidden;}
-  .side-progress .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .2s;}
-
-  #sideSections{display:flex;flex-direction:column;gap:2px;}
-  #sideSections a{
-    display:flex;align-items:flex-start;gap:10px;
-    padding:9px 11px;border-radius:var(--radius);
-    font-size:13.5px;color:var(--muted);line-height:1.35;
-    border-left:2px solid transparent;transition:all .14s ease;
-  }
-  #sideSections a .num{
-    font-family:"Oswald";font-size:12px;color:var(--muted-2);
-    min-width:18px;padding-top:1px;font-weight:600;
-  }
-  #sideSections a:hover{background:var(--panel-2);color:var(--text);}
-  #sideSections a.active{
-    background:var(--gold-dim);color:var(--gold-soft);
-    border-left-color:var(--gold);font-weight:600;
-  }
-  #sideSections a.active .num{color:var(--gold);}
-
-  .notice{
-    margin-top:18px;padding:12px 13px;border-radius:var(--radius);
-    font-size:12.5px;line-height:1.45;
-  }
-  .notice.warn{background:var(--danger-bg);border:1px solid rgba(216,116,77,.4);color:#f0b69c;}
-  .small{font-size:12.5px;}
-
-  /* ---------- content ---------- */
-  .content-card{padding:38px 44px 40px;}
-  .eyebrow{
-    display:inline-block;font-size:11px;letter-spacing:3px;text-transform:uppercase;
-    color:var(--gold);font-weight:600;margin-bottom:14px;
-  }
-  .content-card h2{
-    font-family:"Oswald";font-weight:600;font-size:36px;line-height:1.12;
-    margin:0 0 10px;letter-spacing:.3px;text-wrap:balance;
-  }
-  .lesson-meta{
-    display:flex;flex-wrap:wrap;gap:8px 8px;margin:0 0 20px;
-  }
-  .chip{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:11.5px;letter-spacing:.4px;color:var(--muted);
-    background:var(--panel-2);border:1px solid var(--line-soft);
-    padding:6px 11px;border-radius:100px;
-  }
-  .chip b{color:var(--text);font-weight:600;}
-  .muted{color:var(--muted);}
-  #lessonSummary{
-    font-size:17px;line-height:1.62;color:#c4ccd4;
-    border-left:3px solid var(--gold);padding-left:18px;margin:0 0 30px;
-  }
-
-  #lessonContent section{
-    padding:26px 0;border-top:1px solid var(--line-soft);
-    scroll-margin-top:96px;
-  }
-  #lessonContent section:first-child{border-top:none;padding-top:6px;}
-  #lessonContent h3{
-    font-family:"Oswald";font-weight:600;font-size:21px;letter-spacing:.3px;
-    margin:0 0 16px;display:flex;align-items:baseline;gap:12px;
-  }
-  #lessonContent h3 .secnum{
-    font-size:12px;color:var(--gold);font-weight:600;
-    border:1px solid var(--gold);border-radius:3px;padding:2px 7px;
-    letter-spacing:1px;flex:0 0 auto;
-  }
-  .statements{display:flex;flex-direction:column;gap:11px;list-style:none;margin:0;padding:0;}
-  .statements li{
-    position:relative;padding-left:22px;font-size:15.5px;line-height:1.6;color:#d6dce2;
-  }
-  .statements li::before{
-    content:"";position:absolute;left:2px;top:11px;
-    width:6px;height:6px;border:1px solid var(--gold);transform:rotate(45deg);
-  }
-  .statements li.quote{
-    padding:14px 18px;margin:4px 0;font-style:italic;font-size:16px;color:var(--gold-soft);
-    background:var(--gold-dim);border-radius:var(--radius);border:none;
-  }
-  .statements li.quote::before{display:none;}
-  .statements li .nobethere{color:var(--gold);font-weight:600;font-style:normal;}
-
-  .callout{
-    margin-top:30px;padding:16px 18px;border-radius:var(--radius);
-    background:var(--panel-2);border:1px solid var(--line-soft);
-    border-left:3px solid var(--steel);font-size:14.5px;color:#cfd6dd;
-  }
-  .callout strong{color:#fff;}
-
-  /* ---------- inline self-check ---------- */
-  .selfcheck{margin-top:34px;border-top:1px solid var(--line-soft);padding-top:30px;}
-  .selfcheck .eyebrow{color:var(--steel);}
-  .selfcheck h3{font-family:"Oswald";font-weight:600;font-size:22px;margin:0 0 4px;letter-spacing:.3px;}
-  .selfcheck .sc-sub{color:var(--muted);font-size:14px;margin:0 0 22px;}
-  .scq{margin-bottom:22px;}
-  .scq .scq-prompt{font-size:15.5px;font-weight:600;line-height:1.5;margin:0 0 14px;color:#e8edf2;}
-  .scq .scq-prompt .q{color:var(--gold);font-family:"Oswald";margin-right:8px;}
-  .choices{display:flex;flex-direction:column;gap:9px;}
-  .choice{
-    display:flex;align-items:flex-start;gap:11px;text-align:left;
-    padding:13px 15px;border-radius:var(--radius);cursor:pointer;
-    background:var(--panel-2);border:1px solid var(--line-soft);
-    color:#d2d9e0;font-size:14.5px;line-height:1.45;font-family:inherit;
-    transition:border-color .14s,background .14s;width:100%;
-  }
-  .choice:hover:not(:disabled){border-color:#3a4350;}
-  .choice .marker{
-    flex:0 0 auto;width:22px;height:22px;border-radius:50%;
-    border:1px solid var(--line);display:grid;place-items:center;
-    font-size:12px;font-weight:600;color:var(--muted);font-family:"Oswald";
-  }
-  .choice.correct{border-color:var(--ok);background:rgba(111,174,126,.12);color:#cdeacf;}
-  .choice.correct .marker{border-color:var(--ok);color:var(--ok);}
-  .choice.wrong{border-color:var(--danger);background:var(--danger-bg);color:#f0c3b1;}
-  .choice.wrong .marker{border-color:var(--danger);color:var(--danger);}
+  /* inline self-check */
+  .selfcheck{margin-top:30px;border-top:1px solid var(--line,#d9e0ec);padding-top:26px;}
+  .selfcheck h3{margin:0 0 4px;color:var(--bsa-blue-dark,#17356b);}
+  .selfcheck .sc-sub{color:var(--muted,#68758a);margin:0 0 20px;}
+  .scq{background:#fcfdff;border:1px solid var(--line,#d9e0ec);border-radius:14px;padding:18px;margin-bottom:14px;}
+  .scq .scq-prompt{margin:0 0 14px;font-weight:800;color:var(--bsa-blue-dark,#17356b);line-height:1.5;}
+  .scq .scq-prompt .q{color:var(--bsa-gold-dark,#b88918);margin-right:8px;}
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{display:flex;align-items:center;gap:11px;text-align:left;width:100%;font:inherit;font-weight:600;
+    padding:12px 14px;border-radius:12px;border:1px solid var(--line,#d9e0ec);background:#fff;color:var(--text,#142033);cursor:pointer;transition:.15s ease;}
+  .choice:hover:not(:disabled){background:#f4f8ff;border-color:var(--bsa-blue,#1f468c);}
+  .choice .marker{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1px solid var(--line,#d9e0ec);
+    display:grid;place-items:center;font-size:.8rem;font-weight:800;color:var(--muted,#68758a);}
+  .choice.correct{background:#eefaf2;border-color:#c8dfcf;color:#136b39;}
+  .choice.correct .marker{border-color:var(--success,#18864b);color:var(--success,#18864b);}
+  .choice.wrong{background:#fff1f0;border-color:#f3c7c3;color:#9f2a24;}
+  .choice.wrong .marker{border-color:var(--danger,#c4372f);color:var(--danger,#c4372f);}
   .choice:disabled{cursor:default;}
-  .scq-explain{
-    margin-top:12px;padding:12px 15px;border-radius:var(--radius);
-    font-size:13.5px;line-height:1.5;background:var(--panel-2);
-    border-left:3px solid var(--ok);color:#c2ccc4;
-  }
-  .scq-explain.miss{border-left-color:var(--danger);}
+  .scq-explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:#eefaf2;border-left:4px solid var(--success,#18864b);
+    color:#22503a;line-height:1.5;font-size:.95rem;}
+  .scq-explain.miss{background:#fff1f0;border-left-color:var(--danger,#c4372f);color:#7d2722;}
 
-  /* ---------- bottom actions ---------- */
-  .lesson-actions{
-    display:flex;flex-wrap:wrap;gap:12px;margin-top:38px;
-    padding-top:26px;border-top:1px solid var(--line-soft);
-  }
-  .lesson-nav{
-    display:flex;justify-content:space-between;gap:14px;margin-top:30px;
-  }
-  .lesson-nav a{
-    flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;
-    padding:14px 16px;border-radius:var(--radius);
-    background:var(--panel);border:1px solid var(--line-soft);
-    transition:border-color .14s,background .14s;
-  }
-  .lesson-nav a:hover{border-color:#3a4350;background:var(--panel-2);}
+  /* prev / next */
+  .lesson-nav{display:flex;justify-content:space-between;gap:14px;margin-top:26px;}
+  .lesson-nav a{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:14px;
+    background:#fff;border:1px solid var(--line,#d9e0ec);transition:.15s ease;}
+  .lesson-nav a:hover{border-color:var(--bsa-blue,#1f468c);background:#f7faff;transform:translateY(-1px);}
   .lesson-nav a.next{text-align:right;align-items:flex-end;}
-  .lesson-nav a.disabled{opacity:.35;pointer-events:none;}
-  .lesson-nav .dir{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-2);}
-  .lesson-nav .lt{font-size:14px;color:var(--text);font-weight:600;line-height:1.3;}
+  .lesson-nav a.disabled{opacity:.4;pointer-events:none;}
+  .lesson-nav .dir{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#68758a);font-weight:800;}
+  .lesson-nav .lt{font-weight:800;color:var(--bsa-blue-dark,#17356b);line-height:1.3;}
 
-  /* ---------- AI assistant ---------- */
-  #aiToggleBtn{
-    position:fixed;right:22px;bottom:22px;z-index:55;
-    font-family:"Public Sans";font-weight:600;font-size:14px;
-    padding:13px 18px;border-radius:100px;cursor:pointer;
-    background:var(--gold);color:#1a1407;border:none;
-    box-shadow:0 8px 28px rgba(0,0,0,.45);
-    transition:transform .1s,background .15s;
-  }
-  #aiToggleBtn:hover{background:var(--gold-soft);}
-  #aiToggleBtn:active{transform:translateY(1px);}
-
-  #aiPanel{
-    position:fixed;right:22px;bottom:84px;z-index:56;
-    width:360px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 130px);
-    display:flex;flex-direction:column;
-    background:var(--panel);border:1px solid var(--line);
-    border-radius:8px;overflow:hidden;
-    box-shadow:0 20px 50px rgba(0,0,0,.55);
-  }
-  #aiHeader{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:14px 16px;border-bottom:1px solid var(--line);
-    font-family:"Oswald";font-weight:600;letter-spacing:.5px;text-transform:uppercase;font-size:15px;
-  }
-  #aiHeader button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px;}
-  #aiHeader button:hover{color:var(--text);}
-  #aiMessages{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
-  .msg{max-width:88%;padding:10px 13px;border-radius:10px;font-size:13.5px;line-height:1.5;}
-  .msg.bot{background:var(--panel-2);border:1px solid var(--line-soft);align-self:flex-start;border-bottom-left-radius:3px;color:#d4dbe2;}
-  .msg.user{background:var(--gold-dim);border:1px solid rgba(201,162,75,.3);color:var(--gold-soft);align-self:flex-end;border-bottom-right-radius:3px;}
-  .msg.bot.typing{color:var(--muted-2);font-style:italic;}
-  #aiInputArea{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);}
-  #aiInput{
-    flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);
-    border-radius:var(--radius);padding:10px 12px;font-size:13.5px;font-family:inherit;
-  }
-  #aiInput:focus{outline:none;border-color:var(--gold);}
-  #aiSend{
-    background:var(--gold);color:#1a1407;border:none;border-radius:var(--radius);
-    padding:0 16px;font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit;
-  }
-  #aiSend:hover{background:var(--gold-soft);}
-
-  /* ---------- error / empty state ---------- */
-  .state{
-    grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--muted);
-  }
-  .state h2{font-family:"Oswald";color:var(--text);font-size:26px;margin:0 0 10px;}
-
-  /* ---------- responsive ---------- */
-  @media (max-width:880px){
-    .lesson-layout{grid-template-columns:1fr;gap:18px;}
-    .sidebar{position:static;max-height:none;}
-    .content-card{padding:28px 22px 30px;}
-    .content-card h2{font-size:28px;}
-    .brand h1{font-size:15px;}
-    .brand p{display:none;}
-    .top-actions .btn-light{display:none;}
-  }
+  .state{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted,#68758a);}
+  .state h2{color:var(--bsa-blue-dark,#17356b);margin:0 0 10px;}
 </style>
 </head>
 <body>
@@ -395,7 +196,7 @@
     <div id="selfCheck"></div>
 
     <div class="lesson-actions">
-      <a class="btn btn-gold" id="toScenarioBottom" href="#">Continue to Scenarios</a>
+      <a class="btn btn-blue" id="toScenarioBottom" href="#">Continue to Scenarios</a>
       <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>
     </div>
 
@@ -405,10 +206,9 @@
 
 </main>
 
-<!-- AI Assistant Button -->
+<!-- AI Assistant — markup owned by ai.js (BSA Instructor v7.1) when present. -->
 <button id="aiToggleBtn">💬 Ask Instructor</button>
 
-<!-- AI Chat Panel -->
 <div id="aiPanel" class="hidden">
   <div id="aiHeader">
     <span>BSA Instructor</span>
@@ -421,28 +221,25 @@
   </div>
 </div>
 
-<!-- Course data (required). ai.js is optional and loaded defensively below. -->
+<!-- Course data (required). -->
 <script src="data.js"></script>
 
 <!-- =========================================================
-     CORE RENDERER  (classic script, no imports — always runs)
+     CORE RENDERER (classic script, no imports — always runs).
      Renders the lesson from window.LESSONS regardless of whether
-     the app's backend modules are present.
+     the portal's backend modules are present.
      ========================================================= -->
 <script>
 (function () {
   "use strict";
-
   var $ = function (id) { return document.getElementById(id); };
 
   function showState(title, msg) {
-    var layout = $("layout");
-    layout.innerHTML =
+    $("layout").innerHTML =
       '<div class="state"><h2>' + title + "</h2><p>" + msg + "</p>" +
-      '<p style="margin-top:18px"><a class="btn btn-light" href="dashboard.html">Back to Dashboard</a></p></div>';
+      '<p style="margin-top:18px"><a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a></p></div>';
   }
 
-  // ---- resolve lesson id from URL (?lesson=N), default 1 ----
   var lessonId = Number(new URLSearchParams(window.location.search).get("lesson")) || 1;
 
   if (!window.LESSONS || !Array.isArray(window.LESSONS)) {
@@ -458,14 +255,12 @@
     return;
   }
 
-  // expose for the optional backend-integration module + AI panel
   window.__BSA_LESSON__ = lesson;
 
-  // ---- lesson type labels / warnings ----
   var typeMap = {
-    8:  { label: "Louisiana Law Instruction",        warn: "⚠️ Legal knowledge is required. Misunderstanding the law can result in criminal charges." },
-    9:  { label: "Mental Readiness Training",        warn: "⚠️ Mental readiness is critical. Poor judgment can cost lives." },
-    10: { label: "Final Evaluation Preparation",     warn: "🚨 Final Evaluation ahead. You are expected to demonstrate full understanding." }
+    8:  { label: "Louisiana Law Instruction",    warn: "⚠️ Legal knowledge is required. Misunderstanding the law can result in criminal charges." },
+    9:  { label: "Mental Readiness Training",    warn: "⚠️ Mental readiness is critical. Poor judgment can cost lives." },
+    10: { label: "Final Evaluation Preparation", warn: "🚨 Final Evaluation ahead. You are expected to demonstrate full understanding." }
   };
   var meta = typeMap[lesson.id] || { label: "Core Training Lesson", warn: null };
 
@@ -475,32 +270,25 @@
   $("sideTitle").textContent = lesson.title;
   document.title = "BSA · " + lesson.title;
 
-  // ---- meta chips ----
   var secCount = (lesson.sections || []).length;
   var chips = [];
-  if (lesson.estTime) chips.push('<span class="chip">⏱ Est. <b>' + lesson.estTime + "</b></span>");
-  chips.push('<span class="chip"><b>' + secCount + "</b>&nbsp;sections</span>");
-  chips.push('<span class="chip">Lesson <b>' + lesson.id + "</b> of <b>" + lessons.length + "</b></span>");
+  if (lesson.estTime) chips.push('<span class="chip">⏱ Est. ' + lesson.estTime + "</span>");
+  chips.push('<span class="chip">' + secCount + " sections</span>");
+  chips.push('<span class="chip">Lesson ' + lesson.id + " of " + lessons.length + "</span>");
   $("lessonMeta").innerHTML = chips.join("");
 
-  // ---- warning + callout ----
   if (meta.warn) {
     var wb = $("lessonWarning");
     wb.textContent = meta.warn;
     wb.classList.remove("hidden");
   }
   if (lesson.id === 10) {
-    $("lessonCallout").innerHTML =
-      "<strong>Final Standard:</strong> You must apply law and judgment correctly to pass.";
+    $("lessonCallout").innerHTML = "<strong>Final Standard:</strong> You must apply law and judgment correctly to pass.";
   }
 
-  // ---- emphasise key doctrine + quoted lines ----
   function decorate(text) {
-    var safe = String(text)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    // highlight the course's central principle wherever it appears
-    safe = safe.replace(/(["“]?No Be There["”]?)/g,
-      '<span class="nobethere">$1</span>');
+    var safe = String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    safe = safe.replace(/(["“]?No Be There["”]?)/g, '<span class="nobethere">$1</span>');
     return safe;
   }
   function isQuote(text) {
@@ -508,7 +296,6 @@
     return t.charAt(0) === "“" || t.charAt(0) === '"';
   }
 
-  // ---- build sidebar + content ----
   var side = $("sideSections");
   var content = $("lessonContent");
 
@@ -543,24 +330,22 @@
     content.appendChild(wrap);
   });
 
-  // ---- inline self-check from lesson.scenarios ----
+  // inline self-check from lesson.scenarios
   var scenarios = lesson.scenarios || [];
   if (scenarios.length) {
     var sc = $("selfCheck");
     var html = '<div class="selfcheck"><span class="eyebrow">Quick Self-Check</span>' +
       "<h3>Test your judgment</h3>" +
-      '<p class="sc-sub">Answer before moving on. These mirror the decisions this lesson is built around.</p>';
+      '<p class="sc-sub">Not graded — answer before moving on. These mirror the decisions this lesson is built around.</p>';
     scenarios.forEach(function (s, qi) {
       html += '<div class="scq" data-answer="' + s.answer + '">' +
         '<p class="scq-prompt"><span class="q">Q' + (qi + 1) + "</span>" + decorate(s.prompt) + "</p>" +
         '<div class="choices">';
       (s.choices || []).forEach(function (c, ci) {
-        var letter = String.fromCharCode(65 + ci);
         html += '<button class="choice" data-i="' + ci + '">' +
-          '<span class="marker">' + letter + "</span><span>" + decorate(c) + "</span></button>";
+          '<span class="marker">' + String.fromCharCode(65 + ci) + "</span><span>" + decorate(c) + "</span></button>";
       });
-      html += "</div>" +
-        '<div class="scq-explain hidden">' + decorate(s.explanation || "") + "</div></div>";
+      html += "</div><div class=\"scq-explain hidden\">" + decorate(s.explanation || "") + "</div></div>";
     });
     html += "</div>";
     sc.innerHTML = html;
@@ -586,15 +371,13 @@
     });
   }
 
-  // ---- continue buttons ----
   var scenarioHref = "scenario.html?lesson=" + lesson.id;
   $("toScenarioTop").href = scenarioHref;
   $("toScenarioBottom").href = scenarioHref;
 
-  // ---- prev / next lesson nav ----
+  // prev / next lesson
   var pos = lessons.findIndex(function (l) { return l.id === lesson.id; });
-  var prev = lessons[pos - 1];
-  var next = lessons[pos + 1];
+  var prev = lessons[pos - 1], next = lessons[pos + 1];
   var navHtml = "";
   navHtml += prev
     ? '<a class="prev" href="lesson.html?lesson=' + prev.id + '"><span class="dir">← Previous</span><span class="lt">' + prev.id + ". " + prev.title + "</span></a>"
@@ -604,7 +387,7 @@
     : '<a class="next disabled"><span class="dir">Next →</span><span class="lt">Course complete</span></a>';
   $("lessonNav").innerHTML = navHtml;
 
-  // ---- smooth anchor scroll (no scrollIntoView) ----
+  // smooth anchor scroll (no scrollIntoView)
   var headerOffset = 92;
   side.querySelectorAll("a[data-target]").forEach(function (a) {
     a.addEventListener("click", function (e) {
@@ -616,21 +399,17 @@
     });
   });
 
-  // ---- scroll-spy + reading progress ----
+  // scroll-spy + reading progress
   var sections = Array.prototype.slice.call(content.querySelectorAll("section"));
   var links = Array.prototype.slice.call(side.querySelectorAll("a[data-target]"));
-  var bar = $("readProgress");
-  var sideBar = $("sideProgBar");
-  var sidePct = $("sideProgPct");
+  var bar = $("readProgress"), sideBar = $("sideProgBar"), sidePct = $("sideProgPct");
 
   function onScroll() {
     var docH = document.documentElement.scrollHeight - window.innerHeight;
     var pct = docH > 0 ? Math.min(100, Math.max(0, (window.pageYOffset / docH) * 100)) : 0;
     bar.style.width = pct + "%";
-    sideBar.style.width = pct + "%";
-    sidePct.textContent = Math.round(pct) + "%";
-
-    // active section = last one whose top passed the offset line
+    if (sideBar) sideBar.style.width = pct + "%";
+    if (sidePct) sidePct.textContent = Math.round(pct) + "%";
     var activeIdx = 0;
     for (var i = 0; i < sections.length; i++) {
       if (sections[i].getBoundingClientRect().top - headerOffset - 8 <= 0) activeIdx = i;
@@ -640,41 +419,63 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll, { passive: true });
   onScroll();
+})();
+</script>
 
-  // =========================================================
-  //  AI "Ask Instructor" panel
-  //  Uses ai.js (window.askInstructor) if present, else the
-  //  prototype Claude bridge (window.claude.complete), else a
-  //  graceful offline message.
-  // =========================================================
-  (function initAI() {
-    var panel = $("aiPanel"), toggle = $("aiToggleBtn"), closeBtn = $("aiClose");
-    var msgs = $("aiMessages"), input = $("aiInput"), sendBtn = $("aiSend");
+<!--
+  AI assistant. The portal's real ai.js (BSA Instructor v7.1) self-boots and
+  fully owns this panel, so we do NOT bind any handlers here when it is loaded.
+  The fallback below only activates if ai.js is absent (e.g. standalone
+  preview) — checked after load via the window.__BSA_AI_BOOTED__ flag ai.js
+  sets — so there is never a double-bound panel.
+-->
+<script src="ai.js" onerror="this.remove()"></script>
+
+<script>
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    if (window.__BSA_AI_BOOTED__) return; // ai.js present and running — leave it alone
+
+    var panel = document.getElementById("aiPanel");
+    var toggle = document.getElementById("aiToggleBtn");
+    var closeBtn = document.getElementById("aiClose");
+    var msgs = document.getElementById("aiMessages");
+    var input = document.getElementById("aiInput");
+    var sendBtn = document.getElementById("aiSend");
+    var lesson = window.__BSA_LESSON__;
+    if (!panel || !toggle || !msgs || !input || !sendBtn || !lesson) return;
+
+    // minimal light-theme bubble styles for the standalone fallback
+    var st = document.createElement("style");
+    st.textContent =
+      "#aiPanel .fb-msg{max-width:88%;padding:9px 12px;border-radius:10px;margin-bottom:8px;font-size:13px;line-height:1.45;}" +
+      "#aiPanel .fb-bot{background:#eef2f8;color:#1d3557;}" +
+      "#aiPanel .fb-user{background:#1d3557;color:#fff;margin-left:auto;}";
+    document.head.appendChild(st);
+
     var greeted = false;
-
     function add(text, who) {
       var d = document.createElement("div");
-      d.className = "msg " + who;
+      d.className = "fb-msg " + (who === "user" ? "fb-user" : "fb-bot");
       d.textContent = text;
       msgs.appendChild(d);
       msgs.scrollTop = msgs.scrollHeight;
       return d;
     }
-
     function open() {
       panel.classList.remove("hidden");
+      panel.style.display = "flex";
       if (!greeted) {
         greeted = true;
-        add('Ask me anything about "' + lesson.title + '." I\'ll answer based on this lesson.', "bot");
+        add('Ask me anything about "' + lesson.title + '." I answer from this lesson.', "bot");
       }
       input.focus();
     }
-    function close() { panel.classList.add("hidden"); }
-
+    function close() { panel.classList.add("hidden"); panel.style.display = "none"; }
     toggle.addEventListener("click", function () {
-      panel.classList.contains("hidden") ? open() : close();
+      (panel.classList.contains("hidden")) ? open() : close();
     });
-    closeBtn.addEventListener("click", close);
+    if (closeBtn) closeBtn.addEventListener("click", close);
 
     function context() {
       var lines = [];
@@ -682,32 +483,19 @@
         lines.push("## " + s.heading);
         (s.body || []).forEach(function (b) { lines.push("- " + b); });
       });
-      return "Lesson " + lesson.id + ": " + lesson.title + "\n\n" +
-             (lesson.summary || "") + "\n\n" + lines.join("\n");
+      return "Lesson " + lesson.id + ": " + lesson.title + "\n\n" + (lesson.summary || "") + "\n\n" + lines.join("\n");
     }
-
     async function answer(question) {
-      // 1) project-provided assistant
-      if (typeof window.askInstructor === "function") {
-        try { return await window.askInstructor(question, lesson); }
-        catch (e) { /* fall through */ }
-      }
-      // 2) prototype Claude bridge
       if (window.claude && typeof window.claude.complete === "function") {
-        var prompt =
+        return await window.claude.complete(
           "You are a calm, disciplined firearms-safety instructor for Broussard Shooting Academy. " +
-          "Answer the student's question using ONLY the lesson material below. Keep it concise and " +
-          "reinforce the academy's avoidance-first 'No Be There' philosophy when relevant. If the answer " +
-          "is not covered by the lesson, say so plainly.\n\n=== LESSON MATERIAL ===\n" +
-          context() + "\n\n=== STUDENT QUESTION ===\n" + question;
-        return await window.claude.complete(prompt);
+          "Answer using ONLY the lesson material below; reinforce the avoidance-first 'No Be There' philosophy " +
+          "where relevant. If not covered, say so plainly.\n\n=== LESSON ===\n" + context() +
+          "\n\n=== QUESTION ===\n" + question);
       }
-      // 3) offline fallback
-      return "The live instructor assistant isn't connected in this view. Review the sections on the " +
-             "left — this lesson covers: " +
-             (lesson.sections || []).map(function (s) { return s.heading; }).join("; ") + ".";
+      return "The live instructor isn't connected in this view. This lesson covers: " +
+        (lesson.sections || []).map(function (s) { return s.heading; }).join("; ") + ".";
     }
-
     async function send() {
       var q = input.value.trim();
       if (!q) return;
@@ -715,45 +503,29 @@
       input.value = "";
       sendBtn.disabled = true;
       var typing = add("Instructor is thinking…", "bot");
-      typing.classList.add("typing");
-      try {
-        var reply = await answer(q);
-        typing.remove();
-        add(reply || "I don't have an answer for that in this lesson.", "bot");
-      } catch (e) {
-        typing.remove();
-        add("Something went wrong reaching the instructor. Please try again.", "bot");
-      } finally {
-        sendBtn.disabled = false;
-        input.focus();
-      }
+      try { var r = await answer(q); typing.remove(); add(r, "bot"); }
+      catch (e) { typing.remove(); add("Something went wrong. Please try again.", "bot"); }
+      finally { sendBtn.disabled = false; input.focus(); }
     }
-
     sendBtn.addEventListener("click", send);
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
-  })();
-})();
+  }, 400);
+});
 </script>
 
-<!-- ai.js is optional in standalone preview; ignore load failure. -->
-<script src="ai.js" onerror="this.remove()"></script>
-
 <!-- =========================================================
-     OPTIONAL BACKEND INTEGRATION  (login gate + tracking)
-     Runs ONLY when the app's modules are present. Wrapped in a
-     dynamic import + try/catch so a missing app.js / tracking.js
-     (e.g. when previewing this file on its own) never breaks the
-     lesson view. When deployed in the real app it behaves exactly
-     like the original page.
+     OPTIONAL BACKEND INTEGRATION (login gate + tracking).
+     Runs only when the portal modules are present. Guarded so a
+     missing app.js / tracking.js never breaks the lesson view.
      ========================================================= -->
 <script type="module">
 (async () => {
-  let app, tracking;
+  let app;
   try {
     app = await import("./app.js");
   } catch (e) {
     console.info("[BSA] app.js not present — running lesson view standalone.");
-    return; // no backend → lesson already rendered, nothing more to do
+    return;
   }
 
   try {
@@ -775,7 +547,6 @@
       console.error("Student load error:", err);
       student = getCurrentStudent?.();
     }
-
     if (!student) { window.location.href = "index.html"; return; }
 
     if ((isLessonAllowedByTier && !isLessonAllowedByTier(lessonId, student.tier)) ||
@@ -784,11 +555,9 @@
       return;
     }
 
-    // ---- tracking (also optional) ----
     try {
-      tracking = await import("./tracking.js");
+      const tracking = await import("./tracking.js");
       const { initTracking, trackLessonView, trackManualActivity, logStage, stopTracking } = tracking;
-
       await initTracking?.(student.id, lessonId);
       await trackLessonView?.();
       await logStage?.("Lesson Opened");
@@ -808,7 +577,7 @@
       console.info("[BSA] tracking.js not present — skipping analytics.");
     }
 
-    try { await setLessonContentViewed?.(lesson.id); } catch (e) { /* non-fatal */ }
+    try { await setLessonContentViewed?.(lesson.id); } catch (e) {}
   } catch (err) {
     console.error("[BSA] backend integration error (non-fatal):", err);
   }
