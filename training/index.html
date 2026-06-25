@@ -4,10 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Student Portal</title>
+
+  <!-- Primary redirect (works even with JavaScript disabled). -->
   <meta http-equiv="refresh" content="0; url=login.html?v=6">
+
+  <!-- Instant redirect; replace() avoids adding a history entry so Back
+       doesn't bounce the user right back here. -->
   <script>
     window.location.replace("login.html?v=6");
   </script>
+
+  <style>
+    html,body{height:100%;margin:0;}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(135deg,#17356b,#1f468c);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .splash{padding:24px;}
+    .mark{
+      width:72px;height:72px;margin:0 auto 18px;
+      background:#fff;border-radius:18px;
+      display:grid;place-items:center;
+      font-weight:900;color:#1f468c;font-size:20px;letter-spacing:.5px;
+      box-shadow:0 10px 28px rgba(0,0,0,.25);
+    }
+    .mark img{width:100%;height:100%;object-fit:contain;padding:10px;box-sizing:border-box;}
+    h1{margin:0 0 6px;font-size:1.25rem;}
+    p{margin:0 0 20px;color:rgba(255,255,255,.85);font-size:.95rem;}
+    a.continue{
+      display:inline-block;
+      background:#d8a62a;color:#1d1500;
+      font-weight:800;text-decoration:none;
+      padding:12px 22px;border-radius:12px;
+    }
+  </style>
 </head>
-<body></body>
+<body>
+  <!-- Fallback splash — only visible if the redirect is blocked or slow. -->
+  <div class="splash">
+    <div class="mark"><img src="./images/bsa-logo.png" alt="BSA" onerror="this.replaceWith(document.createTextNode('BSA'))"></div>
+    <h1>Broussard Shooting Academy</h1>
+    <p>Taking you to the student portal&hellip;</p>
+    <a class="continue" href="login.html?v=6">Continue to Login</a>
+  </div>
+</body>
 </html>
