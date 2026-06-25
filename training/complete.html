@@ -4,13 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BSA Online Portion Complete</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- Fallback brand styles (overridden by styles.css when present). Keeps
+       the page on-brand even if styles.css fails to load. -->
+  <style id="bsa-fallback">
+    :root{--bsa-blue:#1f468c;--bsa-blue-dark:#17356b;--bsa-gold:#d8a62a;--bsa-gold-dark:#b88918;
+      --bg:#f4f6fb;--card:#fff;--text:#142033;--muted:#68758a;--line:#d9e0ec;--warning:#b57916;
+      --shadow:0 14px 35px rgba(19,40,78,.12);--radius:18px;}
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#eef2f9,#f7f8fc);color:var(--text);}
+    a{text-decoration:none;color:inherit;} img{max-width:100%;display:block;}
+    .hidden{display:none !important;}
+    .topbar{background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));color:#fff;padding:18px 24px;box-shadow:0 8px 20px rgba(0,0,0,.18);}
+    .topbar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0;}
+    .brand-mark{width:56px;height:56px;border-radius:14px;background:#fff;padding:6px;display:grid;place-items:center;flex:0 0 auto;font-weight:900;color:var(--bsa-blue);}
+    .brand-mark img{width:100%;height:100%;object-fit:contain;}
+    .brand h1{margin:0;font-size:1.25rem;line-height:1.1;} .brand p{margin:2px 0 0;color:rgba(255,255,255,.85);font-size:.92rem;}
+    .top-actions,.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .container{max-width:1200px;margin:28px auto 48px;padding:0 20px;}
+    .panel{background:var(--card);border:1px solid rgba(17,35,74,.06);border-radius:var(--radius);box-shadow:var(--shadow);}
+    .content-card{padding:34px 30px;} .content-card.center{text-align:center;}
+    .content-card h2{margin:6px 0 12px;font-size:2rem;color:var(--bsa-blue-dark);}
+    .content-card p{line-height:1.65;color:#3c4a5e;max-width:640px;margin-left:auto;margin-right:auto;}
+    .eyebrow{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(31,70,140,.08);color:var(--bsa-blue);font-size:.82rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;}
+    .helper-list{margin:22px 0 0;padding-left:20px;color:#3d4f66;line-height:1.7;}
+    .helper-list li{margin-bottom:8px;}
+    .notice{padding:14px 16px;border-radius:12px;font-weight:700;border:1px solid transparent;max-width:640px;margin:20px auto 0;}
+    .notice.warn{background:#fff3da;color:var(--warning);border-color:#f4de9d;}
+    .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s ease;}
+    .btn:hover{transform:translateY(-1px);}
+    .btn-gold{background:var(--bsa-gold);color:#1d1500;} .btn-gold:hover{background:var(--bsa-gold-dark);}
+    .btn-light{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);}
+    .btn-outline{background:#fff;color:var(--bsa-blue);border:1px solid var(--line);}
+  </style>
+
+  <link rel="stylesheet" href="styles.css" onerror="this.remove()">
+
+  <!-- Gold top-accent on the completion card (matches sibling pages). -->
+  <style id="bsa-enhance">
+    .content-card{position:relative;overflow:hidden;}
+    .content-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--bsa-gold,#d8a62a),#efc45d);}
+  </style>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo"></div>
+        <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA logo" onerror="this.replaceWith(document.createTextNode('BSA'))"></div>
         <div><h1>Broussard Shooting Academy</h1><p>Online Prerequisite Completion</p></div>
       </div>
       <div class="top-actions">
@@ -22,8 +63,11 @@
   <main class="container">
     <section class="panel content-card center">
       <span class="eyebrow">Final online step</span>
-      <h2 id="completeHeadline">Online prerequisite complete</h2>
+      <h2 id="completeHeadline">Online prerequisite portion</h2>
       <p id="completeBody">You have completed the online portion of the training portal. Your final certificate is still handed in person after live review and range qualification.</p>
+
+      <!-- Shown only if we cannot verify progress (e.g. app.js unavailable). -->
+      <div id="completeNotice" class="notice warn hidden"></div>
 
       <ul class="helper-list" style="display:inline-block;text-align:left">
         <li>Bring any required documents and equipment for the live class.</li>
@@ -41,16 +85,48 @@
 
   <script src="data.js"></script>
   <script type="module">
-    import { requireLogin, refreshCurrentStudentFromFirestore, getCurrentStudent, allLessonsComplete } from "./app.js";
+    const headline = document.getElementById("completeHeadline");
+    const body     = document.getElementById("completeBody");
+    const notice   = document.getElementById("completeNotice");
 
-    requireLogin();
-    const student = (await refreshCurrentStudentFromFirestore()) || getCurrentStudent();
+    // Total lessons read from data.js so the count can never drift from the
+    // real course (was hardcoded "8"; the course actually has more).
+    const lessonCount = (window.LESSONS && Array.isArray(window.LESSONS)) ? window.LESSONS.length : null;
+    const lessonsPhrase = lessonCount ? `all ${lessonCount} lessons` : "all lessons";
 
-    if (!allLessonsComplete(student)) {
-      document.getElementById("completeHeadline").textContent = "Online prerequisite still in progress";
-      document.getElementById("completeBody").textContent = "Finish all 8 lessons, scenario reviews, and quizzes at 80% or better before scheduling your live review and range qualification.";
+    // Load the auth/progress service defensively. A STATIC import that fails
+    // would throw at module eval AND leave the page asserting "complete" to
+    // everyone — including students who haven't finished. Guarding it lets us
+    // verify progress and avoid a false completion claim.
+    let app = null;
+    try {
+      app = await import("./app.js");
+    } catch (err) {
+      console.error("BSA Complete: failed to load progress service (app.js).", err);
+    }
+
+    if (!app || typeof app.requireLogin !== "function") {
+      // Cannot verify — do NOT claim completion. Show a neutral, honest state.
+      headline.textContent = "Online prerequisite portion";
+      body.textContent = "We couldn't verify your progress right now. Please return to your dashboard to view your completion status.";
+      notice.textContent = "Progress could not be loaded. Refresh the page or open your dashboard to confirm where you stand.";
+      notice.classList.remove("hidden");
     } else {
-      document.getElementById("completeHeadline").textContent = `${student.name}, your online prerequisite is complete`;
+      try {
+        app.requireLogin();
+        const student = (await app.refreshCurrentStudentFromFirestore?.()) || app.getCurrentStudent?.();
+
+        if (student && typeof app.allLessonsComplete === "function" && !app.allLessonsComplete(student)) {
+          headline.textContent = "Online prerequisite still in progress";
+          body.textContent = `Finish ${lessonsPhrase}, scenario reviews, and quizzes at 80% or better before scheduling your live review and range qualification.`;
+        } else if (student) {
+          headline.textContent = student.name
+            ? `${student.name}, your online prerequisite is complete`
+            : "Online prerequisite complete";
+        }
+      } catch (err) {
+        console.error("BSA Complete: progress check failed (non-fatal).", err);
+      }
     }
   </script>
 </body>
