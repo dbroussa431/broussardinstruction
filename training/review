@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSA Quiz Review</title>
+
+<!-- Fallback brand styles (overridden by styles.css when present). -->
+<style id="bsa-fallback">
+  :root{--bsa-blue:#1f468c;--bsa-blue-dark:#17356b;--bsa-gold:#d8a62a;--bsa-gold-dark:#b88918;
+    --bg:#f4f6fb;--card:#fff;--text:#142033;--muted:#68758a;--line:#d9e0ec;--success:#18864b;--danger:#c4372f;--warning:#b57916;
+    --shadow:0 14px 35px rgba(19,40,78,.12);--radius:18px;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#eef2f9,#f7f8fc);color:var(--text);overflow-x:hidden;}
+  a{text-decoration:none;color:inherit;} img{max-width:100%;display:block;} button{font:inherit;}
+  .hidden{display:none !important;}
+  .topbar{background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));color:#fff;padding:18px 24px;box-shadow:0 8px 20px rgba(0,0,0,.18);position:sticky;top:0;z-index:50;}
+  .topbar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;}
+  .brand{display:flex;align-items:center;gap:14px;min-width:0;}
+  .brand-mark{width:56px;height:56px;border-radius:14px;background:#fff;padding:6px;display:grid;place-items:center;flex:0 0 auto;font-weight:900;color:var(--bsa-blue);}
+  .brand-mark img{width:100%;height:100%;object-fit:contain;}
+  .brand h1{margin:0;font-size:1.25rem;line-height:1.1;} .brand p{margin:2px 0 0;color:rgba(255,255,255,.85);font-size:.92rem;}
+  .top-actions,.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .container{max-width:1200px;margin:28px auto 48px;padding:0 20px;}
+  .panel{background:var(--card);border:1px solid rgba(17,35,74,.06);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .content-card{padding:26px;} .content-card h2{margin-top:0;font-size:2rem;color:var(--bsa-blue-dark);}
+  .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--bsa-gold);color:#1d1500;} .btn-blue{background:var(--bsa-blue);color:#fff;}
+  .btn-light{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);}
+  .btn-outline{background:#fff;color:var(--bsa-blue);border:1px solid var(--line);}
+  .eyebrow{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(31,70,140,.08);color:var(--bsa-blue);font-size:.82rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-bottom:14px;}
+  .muted{color:var(--muted);} .small{font-size:.92rem;}
+  .state{text-align:center;padding:60px 20px;color:var(--muted);}
+  .state h2{color:var(--bsa-blue-dark);}
+</style>
+
+<link rel="stylesheet" href="styles.css" onerror="this.remove()">
+
+<!-- Review-specific styles (new elements; no styles.css collisions). -->
+<style id="bsa-enhance">
+  .rv-score{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin:2px 0 6px;}
+  .rv-pct{font-size:2.6rem;font-weight:900;line-height:1;}
+  .rv-pct.pass{color:var(--success,#18864b);} .rv-pct.fail{color:var(--danger,#c4372f);}
+  .rv-badge{border-radius:999px;padding:7px 13px;font-weight:800;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;}
+  .rv-badge.pass{background:#e3f7ea;color:var(--success,#18864b);border:1px solid #c5ebd3;}
+  .rv-badge.fail{background:#fee6e4;color:var(--danger,#c4372f);border:1px solid #f4c5c0;}
+  .rv-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .rv-chip{border-radius:999px;padding:7px 12px;font-size:.86rem;font-weight:700;border:1px solid var(--line,#d9e0ec);background:#f9fbff;color:#2b3a52;}
+  .rv-chip.miss{background:#fff1f0;border-color:#f3c7c3;color:#9f2a24;}
+  .rv-chip.hit{background:#eefaf2;border-color:#c8dfcf;color:#136b39;}
+
+  .rv-section-label{display:flex;align-items:center;gap:10px;margin:30px 0 12px;color:var(--bsa-blue-dark,#17356b);font-weight:800;font-size:1.05rem;}
+  .rv-section-label .ct{font-size:.8rem;font-weight:800;border-radius:999px;padding:3px 10px;}
+  .rv-section-label .ct.miss{background:#fde4e2;color:var(--danger,#c4372f);}
+  .rv-section-label .ct.hit{background:#dff5e8;color:var(--success,#18864b);}
+
+  .rv-item{border:1px solid var(--line,#d9e0ec);border-radius:14px;padding:18px;margin-bottom:12px;background:#fcfdff;}
+  .rv-item.miss{border-left:5px solid var(--danger,#c4372f);}
+  .rv-item.hit{border-left:5px solid var(--success,#18864b);}
+  .rv-q{font-weight:800;color:var(--bsa-blue-dark,#17356b);margin:0 0 12px;line-height:1.5;}
+  .rv-q .qn{color:var(--bsa-gold-dark,#b88918);margin-right:8px;}
+  .rv-ans{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:10px;margin-bottom:8px;font-weight:600;line-height:1.45;}
+  .rv-ans .lab{flex:0 0 auto;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;margin-top:1px;}
+  .rv-ans.yours-wrong{background:#fff1f0;color:#7d2722;} .rv-ans.yours-wrong .lab{background:#f6cfca;color:#9f2a24;}
+  .rv-ans.yours-right{background:#eefaf2;color:#1f5238;} .rv-ans.yours-right .lab{background:#cde9d6;color:#136b39;}
+  .rv-ans.correct{background:#eefaf2;color:#1f5238;} .rv-ans.correct .lab{background:#cde9d6;color:#136b39;}
+  .rv-explain{margin-top:8px;padding:11px 13px;border-radius:10px;background:#f1f5fc;border-left:4px solid var(--bsa-blue,#1f468c);font-size:.94rem;line-height:1.55;color:#314765;}
+  .rv-explain strong{color:var(--bsa-blue-dark,#17356b);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark"><img src="./images/bsa-logo.png" alt="BSA" onerror="this.replaceWith(document.createTextNode('BSA'))"></div>
+      <div>
+        <h1>Broussard Shooting Academy</h1>
+        <p>Quiz Review</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="btn btn-light" href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main class="container" id="layout">
+  <section class="panel content-card" id="card">
+    <span class="eyebrow" id="rvEyebrow">Answer Review</span>
+    <h2 id="rvTitle">Quiz Review</h2>
+    <p class="muted" id="rvSubtitle">Review your last attempt. Missed questions are shown first with the correct answer and an explanation.</p>
+
+    <div id="rvSummary"></div>
+    <div id="rvBody"></div>
+
+    <div class="lesson-actions" id="rvActions" style="margin-top:24px;"></div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t == null ? "" : t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const lessonId = Number(new URLSearchParams(location.search).get("lesson")) || 1;
+
+  function stateScreen(title, msg, actions) {
+    $("rvSummary").innerHTML = "";
+    $("rvBody").innerHTML = `<div class="state"><h2>${esc(title)}</h2><p>${esc(msg)}</p></div>`;
+    $("rvActions").innerHTML = actions;
+  }
+
+  // Lesson + question bank from data.js (for titles + explanations).
+  const lesson = (window.LESSONS || []).find((l) => l.id === lessonId) || null;
+  const bank = (window.QUIZ_BANK && window.QUIZ_BANK[lessonId]) || [];
+  if (lesson) {
+    $("rvTitle").textContent = `${lesson.id}. ${lesson.title} — Review`;
+    document.title = "BSA Review · " + lesson.title;
+  }
+
+  const backBtns = `
+    <a class="btn btn-blue" href="quiz.html?lesson=${lessonId}">Retake Quiz</a>
+    <a class="btn btn-outline" href="dashboard.html">Back to Dashboard</a>`;
+
+  // Resolve an explanation for a saved detail: prefer the bank entry at the
+  // saved index; fall back to matching by question text; else empty.
+  function explanationFor(detail) {
+    if (detail && typeof detail.explanation === "string" && detail.explanation.trim()) return detail.explanation;
+    if (detail && Number.isInteger(detail.index) && bank[detail.index] && bank[detail.index].explanation) {
+      // confirm it's the same question when text is available
+      if (!detail.question || !bank[detail.index].q || bank[detail.index].q === detail.question) {
+        return bank[detail.index].explanation;
+      }
+    }
+    if (detail && detail.question) {
+      const hit = bank.find((b) => b.q === detail.question);
+      if (hit && hit.explanation) return hit.explanation;
+    }
+    return "";
+  }
+
+  function renderReview(progress) {
+    const details = Array.isArray(progress.quizDetails) ? progress.quizDetails : [];
+
+    if (!details.length) {
+      stateScreen(
+        "No saved attempt to review yet",
+        lesson
+          ? `Take the ${lesson.title} quiz first — your answers are saved automatically, and this page will then show what you missed and why.`
+          : "Take this lesson's quiz first. Your answers are saved automatically and will appear here for review.",
+        backBtns
+      );
+      return;
+    }
+
+    const total = details.length;
+    const correct = details.filter((d) => d.isCorrect).length;
+    const missed = total - correct;
+    const score = Number(progress.quizScore || Math.round((correct / total) * 100));
+    const passed = !!progress.quizPassed || score >= 80;
+
+    // Summary header
+    $("rvSummary").innerHTML = `
+      <div class="rv-score">
+        <span class="rv-pct ${passed ? "pass" : "fail"}">${score}%</span>
+        <span class="rv-badge ${passed ? "pass" : "fail"}">${passed ? "Passed" : "Did not pass"}</span>
+      </div>
+      <div class="rv-meta">
+        <span class="rv-chip hit">${correct} correct</span>
+        <span class="rv-chip ${missed ? "miss" : ""}">${missed} missed</span>
+        ${progress.attempts ? `<span class="rv-chip">Attempt ${esc(progress.attempts)}</span>` : ""}
+      </div>`;
+
+    // Build an item; tf/mc already stored as readable strings in your/correct.
+    function itemHtml(d, n) {
+      const exp = explanationFor(d);
+      const yourClass = d.isCorrect ? "yours-right" : "yours-wrong";
+      const yourLabel = d.isCorrect ? "Your answer ✓" : "Your answer ✗";
+      const yourVal = (d.your && String(d.your).trim()) ? esc(d.your) : "No answer recorded";
+      let html = `<div class="rv-item ${d.isCorrect ? "hit" : "miss"}">
+        <p class="rv-q"><span class="qn">Q${n}</span>${esc(d.question)}</p>
+        <div class="rv-ans ${yourClass}"><span class="lab">${yourLabel}</span><span>${yourVal}</span></div>`;
+      if (!d.isCorrect) {
+        html += `<div class="rv-ans correct"><span class="lab">Correct</span><span>${esc(d.correct)}</span></div>`;
+      }
+      if (exp) html += `<div class="rv-explain"><strong>Why:</strong> ${esc(exp)}</div>`;
+      html += `</div>`;
+      return html;
+    }
+
+    // Missed first (the learning payload), then correct.
+    const missedItems = [];
+    const hitItems = [];
+    details.forEach((d, i) => {
+      const n = (Number.isInteger(d.index) ? d.index : i) + 1;
+      (d.isCorrect ? hitItems : missedItems).push(itemHtml(d, n));
+    });
+
+    let body = "";
+    if (missedItems.length) {
+      body += `<div class="rv-section-label">Questions you missed <span class="ct miss">${missedItems.length}</span></div>`;
+      body += missedItems.join("");
+    } else {
+      body += `<div class="rv-section-label">Perfect score — every question correct <span class="ct hit">${total}</span></div>`;
+    }
+    if (hitItems.length) {
+      body += `<div class="rv-section-label">Questions you got right <span class="ct hit">${hitItems.length}</span></div>`;
+      body += hitItems.join("");
+    }
+    $("rvBody").innerHTML = body;
+    $("rvActions").innerHTML = backBtns;
+  }
+
+  // Load progress service defensively (guarded import).
+  let app = null;
+  try { app = await import("./app.js"); }
+  catch (err) { console.error("BSA Review: failed to load progress service (app.js).", err); }
+
+  if (!app || typeof app.getLessonProgress !== "function") {
+    stateScreen(
+      "Review unavailable right now",
+      "We couldn't load your saved progress. Please refresh the page or return to your dashboard and try again.",
+      backBtns
+    );
+  } else {
+    try {
+      app.requireLogin?.();
+      const student = (await app.refreshCurrentStudentFromFirestore?.()) || app.getCurrentStudent?.();
+      if (!student) { location.href = "index.html"; }
+      else renderReview(app.getLessonProgress(lessonId, student));
+    } catch (err) {
+      console.error("BSA Review: progress load failed.", err);
+      stateScreen("Review unavailable right now", "Something went wrong loading your saved attempt. Please try again from the dashboard.", backBtns);
+    }
+  }
+</script>
+
+</body>
+</html>
