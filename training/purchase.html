@@ -23,7 +23,7 @@
     /* ── Top bar ─────────────────────────────────────────────── */
     .pur-topbar {
       width: 100%;
-      background: #1d3f7a;
+      background: linear-gradient(135deg, #17356b, #1f468c);
       color: #fff;
       padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
       display: flex;
@@ -70,6 +70,8 @@
 
     /* ── Outer card ──────────────────────────────────────────── */
     .pur-card {
+      position: relative;
+      overflow: hidden;
       width: 100%;
       max-width: 980px;
       background: #fff;
@@ -77,6 +79,14 @@
       padding: clamp(24px, 4vw, 40px);
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
       border: 1px solid #e4e9f2;
+    }
+
+    .pur-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, #d8a62a, #efc45d);
     }
 
     /* ── Brand block ─────────────────────────────────────────── */
@@ -108,7 +118,7 @@
       margin: 0;
       font-size: clamp(17px, 2.4vw, 21px);
       font-weight: 700;
-      color: #163b73;
+      color: #17356b;
     }
 
     .pur-brand-sub {
@@ -139,14 +149,14 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.07em;
-      color: #3478b9;
+      color: #1f468c;
       margin-bottom: 10px;
     }
 
     .pur-info-heading {
       margin: 0 0 12px;
       font-size: clamp(17px, 2vw, 20px);
-      color: #163b73;
+      color: #17356b;
       line-height: 1.3;
     }
 
@@ -177,7 +187,7 @@
       line-height: 1.7;
     }
 
-    .pur-course-box strong { color: #163b73; }
+    .pur-course-box strong { color: #17356b; }
 
     /* ── Payment step callout ────────────────────────────────── */
     .pur-steps {
@@ -203,7 +213,7 @@
       flex-shrink: 0;
       width: 24px;
       height: 24px;
-      background: #1d3f7a;
+      background: #1f468c;
       color: #fff;
       border-radius: 50%;
       font-size: 0.78rem;
@@ -224,7 +234,7 @@
     .pur-form-heading {
       margin: 0 0 18px;
       font-size: clamp(18px, 2.2vw, 22px);
-      color: #163b73;
+      color: #17356b;
     }
 
     /* Form grid */
@@ -283,8 +293,8 @@
     .pur-input:focus,
     .pur-textarea:focus {
       outline: none;
-      border-color: #3478b9;
-      box-shadow: 0 0 0 3px rgba(52, 120, 185, 0.16);
+      border-color: #1f468c;
+      box-shadow: 0 0 0 3px rgba(31, 70, 140, 0.18);
     }
 
     .pur-input[aria-invalid="true"],
@@ -330,7 +340,7 @@
       width: 18px;
       height: 18px;
       margin-top: 2px;
-      accent-color: #1d3f7a;
+      accent-color: #1f468c;
       cursor: pointer;
     }
 
@@ -365,7 +375,7 @@
     }
 
     .pur-btn:focus-visible {
-      outline: 3px solid #3478b9;
+      outline: 3px solid #1f468c;
       outline-offset: 2px;
     }
 
@@ -378,11 +388,11 @@
     .pur-btn-paypal:hover { background: #ede5d4; }
 
     .pur-btn-gold {
-      background: #c89b2c;
+      background: #d8a62a;
       color: #111;
     }
 
-    .pur-btn-gold:hover:not(:disabled) { background: #b88a25; }
+    .pur-btn-gold:hover:not(:disabled) { background: #b88918; }
 
     .pur-btn-gold:disabled {
       opacity: 0.6;
@@ -391,7 +401,7 @@
 
     .pur-btn-outline {
       background: transparent;
-      color: #1d3f7a;
+      color: #1f468c;
       border: 1px solid #b5c5dc;
     }
 
@@ -473,7 +483,7 @@
   <!-- ── Top bar ──────────────────────────────────────────────── -->
   <header class="pur-topbar" role="banner">
     <div class="pur-topbar-logo-box" aria-hidden="true">
-      <img src="./images/bsa-logo.png" alt="" class="pur-topbar-logo">
+      <img src="./images/bsa-logo.png" alt="" class="pur-topbar-logo" onerror="this.replaceWith(document.createTextNode('BSA'))">
     </div>
     <div>
       <p class="pur-topbar-name">Broussard Shooting Academy</p>
@@ -488,7 +498,7 @@
       <!-- Brand -->
       <div class="pur-brand" aria-hidden="true">
         <div class="pur-brand-mark">
-          <img src="./images/bsa-logo.png" alt="">
+          <img src="./images/bsa-logo.png" alt="" onerror="this.replaceWith(document.createTextNode('BSA'))">
         </div>
         <div>
           <p class="pur-brand-name">Broussard Shooting Academy</p>
@@ -716,7 +726,17 @@
   <script src="pay-config.js"></script>
 
   <script type="module">
-    import { submitPurchaseRequest } from "./app.js";
+    // Load the submit service defensively. A STATIC import that fails (app.js
+    // or firebase-config down) throws at module eval and leaves the form's
+    // submit handler unbound — a silently dead button. A guarded dynamic
+    // import lets us show a clear message instead.
+    let submitPurchaseRequest = null;
+    try {
+      const app = await import("./app.js");
+      submitPurchaseRequest = app.submitPurchaseRequest;
+    } catch (err) {
+      console.error("BSA Purchase: failed to load submit service (app.js).", err);
+    }
 
     // ── Config validation ──────────────────────────────────────────────
     // Show a warning if pay-config.js failed to load instead of silently
@@ -728,6 +748,15 @@
     if (!cfg || typeof cfg !== "object") {
       document.getElementById("configError").removeAttribute("hidden");
       console.error("BSA Purchase: window.BSA_PAY_CONFIG missing. pay-config.js may have failed to load.");
+    }
+
+    // If the submit service failed to load, warn and keep the request button
+    // disabled so the form can't appear to submit into a void.
+    const serviceReady = typeof submitPurchaseRequest === "function";
+    if (!serviceReady) {
+      document.getElementById("configError").removeAttribute("hidden");
+      document.getElementById("configError").textContent =
+        "The request service is temporarily unavailable. Please refresh the page or contact your instructor before submitting.";
     }
 
     // ── PayPal link ────────────────────────────────────────────────────
@@ -849,6 +878,11 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAllErrors();
+
+      if (!serviceReady) {
+        showStatus("bad", "The request service is temporarily unavailable. Please refresh the page or contact your instructor before submitting.");
+        return;
+      }
 
       if (!validate()) return;
 
