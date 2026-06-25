@@ -311,7 +311,7 @@ LESSONS.forEach((lesson) => {
 
   if (progress.quizPassed) {
     actionsHtml += `
-      <a class="btn btn-outline" href="quiz.html?lesson=${encodeURIComponent(lesson.id)}&review=1">
+      <a class="btn btn-outline" href="review.html?lesson=${encodeURIComponent(lesson.id)}">
         Review Answers
       </a>
     `;
