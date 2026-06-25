@@ -6,283 +6,293 @@
 <title>BSA Training Confirmation</title>
 
 <style>
-/* =========================
-   GLOBAL RESET + BASE
-========================= */
-* {
-    box-sizing: border-box;
+:root{
+  --bsa-blue:#1f468c;
+  --bsa-blue-dark:#17356b;
+  --bsa-gold:#d8a62a;
+  --bsa-gold-dark:#b88918;
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --text:#142033;
+  --muted:#68758a;
+  --line:#d9e0ec;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(
-        to bottom,
-        #eef2f7 0%,
-        #f4f6f8 120px,
-        #f4f6f8 100%
-    );
-    color: #243245;
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(180deg,#eef2f9 0%,#f7f8fc 100%);
+  color:var(--text);
+  min-height:100vh;
 }
 
-/* =========================
-   TOP BAR (MATCH DASHBOARD)
-========================= */
-.top-bar {
-    width: 100%;
-    background: #1d3f7a;
-    color: #fff;
-    padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+/* ===== TOP BAR (matches dashboard / lesson portal) ===== */
+.topbar{
+  background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));
+  color:#fff;
+  padding:18px clamp(16px,3vw,28px);
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+.topbar-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.brand-mark{
+  width:clamp(46px,5vw,56px);
+  height:clamp(46px,5vw,56px);
+  background:#fff;
+  border-radius:14px;
+  padding:6px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  font-weight:900;
+  color:var(--bsa-blue);
+  letter-spacing:.5px;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+.brand-mark img{ width:100%; height:100%; object-fit:contain; display:block; }
+.brand-copy h1{ margin:0; font-size:clamp(15px,2vw,18px); font-weight:700; line-height:1.1; }
+.brand-copy p{ margin:3px 0 0; font-size:clamp(11px,1.6vw,13px); letter-spacing:.04em; opacity:.85; }
+
+/* ===== LAYOUT ===== */
+.wrap{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:clamp(36px,7vh,72px) clamp(12px,4vw,24px);
 }
 
-.top-bar-logo-box {
-    width: clamp(44px, 5vw, 56px);
-    height: clamp(44px, 5vw, 56px);
-    background: #ffffff;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-    flex-shrink: 0;
+.card{
+  position:relative;
+  width:100%;
+  max-width:560px;
+  background:var(--card);
+  border:1px solid rgba(17,35,74,.06);
+  border-radius:18px;
+  padding:clamp(28px,4vw,44px);
+  box-shadow:0 18px 44px rgba(19,40,78,.14);
+  overflow:hidden;
+}
+/* gold top accent — the portal's premium detail */
+.card::before{
+  content:"";
+  position:absolute;
+  top:0; left:0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,var(--bsa-gold),#efc45d);
 }
 
-.top-bar-logo {
-    width: 70%;
+/* ===== HEADER BLOCK ===== */
+.card-head{ text-align:center; margin-bottom:22px; }
+.eyebrow{
+  display:inline-block;
+  padding:7px 14px;
+  border-radius:999px;
+  background:rgba(31,70,140,.08);
+  color:var(--bsa-blue);
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.card-head h2{
+  margin:0 0 6px;
+  font-size:clamp(24px,4vw,32px);
+  color:var(--bsa-blue-dark);
+  letter-spacing:.2px;
+}
+.card-head .subtitle{
+  margin:0;
+  font-size:clamp(13px,2vw,15px);
+  color:var(--muted);
 }
 
-.top-bar-copy {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/* ===== CONTENT ===== */
+.content{ font-size:clamp(14px,2.2vw,16px); line-height:1.68; }
+.content > p{ margin:0 0 14px; }
+.lead{ font-weight:700; color:var(--bsa-blue-dark); text-align:center; }
+
+/* big mission pull-quote */
+.mission{
+  text-align:center;
+  font-size:clamp(20px,3.6vw,26px);
+  font-weight:800;
+  color:var(--bsa-blue-dark);
+  margin:8px 0 22px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--line);
 }
 
-.top-bar-copy h1 {
-    margin: 0;
-    font-size: clamp(14px, 2vw, 18px);
-    font-weight: 700;
+/* doctrine list with gold diamond markers */
+ul.doctrine{ list-style:none; margin:0 0 20px; padding:0; display:flex; flex-direction:column; gap:11px; }
+ul.doctrine li{ position:relative; padding-left:24px; color:#27384f; }
+ul.doctrine li::before{
+  content:"";
+  position:absolute; left:4px; top:.55em;
+  width:8px; height:8px;
+  border:1.5px solid var(--bsa-gold);
+  transform:rotate(45deg);
 }
 
-.top-bar-copy p {
-    margin: 2px 0 0;
-    font-size: clamp(11px, 1.6vw, 13px);
-    opacity: 0.9;
+/* central "No Be There" callout */
+.callout-quote{
+  text-align:center;
+  font-weight:700;
+  color:var(--bsa-blue-dark);
+  background:#f1f5fc;
+  border:1px solid #dde6f4;
+  border-radius:14px;
+  padding:16px 18px;
+  margin:0 0 20px;
 }
 
-/* =========================
-   MAIN WRAP (RESPONSIVE)
-========================= */
-.wrap {
-    min-height: calc(100vh - 80px);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: clamp(40px, 8vh, 80px) clamp(12px, 4vw, 24px);
+/* the two responsibility lines */
+.standard{
+  background:rgba(216,166,42,.10);
+  border-left:4px solid var(--bsa-gold);
+  border-radius:12px;
+  padding:14px 18px;
+  margin:0 0 4px;
+}
+.standard p{ margin:0; text-align:center; font-weight:700; color:#7a5a12; }
+.standard p + p{ margin-top:8px; }
+
+/* ===== CHECKBOX GATE ===== */
+.checkbox-container{
+  margin-top:26px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px 16px;
+  background:#fcfdff;
+  transition:border-color .15s ease, background .15s ease;
+}
+.checkbox-container.checked{
+  border-color:#cfe0f5;
+  background:#f4f8ff;
+}
+.checkbox-container label{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  cursor:pointer;
+  font-weight:700;
+  color:var(--text);
+}
+.checkbox-container input[type="checkbox"]{
+  margin-top:2px;
+  width:20px;
+  height:20px;
+  accent-color:var(--bsa-blue);
+  flex:0 0 auto;
+  cursor:pointer;
 }
 
-/* =========================
-   CARD
-========================= */
-.card {
-    width: 100%;
-    max-width: 520px;
-    background: white;
-    border-radius: 16px;
-    padding: clamp(24px, 4vw, 40px);
-    box-shadow: 0 14px 34px rgba(0,0,0,0.12);
-    text-align: center;
+/* ===== BUTTON ===== */
+.btn{
+  margin-top:18px;
+  width:100%;
+  padding:clamp(13px,2.5vw,15px);
+  border:none;
+  border-radius:12px;
+  background:var(--bsa-gold);
+  color:#1d1500;
+  font-weight:800;
+  font-size:clamp(14px,2.5vw,16px);
+  letter-spacing:.2px;
+  cursor:not-allowed;
+  opacity:.5;
+  transition:opacity .2s ease, background .2s ease, transform .08s ease;
 }
+.btn.active{ cursor:pointer; opacity:1; }
+.btn.active:hover{ background:var(--bsa-gold-dark); transform:translateY(-1px); }
+.btn.active:active{ transform:translateY(0); }
+.btn:focus-visible{ outline:3px solid rgba(31,70,140,.4); outline-offset:2px; }
 
-/* =========================
-   LOGO
-========================= */
-.logo-box {
-    width: clamp(70px, 10vw, 90px);
-    height: clamp(70px, 10vw, 90px);
-    margin: 0 auto 16px;
-    background: linear-gradient(135deg, #ffffff, #f5f7fb);
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.16);
-}
-
-.logo {
-    width: 70%;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
-}
-
-/* =========================
-   TEXT
-========================= */
-h2 {
-    font-size: clamp(22px, 4vw, 30px);
-    margin: 0 0 8px;
-    color: #163b73;
-}
-
-.subtitle {
-    font-size: clamp(13px, 2vw, 15px);
-    color: #68778b;
-    margin-bottom: 24px;
-}
-
-.content {
-    text-align: left;
-    font-size: clamp(14px, 2.2vw, 16px);
-    line-height: 1.65;
-}
-
-.content p {
-    margin-bottom: 14px;
-}
-
-.quote {
-    font-weight: 700;
-    color: #163b73;
-    margin: 14px 0;
-}
-
-.highlight {
-    text-align: center;
-    font-weight: 700;
-    margin-top: 12px;
-}
-
-ul {
-    padding-left: 20px;
-    margin-bottom: 16px;
-}
-
-/* =========================
-   CHECKBOX
-========================= */
-.checkbox-container {
-    margin-top: 26px;
-    text-align: left;
-}
-
-.checkbox-container label {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    cursor: pointer;
-}
-
-input[type="checkbox"] {
-    margin-top: 3px;
-}
-
-/* =========================
-   BUTTON
-========================= */
-.btn {
-    margin-top: 20px;
-    width: 100%;
-    padding: clamp(12px, 2.5vw, 14px);
-    border: none;
-    border-radius: 10px;
-    background: #c89b2c;
-    font-weight: 700;
-    font-size: clamp(14px, 2.5vw, 16px);
-    cursor: not-allowed;
-    opacity: 0.6;
-    transition: all 0.2s ease;
-}
-
-.btn.active {
-    cursor: pointer;
-    opacity: 1;
-}
-
-.btn.active:hover {
-    background: #b88a25;
-    transform: translateY(-1px);
-}
-
-/* =========================
-   MOBILE TIGHTENING
-========================= */
-@media (max-width: 480px) {
-    .card {
-        border-radius: 12px;
-    }
+@media (max-width:480px){
+  .card{ border-radius:12px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="top-bar">
-    <div class="top-bar-logo-box">
-        <img src="./images/bsa-logo.png" class="top-bar-logo">
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mark">
+      <img src="./images/bsa-logo.png" alt="BSA" onerror="this.replaceWith(document.createTextNode('BSA'))">
     </div>
-    <div class="top-bar-copy">
-        <h1>Broussard Shooting Academy</h1>
-        <p>Training Standard Confirmation</p>
+    <div class="brand-copy">
+      <h1>Broussard Shooting Academy</h1>
+      <p>Training Standard Confirmation</p>
     </div>
-</div>
+  </div>
+</header>
 
 <div class="wrap">
-<div class="card">
+  <main class="card">
 
-<div class="logo-box">
-    <img src="./images/bsa-logo.png" class="logo">
-</div>
+    <div class="card-head">
+      <span class="eyebrow">Broussard Shooting Academy Standard</span>
+      <h2>Before You Continue</h2>
+      <p class="subtitle">Read and acknowledge the standard you are training to.</p>
+    </div>
 
-<h2>Before You Continue</h2>
-<div class="subtitle">Broussard Shooting Academy Standard</div>
+    <div class="content">
+      <p class="lead">At Broussard Shooting Academy, we train for one purpose:</p>
 
-<div class="content">
-<p><strong>At Broussard Shooting Academy, we train for one purpose:</strong></p>
+      <p class="mission">To go home safely.</p>
 
-<p class="quote">To go home safely.</p>
+      <ul class="doctrine">
+        <li>Avoid danger whenever possible.</li>
+        <li>Do not go where problems happen.</li>
+        <li>Do not stay where problems are developing.</li>
+      </ul>
 
-<ul>
-<li>Avoid danger whenever possible</li>
-<li>Do not go where problems happen</li>
-<li>Do not stay where problems are developing</li>
-</ul>
+      <p class="callout-quote">If you are not there, you cannot become part of the problem.</p>
 
-<p class="quote">If you are not there, you cannot become part of the problem.</p>
+      <div class="standard">
+        <p>Just because you have it does not mean you use it.</p>
+        <p>With great power comes great responsibility.</p>
+      </div>
+    </div>
 
-<p class="highlight">Just because you have it does not mean you use it.</p>
-<p class="highlight">With great power comes great responsibility.</p>
-</div>
+    <div class="checkbox-container" id="checkBox">
+      <label for="confirmCheck">
+        <input type="checkbox" id="confirmCheck">
+        <span>I understand my responsibility as a firearms owner.</span>
+      </label>
+    </div>
 
-<div class="checkbox-container">
-<label>
-<input type="checkbox" id="confirmCheck">
-I understand my responsibility as a firearms owner
-</label>
-</div>
+    <button id="continueBtn" class="btn" disabled>
+      I Understand — Continue Training
+    </button>
 
-<button id="continueBtn" class="btn" disabled>
-I Understand — Continue Training
-</button>
-
-</div>
+  </main>
 </div>
 
 <script>
 const checkbox = document.getElementById("confirmCheck");
-const button = document.getElementById("continueBtn");
+const button   = document.getElementById("continueBtn");
+const box      = document.getElementById("checkBox");
 
 checkbox.addEventListener("change", function () {
-    button.disabled = !this.checked;
-    button.classList.toggle("active", this.checked);
+  button.disabled = !this.checked;
+  button.classList.toggle("active", this.checked);
+  box.classList.toggle("checked", this.checked);
 });
 
 button.addEventListener("click", function () {
-    if (!checkbox.checked) return;
-
-    sessionStorage.setItem("bsaConfirmed", "true");
-    window.location.href = "dashboard.html?v=6";
+  if (!checkbox.checked) return;
+  sessionStorage.setItem("bsaConfirmed", "true");
+  window.location.href = "dashboard.html?v=6";
 });
 </script>
 
