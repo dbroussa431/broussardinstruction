@@ -529,8 +529,8 @@
           </ul>
 
           <div class="pur-course-box" aria-label="Course and pricing details">
-            <strong>Course:</strong> BSA Online Prerequisite Access<br>
-            <strong>Price:</strong> $150.00
+            <strong>Course:</strong> <span id="courseNameLabel">BSA Online Prerequisite Access</span><br>
+            <strong>Price:</strong> <span id="coursePriceLabel">$150.00</span>
           </div>
 
           <ol class="pur-steps" aria-label="Steps to get access">
@@ -702,17 +702,10 @@
             hidden
           ></div>
 
-          <!-- Post-success actions — shown by JS after successful submit -->
-          <div id="purSuccessActions" class="pur-success-actions" hidden>
-            <a class="pur-btn pur-btn-outline" href="login.html">
-              Go to Login Page
-            </a>
-          </div>
-
           <hr class="pur-divider" aria-hidden="true">
 
           <div class="pur-back-row">
-            <a class="pur-btn pur-btn-outline" href="login.html">
+            <a class="pur-btn pur-btn-outline" id="loginNavBtn" href="login.html">
               &larr; Back to Login
             </a>
           </div>
@@ -775,12 +768,30 @@
       payLink.setAttribute("title", "Payment link unavailable — please contact your instructor.");
     }
 
+    // ── Dynamic course name + price ────────────────────────────────────
+    // Pull the displayed course name and price from pay-config.js so they
+    // always match the real price (which is apt to change) and the PayPal
+    // amount. The hardcoded text in the HTML is just a fallback if cfg fails.
+    if (cfg?.courseName) {
+      const nameLabel = document.getElementById("courseNameLabel");
+      if (nameLabel) nameLabel.textContent = cfg.courseName;
+    }
+    if (cfg && typeof cfg.coursePrice === "number" && isFinite(cfg.coursePrice)) {
+      const priceLabel = document.getElementById("coursePriceLabel");
+      if (priceLabel) {
+        priceLabel.textContent = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: cfg.currency || "USD",
+        }).format(cfg.coursePrice);
+      }
+    }
+
     // ── Element refs ───────────────────────────────────────────────────
 
     const form               = document.getElementById("purchaseForm");
     const requestBtn         = document.getElementById("requestBtn");
     const statusMsg          = document.getElementById("purStatusMsg");
-    const successActions     = document.getElementById("purSuccessActions");
+    const loginNavBtn        = document.getElementById("loginNavBtn");
     const paymentConfirm     = document.getElementById("paymentConfirm");
     const paymentConfirmError = document.getElementById("paymentConfirmError");
 
@@ -922,8 +933,11 @@
           el.setAttribute("disabled", "");
         });
 
-        // Show the Go to Login button
-        successActions.removeAttribute("hidden");
+        // Promote the single login button to a forward CTA now that the
+        // request is in (one login button only — no redundant duplicate).
+        if (loginNavBtn) {
+          loginNavBtn.textContent = "Go to Login Page \u2192";
+        }
 
         // Scroll to status message
         statusMsg.scrollIntoView({ behavior: "smooth", block: "nearest" });
