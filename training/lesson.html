@@ -330,14 +330,34 @@
     content.appendChild(wrap);
   });
 
-  // inline self-check from lesson.scenarios
-  var scenarios = lesson.scenarios || [];
-  if (scenarios.length) {
+  // inline knowledge check — pulls 2 questions from this lesson's quiz bank
+  // (NOT the graded scenarios), so it reinforces the reading without spoiling
+  // the separate, graded Scenario Review.
+  var bank = (window.QUIZ_BANK && window.QUIZ_BANK[lesson.id]) || [];
+  function normCheck(qq) {
+    if (!qq) return null;
+    if (qq.type === "tf") {
+      return { prompt: qq.q, choices: ["True", "False"], answer: qq.answer ? 0 : 1, explanation: qq.explanation || "" };
+    }
+    if (Array.isArray(qq.choices) && qq.choices.length >= 2) {
+      return { prompt: qq.q, choices: qq.choices, answer: Number(qq.answer), explanation: qq.explanation || "" };
+    }
+    return null;
+  }
+  // two spaced-out questions for variety
+  var idxPool = [4, 9, 13, 6, 2, 0, 1];
+  var checks = [];
+  for (var pi = 0; pi < idxPool.length && checks.length < 2; pi++) {
+    var nc = normCheck(bank[idxPool[pi]]);
+    if (nc) checks.push(nc);
+  }
+
+  if (checks.length) {
     var sc = $("selfCheck");
-    var html = '<div class="selfcheck"><span class="eyebrow">Quick Self-Check</span>' +
-      "<h3>Test your judgment</h3>" +
-      '<p class="sc-sub">Not graded — answer before moving on. These mirror the decisions this lesson is built around.</p>';
-    scenarios.forEach(function (s, qi) {
+    var html = '<div class="selfcheck"><span class="eyebrow">Quick Knowledge Check</span>' +
+      "<h3>Check your understanding</h3>" +
+      '<p class="sc-sub">A quick check on what you just read — this is not graded. Your Scenario Review and quiz come next.</p>';
+    checks.forEach(function (s, qi) {
       html += '<div class="scq" data-answer="' + s.answer + '">' +
         '<p class="scq-prompt"><span class="q">Q' + (qi + 1) + "</span>" + decorate(s.prompt) + "</p>" +
         '<div class="choices">';
