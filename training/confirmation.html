@@ -1,300 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BSA Training Confirmation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSA Student Portal &mdash; Login</title>
 
-<style>
-:root{
-  --bsa-blue:#1f468c;
-  --bsa-blue-dark:#17356b;
-  --bsa-gold:#d8a62a;
-  --bsa-gold-dark:#b88918;
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#142033;
-  --muted:#68758a;
-  --line:#d9e0ec;
-}
+  <!-- Shared styles loaded first; login-specific overrides follow inline. -->
+  <link rel="stylesheet" href="styles.css" onerror="this.remove()" />
 
-*{ box-sizing:border-box; }
+  <style>
+    /* ─── Login-scoped styles ────────────────────────────────────
+       All selectors are prefixed (.login-*) to avoid colliding with
+       shared styles.css rules. Colors use the BSA brand palette so the
+       page matches the dashboard / lesson / confirmation pages.
+    ─────────────────────────────────────────────────────────── */
+    :root{
+      --bsa-blue:#1f468c;
+      --bsa-blue-dark:#17356b;
+      --bsa-gold:#d8a62a;
+      --bsa-gold-dark:#b88918;
+      --text:#142033;
+      --muted:#68758a;
+      --line:#d9e0ec;
+    }
 
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(180deg,#eef2f9 0%,#f7f8fc 100%);
-  color:var(--text);
-  min-height:100vh;
-}
+    /* Page background */
+    .login-page {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef2f9 0%, #f7f8fc 100%);
+      color: var(--text);
+    }
 
-/* ===== TOP BAR (matches dashboard / lesson portal) ===== */
-.topbar{
-  background:linear-gradient(135deg,var(--bsa-blue-dark),var(--bsa-blue));
-  color:#fff;
-  padding:18px clamp(16px,3vw,28px);
-  box-shadow:0 8px 20px rgba(0,0,0,.18);
-}
-.topbar-inner{
-  max-width:1200px;
-  margin:0 auto;
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-.brand-mark{
-  width:clamp(46px,5vw,56px);
-  height:clamp(46px,5vw,56px);
-  background:#fff;
-  border-radius:14px;
-  padding:6px;
-  display:grid;
-  place-items:center;
-  flex:0 0 auto;
-  font-weight:900;
-  color:var(--bsa-blue);
-  letter-spacing:.5px;
-  box-shadow:0 6px 18px rgba(0,0,0,.18);
-}
-.brand-mark img{ width:100%; height:100%; object-fit:contain; display:block; }
-.brand-copy h1{ margin:0; font-size:clamp(15px,2vw,18px); font-weight:700; line-height:1.1; }
-.brand-copy p{ margin:3px 0 0; font-size:clamp(11px,1.6vw,13px); letter-spacing:.04em; opacity:.85; }
+    /* ── Top bar (matches portal topbar gradient) ──────────────── */
+    .login-topbar {
+      width: 100%;
+      background: linear-gradient(135deg, var(--bsa-blue-dark), var(--bsa-blue));
+      color: #fff;
+      padding: clamp(12px, 2vw, 18px) clamp(16px, 3vw, 28px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+    .login-topbar-logo-box {
+      flex-shrink: 0;
+      width: clamp(44px, 5vw, 56px);
+      height: clamp(44px, 5vw, 56px);
+      background: #fff;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      font-weight: 900;
+      color: var(--bsa-blue);
+      letter-spacing: .5px;
+    }
+    .login-topbar-logo { width: 70%; }
+    .login-topbar-copy .login-topbar-name {
+      margin: 0;
+      font-size: clamp(14px, 2vw, 18px);
+      font-weight: 700;
+      color: #fff;
+    }
+    .login-topbar-copy .login-topbar-sub {
+      margin: 2px 0 0;
+      font-size: clamp(11px, 1.6vw, 13px);
+      opacity: 0.88;
+      color: #fff;
+    }
 
-/* ===== LAYOUT ===== */
-.wrap{
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:clamp(36px,7vh,72px) clamp(12px,4vw,24px);
-}
+    /* ── Centering wrapper ─────────────────────────────────────── */
+    .login-wrap {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: clamp(40px, 8vh, 80px) clamp(12px, 4vw, 24px);
+    }
 
-.card{
-  position:relative;
-  width:100%;
-  max-width:560px;
-  background:var(--card);
-  border:1px solid rgba(17,35,74,.06);
-  border-radius:18px;
-  padding:clamp(28px,4vw,44px);
-  box-shadow:0 18px 44px rgba(19,40,78,.14);
-  overflow:hidden;
-}
-/* gold top accent — the portal's premium detail */
-.card::before{
-  content:"";
-  position:absolute;
-  top:0; left:0;
-  width:100%;
-  height:4px;
-  background:linear-gradient(90deg,var(--bsa-gold),#efc45d);
-}
+    /* ── Login card ────────────────────────────────────────────── */
+    .login-card {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border: 1px solid rgba(17, 35, 74, 0.06);
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 40px);
+      box-shadow: 0 18px 44px rgba(19, 40, 78, 0.14);
+      overflow: hidden;
+    }
+    /* gold top accent — matches the portal's premium detail */
+    .login-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--bsa-gold), #efc45d);
+    }
 
-/* ===== HEADER BLOCK ===== */
-.card-head{ text-align:center; margin-bottom:22px; }
-.eyebrow{
-  display:inline-block;
-  padding:7px 14px;
-  border-radius:999px;
-  background:rgba(31,70,140,.08);
-  color:var(--bsa-blue);
-  font-size:.72rem;
-  font-weight:800;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  margin-bottom:14px;
-}
-.card-head h2{
-  margin:0 0 6px;
-  font-size:clamp(24px,4vw,32px);
-  color:var(--bsa-blue-dark);
-  letter-spacing:.2px;
-}
-.card-head .subtitle{
-  margin:0;
-  font-size:clamp(13px,2vw,15px);
-  color:var(--muted);
-}
+    /* ── Brand block ───────────────────────────────────────────── */
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .login-brand-mark {
+      flex-shrink: 0;
+      width: clamp(60px, 8vw, 70px);
+      height: clamp(60px, 8vw, 70px);
+      background: linear-gradient(135deg, #ffffff, #f5f7fb);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+      font-weight: 900;
+      color: var(--bsa-blue);
+    }
+    .login-brand-mark img {
+      width: 70%;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+    }
+    .login-brand-name {
+      margin: 0;
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--bsa-blue-dark);
+    }
+    .login-brand-sub {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: clamp(12px, 1.8vw, 14px);
+    }
 
-/* ===== CONTENT ===== */
-.content{ font-size:clamp(14px,2.2vw,16px); line-height:1.68; }
-.content > p{ margin:0 0 14px; }
-.lead{ font-weight:700; color:var(--bsa-blue-dark); text-align:center; }
+    /* ── Heading & description ─────────────────────────────────── */
+    .login-heading {
+      margin: 10px 0 6px;
+      font-size: clamp(20px, 3vw, 26px);
+      color: var(--bsa-blue-dark);
+    }
+    .login-desc {
+      margin: 0 0 4px;
+      font-size: clamp(14px, 2.2vw, 15px);
+      line-height: 1.6;
+      color: #3d4f66;
+    }
 
-/* big mission pull-quote */
-.mission{
-  text-align:center;
-  font-size:clamp(20px,3.6vw,26px);
-  font-weight:800;
-  color:var(--bsa-blue-dark);
-  margin:8px 0 22px;
-  padding-bottom:18px;
-  border-bottom:1px solid var(--line);
-}
+    /* ── Form fields ───────────────────────────────────────────── */
+    .login-field {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .login-label {
+      display: block;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+    .login-optional {
+      color: var(--muted);
+      font-size: 0.85em;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .login-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccd3dc;
+      font-size: 15px;
+      color: var(--text);
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .login-input:focus {
+      outline: none;
+      border-color: var(--bsa-blue);
+      box-shadow: 0 0 0 3px rgba(31, 70, 140, 0.18);
+    }
+    .login-input[aria-invalid="true"] {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    }
+    .login-field-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.4;
+    }
+    .login-field-error {
+      font-size: 0.82rem;
+      color: #c0392b;
+      font-weight: 600;
+      margin: 0;
+    }
 
-/* doctrine list with gold diamond markers */
-ul.doctrine{ list-style:none; margin:0 0 20px; padding:0; display:flex; flex-direction:column; gap:11px; }
-ul.doctrine li{ position:relative; padding-left:24px; color:#27384f; }
-ul.doctrine li::before{
-  content:"";
-  position:absolute; left:4px; top:.55em;
-  width:8px; height:8px;
-  border:1.5px solid var(--bsa-gold);
-  transform:rotate(45deg);
-}
+    /* ── Buttons ───────────────────────────────────────────────── */
+    .login-btn {
+      display: block;
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.18s ease, opacity 0.18s ease, transform 0.08s ease;
+      margin-top: 20px;
+    }
+    .login-btn:focus-visible {
+      outline: 3px solid rgba(31, 70, 140, 0.45);
+      outline-offset: 2px;
+    }
+    .login-btn-gold {
+      background: var(--bsa-gold);
+      color: #1d1500;
+    }
+    .login-btn-gold:hover:not(:disabled) { background: var(--bsa-gold-dark); transform: translateY(-1px); }
+    .login-btn-gold:disabled { opacity: 0.6; cursor: not-allowed; }
+    .login-btn-blue {
+      background: var(--bsa-blue);
+      color: #fff;
+      margin-top: 14px;
+    }
+    .login-btn-blue:hover { background: var(--bsa-blue-dark); transform: translateY(-1px); }
 
-/* central "No Be There" callout */
-.callout-quote{
-  text-align:center;
-  font-weight:700;
-  color:var(--bsa-blue-dark);
-  background:#f1f5fc;
-  border:1px solid #dde6f4;
-  border-radius:14px;
-  padding:16px 18px;
-  margin:0 0 20px;
-}
+    /* ── Status message ────────────────────────────────────────── */
+    .login-msg {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .login-msg.error { background: #fff0ef; color: #9d2720; border-color: #f1c6c3; }
+    .login-msg.success { background: #e9f8ef; color: #166c38; border-color: #bfe7cc; }
+    .login-msg[hidden] { display: none; }
 
-/* the two responsibility lines */
-.standard{
-  background:rgba(216,166,42,.10);
-  border-left:4px solid var(--bsa-gold);
-  border-radius:12px;
-  padding:14px 18px;
-  margin:0 0 4px;
-}
-.standard p{ margin:0; text-align:center; font-weight:700; color:#7a5a12; }
-.standard p + p{ margin-top:8px; }
+    /* ── Divider ───────────────────────────────────────────────── */
+    .login-divider {
+      border: none;
+      border-top: 1px solid #e4e8f0;
+      margin: 22px 0 0;
+    }
 
-/* ===== CHECKBOX GATE ===== */
-.checkbox-container{
-  margin-top:26px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px 16px;
-  background:#fcfdff;
-  transition:border-color .15s ease, background .15s ease;
-}
-.checkbox-container.checked{
-  border-color:#cfe0f5;
-  background:#f4f8ff;
-}
-.checkbox-container label{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  cursor:pointer;
-  font-weight:700;
-  color:var(--text);
-}
-.checkbox-container input[type="checkbox"]{
-  margin-top:2px;
-  width:20px;
-  height:20px;
-  accent-color:var(--bsa-blue);
-  flex:0 0 auto;
-  cursor:pointer;
-}
-
-/* ===== BUTTON ===== */
-.btn{
-  margin-top:18px;
-  width:100%;
-  padding:clamp(13px,2.5vw,15px);
-  border:none;
-  border-radius:12px;
-  background:var(--bsa-gold);
-  color:#1d1500;
-  font-weight:800;
-  font-size:clamp(14px,2.5vw,16px);
-  letter-spacing:.2px;
-  cursor:not-allowed;
-  opacity:.5;
-  transition:opacity .2s ease, background .2s ease, transform .08s ease;
-}
-.btn.active{ cursor:pointer; opacity:1; }
-.btn.active:hover{ background:var(--bsa-gold-dark); transform:translateY(-1px); }
-.btn.active:active{ transform:translateY(0); }
-.btn:focus-visible{ outline:3px solid rgba(31,70,140,.4); outline-offset:2px; }
-
-@media (max-width:480px){
-  .card{ border-radius:12px; }
-}
-</style>
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .login-card { border-radius: 12px; }
+    }
+  </style>
 </head>
 
-<body>
+<body class="login-page">
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand-mark">
-      <img src="./images/bsa-logo.png" alt="BSA" onerror="this.replaceWith(document.createTextNode('BSA'))">
+  <!-- ── Top bar ──────────────────────────────────────────────── -->
+  <header class="login-topbar" role="banner">
+    <div class="login-topbar-logo-box">
+      <img src="./images/bsa-logo.png" alt="" class="login-topbar-logo"
+           onerror="this.replaceWith(document.createTextNode('BSA'))">
     </div>
-    <div class="brand-copy">
-      <h1>Broussard Shooting Academy</h1>
-      <p>Training Standard Confirmation</p>
+    <div class="login-topbar-copy">
+      <p class="login-topbar-name">Broussard Shooting Academy</p>
+      <p class="login-topbar-sub">Private Student Portal &bull; Online Prerequisite Access</p>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="wrap">
-  <main class="card">
+  <!-- ── Main content ─────────────────────────────────────────── -->
+  <main class="login-wrap" id="mainContent">
+    <div class="login-card" role="region" aria-labelledby="loginHeading">
 
-    <div class="card-head">
-      <span class="eyebrow">Broussard Shooting Academy Standard</span>
-      <h2>Before You Continue</h2>
-      <p class="subtitle">Read and acknowledge the standard you are training to.</p>
-    </div>
-
-    <div class="content">
-      <p class="lead">At Broussard Shooting Academy, we train for one purpose:</p>
-
-      <p class="mission">To go home safely.</p>
-
-      <ul class="doctrine">
-        <li>Avoid danger whenever possible.</li>
-        <li>Do not go where problems happen.</li>
-        <li>Do not stay where problems are developing.</li>
-      </ul>
-
-      <p class="callout-quote">If you are not there, you cannot become part of the problem.</p>
-
-      <div class="standard">
-        <p>Just because you have it does not mean you use it.</p>
-        <p>With great power comes great responsibility.</p>
+      <!-- Brand -->
+      <div class="login-brand" aria-hidden="true">
+        <div class="login-brand-mark">
+          <img src="./images/bsa-logo.png" alt=""
+               onerror="this.replaceWith(document.createTextNode('BSA'))">
+        </div>
+        <div>
+          <p class="login-brand-name">BSA Student Portal</p>
+          <p class="login-brand-sub">Secure access to your training</p>
+        </div>
       </div>
+
+      <!-- Heading -->
+      <h1 class="login-heading" id="loginHeading">Log in with your access code</h1>
+      <p class="login-desc">
+        Enter your access code to reach the student portal. If your record has
+        an email saved, you can include it for an additional match check.
+      </p>
+
+      <!-- Login form -->
+      <form id="loginForm" aria-labelledby="loginHeading" novalidate>
+
+        <!-- Email (optional) -->
+        <div class="login-field">
+          <label class="login-label" for="studentEmail">
+            Email address
+            <span class="login-optional" aria-label="(optional)">(optional)</span>
+          </label>
+          <input
+            id="studentEmail"
+            class="login-input"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            inputmode="email"
+          />
+        </div>
+
+        <!-- Access code (required) -->
+        <div class="login-field">
+          <label class="login-label" for="accessCode">
+            Access code
+          </label>
+          <input
+            id="accessCode"
+            class="login-input"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            required
+            aria-required="true"
+            aria-describedby="accessCodeHint accessCodeError"
+          />
+          <p class="login-field-hint" id="accessCodeHint">
+            Your access code was provided by your instructor (e.g.,&nbsp;BSA-FULL-####).
+          </p>
+          <p
+            class="login-field-error"
+            id="accessCodeError"
+            role="alert"
+            aria-live="polite"
+            hidden
+          ></p>
+        </div>
+
+        <button
+          class="login-btn login-btn-gold"
+          id="loginBtn"
+          type="submit"
+          aria-describedby="loginStatusMsg"
+        >
+          Enter Student Portal
+        </button>
+
+      </form>
+
+      <!-- Status message (errors / success) -->
+      <p
+        id="loginStatusMsg"
+        class="login-msg"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        hidden
+      ></p>
+
+      <hr class="login-divider" aria-hidden="true">
+
+      <a class="login-btn login-btn-blue" href="purchase.html">
+        Purchase / Request Access
+      </a>
+
     </div>
-
-    <div class="checkbox-container" id="checkBox">
-      <label for="confirmCheck">
-        <input type="checkbox" id="confirmCheck">
-        <span>I understand my responsibility as a firearms owner.</span>
-      </label>
-    </div>
-
-    <button id="continueBtn" class="btn" disabled>
-      I Understand — Continue Training
-    </button>
-
   </main>
-</div>
 
-<script>
-const checkbox = document.getElementById("confirmCheck");
-const button   = document.getElementById("continueBtn");
-const box      = document.getElementById("checkBox");
+  <script src="data.js"></script>
 
-checkbox.addEventListener("change", function () {
-  button.disabled = !this.checked;
-  button.classList.toggle("active", this.checked);
-  box.classList.toggle("checked", this.checked);
-});
+  <script type="module">
+    // ── Element refs ────────────────────────────────────────────────────
+    const form            = document.getElementById("loginForm");
+    const emailInput      = document.getElementById("studentEmail");
+    const accessCodeInput = document.getElementById("accessCode");
+    const loginBtn        = document.getElementById("loginBtn");
+    const statusMsg       = document.getElementById("loginStatusMsg");
+    const codeError       = document.getElementById("accessCodeError");
 
-button.addEventListener("click", function () {
-  if (!checkbox.checked) return;
-  sessionStorage.setItem("bsaConfirmed", "true");
-  window.location.href = "dashboard.html?v=6";
-});
-</script>
+    // ── Message helpers ─────────────────────────────────────────────────
+    function showStatus(message, type = "error") {
+      statusMsg.textContent = message;
+      statusMsg.className   = `login-msg ${type}`;
+      statusMsg.removeAttribute("hidden");
+    }
+    function hideStatus() {
+      statusMsg.textContent = "";
+      statusMsg.setAttribute("hidden", "");
+    }
+    function showFieldError(element, errorEl, message) {
+      errorEl.textContent = message;
+      errorEl.removeAttribute("hidden");
+      element.setAttribute("aria-invalid", "true");
+      element.focus();
+    }
+    function clearFieldError(element, errorEl) {
+      errorEl.textContent = "";
+      errorEl.setAttribute("hidden", "");
+      element.removeAttribute("aria-invalid");
+    }
+    function setLoading(isLoading) {
+      loginBtn.disabled    = isLoading;
+      loginBtn.textContent = isLoading ? "Checking…" : "Enter Student Portal";
+      loginBtn.setAttribute("aria-busy", String(isLoading));
+    }
+
+    // ── Load the auth service defensively ───────────────────────────────
+    // Login genuinely needs app.js (Firestore auth). With a STATIC import,
+    // a failure to load app.js / firebase-config.js threw at module eval and
+    // left the form's submit handler unbound — a silently dead button. A
+    // guarded dynamic import lets us show a clear message instead.
+    let login, getCurrentStudent, authReady = false;
+    try {
+      const app = await import("./app.js");
+      login            = app.login;
+      getCurrentStudent = app.getCurrentStudent;
+      authReady = typeof login === "function";
+    } catch (err) {
+      console.error("BSA Login: failed to load auth service (app.js).", err);
+    }
+
+    if (!authReady) {
+      showStatus("The login service is temporarily unavailable. Please refresh the page or try again shortly.");
+      setLoading(true);            // keep the submit button disabled
+      loginBtn.textContent = "Service Unavailable";
+      loginBtn.setAttribute("aria-busy", "false");
+    }
+
+    // ── Post-login routing ──────────────────────────────────────────────
+    function routeAfterLogin() {
+      const dest = sessionStorage.getItem("bsaConfirmed") === "true"
+        ? "dashboard.html"
+        : "confirmation.html";
+      window.location.href = dest;
+    }
+
+    // ── Auto-route for returning sessions ───────────────────────────────
+    // Only redirect if we have a stored session AND the record looks valid.
+    if (authReady) {
+      (function checkExistingSession() {
+        try {
+          const current = getCurrentStudent();
+          if (
+            current &&
+            typeof current.accessCode === "string" &&
+            current.accessCode.trim() !== "" &&
+            current.status === "active"
+          ) {
+            routeAfterLogin();
+          }
+        } catch (err) {
+          console.warn("BSA Login: session check failed, staying on login.", err);
+        }
+      })();
+    }
+
+    // ── Access code normalization (trim + uppercase on blur) ─────────────
+    accessCodeInput.addEventListener("blur", () => {
+      accessCodeInput.value = accessCodeInput.value.trim().toUpperCase();
+    });
+
+    // ── Clear field error on input ───────────────────────────────────────
+    accessCodeInput.addEventListener("input", () => {
+      clearFieldError(accessCodeInput, codeError);
+      hideStatus();
+    });
+    emailInput.addEventListener("input", hideStatus);
+
+    // ── Form submit ──────────────────────────────────────────────────────
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!authReady) {
+        showStatus("The login service is temporarily unavailable. Please refresh the page or try again shortly.");
+        return;
+      }
+
+      hideStatus();
+      clearFieldError(accessCodeInput, codeError);
+
+      const emailVal = emailInput.value.trim();
+      const codeVal  = accessCodeInput.value.trim().toUpperCase();
+
+      if (!codeVal) {
+        showFieldError(accessCodeInput, codeError, "Please enter your access code.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const result = await login(emailVal, codeVal);
+
+        if (!result.ok) {
+          showStatus(result.message || "Invalid access code. Please try again.");
+          setLoading(false);
+          accessCodeInput.setAttribute("aria-invalid", "true");
+          accessCodeInput.focus();
+          return;
+        }
+
+        showStatus("Access granted. Redirecting…", "success");
+        routeAfterLogin();
+
+      } catch (err) {
+        console.error("BSA Login error:", err);
+        showStatus("Something went wrong. Please check your connection and try again.");
+        setLoading(false);
+      }
+    });
+  </script>
 
 </body>
 </html>
