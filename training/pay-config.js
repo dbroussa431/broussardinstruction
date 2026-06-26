@@ -52,6 +52,22 @@
    */
   var paymentLinkUrl = "https://www.paypal.com/ncp/payment/DW3LDEGKBE85J";
 
+  /**
+   * PayPal JavaScript SDK Client ID (PUBLIC — safe to expose in the browser).
+   * Used by purchase.html to render the on-page Pay buttons that report
+   * payment completion so the access code can be created instantly.
+   *
+   * ⚠ This is currently your SANDBOX client ID (for testing). When you're
+   * ready for real payments, go to developer.paypal.com → switch to LIVE →
+   * your "BSA WEBSITE" app → copy the LIVE Client ID and paste it here,
+   * then set payPalEnv to "live".
+   *
+   * NEVER put the Secret key here — the browser never needs it.
+   */
+  var payPalClientId =
+    "Ac2cNxCwlVaH1l_t0ohmJ3b1N-IPvBzJqQyK5OcXej3XFCH3hd4LXuIzHaYeilDLwb1DGK2NtDpzlLDP";
+  var payPalEnv = "sandbox"; // "sandbox" while testing, "live" for real money
+
   window.BSA_PAY_CONFIG = Object.freeze({
 
     /** Human-readable course name shown on purchase page */
@@ -76,6 +92,12 @@
      * and safe for a hosted PayPal payment link.
      */
     manualPayPalMeUrl: paymentLinkUrl,
+
+    /** PayPal SDK Client ID (public) — used for the on-page Pay buttons. */
+    payPalClientId: payPalClientId,
+
+    /** "sandbox" (testing) or "live" (real payments). */
+    payPalEnv: payPalEnv,
 
     /**
      * Firebase Cloud Function: creates a PayPal order.
