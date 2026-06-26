@@ -16,8 +16,10 @@
  *
  * EDITING GUIDE:
  *   coursePrice       — numeric dollar amount, no $ sign (e.g. 150)
+ *                       (DISPLAY + student record only — the actual amount
+ *                        charged is fixed inside the PayPal payment link)
  *   currency          — ISO 4217 code (e.g. "USD")
- *   manualPayPalMeUrl — your PayPal.Me link including the amount
+ *   manualPayPalMeUrl — your PayPal business payment link (amount baked in)
  *   createOrderUrl    — Cloud Function for PayPal order creation
  *   captureOrderUrl   — Cloud Function for PayPal order capture
  *   env               — "production" | "development"
@@ -37,10 +39,23 @@
     price = 150;
   }
 
+  /**
+   * PayPal BUSINESS payment link (PayPal "Payment Link" / ncp checkout).
+   * This link type lets buyers pay with PayPal OR a debit/credit card as a
+   * guest (no PayPal account required).
+   *
+   * IMPORTANT: the amount is fixed inside this link on PayPal's side — do
+   * NOT append the price to it (that would break the link). To change the
+   * price, create a new payment link in your PayPal business dashboard and
+   * paste it here, then update `price` above so the displayed amount and
+   * the saved student record match what the link charges.
+   */
+  var paymentLinkUrl = "https://www.paypal.com/ncp/payment/DW3LDEGKBE85J";
+
   window.BSA_PAY_CONFIG = Object.freeze({
 
     /** Human-readable course name shown on purchase page */
-    courseName: "BSA Online Prerequisite Access",
+    courseName: "Broussard Shooting Academy",
 
     /** Course price in dollars (numeric, no currency symbol) */
     coursePrice: price,
@@ -55,11 +70,12 @@
     supportPhone: "504-289-6605",
 
     /**
-     * PayPal.Me manual payment link.
-     * NOTE: This URL is visible in page source to any visitor.
-     * This is unavoidable with a client-side PayPal.Me flow.
+     * PayPal business payment link (amount baked in on PayPal's side).
+     * Supports card/guest checkout as well as PayPal balance.
+     * NOTE: This URL is visible in page source to any visitor — expected
+     * and safe for a hosted PayPal payment link.
      */
-    manualPayPalMeUrl: "https://www.paypal.com/paypalme/dbroussa431/150",
+    manualPayPalMeUrl: paymentLinkUrl,
 
     /**
      * Firebase Cloud Function: creates a PayPal order.
