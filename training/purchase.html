@@ -387,6 +387,46 @@
 
     .pur-btn-paypal:hover { background: #ede5d4; }
 
+    /* ── Access code success box ─────────────────────────────── */
+    .pur-code-box {
+      margin-top: 8px;
+      padding: 22px;
+      border: 2px solid #18864b;
+      border-radius: 14px;
+      background: #f0faf4;
+      text-align: center;
+    }
+    .pur-code-eyebrow {
+      font-weight: 800;
+      color: #136b39;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+    .pur-code-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #68758a;
+    }
+    .pur-code-value {
+      font-family: "Courier New", monospace;
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #17356b;
+      letter-spacing: 1px;
+      margin: 6px 0 14px;
+      word-break: break-all;
+    }
+    .pur-code-copy { margin-bottom: 14px; }
+    .pur-code-note {
+      font-size: 0.9rem;
+      color: #3d4f66;
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+    .pur-code-box .pur-btn-gold { width: 100%; }
+
     /* ── Payment-only panel ──────────────────────────────────── */
     .pur-btn-pay { width: 100%; margin-top: 4px; font-size: 1.05rem; padding: 15px 18px; }
     .pur-pay-note { margin: 10px 0 0; font-size: .86rem; color: #68758a; text-align: center; }
@@ -519,22 +559,22 @@
 
         <!-- ── Left: Info panel ──────────────────────────────── -->
         <aside class="pur-info" aria-label="How it works">
-          <span class="pur-eyebrow">Purchase-first model</span>
+          <span class="pur-eyebrow">Instant access</span>
 
           <h1 class="pur-info-heading" id="purHeading">
-            Purchase your access, then log in with the code your instructor sends
+            Pay and get your access code on this page — instantly
           </h1>
 
           <p class="pur-info-desc">
-            Pay below to enroll. Once your payment clears, your instructor
-            issues your access code by email — then you log in with that same
-            email and code.
+            Pay below to enroll. The moment your payment goes through, your
+            access code appears right here on screen. Use that code and your
+            email to log in — no waiting on an email.
           </p>
 
           <ul class="pur-helper-list" aria-label="Important notes">
-            <li>Use the same email at checkout that you want tied to your access.</li>
-            <li>Once payment is verified, your portal access is activated under that same student record.</li>
-            <li>Your access code is tied to that email — no future switchover needed.</li>
+            <li>Pay with PayPal or a debit/credit card as a guest.</li>
+            <li>Your access code shows up on this page as soon as payment completes.</li>
+            <li>Write it down — then go to the login page and sign in with your email and that code.</li>
           </ul>
 
           <div class="pur-course-box" aria-label="Course and pricing details">
@@ -545,7 +585,7 @@
 
         <!-- ── Right: Payment panel ──────────────────────────── -->
         <div class="pur-form-panel">
-          <h2 class="pur-form-heading" id="formHeading">Pay &amp; enroll</h2>
+          <h2 class="pur-form-heading" id="formHeading">Pay &amp; get your code</h2>
 
           <!-- Config error banner — shown if pay-config.js fails to load -->
           <div
@@ -559,28 +599,33 @@
             contact your instructor before paying.
           </div>
 
-          <a
-            class="pur-btn pur-btn-gold pur-btn-pay"
-            id="manualPayLink"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Pay with PayPal or card (opens in a new tab)"
-          >
-            💳 Pay with PayPal or Card
-          </a>
-          <p class="pur-pay-note">
+          <!-- PayPal on-page buttons render here -->
+          <div id="paypal-button-container"></div>
+
+          <p class="pur-pay-note" id="payNote">
             Pay with a debit or credit card as a guest — no PayPal account required.
           </p>
 
-          <div class="pur-after">
-            <h3 class="pur-after-title">After you pay</h3>
-            <ol class="pur-steps" aria-label="After payment">
-              <li>Your instructor verifies your payment.</li>
-              <li>You receive your <strong>access code</strong> by email at the address you used at checkout.</li>
-              <li>Go to the login page and sign in with that email and code.</li>
-            </ol>
+          <!-- Processing notice (shown briefly after approval) -->
+          <div id="payProcessing" class="pur-msg" hidden>
+            Payment received — creating your access code…
           </div>
+
+          <!-- SUCCESS: access code box (revealed after payment) -->
+          <div id="codeResult" class="pur-code-box" hidden>
+            <div class="pur-code-eyebrow">✓ Payment complete — you're enrolled</div>
+            <div class="pur-code-label">Your access code</div>
+            <div class="pur-code-value" id="codeValue">—</div>
+            <button type="button" class="pur-btn pur-btn-outline pur-code-copy" id="copyCodeBtn">Copy code</button>
+            <p class="pur-code-note">
+              Save this code now. Log in with <strong id="codeEmail">your email</strong>
+              and the code above. We've also saved it to your student record.
+            </p>
+            <a class="pur-btn pur-btn-gold" id="goLoginBtn" href="login.html">Go to Login →</a>
+          </div>
+
+          <!-- ERROR box -->
+          <div id="payError" class="pur-msg bad" role="alert" hidden></div>
 
           <p class="pur-support" id="purSupport"></p>
 
@@ -601,56 +646,71 @@
   <script src="pay-config.js"></script>
 
   <script type="module">
-    // Payment-only page: no form submission, no app.js dependency. Activation
-    // is handled by the instructor, who issues an access code after payment.
-    // This script only wires the PayPal link, course name/price, and support
-    // contact from pay-config.js.
+    // Browser-only PayPal checkout. On payment approval, the access code is
+    // generated and the student record is written straight to Firestore
+    // (same collection + format the admin dashboard uses), then shown on
+    // screen. No Cloud Function and no email needed.
+    //
+    // SECURITY NOTE: because provisioning happens in the browser, this is not
+    // tamper-proof. Periodically cross-check auto-created records (tagged
+    // source:"paypal-auto" with a paypalOrderId) against payments actually
+    // received in PayPal, and revoke any mismatch from the admin dashboard.
+    // The fully-verified version is the capturePayPalOrder Cloud Function.
 
-    // ── Config validation ──────────────────────────────────────────────
+    import { db } from "./firebase-config.js";
+    import {
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      where,
+      limit,
+      serverTimestamp,
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
     const cfg = window.BSA_PAY_CONFIG;
-    const configError = document.getElementById("configError");
+    const $ = (id) => document.getElementById(id);
+    const configError = $("configError");
+    const payError = $("payError");
+    const payProcessing = $("payProcessing");
+
+    function showError(msg) {
+      payError.textContent = msg;
+      payError.removeAttribute("hidden");
+    }
 
     if (!cfg || typeof cfg !== "object") {
       configError.removeAttribute("hidden");
-      console.error("BSA Purchase: window.BSA_PAY_CONFIG missing. pay-config.js may have failed to load.");
-    }
-
-    // ── PayPal link (from pay-config.js; never hardcoded here) ──────────
-    const payLink = document.getElementById("manualPayLink");
-
-    if (cfg?.manualPayPalMeUrl) {
-      payLink.href = cfg.manualPayPalMeUrl;
-    } else {
-      // Disable link if config missing — don't silently expose a fallback URL
-      payLink.setAttribute("aria-disabled", "true");
-      payLink.setAttribute("tabindex", "-1");
-      payLink.style.opacity = "0.5";
-      payLink.style.pointerEvents = "none";
-      payLink.setAttribute("title", "Payment link unavailable — please contact your instructor.");
+      console.error("BSA Purchase: window.BSA_PAY_CONFIG missing.");
     }
 
     // ── Dynamic course name + price ────────────────────────────────────
     if (cfg?.courseName) {
-      const nameLabel = document.getElementById("courseNameLabel");
+      const nameLabel = $("courseNameLabel");
       if (nameLabel) nameLabel.textContent = cfg.courseName;
     }
-    if (cfg && typeof cfg.coursePrice === "number" && isFinite(cfg.coursePrice)) {
-      const priceLabel = document.getElementById("coursePriceLabel");
+    const priceNum =
+      cfg && typeof cfg.coursePrice === "number" && isFinite(cfg.coursePrice)
+        ? cfg.coursePrice
+        : 150;
+    const priceStr = priceNum.toFixed(2);
+    const currency = cfg?.currency || "USD";
+    const courseName = cfg?.courseName || "Broussard Shooting Academy";
+    {
+      const priceLabel = $("coursePriceLabel");
       if (priceLabel) {
         priceLabel.textContent = new Intl.NumberFormat("en-US", {
           style: "currency",
-          currency: cfg.currency || "USD",
-        }).format(cfg.coursePrice);
+          currency,
+        }).format(priceNum);
       }
     }
 
     // ── Support contact ────────────────────────────────────────────────
-    const support = document.getElementById("purSupport");
+    const support = $("purSupport");
     if (support && cfg) {
       const bits = [];
-      if (cfg.supportEmail) {
-        bits.push(`<a href="mailto:${cfg.supportEmail}">${cfg.supportEmail}</a>`);
-      }
+      if (cfg.supportEmail) bits.push(`<a href="mailto:${cfg.supportEmail}">${cfg.supportEmail}</a>`);
       if (cfg.supportPhone) {
         const tel = String(cfg.supportPhone).replace(/[^0-9+]/g, "");
         bits.push(`<a href="tel:${tel}">${cfg.supportPhone}</a>`);
@@ -659,6 +719,153 @@
         support.innerHTML = "Questions about payment or activation? " + bits.join(" &nbsp;·&nbsp; ");
       }
     }
+
+    // ── Access code: EXACT format used by the admin dashboard ──────────
+    //   BSA-{TIER}-{NAME4}-{1234}   e.g. BSA-FULL-JOHN-4821
+    function generateAccessCode(tier = "FULL", name = "") {
+      const prefix = `BSA-${tier}`;
+      const cleanName =
+        (name || "STUDENT").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4) || "STUD";
+      const random = Math.floor(1000 + Math.random() * 9000);
+      return `${prefix}-${cleanName}-${random}`;
+    }
+
+    // ── Write the student record (same shape as admin "Add Student") ───
+    async function provisionStudent({ name, email, accessCode, orderId }) {
+      return addDoc(collection(db, "portalStudents"), {
+        name: name || "",
+        email: (email || "").trim().toLowerCase(),
+        course: courseName,
+        price: priceNum,
+        paymentMethod: "PayPal",
+        paymentStatus: "paid",
+        paid: true,
+        portalStatus: "active",
+        status: "active",
+        accessCode,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        completedLessons: [],
+        progress: {},
+        totalQuizTimeSeconds: 0,
+        lastLoginAt: null,
+        lastEmailType: null,
+        lastEmailSentAt: null,
+        lastEmail7At: null,
+        lastEmail14At: null,
+        lastEmail30At: null,
+        inactiveEmailSent7: false,
+        inactiveEmailSent14: false,
+        inactiveEmailSent30: false,
+        // provenance — lets you tell auto sign-ups apart and cross-check
+        source: "paypal-auto",
+        paypalOrderId: orderId || null,
+      });
+    }
+
+    // Idempotency: if this PayPal order was already provisioned, reuse its code.
+    async function existingCodeForOrder(orderId) {
+      try {
+        const snap = await getDocs(
+          query(collection(db, "portalStudents"), where("paypalOrderId", "==", orderId), limit(1))
+        );
+        if (!snap.empty) return snap.docs[0].data().accessCode || null;
+      } catch (e) {
+        console.warn("Idempotency check failed (continuing):", e);
+      }
+      return null;
+    }
+
+    // ── Reveal the access code box ─────────────────────────────────────
+    function showCode(code, email) {
+      $("paypal-button-container").style.display = "none";
+      $("payNote").style.display = "none";
+      payProcessing.setAttribute("hidden", "");
+      $("codeValue").textContent = code;
+      if (email) $("codeEmail").textContent = email;
+      $("codeResult").removeAttribute("hidden");
+      $("copyCodeBtn").addEventListener("click", () => {
+        navigator.clipboard?.writeText(code).then(
+          () => { $("copyCodeBtn").textContent = "Copied ✓"; },
+          () => {}
+        );
+      });
+      $("codeResult").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    // ── Handle a completed payment ─────────────────────────────────────
+    async function onPaid(details, orderId) {
+      payProcessing.removeAttribute("hidden");
+      const payer = details?.payer || {};
+      const name = [payer.name?.given_name, payer.name?.surname].filter(Boolean).join(" ").trim();
+      const email = payer.email_address || "";
+
+      try {
+        // Don't double-provision on a refresh/replay.
+        const existing = await existingCodeForOrder(orderId);
+        if (existing) { showCode(existing, email); return; }
+
+        const accessCode = generateAccessCode("FULL", name);
+        await provisionStudent({ name, email, accessCode, orderId });
+        showCode(accessCode, email);
+      } catch (err) {
+        console.error("Provisioning failed:", err);
+        payProcessing.setAttribute("hidden", "");
+        showError(
+          "Your payment went through, but we couldn't auto-create your code. " +
+          "Please contact us at " + (cfg?.supportEmail || "your instructor") +
+          " with your payment confirmation and we'll set you up right away."
+        );
+      }
+    }
+
+    // ── Load the PayPal SDK with the client ID from config ─────────────
+    function loadPayPalSdk(clientId) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src =
+          "https://www.paypal.com/sdk/js?client-id=" +
+          encodeURIComponent(clientId) +
+          "&currency=" + encodeURIComponent(currency) +
+          "&enable-funding=card&components=buttons";
+        s.onload = resolve;
+        s.onerror = () => reject(new Error("PayPal SDK failed to load"));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function initPayPal() {
+      const clientId = cfg?.payPalClientId;
+      if (!clientId) {
+        showError("Payment is not configured yet (missing PayPal Client ID). Please contact your instructor.");
+        return;
+      }
+      try {
+        await loadPayPalSdk(clientId);
+        window.paypal.Buttons({
+          style: { layout: "vertical", color: "gold", shape: "rect", label: "pay" },
+          createOrder: (data, actions) =>
+            actions.order.create({
+              purchase_units: [
+                { description: courseName, amount: { value: priceStr, currency_code: currency } },
+              ],
+            }),
+          onApprove: async (data, actions) => {
+            const details = await actions.order.capture();
+            await onPaid(details, data.orderID);
+          },
+          onError: (err) => {
+            console.error("PayPal error:", err);
+            showError("There was a problem starting checkout. Please refresh and try again.");
+          },
+        }).render("#paypal-button-container");
+      } catch (err) {
+        console.error(err);
+        showError("Could not load the payment buttons. Please refresh the page or contact your instructor.");
+      }
+    }
+
+    initPayPal();
   </script>
 
 </body>
