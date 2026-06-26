@@ -387,6 +387,15 @@
 
     .pur-btn-paypal:hover { background: #ede5d4; }
 
+    /* ── Payment-only panel ──────────────────────────────────── */
+    .pur-btn-pay { width: 100%; margin-top: 4px; font-size: 1.05rem; padding: 15px 18px; }
+    .pur-pay-note { margin: 10px 0 0; font-size: .86rem; color: #68758a; text-align: center; }
+    .pur-after { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e4e8f0; }
+    .pur-after-title { margin: 0 0 10px; font-size: 1.05rem; color: #17356b; }
+    .pur-support { margin-top: 20px; font-size: .9rem; color: #3d4f66; line-height: 1.6; }
+    .pur-support a { color: #1f468c; font-weight: 700; text-decoration: none; }
+    .pur-support a:hover { text-decoration: underline; }
+
     .pur-btn-gold {
       background: #d8a62a;
       color: #111;
@@ -513,37 +522,30 @@
           <span class="pur-eyebrow">Purchase-first model</span>
 
           <h1 class="pur-info-heading" id="purHeading">
-            Request access using the same system you will use to log in later
+            Purchase your access, then log in with the code your instructor sends
           </h1>
 
           <p class="pur-info-desc">
-            This portal uses one permanent model: purchase or request access
-            first, then log in later with the same email and access code your
-            instructor assigns.
+            Pay below to enroll. Once your payment clears, your instructor
+            issues your access code by email — then you log in with that same
+            email and code.
           </p>
 
           <ul class="pur-helper-list" aria-label="Important notes">
-            <li>Use the same email address you will use on the login page.</li>
+            <li>Use the same email at checkout that you want tied to your access.</li>
             <li>Once payment is verified, your portal access is activated under that same student record.</li>
             <li>Your access code is tied to that email — no future switchover needed.</li>
           </ul>
 
           <div class="pur-course-box" aria-label="Course and pricing details">
-            <strong>Course:</strong> <span id="courseNameLabel">BSA Online Prerequisite Access</span><br>
+            <strong>Course:</strong> <span id="courseNameLabel">Broussard Shooting Academy</span><br>
             <strong>Price:</strong> <span id="coursePriceLabel">$150.00</span>
           </div>
-
-          <ol class="pur-steps" aria-label="Steps to get access">
-            <li>Click <strong>Pay with PayPal</strong> and complete your payment.</li>
-            <li>Return to this page and fill out the form below.</li>
-            <li>Click <strong>I Paid / Request Activation</strong> to submit your request.</li>
-            <li>Your instructor will verify payment and activate your access code.</li>
-          </ol>
         </aside>
 
-        <!-- ── Right: Form panel ─────────────────────────────── -->
+        <!-- ── Right: Payment panel ──────────────────────────── -->
         <div class="pur-form-panel">
-          <h2 class="pur-form-heading" id="formHeading">Submit your access request</h2>
+          <h2 class="pur-form-heading" id="formHeading">Pay &amp; enroll</h2>
 
           <!-- Config error banner — shown if pay-config.js fails to load -->
           <div
@@ -554,153 +556,33 @@
             hidden
           >
             Payment configuration failed to load. Please refresh the page or
-            contact your instructor before submitting.
+            contact your instructor before paying.
           </div>
 
-          <form
-            id="purchaseForm"
-            aria-labelledby="formHeading"
-            novalidate
+          <a
+            class="pur-btn pur-btn-gold pur-btn-pay"
+            id="manualPayLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Pay with PayPal or card (opens in a new tab)"
           >
+            💳 Pay with PayPal or Card
+          </a>
+          <p class="pur-pay-note">
+            Pay with a debit or credit card as a guest — no PayPal account required.
+          </p>
 
-            <div class="pur-form-grid">
+          <div class="pur-after">
+            <h3 class="pur-after-title">After you pay</h3>
+            <ol class="pur-steps" aria-label="After payment">
+              <li>Your instructor verifies your payment.</li>
+              <li>You receive your <strong>access code</strong> by email at the address you used at checkout.</li>
+              <li>Go to the login page and sign in with that email and code.</li>
+            </ol>
+          </div>
 
-              <!-- Full name -->
-              <div class="pur-field">
-                <label class="pur-label" for="buyerName">
-                  Full name
-                  <span class="pur-required-mark" aria-hidden="true">*</span>
-                </label>
-                <input
-                  id="buyerName"
-                  class="pur-input"
-                  type="text"
-                  autocomplete="name"
-                  autocorrect="off"
-                  required
-                  aria-required="true"
-                  aria-describedby="buyerNameError"
-                >
-                <p class="pur-field-error" id="buyerNameError" role="alert" hidden></p>
-              </div>
-
-              <!-- Email -->
-              <div class="pur-field">
-                <label class="pur-label" for="buyerEmail">
-                  Email address
-                  <span class="pur-required-mark" aria-hidden="true">*</span>
-                </label>
-                <input
-                  id="buyerEmail"
-                  class="pur-input"
-                  type="email"
-                  autocomplete="email"
-                  inputmode="email"
-                  required
-                  aria-required="true"
-                  aria-describedby="buyerEmailError buyerEmailHint"
-                >
-                <p class="pur-field-hint" id="buyerEmailHint">
-                  Use the same email you will enter on the login page.
-                </p>
-                <p class="pur-field-error" id="buyerEmailError" role="alert" hidden></p>
-              </div>
-
-              <!-- Phone -->
-              <div class="pur-field">
-                <label class="pur-label" for="buyerPhone">
-                  Phone number
-                  <span class="pur-optional" aria-label="(optional)">(optional)</span>
-                </label>
-                <input
-                  id="buyerPhone"
-                  class="pur-input"
-                  type="tel"
-                  autocomplete="tel"
-                  inputmode="tel"
-                  placeholder="(555) 000-0000"
-                >
-              </div>
-
-              <!-- Course — readonly, not editable by student -->
-              <div class="pur-field">
-                <label class="pur-label" for="buyerCourse">Course</label>
-                <input
-                  id="buyerCourse"
-                  class="pur-input"
-                  type="text"
-                  value="Louisiana Concealed Carry"
-                  readonly
-                  aria-readonly="true"
-                  tabindex="-1"
-                >
-              </div>
-
-              <!-- Notes -->
-              <div class="pur-field pur-field-full">
-                <label class="pur-label" for="buyerNotes">
-                  Notes
-                  <span class="pur-optional" aria-label="(optional)">(optional)</span>
-                </label>
-                <textarea
-                  id="buyerNotes"
-                  class="pur-textarea"
-                  rows="4"
-                  autocomplete="off"
-                  placeholder="Any questions or details for your instructor"
-                ></textarea>
-              </div>
-
-            </div>
-
-            <!-- Payment confirmation checkbox -->
-            <div class="pur-confirm-row">
-              <input
-                type="checkbox"
-                id="paymentConfirm"
-                aria-required="true"
-                aria-describedby="paymentConfirmError"
-              >
-              <label class="pur-confirm-label" for="paymentConfirm">
-                I have completed my PayPal payment or have arranged payment
-                directly with my instructor.
-              </label>
-            </div>
-            <p class="pur-field-error" id="paymentConfirmError" role="alert" hidden></p>
-
-            <!-- Actions -->
-            <div class="pur-actions">
-              <a
-                class="pur-btn pur-btn-paypal"
-                id="manualPayLink"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Pay with PayPal (opens in a new tab)"
-              >
-                💳 Pay with PayPal
-              </a>
-              <button
-                class="pur-btn pur-btn-gold"
-                id="requestBtn"
-                type="submit"
-                aria-describedby="purStatusMsg"
-              >
-                I Paid / Request Activation
-              </button>
-            </div>
-
-          </form>
-
-          <!-- Status / feedback message -->
-          <div
-            id="purStatusMsg"
-            class="pur-msg"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            hidden
-          ></div>
+          <p class="pur-support" id="purSupport"></p>
 
           <hr class="pur-divider" aria-hidden="true">
 
@@ -719,42 +601,21 @@
   <script src="pay-config.js"></script>
 
   <script type="module">
-    // Load the submit service defensively. A STATIC import that fails (app.js
-    // or firebase-config down) throws at module eval and leaves the form's
-    // submit handler unbound — a silently dead button. A guarded dynamic
-    // import lets us show a clear message instead.
-    let submitPurchaseRequest = null;
-    try {
-      const app = await import("./app.js");
-      submitPurchaseRequest = app.submitPurchaseRequest;
-    } catch (err) {
-      console.error("BSA Purchase: failed to load submit service (app.js).", err);
-    }
+    // Payment-only page: no form submission, no app.js dependency. Activation
+    // is handled by the instructor, who issues an access code after payment.
+    // This script only wires the PayPal link, course name/price, and support
+    // contact from pay-config.js.
 
     // ── Config validation ──────────────────────────────────────────────
-    // Show a warning if pay-config.js failed to load instead of silently
-    // falling back to hardcoded values. PayPal URL is no longer hardcoded
-    // in this file — it must come from pay-config.js.
-
     const cfg = window.BSA_PAY_CONFIG;
+    const configError = document.getElementById("configError");
 
     if (!cfg || typeof cfg !== "object") {
-      document.getElementById("configError").removeAttribute("hidden");
+      configError.removeAttribute("hidden");
       console.error("BSA Purchase: window.BSA_PAY_CONFIG missing. pay-config.js may have failed to load.");
     }
 
-    // If the submit service failed to load, warn and keep the request button
-    // disabled so the form can't appear to submit into a void.
-    const serviceReady = typeof submitPurchaseRequest === "function";
-    if (!serviceReady) {
-      document.getElementById("configError").removeAttribute("hidden");
-      document.getElementById("configError").textContent =
-        "The request service is temporarily unavailable. Please refresh the page or contact your instructor before submitting.";
-    }
-
-    // ── PayPal link ────────────────────────────────────────────────────
-    // URL comes entirely from pay-config.js — not hardcoded here.
-
+    // ── PayPal link (from pay-config.js; never hardcoded here) ──────────
     const payLink = document.getElementById("manualPayLink");
 
     if (cfg?.manualPayPalMeUrl) {
@@ -769,9 +630,6 @@
     }
 
     // ── Dynamic course name + price ────────────────────────────────────
-    // Pull the displayed course name and price from pay-config.js so they
-    // always match the real price (which is apt to change) and the PayPal
-    // amount. The hardcoded text in the HTML is just a fallback if cfg fails.
     if (cfg?.courseName) {
       const nameLabel = document.getElementById("courseNameLabel");
       if (nameLabel) nameLabel.textContent = cfg.courseName;
@@ -786,171 +644,21 @@
       }
     }
 
-    // ── Element refs ───────────────────────────────────────────────────
-
-    const form               = document.getElementById("purchaseForm");
-    const requestBtn         = document.getElementById("requestBtn");
-    const statusMsg          = document.getElementById("purStatusMsg");
-    const loginNavBtn        = document.getElementById("loginNavBtn");
-    const paymentConfirm     = document.getElementById("paymentConfirm");
-    const paymentConfirmError = document.getElementById("paymentConfirmError");
-
-    const fields = {
-      name:  { input: document.getElementById("buyerName"),  error: document.getElementById("buyerNameError") },
-      email: { input: document.getElementById("buyerEmail"), error: document.getElementById("buyerEmailError") },
-    };
-
-    // ── Helpers ────────────────────────────────────────────────────────
-
-    function showStatus(kind, text) {
-      statusMsg.textContent = text;
-      statusMsg.className   = `pur-msg ${kind}`;
-      statusMsg.removeAttribute("hidden");
-    }
-
-    function hideStatus() {
-      statusMsg.setAttribute("hidden", "");
-      statusMsg.textContent = "";
-    }
-
-    function showFieldError(field, message) {
-      field.error.textContent = message;
-      field.error.removeAttribute("hidden");
-      field.input.setAttribute("aria-invalid", "true");
-    }
-
-    function clearFieldError(field) {
-      field.error.setAttribute("hidden", "");
-      field.error.textContent = "";
-      field.input.removeAttribute("aria-invalid");
-    }
-
-    function clearAllErrors() {
-      Object.values(fields).forEach(clearFieldError);
-      paymentConfirmError.setAttribute("hidden", "");
-      paymentConfirmError.textContent = "";
-      paymentConfirm.removeAttribute("aria-invalid");
-      hideStatus();
-    }
-
-    function setLoading(isLoading) {
-      requestBtn.disabled    = isLoading;
-      requestBtn.textContent = isLoading ? "Saving Request…" : "I Paid / Request Activation";
-      requestBtn.setAttribute("aria-busy", String(isLoading));
-    }
-
-    // ── Clear errors on input ──────────────────────────────────────────
-
-    fields.name.input.addEventListener("input",  () => clearFieldError(fields.name));
-    fields.email.input.addEventListener("input", () => clearFieldError(fields.email));
-    paymentConfirm.addEventListener("change",    () => {
-      paymentConfirmError.setAttribute("hidden", "");
-      paymentConfirm.removeAttribute("aria-invalid");
-    });
-
-    // ── Client-side validation ─────────────────────────────────────────
-
-    function validate() {
-      let firstErrorField = null;
-
-      const nameVal  = fields.name.input.value.trim();
-      const emailVal = fields.email.input.value.trim();
-
-      if (!nameVal) {
-        showFieldError(fields.name, "Full name is required.");
-        if (!firstErrorField) firstErrorField = fields.name.input;
+    // ── Support contact ────────────────────────────────────────────────
+    const support = document.getElementById("purSupport");
+    if (support && cfg) {
+      const bits = [];
+      if (cfg.supportEmail) {
+        bits.push(`<a href="mailto:${cfg.supportEmail}">${cfg.supportEmail}</a>`);
       }
-
-      if (!emailVal) {
-        showFieldError(fields.email, "Email address is required.");
-        if (!firstErrorField) firstErrorField = fields.email.input;
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-        showFieldError(fields.email, "Please enter a valid email address.");
-        if (!firstErrorField) firstErrorField = fields.email.input;
+      if (cfg.supportPhone) {
+        const tel = String(cfg.supportPhone).replace(/[^0-9+]/g, "");
+        bits.push(`<a href="tel:${tel}">${cfg.supportPhone}</a>`);
       }
-
-      if (!paymentConfirm.checked) {
-        paymentConfirmError.textContent = "Please confirm you have completed or arranged payment.";
-        paymentConfirmError.removeAttribute("hidden");
-        paymentConfirm.setAttribute("aria-invalid", "true");
-        if (!firstErrorField) firstErrorField = paymentConfirm;
+      if (bits.length) {
+        support.innerHTML = "Questions about payment or activation? " + bits.join(" &nbsp;·&nbsp; ");
       }
-
-      if (firstErrorField) {
-        firstErrorField.focus();
-        return false;
-      }
-
-      return true;
     }
-
-    // ── Form submit ────────────────────────────────────────────────────
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      clearAllErrors();
-
-      if (!serviceReady) {
-        showStatus("bad", "The request service is temporarily unavailable. Please refresh the page or contact your instructor before submitting.");
-        return;
-      }
-
-      if (!validate()) return;
-
-      setLoading(true);
-
-      const payload = {
-        name:   fields.name.input.value.trim(),
-        email:  fields.email.input.value.trim().toLowerCase(),
-        phone:  document.getElementById("buyerPhone").value.trim(),
-        notes:  document.getElementById("buyerNotes").value.trim(),
-        course: document.getElementById("buyerCourse").value,
-        price:  Number(cfg?.coursePrice ?? 150),
-      };
-
-      try {
-        const result = await submitPurchaseRequest(payload);
-
-        if (!result.ok) {
-          showStatus("bad", result.message || "Something went wrong. Please try again.");
-          setLoading(false);
-          return;
-        }
-
-        // ── Success ────────────────────────────────────────────
-        showStatus(
-          "ok",
-          (result.message || "Request submitted successfully.") +
-          " Use the same email address on the login page when your instructor activates your access."
-        );
-
-        // Disable form and button to prevent duplicate submissions
-        requestBtn.disabled    = true;
-        requestBtn.textContent = "Request Submitted";
-
-        // Disable all inputs to make the submitted state clear
-        form.querySelectorAll("input, textarea").forEach((el) => {
-          el.setAttribute("disabled", "");
-        });
-
-        // Promote the single login button to a forward CTA now that the
-        // request is in (one login button only — no redundant duplicate).
-        if (loginNavBtn) {
-          loginNavBtn.textContent = "Go to Login Page \u2192";
-        }
-
-        // Scroll to status message
-        statusMsg.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-      } catch (err) {
-        console.error("BSA Purchase: submission failed:", err);
-        showStatus(
-          "bad",
-          "Your request could not be submitted. Please check your connection and try again, or contact your instructor directly."
-        );
-        setLoading(false);
-      }
-    });
   </script>
 
 </body>
