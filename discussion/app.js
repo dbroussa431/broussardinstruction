@@ -38,6 +38,7 @@ function shuffle(items) {
 
 function drawSessionCards() {
   const byCategory = new Map();
+
   state.allCards.forEach(card => {
     if (!byCategory.has(card.category)) byCategory.set(card.category, []);
     byCategory.get(card.category).push(card);
@@ -48,6 +49,7 @@ function drawSessionCards() {
     const cards = byCategory.get(category);
     return cards[Math.floor(Math.random() * cards.length)];
   });
+
   state.currentIndex = 0;
   state.completedCategories = [];
 }
@@ -55,6 +57,7 @@ function drawSessionCards() {
 function renderCard() {
   const card = state.sessionCards[state.currentIndex];
   state.selectedIndex = null;
+
   els.progressTitle.textContent = `Discussion Card ${state.currentIndex + 1} of ${state.sessionCards.length}`;
   els.category.textContent = card.category;
   els.cardCount.textContent = `${state.currentIndex + 1} / ${state.sessionCards.length}`;
@@ -66,25 +69,31 @@ function renderCard() {
     const label = document.createElement('label');
     label.className = 'choice';
     label.innerHTML = `<input type="radio" name="discussion-choice" value="${index}"><span>${choice}</span>`;
+
     label.querySelector('input').addEventListener('change', () => {
       state.selectedIndex = index;
       els.revealBtn.disabled = false;
     });
+
     els.choices.appendChild(label);
   });
 
   els.revealBtn.disabled = true;
   els.thoughts.classList.add('hidden');
   els.revealBtn.classList.remove('hidden');
-  els.nextBtn.textContent = state.currentIndex === state.sessionCards.length - 1 ? 'Finish Today\'s Discussion' : 'Next Discussion Card';
+  els.nextBtn.textContent = state.currentIndex === state.sessionCards.length - 1
+    ? 'Finish Today\'s Discussion'
+    : 'Next Discussion Card';
 }
 
 function revealThoughts() {
   const card = state.sessionCards[state.currentIndex];
   const chosePreferred = state.selectedIndex === card.preferred;
+
   els.responseHeading.textContent = chosePreferred
-    ? 'Hopefully this is close to what you noticed...'
-    : 'Here is another way to think through it...';
+    ? 'That is close to what we hoped you would notice...'
+    : 'Here is another reasonable way to think through it...';
+
   els.explanation.textContent = card.explanation;
   els.takeaway.textContent = card.takeaway;
   els.revealBtn.classList.add('hidden');
@@ -95,6 +104,7 @@ function revealThoughts() {
 function nextCard() {
   const card = state.sessionCards[state.currentIndex];
   state.completedCategories.push(card.category);
+
   if (state.currentIndex < state.sessionCards.length - 1) {
     state.currentIndex += 1;
     renderCard();
