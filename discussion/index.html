@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BSA Critical Thinking Lab — realistic discussion cards that build awareness, judgment, and responsibility." />
+  <meta name="description" content="Continue the discussion with realistic BSA scenarios designed to strengthen observation, judgment, and thoughtful decision making." />
   <title>BSA Critical Thinking Lab</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -17,27 +17,46 @@
     </nav>
 
     <div class="hero-content shell">
-      <p class="eyebrow">Broussard Shooting Academy presents</p>
-      <h1>Critical Thinking Lab</h1>
-      <p class="hero-copy">A decision-making academy that teaches responsible firearm ownership as one important part of a larger philosophy of awareness, judgment, and responsibility.</p>
+      <p class="eyebrow">Inspired by the BSA Weekly Safety Brief</p>
+      <h1>Continue the Discussion</h1>
+      <p class="hero-copy">Practical discussions built around realistic everyday situations. Take a few minutes, think it through, and consider what seems most reasonable based on the information available.</p>
       <div class="hero-actions">
-        <button class="btn btn-primary" id="startBtn">Continue the Discussion</button>
+        <button class="btn btn-primary" id="startBtn">Begin This Week&apos;s Discussion</button>
         <a class="btn btn-secondary" href="#about">See how it works</a>
       </div>
-      <p class="microcopy">Three fresh Discussion Cards. No grades. No fear. Just thoughtful practice.</p>
+      <p class="microcopy">Three fresh discussion cards. No grades. No fear. Just thoughtful practice.</p>
     </div>
   </header>
 
   <main>
     <section class="intro shell" id="about">
-      <div>
-        <p class="eyebrow dark">Think before you react</p>
-        <h2>We do not tell people what to think. We help people practice how to think.</h2>
+      <div class="intro-copy">
+        <p class="eyebrow dark">Think it through</p>
+        <h2>Each discussion is built around a realistic situation.</h2>
+        <div class="invitation-copy" aria-label="Discussion approach">
+          <p>Slow down.</p>
+          <p>Consider what you know.</p>
+          <p>Consider what you do not know.</p>
+          <p>Then decide what seems most reasonable.</p>
+        </div>
       </div>
+
       <div class="intro-grid">
-        <article><span>01</span><h3>Read</h3><p>Start with a short, realistic everyday scenario.</p></article>
-        <article><span>02</span><h3>Consider</h3><p>Choose the response that best matches your reasoning.</p></article>
-        <article><span>03</span><h3>Reflect</h3><p>Review the thought behind the options and the BSA takeaway.</p></article>
+        <article>
+          <span>01</span>
+          <h3>Notice</h3>
+          <p>Pay attention to the facts, the setting, and what has changed.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Think</h3>
+          <p>Separate what you know from what you may be assuming.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Respond</h3>
+          <p>Choose the option that seems most reasonable with the information available.</p>
+        </article>
       </div>
     </section>
 
@@ -63,11 +82,11 @@
             <legend>What would you consider?</legend>
           </fieldset>
 
-          <button class="btn btn-primary full" id="revealBtn" disabled>See Our Thoughts</button>
+          <button class="btn btn-primary full" id="revealBtn" disabled>Continue the Discussion</button>
 
           <section class="thoughts hidden" id="thoughts">
-            <p class="thoughts-label">Our Thoughts</p>
-            <h4 id="responseHeading">Here is what we were hoping you noticed...</h4>
+            <p class="thoughts-label">Another perspective</p>
+            <h4 id="responseHeading">Let&apos;s think it through...</h4>
             <p id="explanation"></p>
             <div class="takeaway">
               <span>BSA Takeaway</span>
@@ -81,11 +100,12 @@
 
     <section class="complete hidden" id="complete">
       <div class="shell complete-card">
-        <p class="eyebrow">Discussion complete</p>
-        <h2>You did not pass a test. You practiced thinking.</h2>
-        <p>That is the point. Thoughtful decisions begin with noticing more, assuming less, and preserving options.</p>
+        <p class="eyebrow">Thanks for continuing the discussion</p>
+        <h2>Thoughtful decisions begin with noticing more and assuming less.</h2>
+        <p>There will not always be one perfect answer. The goal is to slow down, consider the information available, and make the most reasonable decision you can.</p>
         <div id="completedCategories" class="completed-list"></div>
         <button class="btn btn-primary" id="newSetBtn">Draw Three New Cards</button>
+        <p class="next-friday">Next Friday another discussion begins.</p>
       </div>
     </section>
   </main>
