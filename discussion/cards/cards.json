@@ -1,0 +1,182 @@
+[
+  {
+    "id": "obs-001",
+    "category": "Observation",
+    "title": "The Grocery Cart",
+    "scenario": "You are loading groceries into your vehicle when someone nearby asks whether you can help move a heavy item. Nothing about the request is automatically suspicious, but your hands are full and your attention is divided.",
+    "choices": [
+      "Agree immediately because the person appears friendly.",
+      "Pause, look around, and decide whether you can help without giving up awareness or control of your belongings.",
+      "Assume the request is a distraction and accuse the person of trying to steal from you.",
+      "Ignore the person and leave without saying anything."
+    ],
+    "preferred": 1,
+    "explanation": "Hopefully you chose to pause and gather a little more information. Helping someone may be perfectly reasonable, but you do not have to surrender awareness to be polite. A brief pause lets you notice who else is nearby, secure your belongings, and decide whether there is a safer way to help.",
+    "takeaway": "Observation lets kindness and caution exist at the same time."
+  },
+  {
+    "id": "assump-001",
+    "category": "Assumptions",
+    "title": "The Familiar Face",
+    "scenario": "While shopping, you notice the same person in three different aisles. The person has not approached you, spoken to you, or done anything illegal.",
+    "choices": [
+      "Confront the person and demand to know why they are following you.",
+      "Decide that the person is definitely a threat.",
+      "Notice the pattern, remain observant, and avoid reaching a conclusion without more information.",
+      "Tell yourself you imagined it and stop paying attention."
+    ],
+    "preferred": 2,
+    "explanation": "The repeated encounters are worth noticing, but they do not prove intent. A thoughtful response separates observation from conclusion. You can continue paying attention, move toward employees, or change your route without accusing anyone or dismissing your own observation.",
+    "takeaway": "Notice the facts before you name the story."
+  },
+  {
+    "id": "comm-001",
+    "category": "Communication",
+    "title": "The Hotel Hallway",
+    "scenario": "You return to your hotel floor and hear a loud argument near your room. You cannot see what is happening, and you do not know the people involved.",
+    "choices": [
+      "Walk closer so you can determine who is right.",
+      "Return to the elevator or another public area and contact hotel staff.",
+      "Shout down the hallway for everyone to calm down.",
+      "Go directly to your room because the argument is not your concern."
+    ],
+    "preferred": 1,
+    "explanation": "Moving to a staffed or public area preserves distance and gives you a way to communicate with people who can respond appropriately. You do not need to investigate, choose sides, or insert yourself into an unknown conflict.",
+    "takeaway": "Good communication can create options without creating confrontation."
+  },
+  {
+    "id": "slow-001",
+    "category": "Slowing Down",
+    "title": "The Parking Space",
+    "scenario": "Another driver gestures angrily after both of you reach the same parking space. You are already late, and you feel yourself becoming irritated.",
+    "choices": [
+      "Hold your ground because you arrived first.",
+      "Return the gesture so the other driver understands your frustration.",
+      "Pause, let the space go, and find another place to park.",
+      "Get out and explain the parking rules."
+    ],
+    "preferred": 2,
+    "explanation": "The parking space is not worth allowing a small disagreement to control the next several minutes of your life. Slowing down creates room for a better decision. Giving up the space is not surrender; it is choosing what deserves your time and attention.",
+    "takeaway": "Not every problem deserves your participation."
+  },
+  {
+    "id": "over-001",
+    "category": "Overconfidence",
+    "title": "The Usual Route",
+    "scenario": "You have taken the same shortcut through a quiet parking lot for years. Tonight, several lights are out and construction fencing blocks part of the view.",
+    "choices": [
+      "Use the shortcut because nothing has ever happened before.",
+      "Slow down, reassess the changed conditions, and consider the longer well-lit route.",
+      "Assume the darkness means someone is waiting there.",
+      "Continue at the same pace while checking your phone flashlight."
+    ],
+    "preferred": 1,
+    "explanation": "Familiarity can make us overlook meaningful changes. The route may still be safe, but tonight is not identical to every other night. Reassessing is not fear; it is adapting to new information.",
+    "takeaway": "Experience helps most when it does not become complacency."
+  },
+  {
+    "id": "normal-001",
+    "category": "Normal vs. Abnormal",
+    "title": "The Coffee Shop",
+    "scenario": "You visit the same coffee shop most mornings. Today, the front entrance is propped open, two employees are standing outside, and customers are being directed to a side door.",
+    "choices": [
+      "Walk inside through the propped door because it is your normal routine.",
+      "Notice that the normal pattern has changed and ask an employee what is happening.",
+      "Assume a violent incident has occurred and leave immediately.",
+      "Ignore the employees and follow the crowd."
+    ],
+    "preferred": 1,
+    "explanation": "The change deserves attention, but not a dramatic conclusion. Asking a simple question may reveal a maintenance issue, a delivery, or something else entirely. The important skill is recognizing that the environment is different from normal.",
+    "takeaway": "A change in the pattern is information, not a verdict."
+  },
+  {
+    "id": "adapt-001",
+    "category": "Adaptability",
+    "title": "The Family Meeting Place",
+    "scenario": "Your family agrees to meet near the main entrance of a crowded festival if anyone gets separated. Later, the entrance becomes blocked by emergency vehicles.",
+    "choices": [
+      "Keep trying to reach the original location because that was the plan.",
+      "Choose a safer nearby landmark and use your phones to communicate the change.",
+      "Wait without contacting anyone so the plan does not become confusing.",
+      "Leave the festival and assume everyone else will do the same."
+    ],
+    "preferred": 1,
+    "explanation": "A plan is useful, but it should not become a trap. New information may require a new decision. Communicating the change and choosing a clear alternative preserves the purpose of the original plan.",
+    "takeaway": "A good plan includes permission to adapt."
+  },
+  {
+    "id": "gray-001",
+    "category": "Ocean of Gray",
+    "title": "The Open Door",
+    "scenario": "You arrive home and notice the front door is slightly open. You are not certain whether someone in your household left it that way, and you have no other information.",
+    "choices": [
+      "Enter immediately to see what happened.",
+      "Assume there is an intruder inside.",
+      "Stay outside, create distance, contact household members, and gather more information before deciding what comes next.",
+      "Close the door and continue with your evening."
+    ],
+    "preferred": 2,
+    "explanation": "There is not enough information to know why the door is open. That uncertainty is exactly why creating distance and gathering information can be reasonable. You are not declaring an emergency, and you are not ignoring a meaningful change.",
+    "takeaway": "When certainty is low, preserve options while you learn more."
+  },
+  {
+    "id": "nobe-001",
+    "category": "No Be There",
+    "title": "The Escalating Line",
+    "scenario": "Two customers begin arguing loudly in a checkout line. You are several places behind them and have not paid yet.",
+    "choices": [
+      "Stay because leaving means losing your place.",
+      "Move to another register or step away while employees handle it.",
+      "Tell both customers to calm down.",
+      "Record the argument on your phone."
+    ],
+    "preferred": 1,
+    "explanation": "You have an easy opportunity to create distance before the situation becomes your problem. Moving away does not require deciding who is right, predicting what will happen, or proving anything.",
+    "takeaway": "No Be There often begins with recognizing when you still have an easy exit."
+  },
+  {
+    "id": "obs-002",
+    "category": "Observation",
+    "title": "The Gas Pump",
+    "scenario": "While fueling your vehicle, you notice a car circle the lot twice and stop near the exit. The driver may simply be waiting for someone.",
+    "choices": [
+      "Keep watching the pump display and ignore the vehicle.",
+      "Notice the vehicle, finish what you are doing efficiently, and keep your surroundings in view.",
+      "Assume the driver is planning a robbery.",
+      "Walk over and ask why the driver is parked there."
+    ],
+    "preferred": 1,
+    "explanation": "The vehicle may have an innocent reason for being there. The useful response is not panic or confrontation; it is simply including the change in your awareness while you complete your task and preserve your options.",
+    "takeaway": "Awareness is attention without unnecessary conclusions."
+  },
+  {
+    "id": "comm-002",
+    "category": "Communication",
+    "title": "The Delayed Pickup",
+    "scenario": "A family member is thirty minutes late picking you up from an unfamiliar location. Your phone battery is low, and the area is beginning to empty.",
+    "choices": [
+      "Continue waiting in the same isolated spot.",
+      "Use the remaining battery to communicate, move toward a staffed public area, and share your location.",
+      "Begin walking toward home without telling anyone.",
+      "Turn off the phone completely and hope the ride arrives soon."
+    ],
+    "preferred": 1,
+    "explanation": "Communication is most useful before your options shrink. A brief message, shared location, or call can help coordinate the next step. Moving toward people and staff also creates more choices without assuming that anything dangerous is happening.",
+    "takeaway": "Communicate early, while you still have options."
+  },
+  {
+    "id": "slow-002",
+    "category": "Slowing Down",
+    "title": "The Unexpected Message",
+    "scenario": "You receive a text claiming that a family member has an emergency and needs money immediately. The message includes personal details that make it sound believable.",
+    "choices": [
+      "Send the money quickly because emergencies require fast action.",
+      "Pause and verify the request through a separate call or trusted contact.",
+      "Reply with additional personal information to confirm identity.",
+      "Post the message publicly and ask whether it is real."
+    ],
+    "preferred": 1,
+    "explanation": "Urgency often pressures people to skip verification. Slowing down long enough to use a separate communication channel can protect both you and the family member. The pause is part of the decision, not a failure to help.",
+    "takeaway": "Urgency should increase verification, not eliminate it."
+  }
+]
