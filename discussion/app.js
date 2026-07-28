@@ -24,8 +24,28 @@ const els = {
   explanation: document.querySelector('#explanation'),
   takeaway: document.querySelector('#takeaway'),
   nextBtn: document.querySelector('#nextBtn'),
-  completedCategories: document.querySelector('#completedCategories')
+  completedCategories: document.querySelector('#completedCategories'),
+  progressDots: document.querySelector('#progressDots'),
+  loadError: document.querySelector('#loadError')
 };
+
+const RECENT_CATEGORIES_KEY = 'bsaRecentCategories';
+
+function getRecentCategories() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_CATEGORIES_KEY)) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveRecentCategories(categories) {
+  try {
+    localStorage.setItem(RECENT_CATEGORIES_KEY, JSON.stringify(categories.slice(-5)));
+  } catch (error) {
+    /* localStorage unavailable; skip persistence */
+  }
+}
 
 function shuffle(items) {
   const copy = [...items];
@@ -44,12 +64,26 @@ function drawSessionCards() {
     byCategory.get(card.category).push(card);
   });
 
-  const categories = shuffle([...byCategory.keys()]).slice(0, 3);
+  const allCategories = [...byCategory.keys()];
+  const recent = getRecentCategories();
+  // Prefer categories not shown in the last few sessions so rotation feels fresh.
+  const fresh = allCategories.filter(category => !recent.includes(category));
+  const pool = fresh.length >= 3 ? fresh : allCategories;
+  const categories = shuffle(pool).slice(0, 3);
+
   state.sessionCards = categories.map(category => {
     const cards = byCategory.get(category);
-    return cards[Math.floor(Math.random() * cards.length)];
+    const card = cards[Math.floor(Math.random() * cards.length)];
+    // Shuffle choice order per render so the correct answer isn't always in the same slot.
+    const order = shuffle(card.choices.map((_, index) => index));
+    return {
+      ...card,
+      choices: order.map(index => card.choices[index]),
+      preferred: order.indexOf(card.preferred)
+    };
   });
 
+  saveRecentCategories([...recent, ...categories]);
   state.currentIndex = 0;
   state.completedCategories = [];
 }
@@ -84,6 +118,13 @@ function renderCard() {
   els.nextBtn.textContent = state.currentIndex === state.sessionCards.length - 1
     ? 'Finish Today\'s Discussion'
     : 'Next Discussion Card';
+
+  els.progressDots.innerHTML = state.sessionCards
+    .map((_, index) => {
+      const cls = index < state.currentIndex ? 'is-done' : index === state.currentIndex ? 'is-current' : '';
+      return `<span class="${cls}"></span>`;
+    })
+    .join('');
 }
 
 function revealThoughts() {
@@ -98,7 +139,8 @@ function revealThoughts() {
   els.takeaway.textContent = card.takeaway;
   els.revealBtn.classList.add('hidden');
   els.thoughts.classList.remove('hidden');
-  els.thoughts.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const thoughtsTop = els.thoughts.getBoundingClientRect().top + window.pageYOffset - 24;
+  window.scrollTo({ top: thoughtsTop, behavior: 'smooth' });
 }
 
 function nextCard() {
@@ -108,7 +150,8 @@ function nextCard() {
   if (state.currentIndex < state.sessionCards.length - 1) {
     state.currentIndex += 1;
     renderCard();
-    els.lab.scrollIntoView({ behavior: 'smooth' });
+    const labTop = els.lab.getBoundingClientRect().top + window.pageYOffset;
+    window.scrollTo({ top: labTop, behavior: 'smooth' });
   } else {
     showComplete();
   }
@@ -120,7 +163,8 @@ function showComplete() {
   els.completedCategories.innerHTML = state.completedCategories
     .map(category => `<span>✓ ${category}</span>`)
     .join('');
-  els.complete.scrollIntoView({ behavior: 'smooth' });
+  const completeTop = els.complete.getBoundingClientRect().top + window.pageYOffset;
+  window.scrollTo({ top: completeTop, behavior: 'smooth' });
 }
 
 function startSession() {
@@ -128,18 +172,20 @@ function startSession() {
   els.complete.classList.add('hidden');
   els.lab.classList.remove('hidden');
   renderCard();
-  els.lab.scrollIntoView({ behavior: 'smooth' });
+  const startLabTop = els.lab.getBoundingClientRect().top + window.pageYOffset;
+  window.scrollTo({ top: startLabTop, behavior: 'smooth' });
 }
 
 async function init() {
   try {
-    const response = await fetch('cards/cards.json');
+    const response = await fetch('cards.json');
     if (!response.ok) throw new Error('Unable to load Discussion Cards.');
     state.allCards = await response.json();
   } catch (error) {
     console.error(error);
     els.startBtn.disabled = true;
     els.startBtn.textContent = 'Discussion Cards unavailable';
+    els.loadError.classList.remove('hidden');
   }
 }
 
