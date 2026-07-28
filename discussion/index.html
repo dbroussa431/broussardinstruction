@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Continue the discussion with realistic BSA scenarios designed to strengthen observation, judgment, and thoughtful decision making." />
   <title>BSA Critical Thinking Lab</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.json.css" />
 </head>
 <body>
   <header class="hero" id="top">
@@ -25,6 +25,7 @@
         <a class="btn btn-secondary" href="#about">See how it works</a>
       </div>
       <p class="microcopy">Three fresh discussion cards. No grades. No fear. Just thoughtful practice.</p>
+      <p class="load-error hidden" id="loadError">Discussion cards could not be loaded. Please refresh the page, or contact us if the problem continues.</p>
     </div>
   </header>
 
@@ -66,6 +67,7 @@
           <div>
             <p class="eyebrow dark">Today&apos;s discussion</p>
             <h2 id="progressTitle">Discussion Card 1 of 3</h2>
+            <div class="progress-dots" id="progressDots" aria-hidden="true"></div>
           </div>
           <button class="text-btn" id="restartBtn">Start over</button>
         </div>
@@ -117,6 +119,6 @@
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app-updated.js"></script>
 </body>
 </html>
