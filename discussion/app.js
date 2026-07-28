@@ -178,7 +178,7 @@ function startSession() {
 
 async function init() {
   try {
-    const response = await fetch('cards.json');
+    const response = await fetch('cards/cards.json');
     if (!response.ok) throw new Error('Unable to load Discussion Cards.');
     state.allCards = await response.json();
   } catch (error) {
